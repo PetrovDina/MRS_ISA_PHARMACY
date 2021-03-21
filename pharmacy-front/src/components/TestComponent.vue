@@ -1,8 +1,12 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <ul id="test-test">
+      <li v-for="med in medication">
+        {{ med.id }} - {{med.medicationName}} 
+      </li>
+    </ul>
     <button v-on:click='test()'>Test</button>
-
   </div>
 </template>
 
@@ -12,7 +16,8 @@ export default {
   name: 'TestComponent',
   data () {
     return {
-      msg: 'Bilo sta eee - Here we can test our dummy data'
+      msg: 'Here we can test our dummy data',
+      medication: []
     }
   },
 
@@ -24,8 +29,8 @@ export default {
         //     .then(response => (this.msg = response))
         //     }
         axios
-             .get('http://localhost:8080/api/stud') //test
-             .then(response => (this.msg = response))
+             .get('http://localhost:8080/med/test') //test
+             .then(response => (this.medication= response.data))
              }
 }
 }
@@ -41,7 +46,6 @@ ul {
   padding: 0;
 }
 li {
-  display: inline-block;
   margin: 0 10px;
 }
 a {
