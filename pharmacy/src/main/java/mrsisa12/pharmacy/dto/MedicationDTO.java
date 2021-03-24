@@ -1,39 +1,25 @@
-package mrsisa12.pharmacy.model;
+package mrsisa12.pharmacy.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import mrsisa12.pharmacy.model.Medication;
+import mrsisa12.pharmacy.model.MedicationForm;
 
-@Entity
-public class Medication {
+public class MedicationDTO {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column(name = "name", nullable = false)
 	private String name;
-	
-	@Column(name = "manufacturer", nullable = false)
 	private String manufacturer;
-	
-	@Column(name = "prescriptionReq", nullable = false)
 	private boolean prescriptionReq;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "form", nullable = false)
 	private MedicationForm form;
 	
-	
-	public Medication() {
+	public MedicationDTO() {
 		
 	}
+	
+	public MedicationDTO(Medication medication) {
+		this(medication.getId(), medication.getName(), medication.getManufacturer(), medication.isPrescriptionReq(), medication.getForm());
+	}
 
-	public Medication(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form) {
+	public MedicationDTO(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -42,24 +28,20 @@ public class Medication {
 		this.form = form;
 	}
 
-
-
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public void copyValues(Medication medication) {
-		this.name = medication.getName();
-		
 	}
 
 	public String getManufacturer() {
@@ -85,7 +67,4 @@ public class Medication {
 	public void setForm(MedicationForm form) {
 		this.form = form;
 	}
-	
-	
-	
 }
