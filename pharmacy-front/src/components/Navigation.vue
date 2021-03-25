@@ -32,7 +32,6 @@ export default {
 
     data() {
         return {
-            userType: localStorage.USER_TYPE,
         };
     },
 

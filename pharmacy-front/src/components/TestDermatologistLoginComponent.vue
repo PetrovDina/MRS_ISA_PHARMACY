@@ -9,7 +9,7 @@ export default {
     name: "TestDermatologistLoginComponent",
     data() {
         return {
-            msg: "Simulacija logovanja nekog dermatologa, pogledaj navigaciju - nestao je login i reg a pojavio se logout!"
+            msg: "Simulacija logovanja nekog dermatologa, pogledaj navigaciju - nestao je login i reg a pojavio se logout! Klikni logout"
         };
     },
 
