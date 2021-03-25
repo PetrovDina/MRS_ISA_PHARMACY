@@ -84,7 +84,6 @@ export default {
         },
 
         testRedirect: function () {
-            //TODO: promeni putanju kasnije kada budu kreirane kommponente
 
             this.$router.push({ name: "TestComponent" }).catch((err) => {
                 // Ignore the vuex err regarding  navigating to the page they are already on.
@@ -96,7 +95,6 @@ export default {
         },
 
         logoutRedirect: function () {
-            //TODO: promeni putanju kasnije kada budu kreirane kommponente
 
             //SIMULACIJA LOGOUTA!
             this.$root.$emit("type-changed", "GUEST");
@@ -111,7 +109,6 @@ export default {
         },
 
         testLogin: function () {
-            //TODO: promeni putanju kasnije kada budu kreirane kommponente
 
             this.$router
                 .push({ name: "TestDermatologistLoginComponent" })
