@@ -19,7 +19,6 @@ export default {
     methods: {},
 
     mounted() {
-        this.userType = localStorage.USER_TYPE;
     },
 };
 </script>

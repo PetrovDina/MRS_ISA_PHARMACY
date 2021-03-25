@@ -1,19 +1,43 @@
 <template>
     <div class="topnav">
-        <a @click="homeRedirect()" class="homeNav">Home</a>
-        <a @click="loginRedirect()" class="loginNav">Login</a>
-        <a @click="registerRedirect()" class="registerNav">Register</a>
-        <a @click="testRedirect()" class="registerNav">Test dummy data</a>
+        <a @click="homeRedirect()" class="homeNav">{{ typeUser }} Home</a>
+
+        <a
+            @click="loginRedirect()"
+            v-show="isUserType('GUEST')"
+            class="loginNav"
+            >Log in</a
+        >
+        <a
+            @click="registerRedirect()"
+            v-show="isUserType('GUEST')"
+            class="registerNav"
+            >Register</a
+        >
+        <a @click="testRedirect()" class="testNav">Test dummy data</a>
+        <a @click="testLogin()" class="testNav">Test dermatologist login</a>
+
+        <a
+            @click="logoutRedirect()"
+            v-show="!isUserType('GUEST')"
+            class="logoutNav"
+            >Log out</a
+        >
     </div>
 </template>
 
 <script>
-import { client } from "@/client/axiosClient";
-
 export default {
     name: "Navigation",
+
     data() {
-        return {};
+        return {
+            userType: localStorage.USER_TYPE,
+        };
+    },
+
+    props: {
+        typeUser: String,
     },
 
     methods: {
@@ -70,6 +94,40 @@ export default {
                     console.error(err);
                 }
             });
+        },
+
+        logoutRedirect: function () {
+            //TODO: promeni putanju kasnije kada budu kreirane kommponente
+
+            //SIMULACIJA LOGOUTA!
+            this.$root.$emit("type-changed", "GUEST");
+
+            this.$router.push({ name: "Home" }).catch((err) => {
+                // Ignore the vuex err regarding  navigating to the page they are already on.
+                if (err.name != "NavigationDuplicated") {
+                    // But print any other errors to the console
+                    console.error(err);
+                }
+            });
+        },
+
+        testLogin: function () {
+            //TODO: promeni putanju kasnije kada budu kreirane kommponente
+
+            this.$router
+                .push({ name: "TestDermatologistLoginComponent" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        isUserType: function (ut) {
+            console.log("Navigation check");
+            return this.$props.typeUser === ut;
         },
     },
 };

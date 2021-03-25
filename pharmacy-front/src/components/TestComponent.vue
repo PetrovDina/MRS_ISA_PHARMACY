@@ -23,6 +23,10 @@ export default {
         };
     },
 
+    mounted() {
+
+    },
+
     methods: {
         test: function () {
             //ovde ce biti neki poziv ka bekendu da vidimo da li uspevamo da dobavimo podatke o nekom leku
@@ -32,7 +36,7 @@ export default {
             }).then((response) => (this.medication = response.data));
         },
 
-        mounted() {},
+
     },
 };
 </script>

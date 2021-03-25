@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <Navigation />
+        <Navigation :typeUser="typeUser" ></Navigation>
         <router-view />
     </div>
 </template>
@@ -13,13 +13,28 @@ export default {
         Navigation,
     },
 
+    data() {
+        return {
+            //prvi nacin cuvanja tipa ulogovanog korisnika - App data, da bi se mogao u Navigaciju poslati,
+            // pitati katarinu da li je pogresan pristup
+            typeUser : "GUEST"
+        }
+    },
     mounted() {
-        //Pitati Katarinu da li je ovo los pristup cuvanja informacija o korisniku, vrv jeste, onda cemo izmeniti!
+
+        //Drugi nacin cuvanja tipa ulogovanog korisnika - localstorage: Pitati Katarinu da li su ovo losi pristupi
         //kada se kreira nasa aplikacija cuvamo u lokalnom skladistu da je tip korisnika inicijalno gost
-        //ko bude radio login i logout i register ce da izmeni ovu vrednost!
-        //npr ako se uloguje dermatolog neka uradi localStorage.USER_TYPE = "DERMATOLOGIST"
-        //Ovo je korisno da bismo modelovali razlicite funkcionalnosti koje su specificne za nekog tipa korisnika
         localStorage.USER_TYPE = "GUEST";
+
+        //kada neka child component promeni tip korisnika (npr LoginComponent) ona emituje da je doslo do promene
+        //App.vue ce da sacuva te promene i u data i u localStorage
+        //U data da bi se Navigacija azurirala
+        //U local storage da bi sve komponente lako pristupile
+        this.$root.$on('type-changed', (t) => {
+            console.log("APP: user changeed");
+			this.typeUser = t;
+            localStorage.USER_TYPE = t;
+		});
     },
 };
 </script>
