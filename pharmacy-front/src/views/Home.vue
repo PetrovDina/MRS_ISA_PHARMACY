@@ -82,7 +82,6 @@ export default {
 
     methods: {
         setSelected(tab) {
-            console.log("setting to " + tab)
             this.selected = tab;
     }
     },

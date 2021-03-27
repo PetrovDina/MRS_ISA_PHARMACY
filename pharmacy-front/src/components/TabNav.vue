@@ -40,6 +40,7 @@ export default {
     }
 
     a{
-        color: rgba(15, 95, 72, 0.95);;
+        color: rgba(15, 95, 72, 0.95);
     }
+
 </style>
