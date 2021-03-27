@@ -26,7 +26,6 @@ export default {
         //Drugi nacin cuvanja tipa ulogovanog korisnika - localstorage: Pitati Katarinu da li su ovo losi pristupi
         //kada se kreira nasa aplikacija cuvamo u lokalnom skladistu da je tip korisnika inicijalno gost
         localStorage.USER_TYPE = "GUEST";
-                alert("hello");
 
         //kada neka child component promeni tip korisnika (npr LoginComponent) ona emituje da je doslo do promene
         //App.vue ce da sacuva te promene i u data i u localStorage
