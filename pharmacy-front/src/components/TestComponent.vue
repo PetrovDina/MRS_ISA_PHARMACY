@@ -1,5 +1,6 @@
 <template>
     <div class="hello">
+        
         <h1>{{ msg }}</h1>
         <ul id="test-test">
             <li :key="med.id" v-for="med in medication">
@@ -23,9 +24,7 @@ export default {
         };
     },
 
-    mounted() {
-
-    },
+    mounted() {},
 
     methods: {
         test: function () {
@@ -35,8 +34,6 @@ export default {
                 method: "GET",
             }).then((response) => (this.medication = response.data));
         },
-
-
     },
 };
 </script>

@@ -132,7 +132,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .topnav {
-    background-color: rgba(15, 95, 72, 0.8);
+    background-color: rgba(15, 95, 72, 0.95);
     overflow: hidden;
     width: 100%;
     position: fixed;
