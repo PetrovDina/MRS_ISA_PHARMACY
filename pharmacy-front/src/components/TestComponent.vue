@@ -19,7 +19,7 @@ export default {
     name: "TestComponent",
     data() {
         return {
-            msg: "Here we can test our dummy data",
+            msg: "Here we can test our backend data",
             medication: [],
         };
     },
