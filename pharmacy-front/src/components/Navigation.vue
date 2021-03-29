@@ -23,6 +23,15 @@
             class="logoutNav"
             >Log out</a
         >
+
+        <a
+            @click="pharmacyRegisterRedirect()"
+            v-show="isUserType('GUEST')"
+            class="registerNav"
+            >Pharmacy Registration</a
+        >
+
+
     </div>
 </template>
 
@@ -125,6 +134,17 @@ export default {
             console.log("Navigation check");
             return this.$props.typeUser === ut;
         },
+
+        pharmacyRegisterRedirect: function () {
+
+            this.$router.push({ name: "PharmacyRegistrationComponent" }).catch((err) => {
+                // Ignore the vuex err regarding  navigating to the page they are already on.
+                if (err.name != "NavigationDuplicated") {
+                    // But print any other errors to the console
+                    console.error(err);
+                }
+            });
+        }
     },
 };
 </script>
