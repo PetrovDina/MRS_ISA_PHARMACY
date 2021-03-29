@@ -4,6 +4,7 @@ import Home from '@/views/Home'
 import TestComponent from '@/components/TestComponent'
 import TestDermatologistLoginComponent from '@/components/TestDermatologistLoginComponent'
 import PharmacyRegistrationComponent from '@/components/PharmacyRegistrationComponent'
+import UserRegistrationComponent from '@/components/UserRegistrationComponent'
 
 Vue.use(Router)
 
@@ -32,6 +33,12 @@ export default new Router({
             path: '/pharmacyRegistration',
             name: 'PharmacyRegistrationComponent',
             component: PharmacyRegistrationComponent
+        },
+
+        {
+            path: '/userRegistration',
+            name: 'UserRegistrationComponent',
+            component: UserRegistrationComponent
         },
 
 

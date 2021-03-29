@@ -83,7 +83,7 @@ export default {
         registerRedirect: function () {
             //TODO: promeni putanju kasnije kada budu kreirane kommponente
 
-            this.$router.push({ name: "Home" }).catch((err) => {
+            this.$router.push({ name: "UserRegistrationComponent" }).catch((err) => {
                 // Ignore the vuex err regarding  navigating to the page they are already on.
                 if (err.name != "NavigationDuplicated") {
                     // But print any other errors to the console
