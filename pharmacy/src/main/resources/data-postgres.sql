@@ -3,3 +3,7 @@ insert into medication (name, manufacturer, prescriptionReq, form) values ('Bruf
 insert into medication (name, manufacturer, prescriptionReq, form) values ('Paracetamol', 'Krka', 'True', 'CAPSULE');
 insert into medication (name, manufacturer, prescriptionReq, form) values ('Panadol', 'Jugoremedija', 'False', 'PASTE');
 insert into medication (name, manufacturer, prescriptionReq, form) values ('Panklav', 'Krka', 'True', 'CAPSULE');
+
+insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Narodnog fronta','Novi Sad', '21000', 5);
+
+insert into pharmacy (name, rating, location_id) values ('Apoteka Jankovic', 2.5, 1);

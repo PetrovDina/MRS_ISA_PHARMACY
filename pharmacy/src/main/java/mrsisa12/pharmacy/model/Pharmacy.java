@@ -25,21 +25,26 @@ public class Pharmacy {
 	@Column(name = "name", nullable = false)
 	private String name;
 	
+	@Column(name = "rating")
+	private double rating;
+
 	@OneToOne
 	private Location location;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="pharmacy")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<PharmacyStorageItem>pharmacyStorageItems;
 
 	public Pharmacy() {
 		
 	}
 	
-	public Pharmacy(Long id, String name, Location location) {
+	public Pharmacy(Long id, String name, Location location, double rating) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.location = location;
+		this.rating = rating;
+		
 	}
 
 	public Long getId() {
@@ -115,4 +120,11 @@ public class Pharmacy {
 	   }
    }
 	
+   public double getRating() {
+		return rating;
+	}
+
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
 }

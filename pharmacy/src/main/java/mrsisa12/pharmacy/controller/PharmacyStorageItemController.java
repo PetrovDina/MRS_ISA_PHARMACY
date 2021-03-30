@@ -77,10 +77,10 @@ public class PharmacyStorageItemController {
 		return new ResponseEntity<>(new PharmacyStorageItemDTO(pharmacyStorageItem), HttpStatus.OK);
 	}
 	
-	@PostMapping(consumes = "application/json")
+	/*@PostMapping(consumes = "application/json")
 	public ResponseEntity<PharmacyStorageItemDTO> createPharmacyStorageItem(@RequestBody PharmacyStorageItemDTO pharmacyStorageItemDTO) {
 
-		if (pharmacyStorageItemDTO.getMedicationId() == null || pharmacyStorageItemDTO.getPharmacyId()==null) {
+		if (pharmacyStorageItemDTO.getMedicationId() == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -93,13 +93,13 @@ public class PharmacyStorageItemController {
 
 		PharmacyStorageItem pharmacyStorageItem = new PharmacyStorageItem();
 		pharmacyStorageItem.setQuantity(pharmacyStorageItemDTO.getQuantity());
-		pharmacyStorageItem.setPharmacy(pharmacy);
+		//pharmacyStorageItem.setPharmacy(pharmacy);
 		//pharmacyStorageItem.setMedication(medication);
 		pharmacy.addPharmacyStorageItem(pharmacyStorageItem);
 
 		pharmacyStorageItem = pharmacyStorageItemService.save(pharmacyStorageItem);
 		return new ResponseEntity<>(new PharmacyStorageItemDTO(pharmacyStorageItem), HttpStatus.CREATED);
-	}
+	}*/
 	
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<PharmacyStorageItemDTO> updatePharmacyStorageItem(@RequestBody PharmacyStorageItemDTO pharmacyStorageItemDTO) {

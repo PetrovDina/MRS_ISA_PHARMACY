@@ -24,14 +24,14 @@ public class PharmacyStorageItem {
 	@Column(name = "quantity", nullable = false)
 	private int quantity;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="pharmacyStorageItem")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ItemPrice> itemPrices;
 	
 	@ManyToOne(optional=false)
 	private Medication medication;
-	
+	/*
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Pharmacy pharmacy;
+	private Pharmacy pharmacy;*/
 
 	public PharmacyStorageItem() {
 		
@@ -90,13 +90,13 @@ public class PharmacyStorageItem {
 	      }
 	}
 
-	public Pharmacy getPharmacy() {
+	/*public Pharmacy getPharmacy() {
 		return pharmacy;
 	}
 
 	public void setPharmacy(Pharmacy pharmacy) {
 		this.pharmacy = pharmacy;
-	}
+	}*/
 
 	public void setItemPrices(List<ItemPrice> itemPrices) {
 		this.itemPrices = itemPrices;

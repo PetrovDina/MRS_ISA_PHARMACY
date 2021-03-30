@@ -7,7 +7,7 @@ public class PharmacyStorageItemDTO {
 	private Long id;
 	private int quantity;
 	private Long medicationId;
-	private Long pharmacyId;
+	//private Long pharmacyId;
 	
 	public PharmacyStorageItemDTO() {
 		
@@ -16,17 +16,17 @@ public class PharmacyStorageItemDTO {
 	public PharmacyStorageItemDTO(PharmacyStorageItem pharmacyStorageItem){
         this.id = pharmacyStorageItem.getId();
         this.medicationId = pharmacyStorageItem.getMedication().getId();
-        this.pharmacyId = pharmacyStorageItem.getPharmacy().getId();
+        //this.pharmacyId = pharmacyStorageItem.getPharmacy().getId();
         this.quantity = pharmacyStorageItem.getQuantity();
     }
 	
 	
 
-	public PharmacyStorageItemDTO(Long id, int quantity, Long medication, Long pharmacy) {
+	public PharmacyStorageItemDTO(Long id, int quantity, Long medication) {
 		this.id = id;
 		this.quantity = quantity;
 		this.medicationId = medication;
-		this.pharmacyId = pharmacy;
+		//this.pharmacyId = pharmacy;
 	}
 
 	public Long getId() {
@@ -53,12 +53,12 @@ public class PharmacyStorageItemDTO {
 		this.medicationId = medicationId;
 	}
 
-	public Long getPharmacyId() {
+	/*public Long getPharmacyId() {
 		return pharmacyId;
 	}
 
 	public void setPharmacyId(Long pharmacyId) {
 		this.pharmacyId = pharmacyId;
-	}
+	}*/
 
 }

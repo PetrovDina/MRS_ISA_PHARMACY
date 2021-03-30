@@ -21,8 +21,8 @@ public class ItemPrice {
 	@Column(name = "current", nullable = false)
 	private boolean current;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	private PharmacyStorageItem pharmacyStorageItem;
+	/*@ManyToOne(fetch = FetchType.EAGER)
+	private PharmacyStorageItem pharmacyStorageItem;*/
 
 	public ItemPrice() {
 		
@@ -59,13 +59,13 @@ public class ItemPrice {
 		this.current = current;
 	}
 
-	public PharmacyStorageItem getPharmacyStorageItem() {
+	/*public PharmacyStorageItem getPharmacyStorageItem() {
 		return pharmacyStorageItem;
 	}
 
 	public void setPharmacyStorageItem(PharmacyStorageItem pharmacyStorageItem) {
 		this.pharmacyStorageItem = pharmacyStorageItem;
-	}
+	}*/
 	
 	
 

@@ -27,7 +27,7 @@ public class ItemPriceController {
 	@Autowired
 	private PharmacyStorageItemService pharmacyStorageItemService;
 	
-	@PostMapping(consumes = "application/json")
+	/*@PostMapping(consumes = "application/json")
 	public ResponseEntity<ItemPriceDTO> createItemPrice(@RequestBody ItemPriceDTO itemPriceDTO) {
 
 		if (itemPriceDTO.getPharmacyStorageItem()==null) {
@@ -48,7 +48,7 @@ public class ItemPriceController {
 		
 		itemPrice = itemPriceService.save(itemPrice);
 		return new ResponseEntity<>(new ItemPriceDTO(itemPrice), HttpStatus.CREATED);
-	}
+	}*/
 	
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<ItemPriceDTO> updateItemPrice(@RequestBody ItemPriceDTO itemPriceDTO) {
