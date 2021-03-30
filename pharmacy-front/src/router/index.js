@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '@/views/Home'
 import TestComponent from '@/components/TestComponent'
 import TestDermatologistLoginComponent from '@/components/TestDermatologistLoginComponent'
+import PharmacyView from '@/views/PharmacyView'
 
 import PharmacyRegistrationComponent from '@/components/PharmacyRegistrationComponent'
 import UserRegistrationComponent from '@/components/UserRegistrationComponent'
@@ -35,6 +36,11 @@ export default new Router({
             path: '/testLogin',
             name: 'TestDermatologistLoginComponent',
             component: TestDermatologistLoginComponent
+        },
+        {
+            path: '/pharmacy',
+            name: 'PharmacyView',
+            component: PharmacyView
         },
 
         {
