@@ -39,67 +39,68 @@ export default {
         return {
             selected: "Medications",
             msg: "Welcome to Team12 pharmacy",
+            medications : [],
+            pharmacies: []
+            // medications: [
+            //     {
+            //         id: 1,
+            //         name: "Probiotik",
+            //         manufacturer: "Ivančic i sinovi",
+            //         prescriptionReq: false,
+            //         form: "PILL",
+            //     },
+            //     {
+            //         id: 2,
+            //         name: "Brufen",
+            //         manufacturer: "Bosna lijek",
+            //         prescriptionReq: true,
+            //         form: "PILL",
+            //     },
+            //     {
+            //         id: 3,
+            //         name: "Paracetamol",
+            //         manufacturer: "Krka",
+            //         prescriptionReq: true,
+            //         form: "CAPSULE",
+            //     },
+            //     {
+            //         id: 4,
+            //         name: "Panadol",
+            //         manufacturer: "Jugoremedija",
+            //         prescriptionReq: false,
+            //         form: "PASTE",
+            //     },
+            //     {
+            //         id: 5,
+            //         name: "Panklav",
+            //         manufacturer: "Krka",
+            //         prescriptionReq: true,
+            //         form: "CAPSULE",
+            //     },
+            // ],
 
-            medications: [
-                {
-                    id: 1,
-                    name: "Probiotik",
-                    manufacturer: "Ivančic i sinovi",
-                    prescriptionReq: false,
-                    form: "PILL",
-                },
-                {
-                    id: 2,
-                    name: "Brufen",
-                    manufacturer: "Bosna lijek",
-                    prescriptionReq: true,
-                    form: "PILL",
-                },
-                {
-                    id: 3,
-                    name: "Paracetamol",
-                    manufacturer: "Krka",
-                    prescriptionReq: true,
-                    form: "CAPSULE",
-                },
-                {
-                    id: 4,
-                    name: "Panadol",
-                    manufacturer: "Jugoremedija",
-                    prescriptionReq: false,
-                    form: "PASTE",
-                },
-                {
-                    id: 5,
-                    name: "Panklav",
-                    manufacturer: "Krka",
-                    prescriptionReq: true,
-                    form: "CAPSULE",
-                },
-            ],
+            // pharmacies: [
+            //     {
+            //         id: 1,
+            //         name: "Apoteka Janković",
+            //         address: "Narodnog fronta 5, 21000 Novi Sad",
+            //         rating: 3.0,
+            //     },
 
-            pharmacies: [
-                {
-                    id: 1,
-                    name: "Apoteka Janković",
-                    address: "Narodnog fronta 5, 21000 Novi Sad",
-                    rating: 3.0,
-                },
+            //     {
+            //         id: 2,
+            //         name: "Benu",
+            //         address: "Bulevar Oslobođenja 25, 21000 Novi Sad",
+            //         rating: 4.3,
+            //     },
 
-                {
-                    id: 2,
-                    name: "Benu",
-                    address: "Bulevar Oslobođenja 25, 21000 Novi Sad",
-                    rating: 4.3,
-                },
-
-                {
-                    id: 3,
-                    name: "Srbotrade",
-                    address: "Tomaša Ježa 2, 11000 Beograd",
-                    rating: 4.8,
-                },
-            ],
+            //     {
+            //         id: 3,
+            //         name: "Srbotrade",
+            //         address: "Tomaša Ježa 2, 11000 Beograd",
+            //         rating: 4.8,
+            //     },
+            // ],
         };
     },
 
@@ -109,7 +110,18 @@ export default {
         },
     },
 
-    mounted() {},
+    mounted() {
+
+        client({
+                url: "med/all",
+                method: "GET",
+            }).then((response) => (this.medications = response.data));
+
+        client({
+                url: "pharmacy/all",
+                method: "GET",
+            }).then((response) => (this.pharmacies = response.data));
+    },
 };
 </script>
 
@@ -118,4 +130,5 @@ export default {
 #homeDiv {
     margin-top: 5vh;
 }
+
 </style>

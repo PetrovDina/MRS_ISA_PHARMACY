@@ -62,3 +62,10 @@
         },
     }
 </script>
+
+<style scoped>
+
+#homeDiv{
+    margin: 5vh;
+}
+</style>
