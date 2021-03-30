@@ -1,6 +1,6 @@
 <template>
     <div class="topnav">
-        <a @click="homeRedirect()" class="homeNav">{{ typeUser }} Home</a>
+        <a @click="homeRedirect()" v-show="isUserType('GUEST')" class="homeNav">{{ typeUser }} Home</a>
 
         <a
             @click="loginRedirect()"
@@ -14,8 +14,8 @@
             class="registerNav"
             >Register</a
         >
-        <a @click="testRedirect()" class="testNav">Test dummy data</a>
-        <a @click="testLogin()" class="testNav">Test dermatologist login</a>
+        <a @click="testRedirect()" v-show="isUserType('GUEST')" class="testNav">Test dummy data</a>
+        <a @click="testLogin()" v-show="isUserType('GUEST')" class="testNav">Test dermatologist login</a>
 
         <a
             @click="logoutRedirect()"
@@ -31,6 +31,13 @@
             >Pharmacy Registration</a
         >
 
+        <a @click="dermHomeRedirect()" v-show="!isUserType('GUEST')" >DERMATOLOGIST Home</a>
+        <!--
+        <a @click="patientsRedirect()" v-show="!isUserType('GUEST')" >Patients</a>
+        <a @click="calendarRedirent()" v-show="!isUserType('GUEST')" >Calendar</a>
+        <a @click="newAppointmentRedirect()" v-show="!isUserType('GUEST')" >Create Appointment</a>
+        <a @click="absenceRedirect()" v-show="!isUserType('GUEST')" >Request Absence</a>-->
+        <a @click="dermProfileRedirect()" v-show="!isUserType('GUEST')" >My Profile</a>
 
     </div>
 </template>
@@ -119,8 +126,10 @@ export default {
 
         testLogin: function () {
 
+            this.$root.$emit('type-changed', "DERMATOLOGIST");
+
             this.$router
-                .push({ name: "TestDermatologistLoginComponent" })
+                .push({ name: "DermatologistHomePage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {
@@ -128,6 +137,72 @@ export default {
                         console.error(err);
                     }
                 });
+        },
+
+        patientsRedirect: function () {
+
+            this.$router.push({ name: "SearchPatientsPage" }).catch((err) => {
+                // Ignore the vuex err regarding  navigating to the page they are already on.
+                if (err.name != "NavigationDuplicated") {
+                    // But print any other errors to the console
+                    console.error(err);
+                }
+            });
+        },
+
+        calendarRedirent: function () {
+
+            this.$router.push({ name: "CalendarPage" }).catch((err) => {
+                // Ignore the vuex err regarding  navigating to the page they are already on.
+                if (err.name != "NavigationDuplicated") {
+                    // But print any other errors to the console
+                    console.error(err);
+                }
+            });
+        },
+
+        newAppointmentRedirect: function () {
+
+            this.$router.push({ name: "NewAppointmentPage" }).catch((err) => {
+                // Ignore the vuex err regarding  navigating to the page they are already on.
+                if (err.name != "NavigationDuplicated") {
+                    // But print any other errors to the console
+                    console.error(err);
+                }
+            });
+        },
+
+        absenceRedirect: function () {
+
+            this.$router.push({ name: "RequestAbsencePage" }).catch((err) => {
+                // Ignore the vuex err regarding  navigating to the page they are already on.
+                if (err.name != "NavigationDuplicated") {
+                    // But print any other errors to the console
+                    console.error(err);
+                }
+            });
+        },
+
+        dermProfileRedirect: function () {
+
+            this.$router.push({ name: "DermatologistPage" }).catch((err) => {
+                // Ignore the vuex err regarding  navigating to the page they are already on.
+                if (err.name != "NavigationDuplicated") {
+                    // But print any other errors to the console
+                    console.error(err);
+                }
+            });
+        },
+
+        dermHomeRedirect: function (){
+
+            this.$router.push({ name: "DermatologistHomePage" }).catch((err) => {
+                // Ignore the vuex err regarding  navigating to the page they are already on.
+                if (err.name != "NavigationDuplicated") {
+                    // But print any other errors to the console
+                    console.error(err);
+                }
+            });
         },
 
         isUserType: function (ut) {
