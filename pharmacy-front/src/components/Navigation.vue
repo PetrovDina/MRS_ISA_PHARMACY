@@ -16,6 +16,8 @@
         >
         <a @click="testRedirect()" class="testNav">Test dummy data</a>
         <a @click="testLogin()" class="testNav">Test dermatologist login</a>
+        
+        <a @click="testPharmacyView()" class="testPharmacy">Pharmacy view</a>
 
         <a
             @click="logoutRedirect()"
@@ -125,6 +127,18 @@ export default {
             console.log("Navigation check");
             return this.$props.typeUser === ut;
         },
+
+        testPharmacyView: function(){
+            this.$router
+                .push({ name: "PharmacyView" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        }
     },
 };
 </script>
