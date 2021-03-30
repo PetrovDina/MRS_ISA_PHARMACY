@@ -31,6 +31,7 @@ export default {
         //App.vue ce da sacuva te promene i u data i u localStorage
         //U data da bi se Navigacija azurirala
         //U local storage da bi sve komponente lako pristupile
+        
         this.$root.$on("type-changed", (t) => {
             console.log("APP: user changeed");
             this.typeUser = t;

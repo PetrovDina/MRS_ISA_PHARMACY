@@ -47,5 +47,9 @@ ul {
 li {
     margin: 0 10px;
 }
+
+button{
+    border: 1px solid black;
+}
 </style>
 
