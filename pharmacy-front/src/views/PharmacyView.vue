@@ -1,7 +1,7 @@
 <template>
     <div id="pharmacy" class="container-fluid">
         <h1>{{pharmacyName}}</h1>
-        <h1>{{address}}</h1>
+        <h1>{{address}}, {{city}} {{zipCode}}</h1>
         <Button @action-performed="toggleDermos" class="btn btn-success" :text="!showDermos ? 'Show dermatologists' : 'Hide dermatologists'" color="green"></Button>
         <Button @action-performed="toggleMedication" class="btn btn-success" :text="!showMedication ? 'Show medications' : 'Hide medications'" color="green"></Button>
         <div class="container-fluid">
@@ -30,8 +30,11 @@ export default {
             showDermos: false,
             showMedication: false,
             pharmacy : null,
-            pharmacyName: 'Pharmacy1',
-            address: 'Vase Stajica 7',
+            pharmacyName: '',
+            address: '',
+            city: '',
+            zipCode: '',
+            nesto : [],
             dermatologistsToSend: [
                 {
                     id: 1,
@@ -52,43 +55,7 @@ export default {
                     rating: 2,
                 },
             ],
-            medicationToSend: [
-                {
-                    id: 1,
-                    name: "Probiotik",
-                    manufacturer: "Ivančic i sinovi",
-                    prescriptionReq: false,
-                    form: "PILL",
-                },
-                {
-                    id: 2,
-                    name: "Brufen",
-                    manufacturer: "Bosna lijek",
-                    prescriptionReq: true,
-                    form: "PILL",
-                },
-                {
-                    id: 3,
-                    name: "Paracetamol",
-                    manufacturer: "Krka",
-                    prescriptionReq: true,
-                    form: "CAPSULE",
-                },
-                {
-                    id: 4,
-                    name: "Panadol",
-                    manufacturer: "Jugoremedija",
-                    prescriptionReq: false,
-                    form: "PASTE",
-                },
-                {
-                    id: 5,
-                    name: "Panklav",
-                    manufacturer: "Krka",
-                    prescriptionReq: true,
-                    form: "CAPSULE",
-                },
-            ],
+            medicationToSend: [],
             // lista svih slobodnih termina treba da se doda
             rating: 0.0
         };
@@ -106,10 +73,31 @@ export default {
     mounted() {
         // Za apoteku ce ovo biti kompletan izgled koji ce na pocetku da povuce podatak iz baze o konkretnoj apoteci
         // /pharmacy/{id} i dobavice sve podatke vezano za apoteku
-        // client({
-        //         url: "pharmacy/{id}",
-        //         method: "GET",
-        //     }).then((response) => (this.pharmacy = response.data));
+        // primjera radi dobavljamo apoteku sa ID-em 1
+        client({
+                url: "pharmacy/1",
+                method: "GET",
+            }).then((response) => {
+                this.pharmacy = response.data
+                this.pharmacyName = this.pharmacy.name;
+                this.address = this.pharmacy.location.street;
+                this.city = this.pharmacy.location.city;
+                this.zipCode = this.pharmacy.location.zipcode;
+            });
+            // dobavljamo sve lijekove iz apoteke
+        client({
+            url: "/pharmacyStorageItem/1",
+            method: "GET",
+        }).then((response) => {
+            this.nesto = response.data
+        });
+        // dobavljamo lijek iz baze
+        client({
+            url: "/med/2",
+            method: "GET",
+        }).then((response) => {
+            this.medicationToSend = [...this.medicationToSend, response.data];
+        })
     },
 };
 </script>
