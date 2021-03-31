@@ -8,7 +8,7 @@
                     <th scope="col">Manufacturer</th>
                     <th scope="col">Prescription</th>
                     <th scope="col">Form</th>
-
+                    <th scope="col">Reservation</th>
                 </tr>
             </thead>
 
@@ -19,6 +19,7 @@
                     <td>{{med.manufacturer}}</td> 
                     <td>{{med.prescriptionReq? "required":"not required"}}</td> 
                     <td>{{med.form}}</td>
+                    <td><Button class="btn-success" text="Reserve" color="green"></Button></td>
                 </tr>
             </tbody>
         </table>
@@ -26,8 +27,12 @@
 </template>
 
 <script>
+
+import Button from './Button.vue';
+
 export default {
-    name: "MedicationsView",
+    name: "MedicationsTable",
+    components: {Button},
     props: {
         medications: {
             type : Array,
@@ -48,7 +53,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #medicationsViewDiv{
-    margin: 30px 60px 30px 60px;
+    margin: 30px 10px 10px 10px;;
 }
 thead { 
     /* background-color: rgba(15, 95, 72, 0.219); */

@@ -16,10 +16,12 @@ insert into pharmacy (name, rating, location_id) values ('Srbotrade', 4.8, 3);
 insert into pharmacystorageitem (quantity, medication_id) values (3, 2); /* tri brufena */
 insert into pharmacystorageitem (quantity, medication_id) values (5, 3); /* pet paracetamola */
 insert into pharmacystorageitem (quantity, medication_id) values (10, 5); /* deset panklava */
+insert into pharmacystorageitem (quantity, medication_id) values (5, 3); /* pet paracetamola */
 
 insert into pharmacy_pharmacystorageitem values (1,1);
+insert into pharmacy_pharmacystorageitem values (1,2);
 insert into pharmacy_pharmacystorageitem values (2,3);
-insert into pharmacy_pharmacystorageitem values (3,2);
+insert into pharmacy_pharmacystorageitem values (3,4);
 
 insert into itemprice (price, current) values (430, false);
 insert into itemprice (price, current) values (200, false);

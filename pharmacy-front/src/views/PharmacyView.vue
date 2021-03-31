@@ -1,32 +1,65 @@
 <template>
-    <div id="pharmacy" class="container-fluid">
-        <h1>{{pharmacyName}}</h1>
-        <h1>{{address}}, {{city}} {{zipCode}}</h1>
-        <Button @action-performed="toggleDermos" class="btn btn-success" :text="!showDermos ? 'Show dermatologists' : 'Hide dermatologists'" color="green"></Button>
-        <Button @action-performed="toggleMedication" class="btn btn-success" :text="!showMedication ? 'Show medications' : 'Hide medications'" color="green"></Button>
-        <div class="container-fluid">
-            <div class="row">
-                <div :class="showMedication ? 'col-lg-6': 'col-lg-12'" v-show="showDermos">
-                    <Dermatoligists :dermatologists = "dermatologistsToSend"></Dermatoligists>
+    <div>
+        <v-card class="ma-5">
+            <v-card-title>
+                <v-spacer></v-spacer>
+                <div >
+                    <h1>{{pharmacyName}}</h1>
+                    <h1>{{address}}, {{city}} {{zipCode}}</h1>
                 </div>
-                <div :class="showDermos ? 'col-lg-6': 'col-lg-12'" v-show="showMedication">
-                    <MedicationsView :medications = "medicationToSend"></MedicationsView>
-                </div>
-            </div>
-        </div>
+                <v-spacer></v-spacer>
+            </v-card-title>  
+            <v-card-text>
+                <v-row>
+                <v-col  md="6">
+                    <v-card to="/pharmacy" >
+                    <v-card-title>Medication reservation</v-card-title>
+                    </v-card>
+                </v-col>  
+                <v-col md="6">
+                    <v-card to="/pharmacy" >
+                    <v-card-title>Check medication with eRecipe</v-card-title>
+                    </v-card>
+                </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+        <Button @action-performed="subscribedToggle" id="sub-btn" class="btn" :text="!subscribed ? 'Subscribe' : 'Subscribed'" :color="!subscribed ? 'green' : 'grey'"></Button>
+        <TabNav
+            :tabs="['Dermatologists', 'Pharmacists', 'Medications']"
+            :selected="selected"
+            @selected="setSelected"
+        >
+            <Tab :isSelected="selected === 'Dermatologists'">
+                <DermatologistsTable :dermatologists = "dermatologistsToSend"></DermatologistsTable>
+            </Tab>
+
+            <Tab :isSelected="selected === 'Pharmacists'">
+                <!--<PharmaciesView :pharmacies="pharmacies"></PharmaciesView>-->
+                <h1>Farmaceuti</h1>
+            </Tab>
+            <Tab :isSelected="selected === 'Medications'">
+                <MedicationsTable :medications = "medicationToSend"></MedicationsTable>
+            </Tab>
+        </TabNav>
     </div>
+    
 </template>
 
 <script>
 import { client } from "@/client/axiosClient";
-import Dermatoligists from '../components/Dermatoligists.vue';
-import MedicationsView from '../components/Medications.vue';
+import DermatologistsTable from '../components/DermatologistsTable.vue';
+import MedicationsTable from '../components/MedicationsTable.vue';
 import Button from '../components/Button';
+import TabNav from '../components/TabNav';
+import Tab from '../components/Tab';
 
 export default {
-  components: { Button, Dermatoligists, MedicationsView },
+  components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab },
     data() {
         return {
+            selected: "Dermatologists",
+            subscribed : false,
             showDermos: false,
             showMedication: false,
             pharmacy : null,
@@ -55,7 +88,22 @@ export default {
                     rating: 2,
                 },
             ],
-            medicationToSend: [],
+            medicationToSend: [
+                {
+                    id: 1,
+                    name: "Probiotik",
+                    manufacturer: "Ivančic i sinovi",
+                    prescriptionReq: false,
+                    form: "PILL",
+                },
+                {
+                    id: 2,
+                    name: "Brufen",
+                    manufacturer: "Bosna lijek",
+                    prescriptionReq: true,
+                    form: "PILL",
+                },
+            ],
             // lista svih slobodnih termina treba da se doda
             rating: 0.0
         };
@@ -67,6 +115,12 @@ export default {
         },
         toggleMedication : function(){
             this.showMedication = !this.showMedication;
+        },
+        setSelected(tab) {
+            this.selected = tab;
+        },
+        subscribedToggle : function(){
+            this.subscribed = !this.subscribed;
         }
     },
 
@@ -104,7 +158,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#pharmacy{
+#pharmacy {
     align-self: flex-start;
+}
+
+#sub-btn {
+    float : right;
+    margin : 10px;
 }
 </style>
