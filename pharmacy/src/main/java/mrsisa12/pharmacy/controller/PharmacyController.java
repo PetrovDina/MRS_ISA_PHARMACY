@@ -72,9 +72,9 @@ public class PharmacyController {
 		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.OK);
 	}
 	
-	@PostMapping(consumes = "application/json")
+	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<PharmacyDTO> savePharmacy(@RequestBody PharmacyDTO pharmacyDTO) {
-
+		
 		Pharmacy pharmacy = new Pharmacy();
 		
 		pharmacy.setName(pharmacyDTO.getName());
