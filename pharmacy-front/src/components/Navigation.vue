@@ -5,24 +5,10 @@
             <a @click="homeRedirect()" class="homeNav">{{ typeUser }} Home</a>
             <a @click="loginRedirect()" class="loginNav">Log in</a>
             <a @click="registerRedirect()" class="registerNav">Register</a>
+
             <a @click="testLogin()" class="testNav">Test dermatologist login</a>
 
-        <a
-            @click="loginRedirect()"
-            v-show="isUserType('GUEST')"
-            class="loginNav"
-            >Log in</a
-        >
-        <a
-            @click="registerRedirect()"
-            v-show="isUserType('GUEST')"
-            class="registerNav"
-            >Register</a
-        >
-        <a @click="testRedirect()" class="testNav">Test dummy data</a>
-        <a @click="testLogin()" class="testNav">Test dermatologist login</a>
-        
-        <a @click="testPharmacyView()" class="testPharmacy">Pharmacy view</a>
+            <a @click="testPharmacyView()" class="testPharmacy">Pharmacy view</a>
 
             <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
         </div>

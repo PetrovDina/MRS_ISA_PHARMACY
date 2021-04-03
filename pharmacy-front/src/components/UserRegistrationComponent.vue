@@ -1,6 +1,5 @@
 <template>
     <div id="registration">
-		    <h4 class="text-center text-white pt-5">User Registration</h4>
 		    <div class="container">
 		        <div id="registration-row" class="row justify-content-center align-items-center">
 		            <div id="registration-column" class="col-md-6">
@@ -66,3 +65,18 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+
+
+/*Dina samo isprobavala, ovo !important se ne preporucuje da se koristi, bolje napraviti class="nekoIme" htmlu pa tu klasu gadjati u css-u i menjati boju */
+label{
+   color: rgba(15, 95, 72, 0.95)  !important; 
+}
+
+h4{
+    color: rgba(15, 95, 72, 0.95)  !important; 
+
+}
+
+</style>
