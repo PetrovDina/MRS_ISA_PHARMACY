@@ -7,6 +7,7 @@
                     <th scope="col">First name</th>
                     <th scope="col">Last name</th>
                     <th scope="col">Rating</th>
+                    <th scope="col">Appointment</th>
                 </tr>
             </thead>
 
@@ -16,6 +17,7 @@
                     <td>{{der.firstName }}</td>
                     <td>{{der.lastName}}</td> 
                     <td>{{der.rating}}</td>
+                    <td><Button class="btn-success" text="Create" color="green"></Button></td>
                 </tr>
             </tbody>
         </table>
@@ -23,7 +25,7 @@
 </template>
 
 <script>
-import Button from '../components/Button.vue';
+import Button from './Button.vue';
 
 export default {
     name: "Dermatologists",
@@ -46,7 +48,7 @@ export default {
 
 <style scoped>
 #dermos {
-    margin: 30px 60px 30px 60px;
+    margin: 30px 10px 10px 10px;
 }
 thead { 
     /* background-color: rgba(15, 95, 72, 0.219); */

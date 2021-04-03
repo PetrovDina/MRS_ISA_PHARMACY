@@ -24,8 +24,8 @@ export default {
     mounted() {
         //Drugi nacin cuvanja tipa ulogovanog korisnika - localstorage:
         //kada se kreira nasa aplikacija cuvamo u lokalnom skladistu da je tip korisnika inicijalno gost
-        localStorage.USER_TYPE = "GUEST"; //problem: ovo promeniti jer se pri reloadu opet resetuje na gosta!!!
-
+        localStorage.USER_TYPE = "GUEST"; //problem: ovo promeniti jer se pri reloadu stranice F5 opet resetuje na gosta!!!
+        
         //kada neka child component promeni tip korisnika (npr LoginComponent) ona emituje da je doslo do promene
         //App.vue ce da sacuva te promene i u data i u localStorage
         //U data da bi se Navigacija azurirala

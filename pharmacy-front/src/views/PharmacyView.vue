@@ -1,37 +1,73 @@
 <template>
-    <div id="pharmacy" class="container-fluid">
-        <h1>{{pharmacyName}}</h1>
-        <h1>{{address}}</h1>
-        <Button @action-performed="toggleDermos" class="btn btn-success" :text="!showDermos ? 'Show dermatologists' : 'Hide dermatologists'" color="green"></Button>
-        <Button @action-performed="toggleMedication" class="btn btn-success" :text="!showMedication ? 'Show medications' : 'Hide medications'" color="green"></Button>
-        <div class="container-fluid">
-            <div class="row">
-                <div :class="showMedication ? 'col-lg-6': 'col-lg-12'" v-show="showDermos">
-                    <Dermatoligists :dermatologists = "dermatologistsToSend"></Dermatoligists>
+    <div>
+        <v-card class="ma-5">
+            <v-card-title>
+                <v-spacer></v-spacer>
+                <div >
+                    <h1>{{pharmacyName}}</h1>
+                    <h1>{{address}}, {{city}} {{zipCode}}</h1>
                 </div>
-                <div :class="showDermos ? 'col-lg-6': 'col-lg-12'" v-show="showMedication">
-                    <MedicationsView :medications = "medicationToSend"></MedicationsView>
-                </div>
-            </div>
-        </div>
+                <v-spacer></v-spacer>
+            </v-card-title>  
+            <v-card-text>
+                <v-row>
+                <v-col  md="6">
+                    <v-card to="/pharmacy" >
+                    <v-card-title>Medication reservation</v-card-title>
+                    </v-card>
+                </v-col>  
+                <v-col md="6">
+                    <v-card to="/pharmacy" >
+                    <v-card-title>Check medication with eRecipe</v-card-title>
+                    </v-card>
+                </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+        <Button @action-performed="subscribedToggle" id="sub-btn" class="btn" :text="!subscribed ? 'Subscribe' : 'Subscribed'" :color="!subscribed ? 'green' : 'grey'"></Button>
+        <TabNav
+            :tabs="['Dermatologists', 'Pharmacists', 'Medications']"
+            :selected="selected"
+            @selected="setSelected"
+        >
+            <Tab :isSelected="selected === 'Dermatologists'">
+                <DermatologistsTable :dermatologists = "dermatologistsToSend"></DermatologistsTable>
+            </Tab>
+
+            <Tab :isSelected="selected === 'Pharmacists'">
+                <!--<PharmaciesView :pharmacies="pharmacies"></PharmaciesView>-->
+                <h1>Farmaceuti</h1>
+            </Tab>
+            <Tab :isSelected="selected === 'Medications'">
+                <MedicationsTable :medications = "medicationToSend"></MedicationsTable>
+            </Tab>
+        </TabNav>
     </div>
+    
 </template>
 
 <script>
 import { client } from "@/client/axiosClient";
-import Dermatoligists from '../components/Dermatoligists.vue';
-import MedicationsView from '../components/Medications.vue';
+import DermatologistsTable from '../components/DermatologistsTable.vue';
+import MedicationsTable from '../components/MedicationsTable.vue';
 import Button from '../components/Button';
+import TabNav from '../components/TabNav';
+import Tab from '../components/Tab';
 
 export default {
-  components: { Button, Dermatoligists, MedicationsView },
+  components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab },
     data() {
         return {
+            selected: "Dermatologists",
+            subscribed : false,
             showDermos: false,
             showMedication: false,
             pharmacy : null,
-            pharmacyName: 'Pharmacy1',
-            address: 'Vase Stajica 7',
+            pharmacyName: '',
+            address: '',
+            city: '',
+            zipCode: '',
+            nesto : [],
             dermatologistsToSend: [
                 {
                     id: 1,
@@ -67,27 +103,6 @@ export default {
                     prescriptionReq: true,
                     form: "PILL",
                 },
-                {
-                    id: 3,
-                    name: "Paracetamol",
-                    manufacturer: "Krka",
-                    prescriptionReq: true,
-                    form: "CAPSULE",
-                },
-                {
-                    id: 4,
-                    name: "Panadol",
-                    manufacturer: "Jugoremedija",
-                    prescriptionReq: false,
-                    form: "PASTE",
-                },
-                {
-                    id: 5,
-                    name: "Panklav",
-                    manufacturer: "Krka",
-                    prescriptionReq: true,
-                    form: "CAPSULE",
-                },
             ],
             // lista svih slobodnih termina treba da se doda
             rating: 0.0
@@ -100,23 +115,55 @@ export default {
         },
         toggleMedication : function(){
             this.showMedication = !this.showMedication;
+        },
+        setSelected(tab) {
+            this.selected = tab;
+        },
+        subscribedToggle : function(){
+            this.subscribed = !this.subscribed;
         }
     },
 
     mounted() {
         // Za apoteku ce ovo biti kompletan izgled koji ce na pocetku da povuce podatak iz baze o konkretnoj apoteci
         // /pharmacy/{id} i dobavice sve podatke vezano za apoteku
-        // client({
-        //         url: "pharmacy/{id}",
-        //         method: "GET",
-        //     }).then((response) => (this.pharmacy = response.data));
+        // primjera radi dobavljamo apoteku sa ID-em 1
+        client({
+                url: "pharmacy/1",
+                method: "GET",
+            }).then((response) => {
+                this.pharmacy = response.data
+                this.pharmacyName = this.pharmacy.name;
+                this.address = this.pharmacy.location.street;
+                this.city = this.pharmacy.location.city;
+                this.zipCode = this.pharmacy.location.zipcode;
+            });
+            // dobavljamo sve lijekove iz apoteke
+        client({
+            url: "/pharmacyStorageItem/1",
+            method: "GET",
+        }).then((response) => {
+            this.nesto = response.data
+        });
+        // dobavljamo lijek iz baze
+        client({
+            url: "/med/2",
+            method: "GET",
+        }).then((response) => {
+            this.medicationToSend = [...this.medicationToSend, response.data];
+        })
     },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#pharmacy{
+#pharmacy {
     align-self: flex-start;
+}
+
+#sub-btn {
+    float : right;
+    margin : 10px;
 }
 </style>
