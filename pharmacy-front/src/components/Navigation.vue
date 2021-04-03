@@ -10,6 +10,8 @@
 
             <a @click="testPharmacyView()" class="testPharmacy">Pharmacy view</a>
             <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
+            <a @click="patientRedirect()" class="patientNav">Patient home page</a>
+
         </div>
 
         <!--dermatologist-->
@@ -156,6 +158,18 @@ export default {
         testPharmacyView: function(){
             this.$router
                 .push({ name: "PharmacyView" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        patientRedirect: function(){
+            this.$router
+                .push({ name: "PatientHomePage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

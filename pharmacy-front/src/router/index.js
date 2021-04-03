@@ -15,6 +15,8 @@ import RequestAbsencePage from '@/views/RequestAbsencePage'
 import SearchPatientsPage from '@/views/SearchPatientsPage'
 import DermatologistHomePage from '@/views/DermatologistHomePage'
 
+import PatientHomePage from '@/views/PatientHomePage'
+
 Vue.use(Router)
 
 export default new Router({
@@ -89,6 +91,13 @@ export default new Router({
             path: '/derm-home',
             name: 'DermatologistHomePage',
             component: DermatologistHomePage
+        },
+
+        
+        {
+            path: '/patientHomePage',
+            name: 'PatientHomePage',
+            component: PatientHomePage
         },
     ]
 })

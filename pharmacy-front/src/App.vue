@@ -57,5 +57,6 @@ export default {
     text-align: center;
     margin-top: 80px; /* Da bi nam inicijalno sav content bio ispod navigacije koja je fiksirana na vrhu */
     width: 100%;
+
 }
 </style>
