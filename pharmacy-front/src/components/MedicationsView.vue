@@ -8,6 +8,8 @@
                     <th scope="col">Manufacturer</th>
                     <th scope="col">Prescription</th>
                     <th scope="col">Form</th>
+                    <th scope="col"></th>
+
 
                 </tr>
             </thead>
@@ -19,6 +21,7 @@
                     <td>{{med.manufacturer}}</td> 
                     <td>{{med.prescriptionReq? "required":"not required"}}</td> 
                     <td>{{med.form}}</td>
+                    <td>RESERVE</td>
                 </tr>
             </tbody>
         </table>

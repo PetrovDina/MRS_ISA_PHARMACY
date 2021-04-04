@@ -12,13 +12,18 @@ import mrsisa12.pharmacy.model.Reservation;
 public interface ReservationRepository extends JpaRepository<Reservation, Long>{
 	
 	public Page<Reservation> findAll(Pageable pageable);
+
+	//TODO dodaj i za pacijenta ovako
+	
+	@Query("select res from Reservation res where res.pharmacy.id = ?1")
+	public List<Reservation> findAllByPharmacy(Long pharmacyId);
 	
 //	public List<Reservation> findAllByName(String name);
 //	
 //	public List<Reservation> findByNameAllIgnoringCase(String name);
 //	
 	//todo proveri da li je okej
-	@Query("select r from Reservation r join fetch r.reservationItems e where r.id =?1")
-	public Reservation findOneWithReservationItems(Long reservationId);
+//	@Query("select r from Reservation r join fetch r.reservationItems e where r.id =?1")
+//	public Reservation findOneWithReservationItems(Long reservationId);
 
 }

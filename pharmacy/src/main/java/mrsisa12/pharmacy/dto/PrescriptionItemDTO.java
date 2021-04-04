@@ -1,18 +1,18 @@
 package mrsisa12.pharmacy.dto;
 
-import mrsisa12.pharmacy.model.ReservationItem;
+import mrsisa12.pharmacy.model.PrescriptionItem;
 
-public class ReservationItemDTO {
+public class PrescriptionItemDTO {
 
 	private Long id;
 	private int quantity;
 	private Long medicationId;
 	
-public ReservationItemDTO() {
+public PrescriptionItemDTO() {
 		
 	}
 	
-	public ReservationItemDTO(ReservationItem reservationItem){
+	public PrescriptionItemDTO(PrescriptionItem reservationItem){
         this.id = reservationItem.getId();
         this.medicationId = reservationItem.getMedication().getId();
         this.quantity = reservationItem.getQuantity();
@@ -20,7 +20,7 @@ public ReservationItemDTO() {
 	
 	
 
-	public ReservationItemDTO(Long id, int quantity, Long medication) {
+	public PrescriptionItemDTO(Long id, int quantity, Long medication) {
 		this.id = id;
 		this.quantity = quantity;
 		this.medicationId = medication;

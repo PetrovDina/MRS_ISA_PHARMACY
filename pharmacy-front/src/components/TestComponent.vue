@@ -4,6 +4,7 @@
         <h1>{{ msg }}</h1>
         <ul id="test-test">
             <li :key="med.id" v-for="med in medication">
+                {{med}}
                 {{ med.id }} - {{ med.name }} - {{ med.manufacturer }} -
                 {{ med.prescriptionReq }} -- {{ med.form }}
             </li>
@@ -30,7 +31,8 @@ export default {
         test: function () {
             //ovde ce biti neki poziv ka bekendu da vidimo da li uspevamo da dobavimo podatke o nekom leku
             client({
-                url: "med/all",
+                url: "reservation/findByPharmacy",
+                params: {pharmacyId : "1"},
                 method: "GET",
             }).then((response) => (this.medication = response.data));
         },

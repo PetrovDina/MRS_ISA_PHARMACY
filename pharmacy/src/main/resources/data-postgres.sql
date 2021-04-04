@@ -29,5 +29,6 @@ insert into itemprice (price, current) values (550, true);
 insert into itemprice (price, current) values (250, false);
 
 
-insert into reservationitem (quantity, medication_id) values (3, 2);
-insert into reservation (duedate, status) values ('1.25.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (medication_id, pharmacy_id, quantity, duedate, status) values (2, 1, '3 kutije', '1.25.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (medication_id, pharmacy_id, quantity, duedate, status) values (1, 1, '200mg', '3.2.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (medication_id, pharmacy_id, quantity, duedate, status) values (3, 2, '20 tableta', '5.5.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije

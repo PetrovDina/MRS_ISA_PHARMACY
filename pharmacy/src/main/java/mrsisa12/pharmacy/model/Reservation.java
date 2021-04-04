@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,10 +27,15 @@ public class Reservation {
 //	@OneToOne
 //	@Column(name = "patient", nullable = false)
 //	private Patient patient; //todo odkomentarisati kada kreiramo Patient klasu + getteri i setteri
+
+	@ManyToOne(optional=false)
+	private Pharmacy pharmacy;	
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@Column(name = "reservationItems", nullable = false)
-	private List<ReservationItem> reservationItems;
+	@ManyToOne(optional=false)
+	private Medication medication;	
+	
+	@Column(name = "quantity", nullable = false)
+	private String quantity;
 	
 	@Column(name = "dueDate", nullable = false)
 	private Date dueDate;
@@ -44,36 +50,52 @@ public class Reservation {
 	}
 	
 	
-	public Reservation(Long id, List<ReservationItem> reservationItems, Date dueDate, ReservationStatus status) {
+	public Reservation(Long id, Pharmacy p, Medication med, String quanity, Date dueDate, ReservationStatus status) {
 		//todo dodati i pacijenta ovde
 		super();
 		this.id = id;
-		this.reservationItems = reservationItems;
+		this.pharmacy = p;
+		this.medication = med;
+		this.quantity = quanity;
 		this.dueDate = dueDate;
 		this.status = status;
 	}
-
 
 
 	public Long getId() {
 		return id;
 	}
 
+
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public List<ReservationItem> getReservationItems() {
-		return reservationItems;
+
+	public Medication getMedication() {
+		return medication;
 	}
 
-	public void setReservationItems(List<ReservationItem> reservationItems) {
-		this.reservationItems = reservationItems;
+
+	public void setMedication(Medication medication) {
+		this.medication = medication;
 	}
+
+
+	public String getQuantity() {
+		return quantity;
+	}
+
+
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
+
 
 	public Date getDueDate() {
 		return dueDate;
 	}
+
 
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
@@ -84,10 +106,22 @@ public class Reservation {
 		return status;
 	}
 
+
 	public void setStatus(ReservationStatus status) {
 		this.status = status;
 	}
 
+
+	public Pharmacy getPharmacy() {
+		return pharmacy;
+	}
+
+
+	public void setPharmacy(Pharmacy pharmacy) {
+		this.pharmacy = pharmacy;
+	}
 	
 	
+	
+
 }

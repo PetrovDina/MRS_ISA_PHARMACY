@@ -59,20 +59,24 @@
             <v-card-text>
                 <v-row>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="">
-                            <v-card-title  class="wordBreak"
+                        <v-card class="oneCard" to="/">
+                            <v-card-title class="wordBreak"
                                 >My ePrescriptions</v-card-title
                             >
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/">
-                            <v-card-title class="wordBreak">ePrescription history</v-card-title>
+                            <v-card-title class="wordBreak"
+                                >ePrescription history</v-card-title
+                            >
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
-                            <v-card-title class="wordBreak">Reserved medications</v-card-title>
+                        <v-card class="oneCard" to="/test">
+                            <v-card-title class="wordBreak"
+                                >Reserved medications</v-card-title
+                            >
                         </v-card>
                     </v-col>
                 </v-row>
@@ -88,23 +92,31 @@
                 <v-row>
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/">
-                            <v-card-title class="wordBreak">My profile</v-card-title>
+                            <v-card-title class="wordBreak"
+                                >My profile</v-card-title
+                            >
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/">
-                            <v-card-title class="wordBreak">My subscriptions</v-card-title>
+                            <v-card-title class="wordBreak"
+                                >My subscriptions</v-card-title
+                            >
                         </v-card>
                     </v-col>
 
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/">
-                            <v-card-title class="wordBreak">File a complaint</v-card-title>
+                            <v-card-title class="wordBreak"
+                                >File a complaint</v-card-title
+                            >
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/">
-                            <v-card-title class="wordBreak">Penals</v-card-title>
+                            <v-card-title class="wordBreak"
+                                >Penals</v-card-title
+                            >
                         </v-card>
                     </v-col>
                 </v-row>
@@ -145,12 +157,10 @@ export default {
     background-color: rgba(15, 95, 72, 0.123);
 }
 
-
 .cardCollection {
     margin-top: 10vh;
     padding: 20px;
     background-color: rgba(218, 218, 218, 0.1);
-
 }
 
 .cardCollectionTitle {

@@ -11,10 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mrsisa12.pharmacy.dto.MedicationDTO;
 import mrsisa12.pharmacy.dto.PharmacyDTO;
 import mrsisa12.pharmacy.dto.ReservationDTO;
+import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.service.ReservationService;
@@ -63,6 +66,22 @@ public class ReservationController {
 
 		return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.OK);
 	}
+	
+	@GetMapping(value = "/findByPharmacy")
+	public ResponseEntity<List<ReservationDTO>> getReservationsByPharmacy(@RequestParam Long pharmacyId) {
+		System.out.println(pharmacyId);
+		List<Reservation> reservations = reservationService.findAllByPharmacy(pharmacyId);
+		System.out.println(reservations.size());
+
+		// convert medications to DTOs
+		List<ReservationDTO> reservationsDTO = new ArrayList<>();
+		for (Reservation r : reservations) {
+			reservationsDTO.add(new ReservationDTO(r));
+		}
+		return new ResponseEntity<>(reservationsDTO, HttpStatus.OK);
+	}
+	
+	//todo metoda za kreiranje rezervacije zajedno sa lekom, update, delete........
 	
 	
 }

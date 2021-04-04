@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class ReservationItem {
+public class PrescriptionItem {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +20,11 @@ public class ReservationItem {
 	@ManyToOne(optional=false)
 	private Medication medication;
 	
-	public ReservationItem() {
+	public PrescriptionItem() {
 		
 	}
 
-	public ReservationItem(Long id, Medication medication, int quantity) {
+	public PrescriptionItem(Long id, Medication medication, int quantity) {
 		super();
 		this.id = id;
 		this.medication = medication;

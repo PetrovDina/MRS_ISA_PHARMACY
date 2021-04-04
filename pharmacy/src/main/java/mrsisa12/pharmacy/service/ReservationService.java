@@ -35,6 +35,10 @@ public class ReservationService {
 	public void remove(Long id) {
 		reservationRepository.deleteById(id);
 	}
+
+	public List<Reservation> findAllByPharmacy(Long pharmacyId) {
+		return reservationRepository.findAllByPharmacy(pharmacyId);
+	}
 	
 //	public List<Reservation> findAllByName(String name) {
 //		return reservationRepository.findAllByName(name);
@@ -44,7 +48,7 @@ public class ReservationService {
 //		return reservationRepository.findByNameAllIgnoringCase(name);
 //	}
 //	
-	public Reservation findOneWithReservationItems(Long reservationId) {
-		return reservationRepository.findOneWithReservationItems(reservationId);
-	}
+//	public Reservation findOneWithReservationItems(Long reservationId) {
+//		return reservationRepository.findOneWithReservationItems(reservationId);
+//	}
 }

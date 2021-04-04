@@ -9,8 +9,10 @@ public class ReservationDTO {
 
 
     private Long id;
-//	private Patient patient; //todo odkomentarisati kada kreiramo Patient klasu + getteri i setteri
-//	private List<ReservationItem> reservationItems; //ovo onda necemo imati?
+//	private PatientDTO patient; //todo odkomentarisati kada kreiramo PatientDTO klasu + getteri i setteri
+    private PharmacyDTO pharmacy;
+	private MedicationDTO medication;
+	private String quantity;
 	private Date dueDate;
 	private ReservationStatus status;
 
@@ -19,22 +21,15 @@ public class ReservationDTO {
 		super();
 	}
 	
-	public ReservationDTO(Long id, Date dueDate, ReservationStatus status) {
-		//todo dodati i pacijenta ovde
-		super();
-		this.id = id;
-//		this.reservationItems = reservationItems;
-		this.dueDate = dueDate;
-		this.status = status; 
-	}
-
 
 	public ReservationDTO(Reservation r) {
 		this.id = r.getId();
+		this.medication = new MedicationDTO(r.getMedication());
+		this.pharmacy = new PharmacyDTO(r.getPharmacy());
+		this.quantity = r.getQuantity();
 		this.dueDate = r.getDueDate();
 		this.status = r.getStatus();
 	}
-
 
 	public Long getId() {
 		return id;
@@ -43,14 +38,22 @@ public class ReservationDTO {
 	public void setId(Long id) {
 		this.id = id;
 	}
-//
-//	public List<ReservationItem> getReservationItems() {
-//		return reservationItems;
-//	}
-//
-//	public void setReservationItems(List<ReservationItem> reservationItems) {
-//		this.reservationItems = reservationItems;
-//	}
+
+	public MedicationDTO getMedication() {
+		return medication;
+	}
+
+	public void setMedication(MedicationDTO medication) {
+		this.medication = medication;
+	}
+
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
 
 	public Date getDueDate() {
 		return dueDate;
@@ -60,7 +63,6 @@ public class ReservationDTO {
 		this.dueDate = dueDate;
 	}
 
-
 	public ReservationStatus getStatus() {
 		return status;
 	}
@@ -69,7 +71,16 @@ public class ReservationDTO {
 		this.status = status;
 	}
 
+
+	public PharmacyDTO getPharmacy() {
+		return pharmacy;
+	}
+
+
+	public void setPharmacy(PharmacyDTO pharmacy) {
+		this.pharmacy = pharmacy;
+	}
 	
+	
+
 }
-
-
