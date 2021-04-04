@@ -44,7 +44,7 @@
 		                        </div>
 		                        <div class="form-group">
 									<!-- <button style="background: rgba(15, 95, 72, 0.95)" class="btn btn-info btn-md" value="Registration" @click="register(registration)">Register</button> -->
-		                        	<Button @action-performed="register(registration)" class="btn-success" text="Registration" color="rgba(15, 95, 72, 0.95)"> </Button>
+		                        	<Button @action-performed="register(registration)" class="btn-success" text="Register" color="rgba(15, 95, 72, 0.95)"> </Button>
 								</div>
 							</form>
 		                </div>
