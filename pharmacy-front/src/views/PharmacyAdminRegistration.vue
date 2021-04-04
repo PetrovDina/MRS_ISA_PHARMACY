@@ -43,8 +43,9 @@
 									oninvalid="this.setCustomValidity('Select date of birth.')"  oninput="setCustomValidity('')">
 		                        </div>
 		                        <div class="form-group">
-									<button style="background: rgba(15, 95, 72, 0.95)" class="btn btn-info btn-md" value="Registration" @click="register(registration)">Register</button>
-		                        </div>
+									<!-- <button style="background: rgba(15, 95, 72, 0.95)" class="btn btn-info btn-md" value="Registration" @click="register(registration)">Register</button> -->
+		                        	<Button @action-performed="register(registration)" class="btn-success" text="Registration" color="rgba(15, 95, 72, 0.95)"> </Button>
+								</div>
 							</form>
 		                </div>
 		            </div>
@@ -55,9 +56,16 @@
 
 
 <script>
+
+import Button from '../components/Button.vue';
+
 export default {
     name: "PharmacyAdminRegistration",
-    data() {
+    components: {
+		Button
+	},
+	
+	data() {
         return {
 			registration: {}
 		};
@@ -80,7 +88,9 @@ export default {
 			{
 				document.getElementById('passwordRepeat').setCustomValidity('');
 			}
-		}
+		},
+
+
 			
 	},
 };
