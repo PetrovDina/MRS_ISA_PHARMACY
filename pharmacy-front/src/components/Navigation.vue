@@ -10,6 +10,7 @@
 
             <a @click="testPharmacyView()" class="testPharmacy">Pharmacy view</a>
             <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
+            <a @click="pharmacyAdminRegisterRedirect()" class="registerNav">Pharmacy Admin Registration</a>
             <a @click="patientRedirect()" class="patientNav">Patient home page</a>
 
         </div>
@@ -82,6 +83,20 @@ export default {
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        pharmacyAdminRegisterRedirect: function () {
+            //TODO: promeni putanju kasnije kada budu kreirane kommponente
+
+            this.$router
+                .push({ name: "PharmacyAdminRegistration" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "PharmacyAdminRegistration") {
                         // But print any other errors to the console
                         console.error(err);
                     }
