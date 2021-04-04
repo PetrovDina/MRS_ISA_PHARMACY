@@ -27,3 +27,7 @@ insert into itemprice (price, current) values (430, false);
 insert into itemprice (price, current) values (200, false);
 insert into itemprice (price, current) values (550, true);
 insert into itemprice (price, current) values (250, false);
+
+
+insert into reservationitem (quantity, medication_id) values (3, 2);
+insert into reservation (duedate, status) values ('1.25.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.MedicationDTO;
 import mrsisa12.pharmacy.dto.PharmacyDTO;
 import mrsisa12.pharmacy.dto.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.model.Pharmacy;

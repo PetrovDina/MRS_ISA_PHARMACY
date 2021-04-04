@@ -34,7 +34,7 @@ public class MedicationController {
 
 		List<Medication> medications = medicationService.findAll();
 
-		// convert medication to DTOs
+		// convert medications to DTOs
 		List<MedicationDTO> medicationsDTO = new ArrayList<>();
 		for (Medication m : medications) {
 			medicationsDTO.add(new MedicationDTO(m));
