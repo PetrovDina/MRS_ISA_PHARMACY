@@ -1,7 +1,7 @@
 package mrsisa12.pharmacy.dto;
 
 import mrsisa12.pharmacy.model.Medication;
-import mrsisa12.pharmacy.model.MedicationForm;
+import mrsisa12.pharmacy.model.enums.MedicationForm;
 
 public class MedicationDTO {
 

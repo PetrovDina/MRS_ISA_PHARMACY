@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import mrsisa12.pharmacy.model.enums.MedicationForm;
+
 @Entity
 public class Medication {
 
