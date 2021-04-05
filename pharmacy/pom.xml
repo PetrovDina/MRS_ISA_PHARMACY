@@ -33,6 +33,13 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-web</artifactId>
 	</dependency>
+	<!-- Hibernate Types biblioteka - https://github.com/vladmihalcea/hibernate-types -->
+	<!-- Koristimo je da cuvamo jsonb tip u bazi podataka -->
+	<dependency>
+		<groupId>com.vladmihalcea</groupId>
+		<artifactId>hibernate-types-52</artifactId>
+		<version>2.4.3</version>
+	</dependency>
 		
 	<!-- POSTGRES -->
 	<dependency>

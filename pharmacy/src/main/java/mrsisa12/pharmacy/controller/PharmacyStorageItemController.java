@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,6 +75,26 @@ public class PharmacyStorageItemController {
 
 		return new ResponseEntity<>(new PharmacyStorageItemDTO(pharmacyStorageItem), HttpStatus.OK);
 	}
+	
+	@GetMapping(value = "/fromPharmacy/{id}")
+	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorageItemsFromPharmacyById(@PathVariable Long id) {
+		// dovlacim apoteku sa svim pharmacyStorageItem-ima
+		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(id);
+		// kreiram listu koju cu napuniti i vratiti
+		List<PharmacyStorageItemDTO> pharmacyStorageItemDTOs = new ArrayList<PharmacyStorageItemDTO>();
+		for(PharmacyStorageItem psi : pharmacy.getPharmacyStorageItems()) {
+			// za pharmacyStorageItem trazim sve cijene
+			PharmacyStorageItem psi_test = pharmacyStorageItemService.findOneWithItemPrices(psi.getId());
+			psi.setItemPrices(psi_test.getItemPrices());
+			// za pharmacyStorageItem trazim Medication za koji je vezan
+			PharmacyStorageItem psi_test2 = pharmacyStorageItemService.findOneWithMedication(psi.getId());
+			psi.setMedication(psi_test2.getMedication());
+			pharmacyStorageItemDTOs.add(new PharmacyStorageItemDTO(psi));
+		}
+
+		return new ResponseEntity<>(pharmacyStorageItemDTOs, HttpStatus.OK);
+	}
+
 	
 	/*@PostMapping(consumes = "application/json")
 	public ResponseEntity<PharmacyStorageItemDTO> createPharmacyStorageItem(@RequestBody PharmacyStorageItemDTO pharmacyStorageItemDTO) {

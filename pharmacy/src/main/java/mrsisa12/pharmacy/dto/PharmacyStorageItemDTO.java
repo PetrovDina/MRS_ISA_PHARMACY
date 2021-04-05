@@ -1,32 +1,40 @@
 package mrsisa12.pharmacy.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import mrsisa12.pharmacy.model.ItemPrice;
+import mrsisa12.pharmacy.model.Medication;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 
 public class PharmacyStorageItemDTO {
 	
 	private Long id;
 	private int quantity;
-	private Long medicationId;
-	//private Long pharmacyId;
+	private List<ItemPriceDTO> itemPrices;
+	private MedicationDTO medication;
 	
 	public PharmacyStorageItemDTO() {
-		
+		this.itemPrices = new ArrayList<ItemPriceDTO>();
+	}
+
+	public PharmacyStorageItemDTO(Long id, int quantity, Medication medication) {
+		this();
+		this.id = id;
+		this.quantity = quantity;
+		this.medication = new MedicationDTO(medication);
 	}
 	
 	public PharmacyStorageItemDTO(PharmacyStorageItem pharmacyStorageItem){
-        this.id = pharmacyStorageItem.getId();
-        this.medicationId = pharmacyStorageItem.getMedication().getId();
-        //this.pharmacyId = pharmacyStorageItem.getPharmacy().getId();
-        this.quantity = pharmacyStorageItem.getQuantity();
+        this(pharmacyStorageItem.getId(), pharmacyStorageItem.getQuantity(), pharmacyStorageItem.getMedication());
+        fillItemPrices(pharmacyStorageItem.getItemPrices());
     }
-	
-	
 
-	public PharmacyStorageItemDTO(Long id, int quantity, Long medication) {
-		this.id = id;
-		this.quantity = quantity;
-		this.medicationId = medication;
-		//this.pharmacyId = pharmacy;
+	private void fillItemPrices(List<ItemPrice> itemPricesList) {
+		for(ItemPrice ip : itemPricesList) {
+			this.itemPrices.add(new ItemPriceDTO(ip));
+		}
 	}
 
 	public Long getId() {
@@ -45,20 +53,20 @@ public class PharmacyStorageItemDTO {
 		this.quantity = quantity;
 	}
 
-	public Long getMedicationId() {
-		return medicationId;
+	public List<ItemPriceDTO> getItemPrices() {
+		return itemPrices;
 	}
 
-	public void setMedicationId(Long medicationId) {
-		this.medicationId = medicationId;
+	public void setItemPrices(List<ItemPriceDTO> itemPrices) {
+		this.itemPrices = itemPrices;
 	}
 
-	/*public Long getPharmacyId() {
-		return pharmacyId;
+	public MedicationDTO getMedication() {
+		return medication;
 	}
 
-	public void setPharmacyId(Long pharmacyId) {
-		this.pharmacyId = pharmacyId;
-	}*/
-
+	public void setMedication(MedicationDTO medication) {
+		this.medication = medication;
+	}
+	
 }

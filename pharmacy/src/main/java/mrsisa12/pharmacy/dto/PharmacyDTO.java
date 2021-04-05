@@ -1,7 +1,11 @@
 package mrsisa12.pharmacy.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mrsisa12.pharmacy.model.Location;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.PharmacyStorageItem;
 
 public class PharmacyDTO {
 
@@ -9,17 +13,27 @@ public class PharmacyDTO {
 	private String name;
 	private double rating;
 	private Location location;
+	private List<PharmacyStorageItemDTO> pharmacyStorageItems;
 	
 	public PharmacyDTO() {
+		this.pharmacyStorageItems = new ArrayList<PharmacyStorageItemDTO>();
 	}
 	
 	public PharmacyDTO(Pharmacy pharmacy) {
+		this();
 		this.id = pharmacy.getId();
 		this.name = pharmacy.getName();
 		this.location = pharmacy.getLocation();
 		this.rating = pharmacy.getRating();
+		fillStorageItems(pharmacy.getPharmacyStorageItems());
 	}
 	
+
+	private void fillStorageItems(List<PharmacyStorageItem> pSItems) {
+		for(PharmacyStorageItem psi : pSItems) {
+			this.pharmacyStorageItems.add(new PharmacyStorageItemDTO(psi));
+		}
+	}
 
 	public PharmacyDTO(Long id, String name, Location location, double rating) {
 		this.id = id;

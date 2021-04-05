@@ -7,18 +7,20 @@ public class ItemPriceDTO {
 	 private Long id;
 	 private double price;
 	 private boolean current;
-	 //private PharmacyStorageItemDTO pharmacyStorageItemDTO;
 	 
 	 public ItemPriceDTO() {
 		 
 	 }
 	 
-	 public ItemPriceDTO(ItemPrice itemPrice) {
-		 id = itemPrice.getId();
-		 price = itemPrice.getPrice();
-		 current = itemPrice.isCurrent();
-		 //setPharmacyStorageItem(new PharmacyStorageItemDTO(itemPrice.getPharmacyStorageItem()));
-		
+	 public ItemPriceDTO(Long id, double price, boolean current) {
+		this();
+		this.id = id;
+		this.price = price;
+		this.current = current;
+	}
+
+	public ItemPriceDTO(ItemPrice itemPrice) {
+		 this(itemPrice.getId(), itemPrice.getPrice(), itemPrice.isCurrent());
 	 }
 
 	public Long getId() {
@@ -44,14 +46,4 @@ public class ItemPriceDTO {
 	public void setCurrent(boolean current) {
 		this.current = current;
 	}
-
-	/*public PharmacyStorageItemDTO getPharmacyStorageItem() {
-		return pharmacyStorageItemDTO;
-	}
-
-	public void setPharmacyStorageItem(PharmacyStorageItemDTO pharmacyStorageItemDTO) {
-		this.pharmacyStorageItemDTO = pharmacyStorageItemDTO;
-	}
-	 */
-	 
 }

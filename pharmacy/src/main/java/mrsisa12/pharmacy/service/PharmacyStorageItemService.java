@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import mrsisa12.pharmacy.dto.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.repository.PharmacyStorageItemRepository;
 
@@ -38,5 +39,9 @@ public class PharmacyStorageItemService {
 	
 	public PharmacyStorageItem findOneWithItemPrices(Long pharmacyStorageItemId) {
 		return pharmacyStorageItemRepository.findOneWithItemPrices(pharmacyStorageItemId);
+	}
+	
+	public PharmacyStorageItem findOneWithMedication(Long pharmacyStorageItemId) {
+		return pharmacyStorageItemRepository.findOneWithMedication(pharmacyStorageItemId);
 	}
 }

@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 
 public interface PharmacyStorageItemRepository extends JpaRepository<PharmacyStorageItem, Long>{
@@ -14,4 +13,7 @@ public interface PharmacyStorageItemRepository extends JpaRepository<PharmacySto
 	
 	@Query("select s from PharmacyStorageItem s join fetch s.itemPrices e where s.id =?1")
 	public PharmacyStorageItem findOneWithItemPrices(Long pharmacyStorageItemId);
+
+	@Query("select s from PharmacyStorageItem s join fetch s.medication e where s.id =?1")
+	public PharmacyStorageItem findOneWithMedication(Long pharmacyStorageItemId);
 }
