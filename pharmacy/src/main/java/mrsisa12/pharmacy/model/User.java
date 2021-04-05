@@ -11,11 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import mrsisa12.pharmacy.model.enums.UserStatus;
+import mrsisa12.pharmacy.model.enums.Gender;
 import mrsisa12.pharmacy.model.enums.UserRole;
+import mrsisa12.pharmacy.model.enums.UserStatus;
 
 
 
@@ -32,7 +32,7 @@ public abstract class User {
 	@Column(name = "username", unique=true, nullable=false)
 	private String username;
 	
-	@Column(name = "password", unique=true, nullable=false)
+	@Column(name = "password", unique=false, nullable=false)
 	private String password;
 	
 	@Column(name = "email", unique=false, nullable=false)
@@ -47,6 +47,10 @@ public abstract class User {
 	@OneToOne
 	private Location location;
 	
+	@Column(name = "gender", unique=false, nullable=false)
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
+	
 	@Column(name = "activeStatus", unique=false, nullable=false)
 	@Enumerated(EnumType.STRING)
 	private UserStatus activeStatus;
@@ -60,7 +64,7 @@ public abstract class User {
 	
 	public User() { }
 	
-	public User(Long id, String username, String password, String email, String firstName, String lastName, Location location,
+	public User(Long id, String username, String password, String email, String firstName, String lastName, Location location, Gender gender,
 			UserStatus activeStatus, UserRole userRole, boolean deleted) {
 		super();
 		this.id = id;
@@ -70,10 +74,27 @@ public abstract class User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.location = location;
+		this.gender = gender;
 		this.activeStatus = activeStatus;
 		this.userRole = userRole;
 		this.deleted = deleted;
 	}
+	
+	/*
+	public User(UserDTO user)
+	{
+		super();
+		this.id = user.getId();
+		this.username = user.getUsername();
+		this.password = user.getPassword();
+		this.email = user.getEmail();
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+		this.location = user.getLocation();
+		this.gender = user.getGender();
+		this.activeStatus = user.
+	}
+	*/
 	
 	public Long getId() {
 		return id;
@@ -127,6 +148,14 @@ public abstract class User {
 		return location;
 	}
 	
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
 	public void setLocation(Location location) {
 		this.location = location;
 	}

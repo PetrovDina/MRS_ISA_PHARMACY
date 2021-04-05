@@ -35,5 +35,10 @@ public class PatientService {
 	{
 		return patientRepository.findAllByPenaltyPoints(penaltyPoints);
 	}
+	
+	public void save(Patient patient)
+	{
+		patientRepository.save(patient);
+	}
 
 }

@@ -4,7 +4,7 @@
 		        <div id="registration-row" class="row justify-content-center align-items-center">
 		            <div id="registration-column" class="col-md-6">
 		                <div id="registration-box" class="col-md-12">  
-							<form>      	
+							<form onsubmit="return false;">     	
 		                        <h4 class="text-center text-info" style="margin-bottom: 40px;">Registration</h4>
 		                        <div class="form-group">
 		                            <label for="username" class="text-info">Username:</label><br>
@@ -18,8 +18,12 @@
 		                        </div>
 								<div class="form-group">
 		                            <label for="passwordRepeat" class="text-info">Repeat password:</label><br>
-		                            <input type="text" name="passwordRepeat" id="passwordRepeat" class="form-control" required="" v-model="registration.passwordRepeat"
-									oninvalid="this.setCustomValidity('Re-enter password.')"  oninput="setCustomValidity('')">
+		                            <input type="text" name="passwordRepeat" id="passwordRepeat" class="form-control" required="" v-model="passwordRepeat">
+		                        </div>
+								<div class="form-group">
+		                            <label for="email" class="text-info">Email:</label><br>
+		                            <input type="text" name="email" id="email" class="form-control" required="" v-model="registration.email"
+									pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="name" class="text-info">First name:</label><br>
@@ -38,14 +42,14 @@
 									<input type="radio" id="female" name="gender" value="FEMALE" v-model="registration.gender" checked>
 									<label for="female" style="color:#17a2b8">Female</label>
 		                        </div>
-		                        <div class="form-group">
+		                        <!-- <div class="form-group">
 		                            <label for="date" class="text-info">Birth date:</label><br>
 		                            <input type="date" name="date" id="date" class="form-control" required="" v-model="registration.birthDate"
 									oninvalid="this.setCustomValidity('Select date of birth.')"  oninput="setCustomValidity('')">
-		                        </div>
+		                        </div> -->
 		                        <div class="form-group">
-									<button class="btn btn-info btn-md" value="Registration" @click="register(registration)">Register</button>
-		                        </div>
+									<button style="background: rgba(15, 95, 72, 0.95)" class="btn btn-info btn-md" value="Registration" @click="register(registration)">Register</button>
+								</div>
 							</form>
 		                </div>
 		            </div>
@@ -54,28 +58,124 @@
 		</div>
 </template>
 
-
 <script>
+
+import { client } from "@/client/axiosClient";
+
 export default {
-    name: "UserRegistrationComponent",
+    name: "UserRegistration",
+
+	props: {
+        typeToRegister: String,
+    },
 
     data() {
         return {
-			registration: {}
+			registration: {},
+			passwordRepeat: "",
+			url: "",
 		};
     },
 
     mounted() {
 		document.getElementById("male").checked = true;
+		this.registration.gender = "MALE";
+		this.setUrl();
+		this.setUserRole();
     },
 
     methods: {
 
 		register: function (registration) {
-			if(registration.password != registration.passwordRepeat) { alert('Passwords must be matching.'); }
-			console.log(registration);
-        },
+			this.checkPassword();
+			if(!this.isMailValid()) return;
+			//if(registration.birthDate == undefined) return;
+			if(this.isSomeFieldEmpty(registration)) return;
 			
+			registration.location = 
+			{
+					id: 4,
+					latitude: 30.00,
+					longitude: 30.00,
+					street: 'Ljube Nesica',
+					city: 'Zajecar',
+					zipCode: '19000',
+					streetNum: 21
+			};
+
+			client({
+                url: this.url,
+                method: "POST",
+				data: registration
+            }).then((response) => {this.homeRedirect(); alert("Registracija uspesno izvrsena.");}).
+			catch((response) => (console.log(response)));
+        },
+
+		checkPassword: function() {
+			var inputPasswordRepeat = document.getElementById('passwordRepeat');
+			var inputPassword 		= document.getElementById('password');
+			if (inputPasswordRepeat.value != inputPassword.value) 
+			{
+            	inputPasswordRepeat.setCustomValidity('Password Must be Matching.');
+			} 
+			else 
+			{
+				inputPasswordRepeat.setCustomValidity('');
+			}
+		},
+
+		isSomeFieldEmpty: function(registration)
+		{
+			if(registration.username == '') return true;
+			if(registration.password == '') return true;
+			if(this.passwordRepeat == '') return true;
+			if(registration.firstName == '') return true;
+			if(registration.lastName == '') return true;
+			if(registration.email == '') return true;
+			return false;
+		},
+
+		isMailValid: function()
+		{
+			var inputMail = document.getElementById('email');
+			if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(inputMail.value))
+			{
+				inputMail.setCustomValidity('');
+				return true;
+			}
+			else
+			{
+				inputMail.setCustomValidity('Invalid email format.');
+				return false;
+			}
+			
+		},
+
+		homeRedirect()
+		{
+			this.$router
+                .push({ name: "Home" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+		},
+
+		setUrl()
+		{
+			if(this.typeToRegister == 'PHARMACY_ADMIN') { this.url = 'pharmacyAdmin/create'; }
+			else if(this.typeToRegister == 'PATIENT')   { this.url = 'patient/create'; }
+		},
+
+		setUserRole()
+		{
+			if(this.typeToRegister == 'PHARMACY_ADMIN') { this.registration.userRole = 'PHARMACY_ADMIN'; }
+			else if(this.typeToRegister == 'PATIENT')   { this.registration.userRole = 'PATIENT'; }
+		}
+	
 	},
 };
 </script>

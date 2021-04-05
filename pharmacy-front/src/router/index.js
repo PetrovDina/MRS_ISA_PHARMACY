@@ -5,18 +5,19 @@ import TestComponent from '@/components/TestComponent'
 import TestDermatologistLoginComponent from '@/components/TestDermatologistLoginComponent'
 import PharmacyView from '@/views/PharmacyView'
 
-import PharmacyRegistrationComponent from '@/components/PharmacyRegistrationComponent'
-import UserRegistrationComponent from '@/components/UserRegistrationComponent'
-
 import CalendarPage from '@/views/CalendarPage'
 import DermatologistPage from '@/views/DermatologistPage'
 import NewAppointmentPage from '@/views/NewAppointmentPage'
 import RequestAbsencePage from '@/views/RequestAbsencePage'
 import SearchPatientsPage from '@/views/SearchPatientsPage'
 import DermatologistHomePage from '@/views/DermatologistHomePage'
-import PharmacyAdminRegistration from '@/views/PharmacyAdminRegistration'
 
 import PatientHomePage from '@/views/PatientHomePage'
+
+import PharmacyRegistration from '@/views/PharmacyRegistration'
+import UserRegistrationPage from '@/views/UserRegistrationPage'
+import PharmacyAdminRegistrationPage from '@/views/pharmacyAdminRegistrationPage'
+
 
 Vue.use(Router)
 
@@ -48,14 +49,8 @@ export default new Router({
 
         {
             path: '/pharmacyRegistration',
-            name: 'PharmacyRegistrationComponent',
-            component: PharmacyRegistrationComponent
-        },
-
-        {
-            path: '/userRegistration',
-            name: 'UserRegistrationComponent',
-            component: UserRegistrationComponent
+            name: 'PharmacyRegistration',
+            component: PharmacyRegistration
         },
 
         {
@@ -94,7 +89,6 @@ export default new Router({
             component: DermatologistHomePage
         },
 
-        
         {
             path: '/patientHomePage',
             name: 'PatientHomePage',
@@ -102,10 +96,18 @@ export default new Router({
         },
 
         {
-            path: '/pharmacyAdminRegistration',
-            name: 'PharmacyAdminRegistration',
-            component: PharmacyAdminRegistration    
+            path: '/userRegistrationPage',
+            name: 'UserRegistrationPage',
+            component: UserRegistrationPage    
         },
+
+        {
+            path: '/pharmacyAdminRegistrationPage',
+            name: 'PharmacyAdminRegistrationPage',
+            component: PharmacyAdminRegistrationPage    
+        },
+
+
     ]
 })
 

@@ -79,7 +79,7 @@ export default {
             //TODO: promeni putanju kasnije kada budu kreirane kommponente
 
             this.$router
-                .push({ name: "UserRegistrationComponent" })
+                .push({ name: "UserRegistrationPage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {
@@ -93,10 +93,10 @@ export default {
             //TODO: promeni putanju kasnije kada budu kreirane kommponente
 
             this.$router
-                .push({ name: "PharmacyAdminRegistration" })
+                .push({ name: "PharmacyAdminRegistrationPage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
-                    if (err.name != "PharmacyAdminRegistration") {
+                    if (err.name != "NavigationDuplicated") {
                         // But print any other errors to the console
                         console.error(err);
                     }
@@ -161,7 +161,7 @@ export default {
 
         pharmacyRegisterRedirect: function () {
             this.$router
-                .push({ name: "PharmacyRegistrationComponent" })
+                .push({ name: "PharmacyRegistration" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

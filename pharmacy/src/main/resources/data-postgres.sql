@@ -33,10 +33,10 @@ insert into reservation (medication_id, pharmacy_id, quantity, duedate, status) 
 insert into reservation (medication_id, pharmacy_id, quantity, duedate, status) values (1, 1, '200mg', '3.2.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (medication_id, pharmacy_id, quantity, duedate, status) values (3, 2, '20 tableta', '5.5.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
 
-insert into system_user (username, password, email, firstname, lastname, location_id, activestatus, userrole, deleted) values ('a', 'a', 'a@gmail.com', 'Admin', 'Adminic', 1, 'ACTIVATED', 'SYSTEM_ADMIN', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, userrole, deleted) values ('a', 'a', 'a@gmail.com', 'Admin', 'Adminic', 1, 'MALE', 'ACTIVATED', 'SYSTEM_ADMIN', 'False');
 insert into systemadmin (id) values (1);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, activestatus, userrole, deleted) values ('p', 'p', 'p@gmail.com', 'Pac', 'Pacic', 1, 'ACTIVATED', 'PATIENT', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, userrole, deleted) values ('p', 'p', 'p@gmail.com', 'Pac', 'Pacic', 1, 'MALE', 'ACTIVATED', 'PATIENT', 'False');
 insert into patient (id, penaltypoints) values (2, 123);
 
 

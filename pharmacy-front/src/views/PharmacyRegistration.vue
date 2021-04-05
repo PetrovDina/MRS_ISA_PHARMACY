@@ -13,7 +13,7 @@
 
                                 <div class="form-group">
 		                            <label for="pharmacyName" class="text-info">Location:</label><br>
-		                            <input type="text" name="pharmacyName" id="pharmacyName" class="form-control" required="" v-model="pharmacy.location">
+		                            <input type="text" name="pharmacyName" id="pharmacyLocation" class="form-control" required="" v-model="pharmacy.location">
 		                        </div>
 
 		                        <div class="form-group">
@@ -32,7 +32,7 @@
 import { client } from "@/client/axiosClient";
 
 export default {
-    name: "PharmacyRegistrationComponent",
+    name: "PharmacyRegistration",
 
     data() {
         return {
