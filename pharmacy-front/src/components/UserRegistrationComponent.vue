@@ -3,38 +3,50 @@
 		    <div class="container">
 		        <div id="registration-row" class="row justify-content-center align-items-center">
 		            <div id="registration-column" class="col-md-6">
-		                <div id="registration-box" class="col-md-12">        	
+		                <div id="registration-box" class="col-md-12">  
+							<form>      	
 		                        <h4 class="text-center text-info" style="margin-bottom: 40px;">Registration</h4>
 		                        <div class="form-group">
 		                            <label for="username" class="text-info">Username:</label><br>
-		                            <input type="text" name="username" id="username" class="form-control" required="" v-model="registration.username">
+		                            <input type="text" name="username" id="username" class="form-control" v-model="registration.username" required=""
+									oninvalid="this.setCustomValidity('Enter username.')"  oninput="setCustomValidity('')">
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="password" class="text-info">Password:</label><br>
-		                            <input type="text" name="password" id="password" class="form-control" required="" v-model="registration.password">
+		                            <input type="text" name="password" id="password" class="form-control" required="" v-model="registration.password"
+									oninvalid="this.setCustomValidity('Enter password.')"  oninput="setCustomValidity('')">
+		                        </div>
+								<div class="form-group">
+		                            <label for="passwordRepeat" class="text-info">Repeat password:</label><br>
+		                            <input type="text" name="passwordRepeat" id="passwordRepeat" class="form-control" required="" v-model="registration.passwordRepeat"
+									oninvalid="this.setCustomValidity('Re-enter password.')"  oninput="setCustomValidity('')">
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="name" class="text-info">First name:</label><br>
-		                            <input type="text" name="name" id="name" class="form-control" required="" v-model="registration.firstName">
+		                            <input type="text" name="name" id="name" class="form-control" required="" v-model="registration.firstName"
+									oninvalid="this.setCustomValidity('Enter name.')"  oninput="setCustomValidity('')">
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="lastname" class="text-info">Last name:</label><br>
-		                            <input type="text" name="lastname" id="lastname" class="form-control" required="" v-model="registration.lastName">
+		                            <input type="text" name="lastname" id="lastname" class="form-control" required="" v-model="registration.lastName"
+									oninvalid="this.setCustomValidity('Enter lastname.')"  oninput="setCustomValidity('')">
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="gender" class="text-info">Gender:</label><br>
-		                            <input type="radio" id="male" name="gender" value="MALE" checked v-model="registration.gender">
+		                            <input type="radio" id="male" name="gender" value="MALE" v-model="registration.gender">
 									<label for="male" style="color:#17a2b8">Male</label>
-									<input type="radio" id="female" name="gender" value="FEMALE" v-model="registration.gender">
+									<input type="radio" id="female" name="gender" value="FEMALE" v-model="registration.gender" checked>
 									<label for="female" style="color:#17a2b8">Female</label>
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="date" class="text-info">Birth date:</label><br>
-		                            <input type="date" name="date" id="date" class="form-control" required="" v-model="registration.birthDate">
+		                            <input type="date" name="date" id="date" class="form-control" required="" v-model="registration.birthDate"
+									oninvalid="this.setCustomValidity('Select date of birth.')"  oninput="setCustomValidity('')">
 		                        </div>
 		                        <div class="form-group">
 									<button class="btn btn-info btn-md" value="Registration" @click="register(registration)">Register</button>
 		                        </div>
+							</form>
 		                </div>
 		            </div>
 		        </div>
@@ -54,14 +66,16 @@ export default {
     },
 
     mounted() {
+		document.getElementById("male").checked = true;
     },
 
     methods: {
 
 		register: function (registration) {
-			console.log(registration)
-        }
-		
+			if(registration.password != registration.passwordRepeat) { alert('Passwords must be matching.'); }
+			console.log(registration);
+        },
+			
 	},
 };
 </script>
