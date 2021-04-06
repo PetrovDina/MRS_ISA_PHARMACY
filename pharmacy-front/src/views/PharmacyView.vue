@@ -24,14 +24,22 @@
                 </v-row>
             </v-card-text>
         </v-card>
-        <Button @action-performed="subscribedToggle" id="sub-btn" class="btn" :text="!subscribed ? 'Subscribe' : 'Subscribed'" :bgd_color="!subscribed ? 'green' : 'grey'"></Button>
+        <Button 
+            @action-performed="subscribedToggle" 
+            id="sub-btn"
+            class="btn"
+            :text="!subscribed ? 'Subscribe' : 'Subscribed'"
+            :bgd_color="!subscribed ? 'rgba(15, 95, 72, 0.95)' : 'grey'">
+        </Button>
         <TabNav
             :tabs="['Dermatologists', 'Pharmacists', 'Medications']"
             :selected="selected"
             @selected="setSelected"
         >
             <Tab :isSelected="selected === 'Dermatologists'">
-                <DermatologistsTable :dermatologists = "dermatologistsToSend"></DermatologistsTable>
+                <DermatologistsTable 
+                    :dermatologists = "dermatologistsToSend">
+                </DermatologistsTable>
             </Tab>
 
             <Tab :isSelected="selected === 'Pharmacists'">
@@ -39,7 +47,12 @@
                 <h1>Farmaceuti</h1>
             </Tab>
             <Tab :isSelected="selected === 'Medications'">
-                <MedicationsTable @add-med-into-pharmacy="addMedication" @record-deleted="deleteRecordFromDB" :medications = "medicationToSend"></MedicationsTable>
+                <MedicationsTable 
+                    @update-medication="updateMedicationPrice" 
+                    @add-med-into-pharmacy="addMedicationToDB" 
+                    @record-deleted="deleteRecordFromDB" 
+                    :medications = "medicationToSend">
+                </MedicationsTable>
             </Tab>
         </TabNav>
     </div>
@@ -110,28 +123,29 @@ export default {
         deleteRecordFromDB : function(id){
             let medId = 0;
             for(medId in this.medicationToSend){
-                console.log(this.medicationToSend[medId]);
                 if(this.medicationToSend[medId].id === id){
                     this.medicationToSend.splice(medId, 1);
                     break;
                 }
             }
-
             // poziv na back da se obrise pharmacyStorageItem
         },
-        addMedication : function(med, price){
+        addMedicationToDB : function(med, price){
             this.medicationToSend = [...this.medicationToSend, {
-                            id: this.medicationToSend.lenght,
-                            name: med.name,
-                            manufacturer: med.manufacturer,
-                            prescriptionReq: med.prescriptionReq,
-                            form: med.form,
-                            quantity : 0,
-                            price : price
-                        }
+                    id: this.medicationToSend.lenght,
+                    name: med.name,
+                    manufacturer: med.manufacturer,
+                    prescriptionReq: med.prescriptionReq,
+                    form: med.form,
+                    quantity : 0,
+                    price : price,
+                    price_edit : false
+                }
             ]
-            
-            console.log(this.medicationToSend);
+            // treba uputiti poziv na back da se doda novi pharmacyStorageItem u pharmacy
+        },
+        updateMedicationPrice : function(med, price){
+            // nedostaje poziv na back da se promjeni cijena
         }
     },
 
@@ -172,7 +186,8 @@ export default {
                             prescriptionReq: pharmacy_item.medication.prescriptionReq,
                             form: pharmacy_item.medication.form,
                             quantity : pharmacy_item.quantity,
-                            price : current_price
+                            price : current_price,
+                            price_edit : false,
                         };
                     this.medicationToSend = [...this.medicationToSend, medication]
                 }
@@ -190,5 +205,6 @@ export default {
 #sub-btn {
     float : right;
     margin : 10px;
+    color :white;
 }
 </style>

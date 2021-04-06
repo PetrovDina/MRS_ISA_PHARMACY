@@ -11,7 +11,11 @@
                     <th scope="col">Quantity</th>
                     <th scope="col">Price</th>
                     <th scope="col">Reservation</th>
-                    <td><button @click="openModalWindow"><i class="fa fa-plus-circle fa-2x"></i></button></td>
+                    <td>
+                        <button @click="openModalWindow">
+                                <i class="fa fa-plus-circle fa-2x"></i>
+                        </button>
+                    </td>
                 </tr>
             </thead>
 
@@ -23,13 +27,31 @@
                     <td>{{med.prescriptionReq? "required":"not required"}}</td> 
                     <td>{{med.form}}</td>
                     <td>{{med.quantity}}</td>
-                    <td>{{med.price}}</td>
-                    <td><Button class="btn-success" text="Reserve" bgd_color="green"></Button></td>
+                    <td>
+                        <div v-show = "med.price_edit === false">
+                            <label @click = "med.price_edit = true">{{med.price}}</label>
+                        </div>
+                        <input style="text-align:center"
+                            size="15"
+                            v-show = "med.price_edit == true"
+                            v-model = "med.price" 
+                            v-on:blur= "med.price_edit=false;" 
+                            @keyup.enter = "med.price_edit=false; updateMedicationPrice(med, med.price)">
+                    </td>
+                    <td><Button 
+                        class="btn-success" 
+                        text="Reserve" 
+                        bgd_color="green">
+                    </Button></td>
                 </tr>
             </tbody>
         </table>
         <!-- The Modal -->
-        <ModalWindowAddMed @add-medication="addMedicationInPharmacy" @modal-closed = "closeModalWindow" :modal_show = "modal_window_show" ></ModalWindowAddMed>
+        <ModalWindowAddMed 
+            @add-medication="addMedicationInPharmacy" 
+            @modal-closed = "closeModalWindow" 
+            :modal_show = "modal_window_show" >
+        </ModalWindowAddMed>
     </div>
 </template>
 
@@ -72,7 +94,10 @@ export default {
         },
         addMedicationInPharmacy(med, price){
             this.$emit('add-med-into-pharmacy', med, price);
-        }
+        },
+        updateMedicationPrice: function(med, item){
+            this.$emit('update-medication', med, item);
+        },
     },
 };
 </script>

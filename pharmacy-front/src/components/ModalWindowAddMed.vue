@@ -2,8 +2,10 @@
     <div v-if="modal_show === true" id="myModal" class="modal">
         <div class="modal-content">
             <Button id="close_btn" @action-performed="closeWindow" class="close" text="X" color="white"></Button>
-            <MedicationView @clicked-on-row="selectMedication" :medications="medications"></MedicationView>
-            <label></label>
+            <MedicationView 
+                @clicked-on-row="selectMedication" 
+                :medications="medications">
+            </MedicationView>
             <div style="display: block">
                 <v-text-field
                     label="Medication price"
@@ -11,7 +13,12 @@
                     hide-details="auto"
                     v-model="price"
                 ></v-text-field>
-                <Button @action-performed="addMedication(selectedMedication,price)" text="Add medication" bgd_color="green" style="color:white"></Button>
+                <Button 
+                    @action-performed="addMedication(selectedMedication, price)" 
+                    text="Add medication" 
+                    bgd_color="green" 
+                    style="color:white">
+                </Button>
             </div>
             <label v-if="error_msg">{{error_msg_text}}</label>
         </div>
@@ -57,11 +64,11 @@ export default {
             this.error_msg = false;
     	},
         addMedication : function(med, price){
-            if(med === null || price == 0){
+            if(med === null || price == 0) {
                 this.error_msg = true;
                 this.error_msg_text = "Select medication and set a price!";
             }
-            else{
+            else {
                 this.$emit('add-medication', med, price);
                 this.$emit('modal-closed');
             }
