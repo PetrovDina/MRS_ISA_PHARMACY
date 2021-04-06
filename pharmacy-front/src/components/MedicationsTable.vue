@@ -11,41 +11,37 @@
                     <th scope="col">Quantity</th>
                     <th scope="col">Price</th>
                     <th scope="col">Reservation</th>
-                    <td><Button @action-performed="addButton()" class="btn-success" text="Add" color="grey"></Button></td>
+                    <td><button @click="openModalWindow"><i class="fa fa-plus-circle fa-2x"></i></button></td>
                 </tr>
             </thead>
 
             <tbody>
                 <tr :key="med.id" v-for="med in medications">
-                    <td>{{med.id}}</td>
+                    <td><button @click="deleteRecord(med.id, med.name)"><i class="fa fa-trash fa-lg"></i></button></td>
                     <td>{{med.name }}</td>
                     <td>{{med.manufacturer}}</td> 
                     <td>{{med.prescriptionReq? "required":"not required"}}</td> 
                     <td>{{med.form}}</td>
                     <td>{{med.quantity}}</td>
                     <td>{{med.price}}</td>
-                    <td><Button class="btn-success" text="Reserve" color="green"></Button></td>
+                    <td><Button class="btn-success" text="Reserve" bgd_color="green"></Button></td>
                 </tr>
             </tbody>
         </table>
         <!-- The Modal -->
-        <div v-if="prikazan === true" id="myModal" class="modal">
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span class="close"><Button id="close_btn" @action-performed="closeModal()" class="btn" text="X" color="red"></Button></span>
-                <p>Some text in the Modal..</p>
-            </div>
-        </div>
+        <ModalWindowAddMed @add-medication="addMedicationInPharmacy" @modal-closed = "closeModalWindow" :modal_show = "modal_window_show" ></ModalWindowAddMed>
     </div>
 </template>
 
 <script>
 
 import Button from './Button.vue';
+import ModalWindowAddMed from './ModalWindowAddMed.vue';
+
 
 export default {
     name: "MedicationsTable",
-    components: {Button},
+    components: {Button, ModalWindowAddMed},
     props: {
         medications: {
             type : Array,
@@ -56,15 +52,26 @@ export default {
     },
     data() {
         return {
-            prikazan : false
+            modal_window_show : false,
         };
     },
     methods: {
-        addButton : function(){
-            this.prikazan = !this.prikazan;
+        openModalWindow : function(){
+            this.modal_window_show = true;
         },
-        closeModal : function(){
-            this.prikazan = !this.prikazan;
+        closeModalWindow(){
+            this.modal_window_show = false;
+        },
+        deleteRecord(id, name){
+            // brisanje record-a
+            if (confirm('Are you sure you want to delete "'+ name +'" from the pharmacy?')) {
+                this.$emit('record-deleted', id);
+            } else {
+                alert('Deleting canceled.');
+            }
+        },
+        addMedicationInPharmacy(med, price){
+            this.$emit('add-med-into-pharmacy', med, price);
         }
     },
 };
@@ -79,50 +86,5 @@ export default {
 thead { 
     /* background-color: rgba(15, 95, 72, 0.219); */
     background-color: rgba(32, 102, 75, 0.295)
-}
-
-#close_btn{
-    float:right;
-}
-
-body {font-family: Arial, Helvetica, sans-serif;}
-
-/* The Modal (background) */
-.modal {
-  display: block; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-
-/* The Close Button */
-.close {
-  color: #aaaaaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
 }
 </style>

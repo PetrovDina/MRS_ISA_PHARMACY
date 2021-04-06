@@ -24,7 +24,7 @@
                 </v-row>
             </v-card-text>
         </v-card>
-        <Button @action-performed="subscribedToggle" id="sub-btn" class="btn" :text="!subscribed ? 'Subscribe' : 'Subscribed'" :color="!subscribed ? 'green' : 'grey'"></Button>
+        <Button @action-performed="subscribedToggle" id="sub-btn" class="btn" :text="!subscribed ? 'Subscribe' : 'Subscribed'" :bgd_color="!subscribed ? 'green' : 'grey'"></Button>
         <TabNav
             :tabs="['Dermatologists', 'Pharmacists', 'Medications']"
             :selected="selected"
@@ -39,7 +39,7 @@
                 <h1>Farmaceuti</h1>
             </Tab>
             <Tab :isSelected="selected === 'Medications'">
-                <MedicationsTable :medications = "medicationToSend"></MedicationsTable>
+                <MedicationsTable @add-med-into-pharmacy="addMedication" @record-deleted="deleteRecordFromDB" :medications = "medicationToSend"></MedicationsTable>
             </Tab>
         </TabNav>
     </div>
@@ -106,6 +106,32 @@ export default {
         },
         subscribedToggle : function(){
             this.subscribed = !this.subscribed;
+        },
+        deleteRecordFromDB : function(id){
+            let medId = 0;
+            for(medId in this.medicationToSend){
+                console.log(this.medicationToSend[medId]);
+                if(this.medicationToSend[medId].id === id){
+                    this.medicationToSend.splice(medId, 1);
+                    break;
+                }
+            }
+
+            // poziv na back da se obrise pharmacyStorageItem
+        },
+        addMedication : function(med, price){
+            this.medicationToSend = [...this.medicationToSend, {
+                            id: this.medicationToSend.lenght,
+                            name: med.name,
+                            manufacturer: med.manufacturer,
+                            prescriptionReq: med.prescriptionReq,
+                            form: med.form,
+                            quantity : 0,
+                            price : price
+                        }
+            ]
+            
+            console.log(this.medicationToSend);
         }
     },
 
