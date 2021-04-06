@@ -17,7 +17,7 @@ import PatientHomePage from '@/views/PatientHomePage'
 import PharmacyRegistration from '@/views/PharmacyRegistration'
 import UserRegistrationPage from '@/views/UserRegistrationPage'
 import PharmacyAdminRegistrationPage from '@/views/pharmacyAdminRegistrationPage'
-
+import MedicationRegistrationPage from '@/views/medicationRegistrationPage'
 
 Vue.use(Router)
 
@@ -105,6 +105,12 @@ export default new Router({
             path: '/pharmacyAdminRegistrationPage',
             name: 'PharmacyAdminRegistrationPage',
             component: PharmacyAdminRegistrationPage    
+        },
+        
+        {
+            path: '/medicationRegistrationPage',
+            name: 'MedicationRegistrationPage',
+            component: MedicationRegistrationPage    
         },
 
 

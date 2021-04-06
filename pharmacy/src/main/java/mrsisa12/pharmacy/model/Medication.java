@@ -1,13 +1,20 @@
 package mrsisa12.pharmacy.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
+import mrsisa12.pharmacy.dto.MedicationDTO;
 import mrsisa12.pharmacy.model.enums.MedicationForm;
 
 @Entity
@@ -30,6 +37,14 @@ public class Medication {
 	@Column(name = "form", nullable = false)
 	private MedicationForm form;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	private List<Medication> alternatives;
+	
+	@Column(name = "description", nullable = false)
+	private String description;
+	
+	@Column(name = "content", nullable = false)
+	private String content;
 	
 	public Medication() {
 		
@@ -44,7 +59,26 @@ public class Medication {
 		this.form = form;
 	}
 
+	public Medication(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form,
+			List<Medication> alternatives, String description, String content) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.manufacturer = manufacturer;
+		this.prescriptionReq = prescriptionReq;
+		this.form = form;
+		this.alternatives = alternatives;
+		this.description = description;
+		this.content = content;
+	}
 
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 
 	public Long getId() {
 		return id;
@@ -88,6 +122,29 @@ public class Medication {
 		this.form = form;
 	}
 	
+	public List<Medication> getAlternatives() {
+		return alternatives;
+	}
+
+	public void setAlternatives(List<Medication> alternatives) {
+		this.alternatives = alternatives;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	
+	public List<MedicationDTO> getDTOAlternatives() {
+		List<MedicationDTO> alternatives = new ArrayList<MedicationDTO>();
+		for (Medication med : this.alternatives) 
+		{
+			alternatives.add(new MedicationDTO(med));
+		}
+		return alternatives;
+	}
 	
 }

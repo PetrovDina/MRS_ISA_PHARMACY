@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mrsisa12.pharmacy.dto.MedicationCreationDTO;
 import mrsisa12.pharmacy.dto.MedicationDTO;
+import mrsisa12.pharmacy.dto.UserDTO;
 import mrsisa12.pharmacy.model.Medication;
+import mrsisa12.pharmacy.model.Patient;
+import mrsisa12.pharmacy.model.enums.UserStatus;
 import mrsisa12.pharmacy.service.MedicationService;
 
 @RestController
@@ -42,6 +46,29 @@ public class MedicationController {
 
 		return new ResponseEntity<>(medicationsDTO, HttpStatus.OK);
 	}
+	
+	@PostMapping(value = "/create", consumes = "application/json")
+	public ResponseEntity<MedicationCreationDTO> savePharmacyAdmin(@RequestBody MedicationCreationDTO medicationDTO)
+	{
+		Medication medication = new Medication();
+		medication.setName(medicationDTO.getName());
+		medication.setContent(medicationDTO.getContent());
+		medication.setManufacturer(medicationDTO.getManufacturer());
+		medication.setPrescriptionReq(medicationDTO.isPrescriptionReq());
+		medication.setDescription(medicationDTO.getDescription());
+		medication.setForm(medicationDTO.getForm());
+		
+		List<Medication> alternatives = new ArrayList<Medication>();
+		for (MedicationDTO m : medicationDTO.getAlternatives()) 
+		{
+			alternatives.add(medicationService.findOne(m.getId()));
+		}
+		medication.setAlternatives(alternatives);
+		medicationService.save(medication);
+		
+		return new ResponseEntity<>(new MedicationCreationDTO(medication), HttpStatus.CREATED);
+	}
+	
 	
 	@GetMapping
 	public ResponseEntity<List<MedicationDTO>> getMedicationsPage(Pageable page) {
