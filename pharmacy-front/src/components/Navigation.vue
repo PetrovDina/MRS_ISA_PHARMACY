@@ -6,7 +6,7 @@
             <a @click="loginRedirect()" class="loginNav">Log in</a>
             <a @click="registerRedirect()" class="registerNav">Register</a>
 
-            <a @click="testLogin()" class="testNav">Test dermatologist login</a>
+            <a @click="testLogin()" class="testNav">Test pharmacist login</a>
 
             <a @click="testPharmacyView()" class="testPharmacy">Pharmacy view</a>
             <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
@@ -18,6 +18,11 @@
         <!--dermatologist-->
         <div v-if="isUserType('DERMATOLOGIST')">
             <a @click="dermHomeRedirect()">DERMATOLOGIST Home</a>
+            <a @click="dermProfileRedirect()">My Profile</a>
+        </div>
+
+        <div v-if="isUserType('PHARMACIST')">
+            <a @click="pharmacistHomeRedirect()">PHARMACIST Home</a>
             <a @click="dermProfileRedirect()">My Profile</a>
         </div>
 
@@ -117,10 +122,10 @@ export default {
         },
 
         testLogin: function () {
-            this.$root.$emit("type-changed", "DERMATOLOGIST");
+            this.$root.$emit("type-changed", "PHARMACIST");
 
             this.$router
-                .push({ name: "DermatologistHomePage" })
+                .push({ name: "PharmacistHomePage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {
@@ -185,6 +190,18 @@ export default {
         patientRedirect: function(){
             this.$router
                 .push({ name: "PatientHomePage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        pharmacistHomeRedirect: function(){
+            this.$router
+                .push({ name: "PharmacistHomePage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

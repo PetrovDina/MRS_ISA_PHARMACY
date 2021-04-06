@@ -5,10 +5,10 @@
 <script>
 
 export default {
-    name: "DermatologistPage",
+    name: "DispenseMedicationPage",
     data() {
         return {
-            msg: "Employee Profile"
+            msg: "Dispense medication"
         };
     },
 
@@ -21,5 +21,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>
