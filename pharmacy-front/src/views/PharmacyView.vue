@@ -88,22 +88,7 @@ export default {
                     rating: 2,
                 },
             ],
-            medicationToSend: [
-                {
-                    id: 1,
-                    name: "Probiotik",
-                    manufacturer: "Ivančic i sinovi",
-                    prescriptionReq: false,
-                    form: "PILL",
-                },
-                {
-                    id: 2,
-                    name: "Brufen",
-                    manufacturer: "Bosna lijek",
-                    prescriptionReq: true,
-                    form: "PILL",
-                },
-            ],
+            medicationToSend: [],
             // lista svih slobodnih termina treba da se doda
             rating: 0.0
         };
@@ -129,29 +114,43 @@ export default {
         // /pharmacy/{id} i dobavice sve podatke vezano za apoteku
         // primjera radi dobavljamo apoteku sa ID-em 1
         client({
-                url: "pharmacy/1",
-                method: "GET",
-            }).then((response) => {
-                this.pharmacy = response.data
-                this.pharmacyName = this.pharmacy.name;
-                this.address = this.pharmacy.location.street;
-                this.city = this.pharmacy.location.city;
-                this.zipCode = this.pharmacy.location.zipcode;
-            });
+            url: "pharmacy/1",
+            method: "GET",
+        }).then((response) => {
+            this.pharmacy = response.data
+            this.pharmacyName = this.pharmacy.name;
+            this.address = this.pharmacy.location.street;
+            this.city = this.pharmacy.location.city;
+            this.zipCode = this.pharmacy.location.zipcode;
+        });
             // dobavljamo sve lijekove iz apoteke
         client({
-            url: "/pharmacyStorageItem/1",
-            method: "GET",
+            url : "pharmacyStorageItem/fromPharmacy/1",
+            method : "GET",
         }).then((response) => {
-            this.nesto = response.data
+                this.nesto = response.data;
+                let pharmacy_item = null;
+                for(pharmacy_item of this.nesto){
+                    let current_price = 0;
+                    let iter = null;
+                    for(iter of pharmacy_item.itemPrices){
+                        if(iter.current === true){
+                            current_price = iter.price;
+                            break;
+                        }
+                    }
+                    let medication = {
+                            id: pharmacy_item.id,
+                            name: pharmacy_item.medication.name,
+                            manufacturer: pharmacy_item.medication.manufacturer,
+                            prescriptionReq: pharmacy_item.medication.prescriptionReq,
+                            form: pharmacy_item.medication.form,
+                            quantity : pharmacy_item.quantity,
+                            price : current_price
+                        };
+                    this.medicationToSend = [...this.medicationToSend, medication]
+                }
         });
-        // dobavljamo lijek iz baze
-        client({
-            url: "/med/2",
-            method: "GET",
-        }).then((response) => {
-            this.medicationToSend = [...this.medicationToSend, response.data];
-        })
     },
 };
 </script>
