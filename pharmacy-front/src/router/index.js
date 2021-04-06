@@ -11,6 +11,8 @@ import NewAppointmentPage from '@/views/NewAppointmentPage'
 import RequestAbsencePage from '@/views/RequestAbsencePage'
 import SearchPatientsPage from '@/views/SearchPatientsPage'
 import DermatologistHomePage from '@/views/DermatologistHomePage'
+import PharmacistHomePage from '@/views/PharmacistHomePage'
+import DispenseMedicationPage from '@/views/DispenseMedicationPage'
 
 import PatientHomePage from '@/views/PatientHomePage'
 
@@ -107,6 +109,17 @@ export default new Router({
             component: PharmacyAdminRegistrationPage    
         },
 
+        {
+            path: '/pharmacist-home-page',
+            name: 'PharmacistHomePage',
+            component: PharmacistHomePage
+        },
+
+        {
+            path: '/dispense-medication-page',
+            name: 'DispenseMedicationPage',
+            component: DispenseMedicationPage
+        },
 
     ]
 })
