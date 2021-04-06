@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.MedicationDTO;
 import mrsisa12.pharmacy.dto.PharmacyDTO;
 import mrsisa12.pharmacy.dto.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -39,7 +38,7 @@ public class PharmacyController {
 
 		List<PharmacyDTO> pharmaciesDTO = new ArrayList<>();
 		for (Pharmacy m : pharmacies) {
-			pharmaciesDTO.add(new PharmacyDTO(m));
+			pharmaciesDTO.add(new PharmacyDTO(m, "bez"));
 		}
 
 		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
@@ -54,7 +53,7 @@ public class PharmacyController {
 
 		List<PharmacyDTO> pharmaciesDTO = new ArrayList<>();
 		for (Pharmacy m : pharmacies) {
-			pharmaciesDTO.add(new PharmacyDTO(m));
+			pharmaciesDTO.add(new PharmacyDTO(m, "bez"));
 		}
 
 		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
@@ -69,7 +68,7 @@ public class PharmacyController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.OK);
+		return new ResponseEntity<>(new PharmacyDTO(pharmacy, "bez"), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/create", consumes = "application/json")
@@ -81,7 +80,7 @@ public class PharmacyController {
 		pharmacy.setLocation(pharmacyDTO.getLocation());
 				
 		pharmacy = pharmacyService.save(pharmacy);
-		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.CREATED);
+		return new ResponseEntity<>(new PharmacyDTO(pharmacy, "bez"), HttpStatus.CREATED);
 	}
 	
 	@PutMapping(consumes = "application/json")
@@ -97,7 +96,7 @@ public class PharmacyController {
 		pharmacy.setLocation(pharmacyDTO.getLocation());
 
 		pharmacy = pharmacyService.save(pharmacy);
-		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.CREATED);
+		return new ResponseEntity<>(new PharmacyDTO(pharmacy, "bez"), HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping(value = "/{id}")
@@ -120,7 +119,7 @@ public class PharmacyController {
 
 		List<PharmacyDTO> pharmacyDTO = new ArrayList<>();
 		for (Pharmacy s : pharmacies) {
-			pharmacyDTO.add(new PharmacyDTO(s));
+			pharmacyDTO.add(new PharmacyDTO(s, "bez"));
 		}
 		return new ResponseEntity<>(pharmacyDTO, HttpStatus.OK);
 	}

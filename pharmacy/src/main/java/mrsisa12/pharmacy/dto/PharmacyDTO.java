@@ -19,12 +19,13 @@ public class PharmacyDTO {
 		this.pharmacyStorageItems = new ArrayList<PharmacyStorageItemDTO>();
 	}
 	
-	public PharmacyDTO(Pharmacy pharmacy) {
+	public PharmacyDTO(Pharmacy pharmacy, String type) {
 		this();
 		this.id = pharmacy.getId();
 		this.name = pharmacy.getName();
 		this.location = pharmacy.getLocation();
 		this.rating = pharmacy.getRating();
+		if(type.equals("sa"))
 		fillStorageItems(pharmacy.getPharmacyStorageItems());
 	}
 	
