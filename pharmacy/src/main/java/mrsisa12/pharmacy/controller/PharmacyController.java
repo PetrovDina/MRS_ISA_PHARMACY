@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.PharmacyDTO;
-import mrsisa12.pharmacy.dto.PharmacyStorageItemDTO;
+import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
+import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.service.PharmacyService;
@@ -27,10 +27,10 @@ import mrsisa12.pharmacy.service.PharmacyService;
 @RestController
 @RequestMapping("/pharmacy")
 public class PharmacyController {
-	
+
 	@Autowired
 	private PharmacyService pharmacyService;
-	
+
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
 
@@ -43,12 +43,10 @@ public class PharmacyController {
 
 		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<List<PharmacyDTO>> getPharmaciesPage(Pageable page) {
 
-		// page object holds data about pagination and sorting
-		// the object is created based on the url parameters "page", "size" and "sort"
 		Page<Pharmacy> pharmacies = pharmacyService.findAll(page);
 
 		List<PharmacyDTO> pharmaciesDTO = new ArrayList<>();
@@ -70,19 +68,19 @@ public class PharmacyController {
 
 		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.OK);
 	}
-	
+
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<PharmacyDTO> savePharmacy(@RequestBody PharmacyDTO pharmacyDTO) {
-		
+
 		Pharmacy pharmacy = new Pharmacy();
-		
+
 		pharmacy.setName(pharmacyDTO.getName());
 		pharmacy.setLocation(pharmacyDTO.getLocation());
-				
+
 		pharmacy = pharmacyService.save(pharmacy);
 		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.CREATED);
 	}
-	
+
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<PharmacyDTO> updatePharmacy(@RequestBody PharmacyDTO pharmacyDTO) {
 
@@ -91,18 +89,19 @@ public class PharmacyController {
 		if (pharmacy == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		
+
 		pharmacy.setName(pharmacyDTO.getName());
 		pharmacy.setLocation(pharmacyDTO.getLocation());
 
 		pharmacy = pharmacyService.save(pharmacy);
 		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.CREATED);
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> deletePharmacy(@PathVariable Long id) {
 
-		Pharmacy pharmacy = pharmacyService.findOne(id);;
+		Pharmacy pharmacy = pharmacyService.findOne(id);
+		;
 
 		if (pharmacy != null) {
 			pharmacyService.remove(id);
@@ -111,7 +110,7 @@ public class PharmacyController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@GetMapping(value = "/findName")
 	public ResponseEntity<List<PharmacyDTO>> getPharmacyByName(@RequestParam String name) {
 
@@ -123,10 +122,12 @@ public class PharmacyController {
 		}
 		return new ResponseEntity<>(pharmacyDTO, HttpStatus.OK);
 	}
-	
+
+	// OVU METODU NE TREBA NI KORISTITI ALI REKOH NEKA OSTANE MOZDA ZATREBA ZA NESTO
+	// ____ BOJAN!
 	@GetMapping(value = "/{pharmacyId}/pharmacyStorageItems")
 	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorageItems(@PathVariable Long pharmacyId) {
-		
+
 		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(pharmacyId);
 //		for (PharmacyStorageItem psi : pharmacy.getPharmacyStorageItems()) {
 //			System.out.println(psi.getItemPrices().size());
@@ -152,12 +153,11 @@ public class PharmacyController {
 		
 		List<PharmacyStorageItem> pharmacyStorageItems = pharmacy.getPharmacyStorageItems();
 		List<PharmacyStorageItemDTO> pharmacyStorageItemsDTO = new ArrayList<>();
-		for (PharmacyStorageItem e : pharmacyStorageItems) {
+		for (PharmacyStorageItem e : pharmacy.getPharmacyStorageItems()) {
 			PharmacyStorageItemDTO pharmacyStorageItemDTO = new PharmacyStorageItemDTO();
 			pharmacyStorageItemDTO.setId(e.getId());
 			pharmacyStorageItemDTO.setQuantity(e.getQuantity());
-			pharmacyStorageItemDTO.setMedicationId(e.getMedication().getId());
-			
+
 			pharmacyStorageItemsDTO.add(pharmacyStorageItemDTO);
 		}
 		return new ResponseEntity<>(pharmacyStorageItemsDTO, HttpStatus.OK);

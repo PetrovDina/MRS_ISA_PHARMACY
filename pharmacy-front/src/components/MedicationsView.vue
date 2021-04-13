@@ -13,7 +13,7 @@
             </thead>
 
             <tbody>
-                <tr :key="med.id" v-for="med in medications">
+                <tr :key="med.id" v-for="med in medications" @click="clickedOnRow(med)" v-bind:class="{selected : selectedMedication.id===med.id}">
                     <td>{{ med.id }}</td>
                     <td>{{ med.name }}</td>
                     <td>{{ med.manufacturer }}</td>
@@ -40,7 +40,9 @@ export default {
     props: ["medications"],
 
     data() {
-        return {};
+        return {
+            selectedMedication : {},
+        };
     },
 
     mounted() {},
@@ -54,6 +56,13 @@ export default {
                 },
             });
         },
+    },
+
+    methods: {
+        clickedOnRow : function(med){
+            this.selectedMedication = med 
+            this.$emit('clicked-on-row', med);
+        }
     },
 };
 </script>
@@ -75,5 +84,14 @@ thead {
     border-radius: 5px;
 
 }
+
+table {
+    cursor: pointer;
+}
+
+tr.selected {
+	 background-color: #aaaaaa;
+}
+
 </style>
 

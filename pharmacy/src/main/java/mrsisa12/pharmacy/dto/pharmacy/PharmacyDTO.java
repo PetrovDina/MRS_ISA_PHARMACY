@@ -1,4 +1,4 @@
-package mrsisa12.pharmacy.dto;
+package mrsisa12.pharmacy.dto.pharmacy;
 
 import mrsisa12.pharmacy.model.Location;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -9,23 +9,20 @@ public class PharmacyDTO {
 	private String name;
 	private double rating;
 	private Location location;
-	
+
 	public PharmacyDTO() {
 	}
-	
-	public PharmacyDTO(Pharmacy pharmacy) {
-		this.id = pharmacy.getId();
-		this.name = pharmacy.getName();
-		this.location = pharmacy.getLocation();
-		this.rating = pharmacy.getRating();
-	}
-	
 
-	public PharmacyDTO(Long id, String name, Location location, double rating) {
+	public PharmacyDTO(Long id, String name, double rating, Location location) {
+		this();
 		this.id = id;
 		this.name = name;
-		this.location = location;
 		this.rating = rating;
+		this.location = location;
+	}
+
+	public PharmacyDTO(Pharmacy pharmacy) {
+		this(pharmacy.getId(), pharmacy.getName(), pharmacy.getRating(), pharmacy.getLocation());
 	}
 
 	public Long getId() {

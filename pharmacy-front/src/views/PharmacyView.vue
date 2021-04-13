@@ -24,14 +24,22 @@
                 </v-row>
             </v-card-text>
         </v-card>
-        <Button @action-performed="subscribedToggle" id="sub-btn" class="btn" :text="!subscribed ? 'Subscribe' : 'Subscribed'" :color="!subscribed ? 'green' : 'grey'"></Button>
+        <Button 
+            @action-performed="subscribedToggle" 
+            id="sub-btn"
+            class="btn"
+            :text="!subscribed ? 'Subscribe' : 'Subscribed'"
+            :bgd_color="!subscribed ? 'rgba(15, 95, 72, 0.95)' : 'grey'">
+        </Button>
         <TabNav
             :tabs="['Dermatologists', 'Pharmacists', 'Medications']"
             :selected="selected"
             @selected="setSelected"
         >
             <Tab :isSelected="selected === 'Dermatologists'">
-                <DermatologistsTable :dermatologists = "dermatologistsToSend"></DermatologistsTable>
+                <DermatologistsTable 
+                    :dermatologists = "dermatologistsToSend">
+                </DermatologistsTable>
             </Tab>
 
             <Tab :isSelected="selected === 'Pharmacists'">
@@ -39,7 +47,12 @@
                 <h1>Farmaceuti</h1>
             </Tab>
             <Tab :isSelected="selected === 'Medications'">
-                <MedicationsTable :medications = "medicationToSend"></MedicationsTable>
+                <MedicationsTable 
+                    @update-medication="updateMedicationPrice" 
+                    @add-med-into-pharmacy="addMedicationToDB" 
+                    @record-deleted="deleteRecordFromDB" 
+                    :medications = "medicationToSend">
+                </MedicationsTable>
             </Tab>
         </TabNav>
     </div>
@@ -88,22 +101,7 @@ export default {
                     rating: 2,
                 },
             ],
-            medicationToSend: [
-                {
-                    id: 1,
-                    name: "Probiotik",
-                    manufacturer: "Ivančic i sinovi",
-                    prescriptionReq: false,
-                    form: "PILL",
-                },
-                {
-                    id: 2,
-                    name: "Brufen",
-                    manufacturer: "Bosna lijek",
-                    prescriptionReq: true,
-                    form: "PILL",
-                },
-            ],
+            medicationToSend: [],
             // lista svih slobodnih termina treba da se doda
             rating: 0.0
         };
@@ -121,6 +119,73 @@ export default {
         },
         subscribedToggle : function(){
             this.subscribed = !this.subscribed;
+        },
+        deleteRecordFromDB : function(id){
+            let medId = 0;
+            for(medId in this.medicationToSend){
+                if(this.medicationToSend[medId].id === id){
+                    this.medicationToSend.splice(medId, 1);
+                    break;
+                }
+            }
+            // poziv na back da se obrise pharmacyStorageItem
+            client({
+                url: "/pharmacyStorageItem/"+id,
+                method: "DELETE"
+            })
+            .catch((response) => (console.log(response)));
+        },
+        addMedicationToDB : function(med, medicationPrice){
+            this.medicationToSend = [...this.medicationToSend, {
+                    id: this.medicationToSend.lenght,
+                    name: med.name,
+                    manufacturer: med.manufacturer,
+                    prescriptionReq: med.prescriptionReq,
+                    form: med.form,
+                    quantity : 0,
+                    price : medicationPrice,
+                    price_edit : false
+                }
+            ]
+            // poziv na back da se doda novi pharmacyStorageItem u pharmacy
+            var dataToSave = {
+                quantity : 0,
+                itemPrices : [
+                    {
+                        price: medicationPrice
+                    }
+                ],
+                medication: {
+                    id : med.id
+                },
+                pharmacy : {
+                    id : this.pharmacy.id
+                }
+            }
+            client({
+                url: "/pharmacyStorageItem",
+                method: "POST",
+				data: dataToSave
+            })
+            .catch((response) => (console.log(response)));
+        },
+        updateMedicationPrice : function(med, priceToUpdate){
+            var dataToUpdate = 
+            {
+                id: med.id,
+                itemPrices: [
+                    {
+                        price: priceToUpdate
+                    }
+                ]
+            }
+            // poziv na back da se update-uje cijena pharmacyStorageItem u pharmacy
+			client({
+                url: "/pharmacyStorageItem",
+                method: "PUT",
+				data: dataToUpdate
+            })
+            .catch((response) => (console.log(response)));
         }
     },
 
@@ -129,29 +194,44 @@ export default {
         // /pharmacy/{id} i dobavice sve podatke vezano za apoteku
         // primjera radi dobavljamo apoteku sa ID-em 1
         client({
-                url: "pharmacy/1",
-                method: "GET",
-            }).then((response) => {
-                this.pharmacy = response.data
-                this.pharmacyName = this.pharmacy.name;
-                this.address = this.pharmacy.location.street;
-                this.city = this.pharmacy.location.city;
-                this.zipCode = this.pharmacy.location.zipcode;
-            });
+            url: "pharmacy/1",
+            method: "GET",
+        }).then((response) => {
+            this.pharmacy = response.data
+            this.pharmacyName = this.pharmacy.name;
+            this.address = this.pharmacy.location.street;
+            this.city = this.pharmacy.location.city;
+            this.zipCode = this.pharmacy.location.zipcode;
+        });
             // dobavljamo sve lijekove iz apoteke
         client({
-            url: "/pharmacyStorageItem/1",
-            method: "GET",
+            url : "pharmacyStorageItem/fromPharmacy/1",
+            method : "GET",
         }).then((response) => {
-            this.nesto = response.data
+                this.nesto = response.data;
+                let pharmacy_item = null;
+                for(pharmacy_item of this.nesto){
+                    let current_price = 0;
+                    let iter = null;
+                    for(iter of pharmacy_item.itemPrices){
+                        if(iter.current === true){
+                            current_price = iter.price;
+                            break;
+                        }
+                    }
+                    let medication = {
+                            id: pharmacy_item.id,
+                            name: pharmacy_item.medication.name,
+                            manufacturer: pharmacy_item.medication.manufacturer,
+                            prescriptionReq: pharmacy_item.medication.prescriptionReq,
+                            form: pharmacy_item.medication.form,
+                            quantity : pharmacy_item.quantity,
+                            price : current_price,
+                            price_edit : false,
+                        };
+                    this.medicationToSend = [...this.medicationToSend, medication]
+                }
         });
-        // dobavljamo lijek iz baze
-        client({
-            url: "/med/2",
-            method: "GET",
-        }).then((response) => {
-            this.medicationToSend = [...this.medicationToSend, response.data];
-        })
     },
 };
 </script>
@@ -165,5 +245,6 @@ export default {
 #sub-btn {
     float : right;
     margin : 10px;
+    color :white;
 }
 </style>
