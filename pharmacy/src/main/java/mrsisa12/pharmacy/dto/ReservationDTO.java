@@ -2,6 +2,7 @@ package mrsisa12.pharmacy.dto;
 
 import java.util.Date;
 
+import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
 

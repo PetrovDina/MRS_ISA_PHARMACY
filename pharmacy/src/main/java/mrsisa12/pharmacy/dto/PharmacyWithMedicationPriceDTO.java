@@ -1,6 +1,6 @@
 package mrsisa12.pharmacy.dto;
 
-import mrsisa12.pharmacy.model.Location;
+import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 
 public class PharmacyWithMedicationPriceDTO {
 

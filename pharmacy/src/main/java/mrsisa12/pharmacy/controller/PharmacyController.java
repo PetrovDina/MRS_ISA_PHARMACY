@@ -122,29 +122,6 @@ public class PharmacyController {
 		}
 		return new ResponseEntity<>(pharmacyDTO, HttpStatus.OK);
 	}
-
-	// OVU METODU NE TREBA NI KORISTITI ALI REKOH NEKA OSTANE MOZDA ZATREBA ZA NESTO
-	// ____ BOJAN!
-	@GetMapping(value = "/{pharmacyId}/pharmacyStorageItems")
-	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorageItems(@PathVariable Long pharmacyId) {
-
-		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(pharmacyId);
-//		for (PharmacyStorageItem psi : pharmacy.getPharmacyStorageItems()) {
-//			System.out.println(psi.getItemPrices().size());
-//		}
-		
-		List<PharmacyStorageItem> pharmacyStorageItems = pharmacy.getPharmacyStorageItems();
-		List<PharmacyStorageItemDTO> pharmacyStorageItemsDTO = new ArrayList<>();
-		for (PharmacyStorageItem e : pharmacyStorageItems) {
-			PharmacyStorageItemDTO pharmacyStorageItemDTO = new PharmacyStorageItemDTO();
-			pharmacyStorageItemDTO.setId(e.getId());
-			pharmacyStorageItemDTO.setQuantity(e.getQuantity());
-			pharmacyStorageItemDTO.setMedicationId(e.getMedication().getId());
-			
-			pharmacyStorageItemsDTO.add(pharmacyStorageItemDTO);
-		}
-		return new ResponseEntity<>(pharmacyStorageItemsDTO, HttpStatus.OK);
-	}
 	
 	@GetMapping(value = "/{pharmacyId}/pharmacyStorageItemsAndPrices")
 	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorageItemsAndPrices(@PathVariable Long pharmacyId) {
