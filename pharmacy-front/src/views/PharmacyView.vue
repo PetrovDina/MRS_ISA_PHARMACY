@@ -129,8 +129,13 @@ export default {
                 }
             }
             // poziv na back da se obrise pharmacyStorageItem
+            client({
+                url: "/pharmacyStorageItem/"+id,
+                method: "DELETE"
+            })
+            .catch((response) => (console.log(response)));
         },
-        addMedicationToDB : function(med, price){
+        addMedicationToDB : function(med, medicationPrice){
             this.medicationToSend = [...this.medicationToSend, {
                     id: this.medicationToSend.lenght,
                     name: med.name,
@@ -138,14 +143,49 @@ export default {
                     prescriptionReq: med.prescriptionReq,
                     form: med.form,
                     quantity : 0,
-                    price : price,
+                    price : medicationPrice,
                     price_edit : false
                 }
             ]
-            // treba uputiti poziv na back da se doda novi pharmacyStorageItem u pharmacy
+            // poziv na back da se doda novi pharmacyStorageItem u pharmacy
+            var dataToSave = {
+                quantity : 0,
+                itemPrices : [
+                    {
+                        price: medicationPrice
+                    }
+                ],
+                medication: {
+                    id : med.id
+                },
+                pharmacy : {
+                    id : this.pharmacy.id
+                }
+            }
+            client({
+                url: "/pharmacyStorageItem",
+                method: "POST",
+				data: dataToSave
+            })
+            .catch((response) => (console.log(response)));
         },
-        updateMedicationPrice : function(med, price){
-            // nedostaje poziv na back da se promjeni cijena
+        updateMedicationPrice : function(med, priceToUpdate){
+            var dataToUpdate = 
+            {
+                id: med.id,
+                itemPrices: [
+                    {
+                        price: priceToUpdate
+                    }
+                ]
+            }
+            // poziv na back da se update-uje cijena pharmacyStorageItem u pharmacy
+			client({
+                url: "/pharmacyStorageItem",
+                method: "PUT",
+				data: dataToUpdate
+            })
+            .catch((response) => (console.log(response)));
         }
     },
 
