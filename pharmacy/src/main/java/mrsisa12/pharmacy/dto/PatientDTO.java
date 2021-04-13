@@ -91,5 +91,11 @@ public class PatientDTO {
 	public void setPenaltyPoints(Integer penaltyPoints) {
 		this.penaltyPoints = penaltyPoints;
 	}
+
+	@Override
+	public String toString() {
+		return "PatientDTO [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", penaltyPoints=" + penaltyPoints + "]";
+	}
 	
 }

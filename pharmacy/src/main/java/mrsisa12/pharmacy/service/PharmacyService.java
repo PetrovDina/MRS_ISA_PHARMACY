@@ -49,4 +49,9 @@ public class PharmacyService {
 	public Pharmacy findOneWithStorageItems(Long pharmacyId) {
 		return pharmacyRepository.findOneWithStorageItems(pharmacyId);
 	}
+	
+	public Pharmacy findOneByStorageItem(Long storageItemId) {
+		return pharmacyRepository.findOneByStorageItem(storageItemId);
+	}
+
 }

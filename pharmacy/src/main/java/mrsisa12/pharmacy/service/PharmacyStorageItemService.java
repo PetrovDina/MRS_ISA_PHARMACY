@@ -39,4 +39,10 @@ public class PharmacyStorageItemService {
 	public PharmacyStorageItem findOneWithItemPrices(Long pharmacyStorageItemId) {
 		return pharmacyStorageItemRepository.findOneWithItemPrices(pharmacyStorageItemId);
 	}
+	
+	public List<PharmacyStorageItem> findAllWithCurrentPriceByMedication(Long medicationId) {
+		return pharmacyStorageItemRepository.findAllWithCurrentPriceByMedication(medicationId);
+	}
+	
+	
 }

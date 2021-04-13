@@ -1,6 +1,6 @@
 <template>
     <div id="pharmaciesViewDiv">
-        <table class="table table-hover" >
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -30,14 +30,20 @@ export default {
     props: ["pharmacies"],
 
     data() {
-        return {};
+        return {
+            selected : {},
+        };
     },
 
     mounted() {
 
+
     },
 
-    methods: {},
+
+    methods: {
+
+    },
 };
 </script>
 
@@ -52,6 +58,13 @@ export default {
 thead { 
     /* background-color: rgba(15, 95, 72, 0.219); */
     background-color: rgba(32, 102, 75, 0.295)
+}
+
+
+
+.selected{
+    background-color:  rgba(155, 82, 151, 0.527);
+
 }
 </style>
 

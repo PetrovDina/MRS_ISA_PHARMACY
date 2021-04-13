@@ -21,6 +21,8 @@ import UserRegistrationPage from '@/views/UserRegistrationPage'
 import PharmacyAdminRegistrationPage from '@/views/pharmacyAdminRegistrationPage'
 import MedicationRegistrationPage from '@/views/medicationRegistrationPage'
 
+import MedicationReservationView from '@/views/MedicationReservationView'
+
 Vue.use(Router)
 
 export default new Router({
@@ -125,6 +127,13 @@ export default new Router({
             path: '/dispense-medication-page',
             name: 'DispenseMedicationPage',
             component: DispenseMedicationPage
+        },
+
+        {
+            path: '/medicationReservation',
+            name: 'MedicationReservationView',
+            props: true,
+            component: MedicationReservationView
         },
 
     ]

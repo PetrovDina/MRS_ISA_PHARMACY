@@ -60,5 +60,10 @@ public class PharmacyDTO {
 		this.rating = rating;
 	}
 
+	@Override
+	public String toString() {
+		return "PharmacyDTO [id=" + id + ", name=" + name + ", rating=" + rating + ", location=" + location + "]";
+	}
+
 	
 }

@@ -41,4 +41,8 @@ public class PatientService {
 		patientRepository.save(patient);
 	}
 
+	public Patient findOne(Long id) {
+		return patientRepository.findById(id).orElseGet(null);
+	}
+
 }

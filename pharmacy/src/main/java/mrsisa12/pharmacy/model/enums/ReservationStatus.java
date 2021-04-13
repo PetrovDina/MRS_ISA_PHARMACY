@@ -1,4 +1,4 @@
-package mrsisa12.pharmacy.model;
+package mrsisa12.pharmacy.model.enums;
 
 public enum ReservationStatus {
 	CREATED, //inicijalno kad se kreira

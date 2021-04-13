@@ -20,4 +20,8 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, Long>{
 	@Query("select s from Pharmacy s join fetch s.pharmacyStorageItems e where s.id =?1")
 	public Pharmacy findOneWithStorageItems(Long pharmacyId);
 	
+	@Query("select s from Pharmacy s join fetch s.pharmacyStorageItems e where e.id =?1")
+	public Pharmacy findOneByStorageItem(Long storageItemId);
+	
+
 }

@@ -13,11 +13,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mrsisa12.pharmacy.dto.PharmacyDTO;
 import mrsisa12.pharmacy.dto.PharmacyStorageItemDTO;
+import mrsisa12.pharmacy.dto.PharmacyWithMedicationPriceDTO;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.service.MedicationService;
@@ -77,6 +81,8 @@ public class PharmacyStorageItemController {
 		return new ResponseEntity<>(new PharmacyStorageItemDTO(pharmacyStorageItem), HttpStatus.OK);
 	}
 	
+	
+	
 	/*@PostMapping(consumes = "application/json")
 	public ResponseEntity<PharmacyStorageItemDTO> createPharmacyStorageItem(@RequestBody PharmacyStorageItemDTO pharmacyStorageItemDTO) {
 
@@ -126,5 +132,31 @@ public class PharmacyStorageItemController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+	}
+	
+	@GetMapping(value = "/allByMedicationAndQuantity")
+	public ResponseEntity<List<PharmacyWithMedicationPriceDTO>> findAllWithItemMedication(@RequestParam Long medicationId) {
+
+		List<PharmacyStorageItem> results = pharmacyStorageItemService.findAllWithCurrentPriceByMedication(medicationId);
+
+		List<PharmacyWithMedicationPriceDTO> dtoList = new ArrayList<PharmacyWithMedicationPriceDTO>();
+		
+		for (PharmacyStorageItem item : results) {
+//			System.out.println("------------------");
+//			System.out.println(item.getId() + " and " + item.getItemPrices().size());
+			Pharmacy pharmacy = pharmacyService.findOneByStorageItem(item.getId());
+			PharmacyWithMedicationPriceDTO dto = new PharmacyWithMedicationPriceDTO();
+			
+			dto.setPharmacy(new PharmacyDTO(pharmacy));
+			dto.setAvailableQuantity(item.getQuantity());
+			dto.setCurrentPrice(item.getItemPrices().get(0).getPrice());
+			
+			dtoList.add(dto);
+
+			
+		}
+
+		return new ResponseEntity<>(dtoList, HttpStatus.OK);
+
 	}
 }

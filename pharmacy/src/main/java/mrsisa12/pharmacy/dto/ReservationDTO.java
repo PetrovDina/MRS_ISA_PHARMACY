@@ -3,16 +3,16 @@ package mrsisa12.pharmacy.dto;
 import java.util.Date;
 
 import mrsisa12.pharmacy.model.Reservation;
-import mrsisa12.pharmacy.model.ReservationStatus;
+import mrsisa12.pharmacy.model.enums.ReservationStatus;
 
 public class ReservationDTO {
 
 
     private Long id;
-//	private PatientDTO patient; //todo odkomentarisati kada kreiramo PatientDTO klasu + getteri i setteri
+	private PatientDTO patient; //todo odkomentarisati kada kreiramo PatientDTO klasu + getteri i setteri
     private PharmacyDTO pharmacy;
 	private MedicationDTO medication;
-	private String quantity;
+	private int quantity;
 	private Date dueDate;
 	private ReservationStatus status;
 
@@ -24,6 +24,7 @@ public class ReservationDTO {
 
 	public ReservationDTO(Reservation r) {
 		this.id = r.getId();
+		this.patient = new PatientDTO(r.getPatient());
 		this.medication = new MedicationDTO(r.getMedication());
 		this.pharmacy = new PharmacyDTO(r.getPharmacy());
 		this.quantity = r.getQuantity();
@@ -38,6 +39,18 @@ public class ReservationDTO {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	
+
+	public PatientDTO getPatient() {
+		return patient;
+	}
+
+
+	public void setPatient(PatientDTO patient) {
+		this.patient = patient;
+	}
+
 
 	public MedicationDTO getMedication() {
 		return medication;
@@ -47,11 +60,11 @@ public class ReservationDTO {
 		this.medication = medication;
 	}
 
-	public String getQuantity() {
+	public int getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(String quantity) {
+	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
 
@@ -79,6 +92,13 @@ public class ReservationDTO {
 
 	public void setPharmacy(PharmacyDTO pharmacy) {
 		this.pharmacy = pharmacy;
+	}
+
+
+	@Override
+	public String toString() {
+		return "ReservationDTO [id=" + id + ", patient=" + patient + ", pharmacy=" + pharmacy + ", medication="
+				+ medication + ", quantity=" + quantity + ", dueDate=" + dueDate + ", status=" + status + "]";
 	}
 	
 	

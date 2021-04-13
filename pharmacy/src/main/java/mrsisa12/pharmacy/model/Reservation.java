@@ -1,21 +1,18 @@
 package mrsisa12.pharmacy.model;
 
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import mrsisa12.pharmacy.model.enums.ReservationStatus;
 
 @Entity
 public class Reservation {
@@ -24,9 +21,8 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
-//	@OneToOne
-//	@Column(name = "patient", nullable = false)
-//	private Patient patient; //todo odkomentarisati kada kreiramo Patient klasu + getteri i setteri
+	@OneToOne
+	private Patient patient; //todo odkomentarisati kada kreiramo Patient klasu + getteri i setteri
 
 	@ManyToOne(optional=false)
 	private Pharmacy pharmacy;	
@@ -35,7 +31,7 @@ public class Reservation {
 	private Medication medication;	
 	
 	@Column(name = "quantity", nullable = false)
-	private String quantity;
+	private int quantity;
 	
 	@Column(name = "dueDate", nullable = false)
 	private Date dueDate;
@@ -50,11 +46,11 @@ public class Reservation {
 	}
 	
 	
-	public Reservation(Long id, Pharmacy p, Medication med, String quanity, Date dueDate, ReservationStatus status) {
-		//todo dodati i pacijenta ovde
+	public Reservation(Long id, Patient pat, Pharmacy ph, Medication med, int quanity, Date dueDate, ReservationStatus status) {
 		super();
+		this.patient = pat;
 		this.id = id;
-		this.pharmacy = p;
+		this.pharmacy = ph;
 		this.medication = med;
 		this.quantity = quanity;
 		this.dueDate = dueDate;
@@ -64,6 +60,17 @@ public class Reservation {
 
 	public Long getId() {
 		return id;
+	}
+
+	
+
+	public Patient getPatient() {
+		return patient;
+	}
+
+
+	public void setPatient(Patient patient) {
+		this.patient = patient;
 	}
 
 
@@ -82,12 +89,12 @@ public class Reservation {
 	}
 
 
-	public String getQuantity() {
+	public int getQuantity() {
 		return quantity;
 	}
 
 
-	public void setQuantity(String quantity) {
+	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
 

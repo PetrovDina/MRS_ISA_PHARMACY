@@ -67,4 +67,10 @@ public class MedicationDTO {
 	public void setForm(MedicationForm form) {
 		this.form = form;
 	}
+
+	@Override
+	public String toString() {
+		return "MedicationDTO [id=" + id + ", name=" + name + ", manufacturer=" + manufacturer + ", prescriptionReq="
+				+ prescriptionReq + ", form=" + form + "]";
+	}
 }
