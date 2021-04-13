@@ -10,35 +10,34 @@ public class TimePeriod implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private Timestamp startTimestamp;
 	private Timestamp endTimestamp;
-	//private Date datum;
-	
+
 	public TimePeriod() {
-		
+
 	}
-	
+
 	public TimePeriod(Timestamp startTimestamp, Timestamp endTimestamp) {
 		super();
 		this.startTimestamp = startTimestamp;
 		this.endTimestamp = endTimestamp;
 	}
 
-
-
 	public Timestamp getStartTimestamp() {
 		return startTimestamp;
 	}
+
 	public void setStartTimestamp(Timestamp startTimestamp) {
 		this.startTimestamp = startTimestamp;
 	}
+
 	public Timestamp getEndTimestamp() {
 		return endTimestamp;
 	}
+
 	public void setEndTimestamp(Timestamp endTimestamp) {
 		this.endTimestamp = endTimestamp;
 	}
-	
-	
+
 }

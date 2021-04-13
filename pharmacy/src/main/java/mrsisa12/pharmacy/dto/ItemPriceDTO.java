@@ -1,18 +1,19 @@
 package mrsisa12.pharmacy.dto;
 
 import mrsisa12.pharmacy.model.ItemPrice;
+import mrsisa12.pharmacy.model.TimePeriod;
 
 public class ItemPriceDTO {
 
-	 private Long id;
-	 private double price;
-	 private boolean current;
-	 
-	 public ItemPriceDTO() {
-		 
-	 }
-	 
-	 public ItemPriceDTO(Long id, double price, boolean current) {
+	private Long id;
+	private double price;
+	private boolean current;
+	private TimePeriod timePeriod;
+
+	public ItemPriceDTO() {
+	}
+
+	public ItemPriceDTO(Long id, double price, boolean current) {
 		this();
 		this.id = id;
 		this.price = price;
@@ -20,8 +21,8 @@ public class ItemPriceDTO {
 	}
 
 	public ItemPriceDTO(ItemPrice itemPrice) {
-		 this(itemPrice.getId(), itemPrice.getPrice(), itemPrice.isCurrent());
-	 }
+		this(itemPrice.getId(), itemPrice.getPrice(), itemPrice.isCurrent());
+	}
 
 	public Long getId() {
 		return id;
@@ -46,4 +47,13 @@ public class ItemPriceDTO {
 	public void setCurrent(boolean current) {
 		this.current = current;
 	}
+
+	public TimePeriod getTimePeriod() {
+		return timePeriod;
+	}
+
+	public void setTimePeriod(TimePeriod timePeriod) {
+		this.timePeriod = timePeriod;
+	}
+
 }

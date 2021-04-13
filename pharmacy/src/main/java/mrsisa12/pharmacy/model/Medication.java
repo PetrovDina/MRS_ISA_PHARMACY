@@ -14,52 +14,51 @@ public class Medication {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "name", nullable = false)
 	private String name;
-	
+
 	@Column(name = "manufacturer", nullable = false)
 	private String manufacturer;
-	
+
 	@Column(name = "prescriptionReq", nullable = false)
 	private boolean prescriptionReq;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "form", nullable = false)
 	private MedicationForm form;
-	
-	
+
 	public Medication() {
-		
+
 	}
 
 	public Medication(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.manufacturer = manufacturer;
 		this.prescriptionReq = prescriptionReq;
 		this.form = form;
 	}
 
-
-
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	public void copyValues(Medication medication) {
 		this.name = medication.getName();
-		
+
 	}
 
 	public String getManufacturer() {
@@ -85,7 +84,5 @@ public class Medication {
 	public void setForm(MedicationForm form) {
 		this.form = form;
 	}
-	
-	
-	
+
 }
