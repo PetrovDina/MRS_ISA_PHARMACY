@@ -56,14 +56,13 @@ export default {
                 },
             });
         },
-    },
 
-    methods: {
-        clickedOnRow : function(med){
+                clickedOnRow : function(med){
             this.selectedMedication = med 
             this.$emit('clicked-on-row', med);
         }
     },
+
 };
 </script>
 
