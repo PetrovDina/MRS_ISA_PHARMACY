@@ -1,0 +1,116 @@
+<template>
+    <div id="login">
+		    <div class="container">
+		        <div id="registration-row" class="row justify-content-center align-items-center">
+		            <div id="registration-column" class="col-md-6">
+		                <div id="registration-box" class="col-md-12">  
+							<form onsubmit="return false;">     	
+		                        <h4 class="text-center text-info" style="margin-bottom: 40px;">Login</h4>
+
+		                        <div class="form-group">
+		                            <label for="username" class="text-info">Username:</label><br>
+		                            <input type="text" name="username" id="username" class="form-control" v-model="login.username" required=""
+									oninvalid="this.setCustomValidity('Enter username.')"  oninput="setCustomValidity('')">
+		                        </div>
+
+		                        <div class="form-group">
+		                            <label for="password" class="text-info">Password:</label><br>
+		                            <input type="text" name="password" id="password" class="form-control" required="" v-model="login.password"
+									oninvalid="this.setCustomValidity('Enter password.')"  oninput="setCustomValidity('')">
+		                        </div>
+
+                                <div class="form-group">
+									<button style="background: rgba(15, 95, 72, 0.95)" class="btn btn-info btn-md" value="Login" @click="loginMethod(login)">Login</button>
+								</div>
+
+							</form>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+</template>
+
+<script>
+
+import { client } from "@/client/axiosClient";
+
+export default {
+
+    name: "LoginPage",
+
+    data() {
+        return {
+			login: {
+                username: '',
+                password: ''
+            },
+
+            url: 'auth/login/'
+		};
+    },
+
+    methods: {
+
+        loginMethod: function(login)
+        {
+            if(this.isSomeFieldEmpty(login)) return;
+
+            //Parsiranje tokena - podesavanje uloge i cuvanje istog u localStorage
+
+            client({
+                url: this.url,
+                method: "POST",
+				data: login
+            })
+            .then((response) => 
+            {
+                console.log(response);
+                var payload = this.parseJwt(response.data.accessToken);
+                localStorage.user = payload.sub;
+                this.$store.commit("changeLoggedUserRole", payload.role);
+                this.homeRedirect();
+            }).
+			catch((response) => 
+            {
+                alert("Wrong username/password");
+            });
+            
+        },
+
+        isSomeFieldEmpty: function(login)
+		{
+			if(login.username == '') return true;
+			if(login.password == '') return true;
+			return false;
+		},
+
+        parseJwt: function(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload);
+        },
+
+		homeRedirect()
+		{
+			this.$router
+                .push({ name: "Home" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+		}
+
+    }
+
+
+}
+
+</script>

@@ -1,0 +1,61 @@
+package mrsisa12.pharmacy.controller;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import mrsisa12.pharmacy.dto.LoginDTO;
+import mrsisa12.pharmacy.dto.UserTokenStateDTO;
+import mrsisa12.pharmacy.model.User;
+import mrsisa12.pharmacy.service.UserService;
+import mrsisa12.pharmacy.utils.TokenUtils;
+
+@RestController
+@RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+public class UserController {
+
+	@Autowired
+	private TokenUtils tokenUtils;
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private UserService userService;
+
+	// Prvi endpoint koji pogadja korisnik kada se loguje.
+	// Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
+	@PostMapping("/login")
+	public ResponseEntity<UserTokenStateDTO> createAuthenticationToken(
+			@RequestBody LoginDTO loginRequest, HttpServletResponse response) {
+
+		// Ukoliko kredencijali nisu ispravni, logovanje nece biti uspesno, desice se
+		// AuthenticationException
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+				loginRequest.getUsername(), loginRequest.getPassword()));
+
+		// Ukoliko je autentifikacija uspesna, ubaci korisnika u trenutni security
+		// kontekst
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		// Kreiraj token za tog korisnika
+		User user = (User) authentication.getPrincipal();
+		// Potrebno srediti uloge - koje slati iz liste ili slati celu listu
+		String jwt = tokenUtils.generateToken(user.getUsername(), user.getRoles().get(0).getName().substring(5));
+		int expiresIn = tokenUtils.getExpiredIn();
+
+		// Vrati token kao odgovor na uspesnu autentifikaciju
+		return ResponseEntity.ok(new UserTokenStateDTO(jwt, expiresIn));
+	}
+
+}

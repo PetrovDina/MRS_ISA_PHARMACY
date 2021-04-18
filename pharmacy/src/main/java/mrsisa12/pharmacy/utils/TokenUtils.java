@@ -1,6 +1,7 @@
 package mrsisa12.pharmacy.utils;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import mrsisa12.pharmacy.model.User;
+import mrsisa12.pharmacy.model.UserRole;
 
 // Utility klasa za rad sa JSON Web Tokenima
 @Component
@@ -55,8 +57,10 @@ public class TokenUtils {
 	 * @param username Korisničko ime korisnika kojem se token izdaje
 	 * @return JWT token
 	 */
-	public String generateToken(String username) {
-		return Jwts.builder()
+	public String generateToken(String username, String role) {
+		//Potencijalno potrebno dodati vise uloga - moguce preko mape
+		String token = Jwts.builder()
+				.claim("role", role)
 				.setIssuer(APP_NAME)
 				.setSubject(username)
 				.setAudience(generateAudience())
@@ -64,6 +68,7 @@ public class TokenUtils {
 				.setExpiration(generateExpirationDate())
 				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
 		
+		return token;
 
 		// moguce je postavljanje proizvoljnih podataka u telo JWT tokena pozivom funkcije .claim("key", value), npr. .claim("role", user.getRole())
 	}
