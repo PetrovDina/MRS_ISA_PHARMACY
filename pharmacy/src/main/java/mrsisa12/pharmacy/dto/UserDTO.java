@@ -3,7 +3,6 @@ package mrsisa12.pharmacy.dto;
 import mrsisa12.pharmacy.model.Location;
 import mrsisa12.pharmacy.model.User;
 import mrsisa12.pharmacy.model.enums.Gender;
-import mrsisa12.pharmacy.model.enums.UserRole;
 
 public class UserDTO 
 {
@@ -18,12 +17,11 @@ public class UserDTO
 	private String lastName;
 	private Location location;
 	private Gender gender;
-	private UserRole userRole;
 	
 	public UserDTO() { }
 	
 	public UserDTO(Long id, String username, String password, String email, String firstName, String lastName, Location location,
-			Gender gender, UserRole userRole) {
+			Gender gender) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -33,12 +31,11 @@ public class UserDTO
 		this.lastName = lastName;
 		this.location = location;
 		this.gender = gender;
-		this.setUserRole(userRole);
 	}
 	
 	public UserDTO(User user)
 	{
-		this(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getLocation(), user.getGender(), user.getUserRole());
+		this(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getLocation(), user.getGender());
 	}
 
 	public Long getId() {
@@ -104,15 +101,5 @@ public class UserDTO
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-
-	public UserRole getUserRole() {
-		return userRole;
-	}
-
-	public void setUserRole(UserRole userRole) {
-		this.userRole = userRole;
-	}
-	
-	
 
 }
