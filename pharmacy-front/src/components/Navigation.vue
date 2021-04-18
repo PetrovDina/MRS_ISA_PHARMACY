@@ -21,6 +21,8 @@
         <!--system admin-->
         <div v-if="isUserType('SYSTEM_ADMIN')">
             <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
+            <a @click="pharmacyAdminRegistrationRedirect()" class="registerNav">Pharmacy Admin registration</a>
+            <a @click="medicationRegistrationRedirect()" class="registerNav">Medication Registration</a>
         </div>
 
         <!--patient-->
@@ -61,7 +63,6 @@ export default {
     },
 
     props: {
-        typeUser: String,
     },
 
     methods: {
@@ -80,7 +81,7 @@ export default {
         loginRedirect: function () {
             //TODO: promeni putanju kasnije kada budu kreirane kommponente
 
-            this.$router.push({ name: "Home" }).catch((err) => {
+            this.$router.push({ name: "LoginPage" }).catch((err) => {
                 // Ignore the vuex err regarding  navigating to the page they are already on.
                 if (err.name != "NavigationDuplicated") {
                     // But print any other errors to the console
@@ -183,6 +184,31 @@ export default {
                     }
                 });
         },
+
+        pharmacyAdminRegistrationRedirect: function () {
+            this.$router
+                .push({ name: "PharmacyAdminRegistrationPage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        medicationRegistrationRedirect: function () {
+            this.$router
+                .push({ name: "MedicationRegistrationPage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
         testPharmacyView: function(){
             this.$router
                 .push({ name: "PharmacyView" })

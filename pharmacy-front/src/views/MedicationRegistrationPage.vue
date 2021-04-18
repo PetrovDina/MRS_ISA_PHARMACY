@@ -6,7 +6,7 @@
 		                <div id="registration-box" class="col-md-12">  
 							<form onsubmit="return false;">  
 
-		                        <h4 class="text-center text-info" style="margin-bottom: 40px;">Registration</h4>
+		                        <h4 class="text-center text-info" style="margin-bottom: 40px;">Medication Registration</h4>
 		                        <div class="form-group">
 		                            <label for="name" class="text-info">Name:</label><br>
 		                            <input type="text"  name="name" id="name" class="form-control" v-model="registration.name" required=""
