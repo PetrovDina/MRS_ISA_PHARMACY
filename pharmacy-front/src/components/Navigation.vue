@@ -1,17 +1,32 @@
 <template>
     <div class="topnav">
-        <!--unauthenticated user-->
+
+        <!--unauthenticated user (guest) -->
         <div v-if="isUserType('GUEST')">
-            <a @click="homeRedirect()" class="homeNav">{{ typeUser }} Home</a>
+            <a @click="homeRedirect()" class="homeNav">{{ this.$store.getters.getLoggedUserRole }} Home</a>
             <a @click="loginRedirect()" class="loginNav">Log in</a>
             <a @click="registerRedirect()" class="registerNav">Register</a>
 
-            <a @click="testLogin()" class="testNav">Test pharmacist login</a>
+            <!--TODO Delete later-->
+            <a @click="testLogin()" class="testNav">Test pharmacist login</a> 
 
-            <a @click="testPharmacyView()" class="testPharmacy">Pharmacy view</a>
+
+        </div>
+
+        <!--pharmacy admin-->
+        <div v-if="isUserType('PHARMACY_ADMIN')">
             <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
-            <a @click="pharmacyAdminRegisterRedirect()" class="registerNav">Pharmacy Admin Registration</a>
-            <a @click="patientRedirect()" class="patientNav">Patient home page</a>
+        </div>
+
+        <!--system admin-->
+        <div v-if="isUserType('SYSTEM_ADMIN')">
+            <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
+        </div>
+
+        <!--patient-->
+        <div v-if="isUserType('PATIENT')">
+            <a @click="homeRedirect()" class="homeNav">{{ this.$store.getters.getLoggedUserType }} Home</a>
+            <a @click="patientRedirect()" class="patientNav">Options</a> -->
 
         </div>
 
@@ -21,13 +36,14 @@
             <a @click="dermProfileRedirect()">My Profile</a>
         </div>
 
+        <!--pharmacist-->
         <div v-if="isUserType('PHARMACIST')">
             <a @click="pharmacistHomeRedirect()">PHARMACIST Home</a>
             <a @click="dermProfileRedirect()">My Profile</a>
         </div>
 
-        <!--logout nek ide poslednji uvek i ide svim ulogovanim-->
-        <a
+        <!-- log out -->
+        <a v-if="!isUserType('GUEST')"
             @click="logoutRedirect()"
             v-show="!isUserType('GUEST')"
             class="logoutNav"
@@ -49,13 +65,6 @@ export default {
     },
 
     methods: {
-        //NAPOMENA:
-        //Za svako dugme iz NAVIGACIJE mora da se radi ovaj catch pri rutiranju ispod!
-        //U suprotnom, ako se napise samo standardno "this.$router.push({ name: 'ImeKomponente' })" moze doci do NavigationDuplicated greske
-        //Ona se desava ako je npr. korisnik vec na /Test putanji i oce da klikne na dugme koje vodi na istu tu putanju
-        //Za ostale promene ruta koje nisu u navigaciji ne morate to pisati, nego samo "this.$router.push({ name: 'ImeKomponente' })"
-        //Nikako ne koristiti window.location.href ili bilo sta na tu foru jer to sluzi za klasicne Web aplikacije
-        //Vue je single page i menjanjem href-a dolazi do refresha a to nije poenta single page aplikacije!
 
         homeRedirect: function () {
             //TODO: promeni putanju kasnije kada budu kreirane kommponente
@@ -110,7 +119,7 @@ export default {
 
         logoutRedirect: function () {
             //SIMULACIJA LOGOUTA!
-            this.$root.$emit("type-changed", "GUEST");
+            this.$store.commit("changeLoggedUserRole", "GUEST")
 
             this.$router.push({ name: "Home" }).catch((err) => {
                 // Ignore the vuex err regarding  navigating to the page they are already on.
@@ -122,7 +131,7 @@ export default {
         },
 
         testLogin: function () {
-            this.$root.$emit("type-changed", "PHARMACIST");
+            this.$store.commit("changeLoggedUserRole", "PHARMACIST")
 
             this.$router
                 .push({ name: "PharmacistHomePage" })
@@ -160,8 +169,7 @@ export default {
         },
 
         isUserType: function (ut) {
-            console.log("Navigation check");
-            return this.$props.typeUser === ut;
+            return this.$store.getters.getLoggedUserRole === ut;
         },
 
         pharmacyRegisterRedirect: function () {
@@ -231,6 +239,7 @@ export default {
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+    z-index: 999;
 }
 
 .topnav a:hover {

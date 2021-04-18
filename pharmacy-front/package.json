@@ -18,7 +18,9 @@
     "vue": "^2.5.2",
     "vue-axios": "^3.2.4",
     "vue-router": "^3.0.1",
-    "vuetify": "^2.4.8"
+    "vuetify": "^2.4.8",
+    "vuex": "^3.6.2",
+    "vuex-persistedstate": "^4.0.0-beta.3"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
