@@ -61,7 +61,6 @@ export default {
     },
 
     props: {
-        typeUser: String,
     },
 
     methods: {

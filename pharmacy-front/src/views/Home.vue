@@ -11,7 +11,13 @@
             </Tab>
 
             <Tab :isSelected="selected === 'Pharmacies'">
-                <PharmaciesView :pharmacies="pharmacies"></PharmaciesView>
+                <SearchBar
+                    :placeHolder="searchPlaceholder"
+                    @search-performed="searchPerformed"
+                />
+                <PharmaciesView
+                    :pharmacies="pharmacySearchResults"
+                ></PharmaciesView>
             </Tab>
         </TabNav>
     </div>
@@ -21,6 +27,7 @@
 import { client } from "@/client/axiosClient";
 import MedicationsView from "../components/MedicationsView";
 import PharmaciesView from "../components/PharmaciesView";
+import SearchBar from "../components/SearchBar";
 
 import TabNav from "../components/TabNav.vue";
 import Tab from "../components/Tab.vue";
@@ -33,14 +40,18 @@ export default {
         PharmaciesView,
         TabNav,
         Tab,
+        SearchBar,
     },
 
     data() {
         return {
             selected: "Medications",
             msg: "Welcome to Team12 pharmacy",
-            medications : [],
-            pharmacies: []
+            medications: [],
+            pharmacies: [],
+            searchPlaceholder: "Search pharmacies...",
+            searchQuery: "",
+            pharmacySearchResults: [],
             // medications: [
             //     {
             //         id: 1,
@@ -108,19 +119,61 @@ export default {
         setSelected(tab) {
             this.selected = tab;
         },
+
+        searchPerformed(text) {
+            this.searchQuery = text;
+            // client({
+            //     url: "pharmacy/searchPharmacies",
+            //     params: {query: this.searchQuery},
+            //     method: "GET",
+            // }).then((response) => (this.pharmacies = response.data));
+
+            let self = this;
+            this.pharmacySearchResults = this.pharmacies.filter(function (
+                pharmacy
+            ) {
+                return (
+                    pharmacy.name
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase()) ||
+                    pharmacy.rating
+                        .toString()
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase()) ||
+                    pharmacy.location.city
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase()) ||
+                    pharmacy.location.zipcode
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase()) ||
+                    pharmacy.location.street
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase()) ||
+                    pharmacy.location.streetNum
+                        .toString()
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase()) ||
+                    pharmacy.location.city
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase())
+                );
+            });
+        },
     },
 
     mounted() {
+        client({
+            url: "med/all",
+            method: "GET",
+        }).then((response) => (this.medications = response.data));
 
         client({
-                url: "med/all",
-                method: "GET",
-            }).then((response) => (this.medications = response.data));
-
-        client({
-                url: "pharmacy/all",
-                method: "GET",
-            }).then((response) => (this.pharmacies = response.data));
+            url: "pharmacy/all",
+            method: "GET",
+        }).then((response) => {
+            this.pharmacies = response.data;
+            this.pharmacySearchResults = this.pharmacies;
+        });
     },
 };
 </script>
@@ -130,5 +183,4 @@ export default {
 #homeDiv {
     margin-top: 5vh;
 }
-
 </style>

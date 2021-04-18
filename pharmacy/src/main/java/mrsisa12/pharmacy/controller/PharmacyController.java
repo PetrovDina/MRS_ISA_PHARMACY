@@ -43,6 +43,19 @@ public class PharmacyController {
 
 		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
 	}
+	
+	@GetMapping(value = "/searchPharmacies")
+	public ResponseEntity<List<PharmacyDTO>> searchPharmacies(@RequestParam String query) {
+
+		List<Pharmacy> pharmacies = pharmacyService.findByQuery(query);
+
+		List<PharmacyDTO> pharmaciesDTO = new ArrayList<>();
+		for (Pharmacy m : pharmacies) {
+			pharmaciesDTO.add(new PharmacyDTO(m));
+		}
+
+		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
+	}
 
 	@GetMapping
 	public ResponseEntity<List<PharmacyDTO>> getPharmaciesPage(Pageable page) {

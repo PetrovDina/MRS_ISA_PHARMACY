@@ -54,4 +54,8 @@ public class PharmacyService {
 		return pharmacyRepository.findOneByStorageItem(storageItemId);
 	}
 
+	public List<Pharmacy> findByQuery(String query) {
+		return pharmacyRepository.findByQuery(query);
+	}
+
 }

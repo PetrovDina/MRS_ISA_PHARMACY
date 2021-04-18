@@ -44,4 +44,5 @@ export default {
         color: rgba(15, 95, 72, 0.95);
     }
 
+
 </style>

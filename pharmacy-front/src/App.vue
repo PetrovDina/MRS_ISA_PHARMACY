@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <Navigation :typeUser="typeUser"></Navigation>
+        <Navigation></Navigation>
         <router-view />
     </div>
 
