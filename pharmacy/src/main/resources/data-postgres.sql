@@ -28,10 +28,25 @@ insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) value
 insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) values (430, true, '{ "startTimestamp": "2021-04-06T23:28:14.332", "endTimestamp": null}', 5);
 insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) values (370, true, '{ "startTimestamp": "2021-04-06T00:28:14.332", "endTimestamp": null}', 6);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, userrole, deleted) values ('a', 'a', 'a@gmail.com', 'Admin', 'Adminic', 1, 'MALE', 'ACTIVATED', 'SYSTEM_ADMIN', 'False');
+ -- TREBA DA SE UBACE ROLE I BLA BLA NADALJE
+INSERT INTO role (name) VALUES ('ROLE_GUEST');
+INSERT INTO role (name) VALUES ('ROLE_SYSTEM_ADMIN');
+INSERT INTO role (name) VALUES ('ROLE_PATIENT');
+INSERT INTO role (name) VALUES ('ROLE_DERMATOLOGIST');
+INSERT INTO role (name) VALUES ('ROLE_PHARMACIST');
+INSERT INTO role (name) VALUES ('ROLE_PHARMACY_ADMIN');
+INSERT INTO role (name) VALUES ('ROLE_SUPPLIER');
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('a', '$2a$10$sIy9Y20mNxgc3o4TX9/xqef9DOmxuSx57aVcWQlXYdSTS1p7OlPQy', 'a@gmail.com', 'Admin', 'Adminic', 1, 'MALE', 'ACTIVATED', 'False');
 insert into systemadmin (id) values (1);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, userrole, deleted) values ('p', 'p', 'p@gmail.com', 'Pac', 'Pacic', 1, 'MALE', 'ACTIVATED', 'PATIENT', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('p', '$2a$10$TsLBYbX6L4kq0myaensp3uKXp8GH2Bv/d8ccqC/yz3Nv4QY59ati6', 'p@gmail.com', 'Pac', 'Pacic', 1, 'MALE', 'ACTIVATED', 'False');
 insert into patient (id, penaltypoints) values (2, 123);
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('pa', '$2a$10$TsLBYbX6L4kq0myaensp3uKXp8GH2Bv/d8ccqC/yz3Nv4QY59ati6', 'apotekaAdmin@gmail.com', 'Admin', 'Apotekeic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into pharmacyadmin (id) values (3);
+
+INSERT INTO user_role (user_id, role_id) VALUES (1, 2); -- user-u dodeljujemo rolu USER
+INSERT INTO user_role (user_id, role_id) VALUES (2, 3); -- admin-u dodeljujemo rolu USER
 
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 1, 1, 3, '1.25.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
