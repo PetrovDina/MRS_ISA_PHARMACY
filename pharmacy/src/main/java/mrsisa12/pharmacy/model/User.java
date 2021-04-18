@@ -2,28 +2,40 @@ package mrsisa12.pharmacy.model;
 
 import static javax.persistence.InheritanceType.JOINED;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import mrsisa12.pharmacy.model.enums.Gender;
-import mrsisa12.pharmacy.model.enums.UserRole;
 import mrsisa12.pharmacy.model.enums.UserStatus;
-
-
 
 @Entity
 @Table(name = "system_user")
 @Inheritance(strategy=JOINED)
-public abstract class User {
+public abstract class User implements UserDetails {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id", unique=true, nullable=false)
@@ -55,9 +67,11 @@ public abstract class User {
 	@Enumerated(EnumType.STRING)
 	private UserStatus activeStatus;
 	
-	@Column(name = "userRole", unique=false, nullable=false)
-	@Enumerated(EnumType.STRING)
-	private UserRole userRole;
+	@ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private List<UserRole> roles;
 	
 	@Column(name = "deleted", unique=false, nullable=false)
 	private boolean deleted;
@@ -65,7 +79,7 @@ public abstract class User {
 	public User() { }
 	
 	public User(Long id, String username, String password, String email, String firstName, String lastName, Location location, Gender gender,
-			UserStatus activeStatus, UserRole userRole, boolean deleted) {
+			UserStatus activeStatus, List<UserRole> userRoles, boolean deleted) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -76,7 +90,7 @@ public abstract class User {
 		this.location = location;
 		this.gender = gender;
 		this.activeStatus = activeStatus;
-		this.userRole = userRole;
+		this.roles = userRoles;
 		this.deleted = deleted;
 	}
 	
@@ -168,13 +182,12 @@ public abstract class User {
 		this.activeStatus = activeStatus;
 	}
 	
-	
-	public UserRole getUserRole() {
-		return userRole;
+	public List<UserRole> getRoles() {
+		return this.roles;
 	}
 
-	public void setUserRole(UserRole userRole) {
-		this.userRole = userRole;
+	public void setRoles(List<UserRole> roles) {
+		this.roles = roles;
 	}
 
 	public boolean isDeleted() {
@@ -184,9 +197,29 @@ public abstract class User {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
-	
-	
-	
-	
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return this.roles;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return !this.isDeleted();
+	}
 }

@@ -16,13 +16,17 @@ import mrsisa12.pharmacy.dto.UserDTO;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.enums.UserStatus;
 import mrsisa12.pharmacy.service.PharmacyAdminService;
+import mrsisa12.pharmacy.service.RoleService;
 
 @RestController
 @RequestMapping("/pharmacyAdmin")
-public class PharmacyAdminControler 
+public class PharmacyAdminController 
 {
 	@Autowired
 	private PharmacyAdminService pharmacyAdminService;
+	
+	@Autowired
+	private RoleService roleService;
 	
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<UserDTO>> getAllPharmacyAdmins() {
@@ -49,7 +53,7 @@ public class PharmacyAdminControler
 		pa.setLocation(pharmacyAdminDTO.getLocation());
 		pa.setGender(pharmacyAdminDTO.getGender());
 		pa.setActiveStatus(UserStatus.UNVERIFIED);
-		pa.setUserRole(pharmacyAdminDTO.getUserRole());
+		pa.setRoles(roleService.findByName("ROLE_PHARMACY_ADMIN"));
 		pa.setDeleted(false);
 		
 		pharmacyAdminService.save(pa);
