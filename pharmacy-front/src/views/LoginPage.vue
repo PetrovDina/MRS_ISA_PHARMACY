@@ -68,6 +68,9 @@ export default {
                 console.log(response);
                 var payload = this.parseJwt(response.data.accessToken);
                 localStorage.user = payload.sub;
+                localStorage.setItem("USER_TOKEN", response.data.accessToken);
+                localStorage.setItem("USER_TYPE", payload.role);
+                localStorage.setItem("USER_EXPIRES", response.data.expiresIn)
                 this.$store.commit("changeLoggedUserRole", payload.role);
                 this.homeRedirect();
             }).

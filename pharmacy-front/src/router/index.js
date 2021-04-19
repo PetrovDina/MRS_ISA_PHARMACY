@@ -23,6 +23,8 @@ import LoginPage from '@/views/LoginPage'
 
 import MedicationReservationView from '@/views/MedicationReservationView'
 
+import * as CheckUser from '../router/CheckUser.js'
+
 Vue.use(Router)
 
 export default new Router({
@@ -55,49 +57,119 @@ export default new Router({
         {
             path: '/calendar-page',
             name: 'CalendarPage',
-            component: CalendarPage
+            component: CalendarPage,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PHARMACIST' || this.userType == 'DERMATOLOGIST'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
         },
 
         {
             path: '/',
             name: 'DermatologistPage',
-            component: DermatologistPage
+            component: DermatologistPage,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(this.userType == 'DERMATOLOGIST'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
         },
 
         {
             path: '/new-appointment-page',
             name: 'NewAppointmentPage',
-            component: NewAppointmentPage
+            component: NewAppointmentPage,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PHARMACIST' || this.userType == 'DERMATOLOGIST'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
         },
 
         {
             path: '/request-absence-page',
             name: 'RequestAbsencePage',
-            component: RequestAbsencePage
+            component: RequestAbsencePage,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PHARMACIST' || this.userType == 'DERMATOLOGIST'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
         },
 
         {
             path: '/search-patients-page',
             name: 'SearchPatientsPage',
-            component: SearchPatientsPage
+            component: SearchPatientsPage,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PHARMACIST' || this.userType == 'DERMATOLOGIST'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
         },
 
         {
             path: '/derm-home',
             name: 'DermatologistHomePage',
-            component: DermatologistHomePage
+            component: DermatologistHomePage,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(this.userType == 'DERMATOLOGIST'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
         },
 
         {
             path: '/patientHomePage',
             name: 'PatientHomePage',
-            component: PatientHomePage
+            component: PatientHomePage,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(this.userType == 'PATIENT'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
         },
 
         {
             path: '/userRegistrationPage',
             name: 'UserRegistrationPage',
-            component: UserRegistrationPage    
+            component: UserRegistrationPage,
+            beforeEnter: function(to, from, next){
+                if(CheckUser.isUserLoggedIn()){
+                  ({path: '/'}).catch(()=>{});
+                }else{
+                  next();
+                }
+              }    
         },
 
         {
@@ -115,13 +187,31 @@ export default new Router({
         {
             path: '/pharmacist-home-page',
             name: 'PharmacistHomePage',
-            component: PharmacistHomePage
+            component: PharmacistHomePage/*,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PHARMACIST'){
+                  next();
+                }
+                else{
+                    ({path: '/'});
+                }
+              }*/
         },
 
         {
             path: '/dispense-medication-page',
             name: 'DispenseMedicationPage',
-            component: DispenseMedicationPage
+            component: DispenseMedicationPage/*,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PHARMACIST'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }*/
         },
 
         {
@@ -134,7 +224,15 @@ export default new Router({
         {
             path: '/LoginPage',
             name: 'LoginPage',
-            component: LoginPage    
+            component: LoginPage,
+            beforeEnter: function(to, from, next){
+                if(CheckUser.isUserLoggedIn()){
+                  ({path: '/'}).catch(()=>{});
+                }else{
+                  next();
+                }
+              }
+
         },
 
     ]

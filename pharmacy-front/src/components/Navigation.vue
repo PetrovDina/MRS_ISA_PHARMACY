@@ -121,6 +121,9 @@ export default {
         logoutRedirect: function () {
             //SIMULACIJA LOGOUTA!
             this.$store.commit("changeLoggedUserRole", "GUEST")
+            localStorage.removeItem("USER_TOKEN");
+            localStorage.removeItem("USER_TYPE");
+            localStorage.removeItem("USER_EXPIRES")
 
             this.$router.push({ name: "Home" }).catch((err) => {
                 // Ignore the vuex err regarding  navigating to the page they are already on.
