@@ -1,24 +1,21 @@
 <template>
-    <h1>{{ msg }}</h1>
+    <SearchReservationsView class="main-container"/>
 </template>
 
 <script>
+import SearchReservationsView from "../components/SearchReservationsView.vue";
 
 export default {
     name: "DispenseMedicationPage",
-    data() {
-        return {
-            msg: "Dispense medication"
-        };
-    },
-
-    methods: {},
-
-    mounted() {
-    },
+    components: {
+            SearchReservationsView
+        }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.main-container{
+        margin: 5%;
+    }
 </style>

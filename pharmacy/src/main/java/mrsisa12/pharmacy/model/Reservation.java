@@ -128,7 +128,15 @@ public class Reservation {
 		this.pharmacy = pharmacy;
 	}
 	
-	
+	public void update(Reservation reservation){
+	    this.id = reservation.getId();
+	    this.patient = reservation.getPatient();
+		this.pharmacy = reservation.getPharmacy();
+		this.medication = reservation.getMedication();
+		this.quantity = reservation.getQuantity();
+		this.dueDate = reservation.getDueDate();
+		this.status = reservation.getStatus();
+	}
 	
 
 }

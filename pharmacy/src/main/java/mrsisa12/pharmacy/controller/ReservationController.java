@@ -1,6 +1,7 @@
 package mrsisa12.pharmacy.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.ReservationDTO;
+import mrsisa12.pharmacy.dto.ReservationPickupDTO;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -117,4 +120,40 @@ public class ReservationController {
 		reservation = reservationService.save(reservation);
 		return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.CREATED);
 	}
+	
+	@GetMapping(value = "/pickup/{id}")
+    public ResponseEntity<ReservationPickupDTO> getReservationForPickup(@PathVariable String id){
+        //long pharmacyId = user.getPharmacy().getId();
+		//TODO dodati proveru apoteke izm rezervacije i farmaceuta
+
+		List<Reservation> reservations = reservationService.findAll();
+		
+        Reservation reservation = null;
+        for (Reservation res : reservations) {
+			if(res.getId().equals(Long.parseLong(id))) {
+				reservation = res;
+			}
+		}
+        if(reservation != null) {
+        	if(reservation.getDueDate().before(new Date(System.currentTimeMillis() + 3600 * 24000))) {
+                reservation.setStatus(ReservationStatus.EXPIRED);
+        		reservationService.update(reservation);}
+            return new ResponseEntity<>(new ReservationPickupDTO(reservation), HttpStatus.OK);}
+        else
+            return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+	
+	@PostMapping(value = "/confirm-pickup")
+    public ResponseEntity<Boolean> confirmPickup(@RequestBody String id){
+		String sub = id.substring(18, id.length()-2);
+        try {
+            boolean success = reservationService.confirmPickup(Long.parseLong(sub));
+            if(success)
+                return new ResponseEntity<>(success, HttpStatus.OK);
+            else
+                return ResponseEntity.notFound().build();
+        } catch (ObjectOptimisticLockingFailureException e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

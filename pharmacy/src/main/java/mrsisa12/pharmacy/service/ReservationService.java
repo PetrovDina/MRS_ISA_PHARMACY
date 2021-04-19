@@ -1,5 +1,6 @@
 package mrsisa12.pharmacy.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import mrsisa12.pharmacy.model.Reservation;
+import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.repository.ReservationRepository;
 
 @Service
@@ -39,6 +41,30 @@ public class ReservationService {
 	public List<Reservation> findAllByPharmacy(Long pharmacyId) {
 		return reservationRepository.findAllByPharmacy(pharmacyId);
 	}
+	
+	public Reservation update(Reservation reservation) {
+        Reservation updatedReservation = reservationRepository.findById(reservation.getId()).orElseGet(null);
+        updatedReservation.update(reservation);
+        updatedReservation = reservationRepository.save(updatedReservation);
+
+        return updatedReservation;
+    }
+	
+    public boolean confirmPickup(Long id)  {
+        String emailBody = "This email is confirmation that you have successfully picked up order #";
+        Reservation toUpdate =  findOne(id);
+        if(toUpdate != null && !toUpdate.getStatus().equals(ReservationStatus.COMPLETED) &&
+                !(toUpdate.getDueDate().before(new Date()) && toUpdate.getDueDate().after(new Date(System.currentTimeMillis() - 3600 * 24000)))) {
+
+            toUpdate.setStatus(ReservationStatus.COMPLETED);
+            update(toUpdate);
+
+            //TODO email
+            return true;
+
+        }
+        return false;
+    }
 	
 //	public List<Reservation> findAllByName(String name) {
 //		return reservationRepository.findAllByName(name);
