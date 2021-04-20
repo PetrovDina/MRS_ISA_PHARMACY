@@ -57,6 +57,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 					// 3. Preuzimanje korisnika na osnovu username-a
 					UserDetails userDetails = userService.loadUserByUsername(username);
 					
+					System.err.println("-----------------------------------------");
+					System.err.println("Logged in: " + userDetails.getUsername());
+					System.err.println("-----------------------------------------");
+					
 					// 4. Provera da li je prosledjeni token validan
 					if (tokenUtils.validateToken(authToken, userDetails)) {
 						

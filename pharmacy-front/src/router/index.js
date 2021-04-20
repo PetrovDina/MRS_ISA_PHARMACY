@@ -60,7 +60,7 @@ export default new Router({
             component: CalendarPage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST' || this.userType == 'DERMATOLOGIST'){
+                if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
                   next();
                 }
                 else{
@@ -75,7 +75,7 @@ export default new Router({
             component: DermatologistPage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
-                if(this.userType == 'DERMATOLOGIST'){
+                if(user.userType == 'DERMATOLOGIST'){
                   next();
                 }
                 else{
@@ -90,7 +90,7 @@ export default new Router({
             component: NewAppointmentPage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST' || this.userType == 'DERMATOLOGIST'){
+                if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
                   next();
                 }
                 else{
@@ -105,7 +105,7 @@ export default new Router({
             component: RequestAbsencePage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST' || this.userType == 'DERMATOLOGIST'){
+                if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
                   next();
                 }
                 else{
@@ -120,7 +120,7 @@ export default new Router({
             component: SearchPatientsPage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST' || this.userType == 'DERMATOLOGIST'){
+                if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
                   next();
                 }
                 else{
@@ -135,7 +135,7 @@ export default new Router({
             component: DermatologistHomePage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
-                if(this.userType == 'DERMATOLOGIST'){
+                if(user.userType == 'DERMATOLOGIST'){
                   next();
                 }
                 else{
@@ -150,7 +150,7 @@ export default new Router({
             component: PatientHomePage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
-                if(this.userType == 'PATIENT'){
+                if(user.userType == 'PATIENT'){
                   next();
                 }
                 else{

@@ -36,7 +36,7 @@ public class ReservationPickupDTO {
     
     private void checkValidity() {
     	Date d = new Date();
-        if(this.pickUpDate.before(new Date(System.currentTimeMillis() + 3600 * 24000)))
+        if(this.pickUpDate.before(new Date(System.currentTimeMillis() + 3600 * 24000)) || !this.status.equals("CREATED"))
             this.valid = false;
         else
             this.valid = true;
