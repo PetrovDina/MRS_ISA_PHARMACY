@@ -15,7 +15,7 @@
 
 		                        <div class="form-group">
 		                            <label for="password" class="text-info">Password:</label><br>
-		                            <input type="text" name="password" id="password" class="form-control" required="" v-model="login.password"
+		                            <input type="password" name="password" id="password" class="form-control" required="" v-model="login.password"
 									oninvalid="this.setCustomValidity('Enter password.')"  oninput="setCustomValidity('')">
 		                        </div>
 
