@@ -6,8 +6,14 @@
             :selected="selected"
             @selected="setSelected"
         >
+            
             <Tab :isSelected="selected === 'Medications'">
-                <MedicationsView :medications="medications"></MedicationsView>
+                <SearchBar
+                    :placeHolder="medicationSearchPlaceholder"
+                    @search-performed="medicationSearchPerformed"
+                />
+
+                <MedicationsView :medications="medicationSearchResults"></MedicationsView>
             </Tab>
 
             <Tab :isSelected="selected === 'Pharmacies'">
@@ -50,8 +56,10 @@ export default {
             medications: [],
             pharmacies: [],
             searchPlaceholder: "Search pharmacies...",
+            medicationSearchPlaceholder: "Search medication...",
             searchQuery: "",
             pharmacySearchResults: [],
+            medicationSearchResults: [],
             // medications: [
             //     {
             //         id: 1,
@@ -159,13 +167,36 @@ export default {
                 );
             });
         },
+
+        medicationSearchPerformed(text)
+        {
+            this.searchQuery = text;
+            let self = this;
+            this.medicationSearchResults = this.medications.filter(function (medication) 
+            {
+                return (
+                    medication.name
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase()) ||
+                    medication.manufacturer
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase()) ||
+                    medication.form
+                        .toLowerCase()
+                        .includes(self.searchQuery.toLowerCase())
+                );
+            });
+        },
     },
 
     mounted() {
         client({
             url: "med/all",
             method: "GET",
-        }).then((response) => (this.medications = response.data));
+        }).then((response) => {
+            this.medications = response.data;
+            this.medicationSearchResults = this.medications;
+        });
 
         client({
             url: "pharmacy/all",

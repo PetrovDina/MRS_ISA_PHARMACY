@@ -28,7 +28,7 @@
         <!--patient-->
         <div v-if="isUserType('PATIENT')">
             <a @click="homeRedirect()" class="homeNav">{{ this.$store.getters.getLoggedUserType }} Home</a>
-            <a @click="patientRedirect()" class="patientNav">Options</a> -->
+            <a @click="patientRedirect()" class="patientNav">Options</a>
 
         </div>
 

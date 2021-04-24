@@ -59,6 +59,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 					
 					System.err.println("-----------------------------------------");
 					System.err.println("Logged in: " + userDetails.getUsername());
+					System.err.println("Password : " + userDetails.getPassword());
 					System.err.println("-----------------------------------------");
 					
 					// 4. Provera da li je prosledjeni token validan

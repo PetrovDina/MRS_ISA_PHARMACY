@@ -48,6 +48,10 @@ export default {
             type: Array,
             required: false,
         },
+        canSelect: {
+            default: true,
+            type: Boolean
+        }
     },
 
     data() {
@@ -58,9 +62,11 @@ export default {
 
     methods: {
         choosePharmacy(result){
-            this.selected = result;
-            this.$emit("pharmacySelected", this.selected);
-
+            if(this.canSelect)
+            {
+                this.selected = result;
+                this.$emit("pharmacySelected", this.selected);
+            }
         }
     },
 };

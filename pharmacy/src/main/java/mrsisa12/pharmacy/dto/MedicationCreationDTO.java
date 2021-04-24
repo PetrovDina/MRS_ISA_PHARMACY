@@ -1,6 +1,5 @@
 package mrsisa12.pharmacy.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mrsisa12.pharmacy.model.Medication;

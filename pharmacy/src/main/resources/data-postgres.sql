@@ -4,6 +4,9 @@ insert into medication (name, manufacturer, prescriptionReq, form, description, 
 insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Panadol', 'Jugoremedija', 'False', 'PASTE', 'Neki opis 4', 'Neki sadrzaj 4');
 insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Panklav', 'Krka', 'True', 'CAPSULE', 'Neki opis 5', 'Neki sadrzaj 5');
 
+insert into medication_medication (medication_id, alternatives_id) values (1, 5);
+insert into medication_medication (medication_id, alternatives_id) values (1, 3);
+
 insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Narodnog fronta','Novi Sad', '21000', 5);
 insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Bulevar Oslobođenja','Novi Sad', '21000', 88);
 insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Jevrejska','Novi Sad', '21000', 21);
@@ -37,16 +40,19 @@ INSERT INTO role (name) VALUES ('ROLE_PHARMACIST');
 INSERT INTO role (name) VALUES ('ROLE_PHARMACY_ADMIN');
 INSERT INTO role (name) VALUES ('ROLE_SUPPLIER');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('a', '$2a$10$sIy9Y20mNxgc3o4TX9/xqef9DOmxuSx57aVcWQlXYdSTS1p7OlPQy', 'a@gmail.com', 'Admin', 'Adminic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('admin', '$2a$10$k/iwZ4.ZX3RQ.7k2qpT3yeLKmfF0IpGKoRz8bgXvoi58vXwaFsthi', 'admin@gmail.com', 'Admin', 'Adminic', 1, 'MALE', 'ACTIVATED', 'False');
 insert into systemadmin (id) values (1);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('p', '$2a$10$TsLBYbX6L4kq0myaensp3uKXp8GH2Bv/d8ccqC/yz3Nv4QY59ati6', 'p@gmail.com', 'Pac', 'Pacic', 1, 'MALE', 'ACTIVATED', 'False');
-insert into patient (id, penaltypoints) values (2, 123);
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('patient', '$2a$10$CDS4reFTcyq0PQ05h1NBpOT.7bSyapYgzb6iqu9JpbKiPhwuiU0Gq', 'patient@gmail.com', 'Patient', 'Patientic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into patient (id, penaltypoints) values (2, 0);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('pa', '$2a$10$TsLBYbX6L4kq0myaensp3uKXp8GH2Bv/d8ccqC/yz3Nv4QY59ati6', 'apotekaAdmin@gmail.com', 'Admin', 'Apotekeic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('padmin', '$2a$10$TsLBYbX6L4kq0myaensp3uKXp8GH2Bv/d8ccqC/yz3Nv4QY59ati6', 'apotekaAdmin@gmail.com', 'Padmin', 'Padminic', 1, 'MALE', 'ACTIVATED', 'False');
 insert into pharmacyadmin (id) values (3);
 
-INSERT INTO user_role (user_id, role_id) VALUES (1, 2); -- user-u dodeljujemo rolu USER
-INSERT INTO user_role (user_id, role_id) VALUES (2, 3); -- admin-u dodeljujemo rolu USER
+
+
+INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
+INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT
+INSERT INTO user_role (user_id, role_id) VALUES (3, 6); --  ROLE_PHARMACY_ADMIN
 
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 1, 1, 3, '1.25.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije

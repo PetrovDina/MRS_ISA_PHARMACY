@@ -1,6 +1,7 @@
 package mrsisa12.pharmacy.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,4 +38,7 @@ public interface MedicationRepository extends JpaRepository<Medication, Long> {
 	@Query("select med from Medication med where med.prescriptionReq = ?1")
 	public List<Medication> findAllByPrescriptionReq(Boolean prescriptionReq);
 
+	@Query("select med from Medication med left join fetch med.alternatives e where med.id =?1")
+	public Medication findByIdWithAlternatives(Long id);
+	
 }

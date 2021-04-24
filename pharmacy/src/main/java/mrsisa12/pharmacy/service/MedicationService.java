@@ -51,5 +51,9 @@ public class MedicationService {
 	public List<Medication> findAllByPrescriptionReq(Boolean prescriptionReq) {
 		return medicationRepository.findAllByPrescriptionReq(prescriptionReq);
 	}
+	
+	public Medication findOneWithAlternatives(Long id) {
+		return medicationRepository.findByIdWithAlternatives(id);
+	} 
 
 }

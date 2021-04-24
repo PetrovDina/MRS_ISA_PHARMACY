@@ -91,12 +91,27 @@ public class MedicationController {
 
 		Medication medication = medicationService.findOne(id);
 
-		// studen must exist
+		// medication must exist
 		if (medication == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
 		return new ResponseEntity<>(new MedicationDTO(medication), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "details/{id}")
+	public ResponseEntity<MedicationDTO> getMedicationDetails(@PathVariable Long id) {
+		Medication medication = medicationService.findOneWithAlternatives(id);
+		if (medication == null) 
+		{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		if (medication.getAlternatives() == null)
+		{
+			medication.setAlternatives(new ArrayList<Medication>());
+		}
+
+		return new ResponseEntity<>(new MedicationCreationDTO(medication), HttpStatus.OK);
 	}
 	
 	@PostMapping(consumes = "application/json")
