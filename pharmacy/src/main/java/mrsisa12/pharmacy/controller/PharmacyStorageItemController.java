@@ -203,8 +203,6 @@ public class PharmacyStorageItemController {
 		List<PharmacyWithMedicationPriceDTO> dtoList = new ArrayList<PharmacyWithMedicationPriceDTO>();
 		
 		for (PharmacyStorageItem item : results) {
-//			System.out.println("------------------");
-//			System.out.println(item.getId() + " and " + item.getItemPrices().size());
 			Pharmacy pharmacy = pharmacyService.findOneByStorageItem(item.getId());
 			PharmacyWithMedicationPriceDTO dto = new PharmacyWithMedicationPriceDTO();
 			
@@ -220,4 +218,6 @@ public class PharmacyStorageItemController {
 		return new ResponseEntity<>(dtoList, HttpStatus.OK);
 
 	}
+	
+
 }

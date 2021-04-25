@@ -1,0 +1,233 @@
+<template>
+    <div class="patientsPrescriptions">
+        <p class="title">
+            {{ this.$store.getters.getLoggedUsername }}'s reservations
+        </p>
+        <p></p>
+
+        <div :key="reservation.id" v-for="reservation in reservations">
+            <div class="card mx-auto">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ reservation.medication.name }}
+                    </h5>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="c1">
+                                    <p class="card-text">
+                                        Pharmacy:
+                                        <b>{{ reservation.pharmacy.name }}</b>
+                                    </p>
+                                    <p class="card-text">
+                                        Pick up address:
+                                        <b
+                                            >{{
+                                                reservation.pharmacy.location
+                                                    .street
+                                            }}
+                                            {{
+                                                reservation.pharmacy.location
+                                                    .streetNum
+                                            }},
+                                            {{
+                                                reservation.pharmacy.location
+                                                    .city
+                                            }}
+                                        </b>
+                                    </p>
+                                    <p class="card-text">
+                                        City:
+                                        <b
+                                            >{{
+                                                reservation.pharmacy.location
+                                                    .zipcode
+                                            }}
+
+                                            {{
+                                                reservation.pharmacy.location
+                                                    .city
+                                            }}
+                                        </b>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="c2">
+                                    <p class="card-text">
+                                        Quantity:
+                                        <b> {{ reservation.quantity }} </b>
+                                    </p>
+
+                                    <p class="card-text">
+                                        Pick up due date:
+                                        <b
+                                            >{{
+                                                convertDate(reservation.dueDate)
+                                            }}
+                                        </b>
+                                    </p>
+                                    <p class="card-text">
+                                        Status:
+                                        <b>{{ reservation.status }} </b>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a
+                        href="#"
+                        class="btn btn-primary cancel-button"
+                        :class="{ disabled: reservation.status !== 'CREATED' }"
+                        @click="selectReservation(reservation)"
+                        data-toggle="modal"
+                        data-target="#exampleModalCenter"
+                        >cancel reservation</a
+                    >
+
+                    <!-- Modal -->
+                    <div
+                        class="modal fade"
+                        id="exampleModalCenter"
+                        tabindex="-1"
+                        role="dialog"
+                        aria-labelledby="exampleModalCenterTitle"
+                        aria-hidden="true"
+                    >
+                        <div
+                            class="modal-dialog modal-dialog-centered"
+                            role="document"
+                        >
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5
+                                        class="modal-title"
+                                        id="exampleModalLongTitle"
+                                    >
+                                        Confirm reservation
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        class="close"
+                                        data-dismiss="modal"
+                                        aria-label="Close"
+                                    >
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">Are you sure you want to cancel the reservation?</div>
+                                <div class="modal-footer">
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                    >
+                                        No
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        data-dismiss="modal"
+
+                                        @click="cancelReservation()"
+                                    >
+                                        Yes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import { client } from "@/client/axiosClient";
+import moment from "moment";
+
+export default {
+    name: "PatientsPrescriptions",
+    data() {
+        return {
+            reservations: [],
+            selectedReservation: null,
+        };
+    },
+
+    methods: {
+        convertDate(d) {
+            return moment(d).format("DD.MM.yyyy.");
+        },
+
+        selectReservation(r){
+            this.selectedReservation = r;
+        },
+
+        cancelReservation() {
+            client({
+                url: "reservation/cancel",
+                params: { reservationId: this.selectedReservation.id },
+                method: "GET",
+            }).then((response) => {
+                client({
+                    url: "reservation/findByPatient",
+                    params: { username: this.$store.getters.getLoggedUsername },
+
+                    method: "GET",
+                }).then((response) => (this.reservations = response.data)); //refreshing page
+            });
+        },
+    },
+
+    mounted() {
+        //get reservations of the patient
+        client({
+            url: "reservation/findByPatient",
+            params: { username: this.$store.getters.getLoggedUsername },
+
+            method: "GET",
+        }).then((response) => (this.reservations = response.data));
+    },
+};
+</script>
+
+
+<style scoped>
+.title {
+    font-size: 5vh;
+}
+.card {
+    width: 70%;
+    margin-top: 40px;
+    border: 1px solid rgba(63, 63, 63, 0.349);
+}
+
+.c1 {
+    text-align: left;
+}
+
+.c2 {
+    text-align: right;
+}
+.container {
+    display: inline-block;
+}
+.card-title {
+    font-weight: 700;
+    font-size: 30px;
+}
+
+.card-text {
+    margin-top: 20px;
+}
+
+.cancel-button {
+    background-color: maroon;
+    margin-top: 20px;
+}
+
+</style>
+

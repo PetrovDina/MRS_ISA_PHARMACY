@@ -71,6 +71,8 @@ export default {
                 localStorage.setItem("USER_TOKEN", response.data.accessToken);
                 localStorage.setItem("USER_TYPE", payload.role);
                 localStorage.setItem("USER_EXPIRES", response.data.expiresIn)
+                localStorage.setItem("USERNAME", this.login.username); //dina dodala
+                this.$store.commit("changeLoggedUsername", this.login.username) //dina dodala
                 this.$store.commit("changeLoggedUserRole", payload.role);
                 this.homeRedirect();
             }).

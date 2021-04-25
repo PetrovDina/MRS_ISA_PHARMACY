@@ -26,18 +26,29 @@ const store = new Vuex.Store({
     })],
 
     state: {
-        loggedUserRole: "GUEST"
+        loggedUserRole: "GUEST",
+        loggedUsername: ""
     },
 
     mutations: {
         changeLoggedUserRole(state, newRole) { //poziva se kao store.commit('changeLoggedUserRole', 'DERMATOLOGIST')
             state.loggedUserRole = newRole;
+        },
+
+        changeLoggedUsername(state, newUsername) { //poziva se kao store.commit('changeLoggedUserRole', 'DERMATOLOGIST')
+            state.loggedUsername = newUsername;
         }
+
     },
 
     getters: {
         getLoggedUserRole: state => {
             return state.loggedUserRole
+
+        },
+
+        getLoggedUsername: state => {
+            return state.loggedUsername
 
         }
     }

@@ -26,4 +26,7 @@ public interface PharmacyStorageItemRepository extends JpaRepository<PharmacySto
 
 	@Query("select s from PharmacyStorageItem s join fetch s.medication e where s.id =?1")
 	public PharmacyStorageItem findOneWithMedication(Long pharmacyStorageItemId);
+
+	@Query("select s from PharmacyStorageItem s where s.medication.id =?1 and s.pharmacy.id =?2")
+	public PharmacyStorageItem findOneWithMedicationAndPharmacy(Long medicationId, Long pharmacyId);
 }

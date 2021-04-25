@@ -13,10 +13,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>{
 	
 	public Page<Reservation> findAll(Pageable pageable);
 
-	//TODO dodaj i za pacijenta ovako
 	
 	@Query("select res from Reservation res where res.pharmacy.id = ?1")
 	public List<Reservation> findAllByPharmacy(Long pharmacyId);
+	
+	@Query("select res from Reservation res where res.patient.username = ?1")
+	public List<Reservation> findAllByPatient(String patientUserName);
 	
 //	public List<Reservation> findAllByName(String name);
 //	

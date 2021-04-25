@@ -23,11 +23,13 @@ import mrsisa12.pharmacy.dto.ReservationPickupDTO;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
+import mrsisa12.pharmacy.service.PharmacyStorageItemService;
 import mrsisa12.pharmacy.service.ReservationService;
 
 @RestController
@@ -45,6 +47,9 @@ public class ReservationController {
 	
 	@Autowired
 	private PatientService patientService;
+	
+	@Autowired
+	private PharmacyStorageItemService pharmacyStorageItemService;
 	
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<ReservationDTO>> getAllReservations() {
@@ -98,6 +103,34 @@ public class ReservationController {
 		return new ResponseEntity<>(reservationsDTO, HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/findByPatient")
+	public ResponseEntity<List<ReservationDTO>> getReservationsByPatient(@RequestParam String username) {
+		System.out.println(username);
+		List<Reservation> reservations = reservationService.findAllByPatient(username);
+		System.out.println(reservations.size());
+
+		// convert reservations to DTOs
+		List<ReservationDTO> reservationsDTO = new ArrayList<>();
+		for (Reservation r : reservations) {
+			reservationsDTO.add(new ReservationDTO(r));
+		}
+		return new ResponseEntity<>(reservationsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/cancel")
+	public ResponseEntity<ReservationDTO> cancelReservation(@RequestParam Long reservationId) {
+		Reservation reservation = reservationService.findOne(reservationId);
+		System.out.println(reservation);
+		if(reservation != null) {
+            reservation.setStatus(ReservationStatus.CANCELLED);
+    		reservationService.update(reservation);
+            return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	
 	
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<ReservationDTO> saveReservation(@RequestBody ReservationDTO resDTO) {
@@ -115,6 +148,11 @@ public class ReservationController {
 		reservation.setDueDate(resDTO.getDueDate());
 		reservation.setQuantity(resDTO.getQuantity());
 		reservation.setStatus(ReservationStatus.CREATED);
+		
+		
+		PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
+		psi.setQuantity(psi.getQuantity()-resDTO.getQuantity());
+		pharmacyStorageItemService.save(psi);
 
 
 		reservation = reservationService.save(reservation);

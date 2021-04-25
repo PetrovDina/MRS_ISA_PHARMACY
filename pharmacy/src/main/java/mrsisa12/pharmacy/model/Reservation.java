@@ -22,7 +22,7 @@ public class Reservation {
     private Long id;
 	
 	@OneToOne
-	private Patient patient; //todo odkomentarisati kada kreiramo Patient klasu + getteri i setteri
+	private Patient patient; 
 
 	@ManyToOne(optional=false)
 	private Pharmacy pharmacy;	
@@ -136,6 +136,17 @@ public class Reservation {
 		this.quantity = reservation.getQuantity();
 		this.dueDate = reservation.getDueDate();
 		this.status = reservation.getStatus();
+	}
+
+
+	@Override
+	public String toString() {
+		return "Reservation [id=" + id + ", patient=" + patient + ", pharmacy=" + pharmacy + ", medication="
+				+ medication + ", quantity=" + quantity + ", dueDate=" + dueDate + ", status=" + status + ", getId()="
+				+ getId() + ", getPatient()=" + getPatient() + ", getMedication()=" + getMedication()
+				+ ", getQuantity()=" + getQuantity() + ", getDueDate()=" + getDueDate() + ", getStatus()=" + getStatus()
+				+ ", getPharmacy()=" + getPharmacy() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
+				+ ", toString()=" + super.toString() + "]";
 	}
 	
 

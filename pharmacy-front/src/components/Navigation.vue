@@ -121,9 +121,12 @@ export default {
         logoutRedirect: function () {
             //SIMULACIJA LOGOUTA!
             this.$store.commit("changeLoggedUserRole", "GUEST")
+            this.$store.commit("changeLoggedUsername", "")
+
             localStorage.removeItem("USER_TOKEN");
             localStorage.removeItem("USER_TYPE");
             localStorage.removeItem("USER_EXPIRES")
+            localStorage.removeItem("USERNAME");
 
             this.$router.push({ name: "Home" }).catch((err) => {
                 // Ignore the vuex err regarding  navigating to the page they are already on.
@@ -254,11 +257,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .topnav {
-    background-color: rgba(15, 95, 72, 0.95);
+    background-color: rgba(15, 95, 72, 1);
     overflow: hidden;
     width: 100%;
     position: fixed;
     top: 0;
+    z-index: 999;
+
 }
 
 .topnav a {

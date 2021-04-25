@@ -49,6 +49,10 @@ public class PharmacyStorageItemService {
 	public PharmacyStorageItem findOneWithMedication(Long pharmacyStorageItemId) {
 		return pharmacyStorageItemRepository.findOneWithMedication(pharmacyStorageItemId);
 	}
+	
+	public PharmacyStorageItem findOneWithMedicationAndPharmacy(Long medicationId, Long pharmacyId) {
+		return pharmacyStorageItemRepository.findOneWithMedicationAndPharmacy(medicationId, pharmacyId);
+	}
 
 	@Transactional(readOnly = false)
 	public void restoreDeletedPharmacyStorageItem(Long id) {

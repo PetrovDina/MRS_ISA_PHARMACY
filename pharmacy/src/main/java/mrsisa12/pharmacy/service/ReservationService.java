@@ -42,6 +42,10 @@ public class ReservationService {
 		return reservationRepository.findAllByPharmacy(pharmacyId);
 	}
 	
+	public List<Reservation> findAllByPatient(String patientUsername) {
+		return reservationRepository.findAllByPatient(patientUsername);
+	}
+	
 	public Reservation update(Reservation reservation) {
         Reservation updatedReservation = reservationRepository.findById(reservation.getId()).orElseGet(null);
         updatedReservation.update(reservation);

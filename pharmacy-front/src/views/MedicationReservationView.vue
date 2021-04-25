@@ -16,7 +16,7 @@
                     class="form-control"
                     id="quantityInput"
                     placeholder="Enter quantity"
-                    min = 1
+                    min = 0
                     :max="[chosenRow? chosenRow.availableQuantity : 100]"
                 />
             </span>
@@ -84,6 +84,13 @@ export default {
                 return;
             }
 
+            if (this.chosenQuantity == 0 || this.chosenQuantity > this.chosenRow.availableQuantity){
+                alert("Please enter valid quantity!");
+                //todo modalni prozor ovde umesto alert!
+                return;
+            }
+
+            
             let p = {
                 id : 2, //ovo je samo bitno, ostalo nije jer ce na osnovu id-a na beku da se vadi iz baze
                 username: "pera",
