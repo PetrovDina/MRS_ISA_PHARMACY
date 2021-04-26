@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
-import mrsisa12.pharmacy.model.Patient;
+import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.EmployeeService;
@@ -84,22 +84,31 @@ public class AppointmentController {
 
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<AppointmentDTO> saveAppointment(@RequestBody AppointmentDTO appointmentDTO) {
-		// prilikom kreiranja bih trebao samo da proslijedim id zaposlenog... ID pacijenta ce se naknadno ubacivati i proglasavati termin zauzetim
+		// prilikom kreiranja bih trebao samo da proslijedim id zaposlenog... ID
+		// pacijenta ce se naknadno ubacivati i proglasavati termin zauzetim
 		Appointment appointment = new Appointment();
-		// postavljamo dermatologa ili farmaceuta na termin
-		Employee emp = employeeService.findOne(appointmentDTO.getEmployeeDTO().getId());
-		appointment.setEmployee(emp);
+
+		// Trebace vjerovatno da se nesto uradi sa datumom.
+		// appointment.setTimePeriod(appointmentDTO.getTimePeriodDTO());
+		boolean res = employeeService.checkAppointmentTime(new TimePeriod(appointmentDTO.getTimePeriodDTO()),
+				appointmentDTO.getEmployeeDTO().getId());
+		if (!res) {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		// postavljamo vrijeme i datum
+		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriodDTO()));
 		// postavljamo status da je dostupan jer se kreira
 		appointment.setStatus(AppointmentStatus.AVAILABLE);
-		// postavljamo pacijenta na novi slobodni termin
-		Patient patient = patientService.findOne(appointmentDTO.getPatientDTO().getId());
-		appointment.setPatient(patient);
-		// Trebace vjerovatno da se nesto uradi sa datumom.
-		appointment.setTimePeriod(appointmentDTO.getTimePeriod());
 		// postavljamo da je neobrisan
 		appointment.setDeleted(false);
+		// postavljamo dermatologa ili farmaceuta na termin
+		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployeeDTO().getId());
+		appointment.setEmployee(employee);
+		// postavljamo termin dermatologu ili farmaceutu
+		employee.addAppointment(appointment);
 
 		appointment = appointmentService.save(appointment);
+
 		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);
 	}
 
@@ -112,7 +121,7 @@ public class AppointmentController {
 		if (appointment == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		// PRETPOTAVLJAM DA CE SE MOCI UREDJIVATI SAMO VRIJEME 
+		// PRETPOTAVLJAM DA CE SE MOCI UREDJIVATI SAMO VRIJEME
 
 //		// postavljamo dermatologa ili farmaceuta na termin
 //		Employee emp = employeeService.findOne(appointment.getEmployee().getId());

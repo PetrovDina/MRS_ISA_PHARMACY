@@ -8,20 +8,21 @@ public class ItemPriceDTO {
 	private Long id;
 	private double price;
 	private boolean current;
-	private TimePeriod timePeriod;
+	private TimePeriodDTO timePeriod;
 
 	public ItemPriceDTO() {
 	}
 
-	public ItemPriceDTO(Long id, double price, boolean current) {
+	public ItemPriceDTO(Long id, double price, boolean current, TimePeriodDTO timePeriod) {
 		this();
 		this.id = id;
 		this.price = price;
 		this.current = current;
+		this.timePeriod = timePeriod;
 	}
 
 	public ItemPriceDTO(ItemPrice itemPrice) {
-		this(itemPrice.getId(), itemPrice.getPrice(), itemPrice.isCurrent());
+		this(itemPrice.getId(), itemPrice.getPrice(), itemPrice.isCurrent(), new TimePeriodDTO(itemPrice.getTimePeriod()));
 	}
 
 	public Long getId() {
@@ -48,11 +49,11 @@ public class ItemPriceDTO {
 		this.current = current;
 	}
 
-	public TimePeriod getTimePeriod() {
+	public TimePeriodDTO getTimePeriodDTO() {
 		return timePeriod;
 	}
 
-	public void setTimePeriod(TimePeriod timePeriod) {
+	public void setTimePeriodDTO(TimePeriodDTO timePeriod) {
 		this.timePeriod = timePeriod;
 	}
 

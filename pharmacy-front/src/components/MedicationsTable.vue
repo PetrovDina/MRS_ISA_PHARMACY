@@ -3,14 +3,13 @@
         <table class="table table-hover" >
             <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col"> </th>
                     <th scope="col">Name</th>
                     <th scope="col">Manufacturer</th>
                     <th scope="col">Prescription</th>
                     <th scope="col">Form</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Price</th>
-                    <th scope="col">Reservation</th>
                     <td>
                         <button @click="openModalWindow">
                                 <i class="fa fa-plus-circle fa-2x"></i>
@@ -32,17 +31,12 @@
                             <label @click = "med.price_edit = true">{{med.price}}</label>
                         </div>
                         <input style="text-align:center"
-                            size="15"
+                            size="1"
                             v-show = "med.price_edit == true"
                             v-model = "med.price" 
                             v-on:blur= "med.price_edit=false;" 
                             @keyup.enter = "med.price_edit=false; updateMedicationPrice(med, med.price)">
                     </td>
-                    <td><Button 
-                        class="btn-success" 
-                        text="Reserve" 
-                        bgd_color="green">
-                    </Button></td>
                 </tr>
             </tbody>
         </table>

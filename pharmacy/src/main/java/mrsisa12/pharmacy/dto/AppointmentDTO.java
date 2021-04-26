@@ -8,7 +8,7 @@ public class AppointmentDTO {
 
 	private Long id;
 	private AppointmentStatus status;
-	private TimePeriod timePeriod;
+	private TimePeriodDTO timePeriod;
 //	@OneToOne()
 //	private Pharmacy pharmacy;
 //	private Report report;
@@ -18,7 +18,7 @@ public class AppointmentDTO {
 	public AppointmentDTO() {
 	}
 
-	public AppointmentDTO(Long id, AppointmentStatus status, TimePeriod timePeriod, EmployeeDTO employee,
+	public AppointmentDTO(Long id, AppointmentStatus status, TimePeriodDTO timePeriod, EmployeeDTO employee,
 			PatientDTO patient) {
 		super();
 		this.id = id;
@@ -29,8 +29,9 @@ public class AppointmentDTO {
 	}
 
 	public AppointmentDTO(Appointment appointment) {
-		this(appointment.getId(), appointment.getStatus(), appointment.getTimePeriod(),
-				new EmployeeDTO(appointment.getEmployee()), new PatientDTO(appointment.getPatient()));
+		this(appointment.getId(), appointment.getStatus(), new TimePeriodDTO(appointment.getTimePeriod()),
+				new EmployeeDTO(appointment.getEmployee()),
+				(appointment.getPatient() == null) ? null : new PatientDTO(appointment.getPatient()));
 	}
 
 	public Long getId() {
@@ -49,11 +50,11 @@ public class AppointmentDTO {
 		this.status = status;
 	}
 
-	public TimePeriod getTimePeriod() {
+	public TimePeriodDTO getTimePeriodDTO() {
 		return timePeriod;
 	}
 
-	public void setTimePeriod(TimePeriod timePeriod) {
+	public void setTimePeriodDTO(TimePeriodDTO timePeriod) {
 		this.timePeriod = timePeriod;
 	}
 

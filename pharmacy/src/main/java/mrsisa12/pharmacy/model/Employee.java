@@ -2,14 +2,15 @@ package mrsisa12.pharmacy.model;
 
 import static javax.persistence.InheritanceType.JOINED;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -33,6 +34,9 @@ public abstract class Employee extends User {
 	
 	@Column(name = "rating", nullable = false)
 	private double rating;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "employee")
+	private List<Appointment> appointments;
 
 	public Employee() {}
 
@@ -57,6 +61,24 @@ public abstract class Employee extends User {
 
 	public void setRating(double rating) {
 		this.rating = rating;
+	}
+
+	public List<Appointment> getAppointments() {
+		return appointments;
+	}
+
+	public void setAppointments(List<Appointment> appointments) {
+		this.appointments = appointments;
+	}
+	
+	public void addAppointment(Appointment appointment) {
+		if (appointment == null)
+			return;
+		if (this.appointments == null)
+			this.appointments = new ArrayList<>();
+		if (!this.appointments.contains(appointment)) {
+			this.appointments.add(appointment);
+		}
 	}
 	
 }

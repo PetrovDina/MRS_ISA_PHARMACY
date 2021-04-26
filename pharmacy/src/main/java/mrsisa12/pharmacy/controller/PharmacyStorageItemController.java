@@ -1,6 +1,8 @@
 package mrsisa12.pharmacy.controller;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -120,11 +122,12 @@ public class PharmacyStorageItemController {
 		}
 		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(pharmacyStorageItemWIPDTO.getPharmacy().getId());
 		Medication medication = medicationService.findOne(pharmacyStorageItemWIPDTO.getMedication().getId());
-		// kreiramo TimePeriod startDate je 'System.now()' a endDate je null
-		TimePeriod timePeriod = new TimePeriod(new Timestamp(System.currentTimeMillis()), null);
+		// kreiramo trenutni datum i vrijeme za datum i vrijeme kreiranja, datum i vrijeme isteka je null
+		LocalDate localDateNow = LocalDate.now();
+		LocalTime localTimeNow = LocalTime.now();
+		TimePeriod timePeriod = new TimePeriod(localDateNow, localTimeNow, null, null);
 		// potrebno je kreirati novu cijenu
-		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true,
-				timePeriod);
+		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, timePeriod);
 		PharmacyStorageItem pharmacyStorageItem = new PharmacyStorageItem();
 		// postavljamo pharmacyStorageItem itemPrice-u
 		itemPrice.setPharmacyStorageItem(pharmacyStorageItem);
@@ -160,25 +163,27 @@ public class PharmacyStorageItemController {
 		}
 		// postavlja se nova kolicina
 		// pharmacyStorageItem.setQuantity(pharmacyStorageItemDTO.getQuantity());
+		LocalDate localDateNow = LocalDate.now();
+		LocalTime localTimeNow = LocalTime.now();
 		// ovdje onu sto je true postavljam na false
 		for (ItemPrice ip : pharmacyStorageItem.getItemPrices()) {
 			if (ip.isCurrent()) {
 				ip.setCurrent(false);
+				ip.getTimePeriod().setEndDate(localDateNow);
+				ip.getTimePeriod().setEndTime(localTimeNow);
 			}
 		}
-		// ubacujem vrijeme
-		Date datumcic = new Date();
-		Timestamp timeStamp = new Timestamp(datumcic.getTime());
-		TimePeriod timePeriod = new TimePeriod(timeStamp, null);
+		// kreiramo trenutni datum i vrijeme za datum i vrijeme kreiranja, datum i vrijeme isteka je null
+		TimePeriod timePeriod = new TimePeriod(localDateNow, localTimeNow, null, null);
 		// pravim novi ItemPrice koji ce biti trenutna cijena
-		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true,
-				timePeriod);
+		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, timePeriod);
 		// dodajemo itemPrice-u referencu na pharmacyStorageItem
 		itemPrice.setPharmacyStorageItem(pharmacyStorageItem);
 		// dodajemo novu cijenu pharmacyStorageItem-u
 		pharmacyStorageItem.addItemPrice(itemPrice);
 		// cuvamo pharmacyStorageItem
 		pharmacyStorageItem = pharmacyStorageItemService.save(pharmacyStorageItem);
+		
 		return new ResponseEntity<>(new PharmacyStorageItemWithItemPricesDTO(pharmacyStorageItem), HttpStatus.OK);
 	}
 

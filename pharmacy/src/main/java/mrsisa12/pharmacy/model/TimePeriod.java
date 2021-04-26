@@ -1,7 +1,10 @@
 package mrsisa12.pharmacy.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import mrsisa12.pharmacy.dto.TimePeriodDTO;
 
 public class TimePeriod implements Serializable {
 
@@ -11,33 +14,58 @@ public class TimePeriod implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Timestamp startTimestamp;
-	private Timestamp endTimestamp;
+	private LocalDate startDate;
+	private LocalTime startTime;
+	private LocalDate endDate;
+	private LocalTime endTime;
 
 	public TimePeriod() {
 
 	}
 
-	public TimePeriod(Timestamp startTimestamp, Timestamp endTimestamp) {
+	public TimePeriod(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
 		super();
-		this.startTimestamp = startTimestamp;
-		this.endTimestamp = endTimestamp;
+		this.startDate = startDate;
+		this.startTime = startTime;
+		this.endDate = endDate;
+		this.endTime = endTime;
 	}
 
-	public Timestamp getStartTimestamp() {
-		return startTimestamp;
+	public TimePeriod(TimePeriodDTO timePeriodDTO) {
+		this(LocalDate.parse(timePeriodDTO.getStartDate()), LocalTime.parse(timePeriodDTO.getStartTime()),
+				LocalDate.parse(timePeriodDTO.getEndDate()), LocalTime.parse(timePeriodDTO.getEndTime()));
 	}
 
-	public void setStartTimestamp(Timestamp startTimestamp) {
-		this.startTimestamp = startTimestamp;
+	public LocalDate getStartDate() {
+		return startDate;
 	}
 
-	public Timestamp getEndTimestamp() {
-		return endTimestamp;
+	public void setStartDate(LocalDate startDate) {
+		this.startDate = startDate;
 	}
 
-	public void setEndTimestamp(Timestamp endTimestamp) {
-		this.endTimestamp = endTimestamp;
+	public LocalTime getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(LocalTime startTime) {
+		this.startTime = startTime;
+	}
+
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
+	}
+
+	public LocalTime getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(LocalTime endTime) {
+		this.endTime = endTime;
 	}
 
 }

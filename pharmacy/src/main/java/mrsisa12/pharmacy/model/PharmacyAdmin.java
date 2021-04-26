@@ -15,8 +15,7 @@ public class PharmacyAdmin extends User {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public PharmacyAdmin() {
-	}
+	public PharmacyAdmin() {}
 
 	public PharmacyAdmin(Long id, String username, String password, String email, String firstName, String lastName,
 			Location location, Gender gender, UserStatus activeStatus, List<UserRole> userRoles, boolean deleted) {

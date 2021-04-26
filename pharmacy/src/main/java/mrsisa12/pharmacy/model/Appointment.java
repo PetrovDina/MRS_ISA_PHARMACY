@@ -40,7 +40,7 @@ public class Appointment {
 //	private Report report;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "employee_id", referencedColumnName = "ID")
+	@JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "ID")
 	private Employee employee;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
