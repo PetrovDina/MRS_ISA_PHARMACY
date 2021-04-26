@@ -1,6 +1,6 @@
 <template>
     <div class="patientsPrescriptions">
-        <p class="title">
+        <p class="titl">
             {{ this.$store.getters.getLoggedUsername }}'s reservations
         </p>
         <p></p>
@@ -77,14 +77,14 @@
                         </div>
                     </div>
 
-                    <a
-                        href="#"
-                        class="btn btn-primary cancel-button"
+                    <button
+                        :disabled="reservation.status!=='CREATED'"
+                        class="btn btn-primary cancel-btn"
                         :class="{ disabled: reservation.status !== 'CREATED' }"
                         @click="selectReservation(reservation)"
                         data-toggle="modal"
                         data-target="#exampleModalCenter"
-                        >cancel reservation</a
+                        >cancel reservation</button
                     >
 
                     <!-- Modal -->
@@ -196,7 +196,9 @@ export default {
 
 
 <style scoped>
-.title {
+
+
+.titl {
     font-size: 5vh;
 }
 .card {
@@ -224,7 +226,7 @@ export default {
     margin-top: 20px;
 }
 
-.cancel-button {
+.cancel-btn {
     background-color: maroon;
     margin-top: 20px;
 }

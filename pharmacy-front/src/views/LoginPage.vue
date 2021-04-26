@@ -5,17 +5,17 @@
 		            <div id="registration-column" class="col-md-6">
 		                <div id="registration-box" class="col-md-12">  
 							<form onsubmit="return false;">     	
-		                        <h4 class="text-center text-info" style="margin-bottom: 40px;">Login</h4>
+		                        <h4 class="text-center " style="margin-bottom: 40px;">Login</h4>
 
 		                        <div class="form-group">
-		                            <label for="username" class="text-info">Username:</label><br>
+		                            <label for="username" >Username:</label><br>
 		                            <input type="text" name="username" id="username" class="form-control" v-model="login.username" required=""
 									oninvalid="this.setCustomValidity('Enter username.')"  oninput="setCustomValidity('')">
 		                        </div>
 
 		                        <div class="form-group">
-		                            <label for="password" class="text-info">Password:</label><br>
-		                            <input type="text" name="password" id="password" class="form-control" required="" v-model="login.password"
+		                            <label for="password" >Password:</label><br>
+		                            <input type="password" name="password" id="password" class="form-control" required="" v-model="login.password"
 									oninvalid="this.setCustomValidity('Enter password.')"  oninput="setCustomValidity('')">
 		                        </div>
 
@@ -119,3 +119,11 @@ export default {
 }
 
 </script>
+
+<style scoped>
+input:focus {
+        border-color: rgba(155, 82, 151, 0.527);
+        box-shadow: 0 0 0 0.1rem rgba(155, 82, 151, 0.527);;
+}
+
+</style>

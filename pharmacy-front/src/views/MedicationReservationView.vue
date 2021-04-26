@@ -1,6 +1,6 @@
 <template>
     <div v-if="medication != null" id="reservationDiv">
-        <p class="title">Pharmacies that carry {{ medication.name }}</p>
+        <p class="titl">Pharmacies that carry {{ medication.name }}</p>
         <p>Please select one</p>
 
         <PharmaciesWithPriceComponent
@@ -171,7 +171,7 @@ p{
     font-size: 20px;
 }
 
-.title{
+.titl{
     font-size: 24px;
 
 }
