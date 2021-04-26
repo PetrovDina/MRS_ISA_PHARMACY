@@ -5,19 +5,19 @@
 		        <div id="registration-row" class="row justify-content-center align-items-center">
 		            <div id="registration-column" class="col-md-6">
 		                <div id="registration-box" class="col-md-12">  
-								<h4 class="text-center text-info" style="margin-bottom: 40px;">Pharmacy Registration</h4>
+								<h4 class="text-center " style="margin-bottom: 40px;">Pharmacy Registration</h4>
 		                        <div class="form-group">
-		                            <label for="pharmacyName" class="text-info">Pharmacy name:</label><br>
+		                            <label for="pharmacyName" >Pharmacy name:</label><br>
 		                            <input type="text" name="pharmacyName" id="pharmacyName" class="form-control" required="" v-model="pharmacy.name">
 		                        </div>
 
                                 <div class="form-group">
-		                            <label for="pharmacyName" class="text-info">Location:</label><br>
+		                            <label for="pharmacyName" >Location:</label><br>
 		                            <input type="text" name="pharmacyName" id="pharmacyLocation" class="form-control" required="" v-model="pharmacy.location">
 		                        </div>
 
 		                        <div class="form-group">
-		                            <input type="submit" name="submit" class="btn btn-info btn-md" value="Register" v-on:click="register(pharmacy)">
+		                            <input type="submit" name="submit" class="btn btn-info btn-md" style="background: rgba(15, 95, 72, 0.95)" value="Register" v-on:click="register(pharmacy)">
 		                        </div>
 
 		                </div>
