@@ -12,6 +12,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import mrsisa12.pharmacy.dto.MedicationDTO;
@@ -37,7 +40,8 @@ public class Medication {
 	@Column(name = "form", nullable = false)
 	private MedicationForm form;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	@ManyToMany
+	@JoinTable(name = "alternative_medications", joinColumns = @JoinColumn(name = "medication_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "alternative_id", referencedColumnName = "id"))
 	private List<Medication> alternatives;
 	
 	@Column(name = "description", nullable = false)

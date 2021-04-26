@@ -5,21 +5,23 @@
 		        <div id="registration-row" class="row justify-content-center align-items-center">
 		            <div id="registration-column" class="col-md-6">
 		                <div id="registration-box" class="col-md-12">  
+							<form onsubmit="return false;">
 								<h4 class="text-center " style="margin-bottom: 40px;">Pharmacy Registration</h4>
 		                        <div class="form-group">
 		                            <label for="pharmacyName" >Pharmacy name:</label><br>
-		                            <input type="text" name="pharmacyName" id="pharmacyName" class="form-control" required="" v-model="pharmacy.name">
+		                            <input type="text" name="pharmacyName" id="pharmacyName" class="form-control" required="" v-model="pharmacy.name"
+									oninvalid="this.setCustomValidity('Please enter pharmacy name.')">
 		                        </div>
 
                                 <div class="form-group">
 		                            <label for="pharmacyName" >Location:</label><br>
-		                            <input type="text" name="pharmacyName" id="pharmacyLocation" class="form-control" required="" v-model="pharmacy.location">
+		                            <input type="text" name="pharmacyName" id="pharmacyLocation" class="form-control" v-model="pharmacy.location">
 		                        </div>
 
 		                        <div class="form-group">
 		                            <input type="submit" name="submit" class="btn btn-info btn-md" style="background: rgba(15, 95, 72, 0.95)" value="Register" v-on:click="register(pharmacy)">
 		                        </div>
-
+							</form>
 		                </div>
 		            </div>
 		        </div>
@@ -89,3 +91,11 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+.form-control:focus {
+        border-color: rgba(155, 82, 151, 0.527);
+        box-shadow: 0 0 0 0.1rem rgba(155, 82, 151, 0.527);;
+}
+
+</style>

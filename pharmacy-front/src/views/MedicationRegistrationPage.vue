@@ -46,7 +46,7 @@
                                             <a class="dropdown-item" v-on:click="updateMedicationForm('Powder')">Powder</a>
                                             <a class="dropdown-item" v-on:click="updateMedicationForm('Capsule')">Capsule</a>
                                             <a class="dropdown-item" v-on:click="updateMedicationForm('Pill')">Pill</a>
-                                            <a class="dropdown-item" v-on:click="updateMedicationForm('Oinment')">Oinment</a>
+                                            <a class="dropdown-item" v-on:click="updateMedicationForm('Ointment')">Oinment</a>
                                             <a class="dropdown-item" v-on:click="updateMedicationForm('Paste')">Paste</a>
                                             <a class="dropdown-item" v-on:click="updateMedicationForm('Gel')">Gel</a>
                                             <a class="dropdown-item" v-on:click="updateMedicationForm('Solution')">Solution</a>
@@ -214,6 +214,10 @@ export default {
 input:focus {
         border-color: rgba(155, 82, 151, 0.527);
         box-shadow: 0 0 0 0.1rem rgba(155, 82, 151, 0.527);;
+}
+
+a {
+        color: black;
 }
 
 </style>

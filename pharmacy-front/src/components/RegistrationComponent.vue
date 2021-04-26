@@ -5,7 +5,7 @@
 		            <div id="registration-column" class="col-md-6">
 		                <div id="registration-box" class="col-md-12">  
 							<form onsubmit="return false;">     	
-		                        <h4 class="text-center " style="margin-bottom: 40px;">Registration</h4>
+		                        <h4 class="text-center " style="margin-bottom: 40px;">{{title}}</h4>
 		                        <div class="form-group">
 		                            <label for="username" >Username:</label><br>
 		                            <input type="text" name="username" id="username" class="form-control" v-model="registration.username" required=""
@@ -74,6 +74,7 @@ export default {
 			registration: {},
 			passwordRepeat: "",
 			url: "",
+			title: ""
 		};
     },
 
@@ -82,6 +83,7 @@ export default {
 		this.registration.gender = "MALE";
 		this.setUrl();
 		this.setUserRole();
+		this.setTitle();
     },
 
     methods: {
@@ -174,6 +176,12 @@ export default {
 		{
 			if(this.typeToRegister == 'PHARMACY_ADMIN') { this.registration.userRole = 'PHARMACY_ADMIN'; }
 			else if(this.typeToRegister == 'PATIENT')   { this.registration.userRole = 'PATIENT'; }
+		},
+
+		setUserRole()
+		{
+			if(this.typeToRegister == 'PHARMACY_ADMIN') { this.title = 'Pharmacy admin registration'; }
+			else if(this.typeToRegister == 'PATIENT')   { this.title = 'Registration'; }
 		}
 	
 	},
