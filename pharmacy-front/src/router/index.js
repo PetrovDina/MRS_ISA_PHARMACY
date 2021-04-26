@@ -58,7 +58,7 @@ export default new Router({
         {
             path: '/calendar-page',
             name: 'CalendarPage',
-            component: CalendarPage,
+            component: CalendarPage/*,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
@@ -67,7 +67,7 @@ export default new Router({
                 else{
                   ({path: '/'});
                 }
-              }
+              }*/
         },
 
         {

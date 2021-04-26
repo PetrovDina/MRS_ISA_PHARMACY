@@ -1,23 +1,18 @@
 <template>
-  <div id="calendar">
+  <WorkCalendar class="fill-height" id="calendar"/>
+  <!--<div id="calendar">
      <img src="../assets/calendar.png">
     <router-view/>
-  </div>
+  </div>-->
 </template>
 
 <script>
+import WorkCalendar from "../components/WorkCalendar.vue";
 export default {
     name: "CalendarPage",
-
-    data() {
-        return {};
-    },
-
-    mounted() {
-
-    },
-
-    methods: {},
+    components: {
+            WorkCalendar
+        }
 };
 </script>
 
@@ -25,12 +20,7 @@ export default {
 <style scoped>
 
 #calendar {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
+    margin-top: 30px;
 }
 
 
