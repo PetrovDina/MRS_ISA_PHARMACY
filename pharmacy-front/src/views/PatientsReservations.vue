@@ -127,7 +127,7 @@
                                     </button>
                                     <button
                                         type="button"
-                                        class="btn btn-primary"
+                                        class="btn btn-confirm"
                                         data-dismiss="modal"
 
                                         @click="cancelReservation()"
@@ -149,7 +149,7 @@ import { client } from "@/client/axiosClient";
 import moment from "moment";
 
 export default {
-    name: "PatientsPrescriptions",
+    name: "PatientsReservations",
     data() {
         return {
             reservations: [],
@@ -229,6 +229,12 @@ export default {
 .cancel-btn {
     background-color: maroon;
     margin-top: 20px;
+}
+
+.btn-confirm{
+    background-color: rgba(15, 95, 72, 0.95);
+    color: white;
+
 }
 
 </style>

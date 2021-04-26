@@ -14,7 +14,7 @@ import PharmacistHomePage from '@/views/PharmacistHomePage'
 import DispenseMedicationPage from '@/views/DispenseMedicationPage'
 
 import PatientHomePage from '@/views/PatientHomePage'
-import PatientsPrescriptions from '@/views/PatientsPrescriptions'
+import PatientsReservations from '@/views/PatientsReservations'
 
 import PharmacyRegistration from '@/views/PharmacyRegistration'
 import UserRegistrationPage from '@/views/UserRegistrationPage'
@@ -232,10 +232,10 @@ export default new Router({
         },
 
         {
-            path: '/patientsPrescriptions',
-            name: 'PatientsPrescriptions',
+            path: '/patientsReservations',
+            name: 'PatientsReservations',
             props: true,
-            component: PatientsPrescriptions,
+            component: PatientsReservations,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PATIENT'){

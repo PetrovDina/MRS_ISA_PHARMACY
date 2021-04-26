@@ -73,7 +73,7 @@
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/patientsPrescriptions">
+                        <v-card class="oneCard" to="/patientsReservations">
                             <v-card-title class="wordBreak"
                                 >Reserved medications</v-card-title
                             >
