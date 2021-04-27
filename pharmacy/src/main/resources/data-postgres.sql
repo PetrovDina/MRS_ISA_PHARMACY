@@ -62,5 +62,6 @@ INSERT INTO user_role (user_id, role_id) VALUES (4, 4); --  ROLE_PHARMACY_ADMIN
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 1, 1, 3, '1.25.2021.', 'COMPLETED'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 2, 2, 10, '5.21.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 3, 1, 1, '6.13.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 4, 1, 1, '4.28.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
 
 insert into appointment (appointmentStatus, timePeriod, employee_id, deleted) values ('AVAILABLE', '{ "startDate":  [2021, 4, 26], "startTime": [8, 0, 0], "endDate": [2021, 4, 26], "endTime": [9, 0, 0]}', 4, 'False');

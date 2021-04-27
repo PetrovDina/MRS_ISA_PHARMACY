@@ -22,6 +22,7 @@
                     </td>
                     <td>{{ med.form }}</td>
                     <td><button
+                        v-if="checkRole()"
                         class="reserveButton"
                         @click="reserveMedication(med)"
                     >
@@ -78,6 +79,10 @@ export default {
         {
             this.modalWindowShowed = false;
         },
+
+        checkRole(){
+            return this.$store.getters.getLoggedUserRole != 'GUEST';
+        }
     },
 
 };
