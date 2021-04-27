@@ -7,7 +7,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Address</th>
                     <th scope="col">Rating</th>
-
+                    <th v-if="checkRoleTEST()"  scope="col"></th>
                 </tr>
             </thead>
 
@@ -16,7 +16,15 @@
                     <td>{{ph.id}}</td>
                     <td>{{ph.name }}</td>
                     <td>{{ph.location.street}} {{ph.location.streetNum}}, {{ph.location.zipcode}} {{ph.location.city}}</td> 
-                    <td>{{ph.rating}}/5</td> 
+                    <td>{{ph.rating}}/5</td>
+                    <td v-if="checkRoleTEST()" >
+                        <Button 
+                            @action-performed='clickedId(ph.id)' 
+                            bgd_color='rgba(15, 95, 72, 0.95)' 
+                            text="More" 
+                            :style="{ color: 'rgba(256,256,256,0.9)'}">
+                        </Button>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -24,7 +32,10 @@
 </template>
 
 <script>
+import Button from './Button.vue';
+
 export default {
+  components: { Button },
     name: "PharmaciesView",
 
     props: ["pharmacies"],
@@ -37,12 +48,23 @@ export default {
 
     mounted() {
 
-
+        
     },
 
 
     methods: {
-
+        clickedId: function(id){
+            this.$router
+                .push({ 
+                    name: "PharmacyView",
+                    params: {
+                        pharmacyId: id
+                    }
+                });
+        },
+        checkRoleTEST : function(){
+            return this.$store.getters.getLoggedUserRole === 'PHARMACY_ADMIN' || this.$store.getters.getLoggedUserRole === 'PATIENT' ;
+        }
     },
 };
 </script>

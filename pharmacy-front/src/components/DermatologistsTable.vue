@@ -17,19 +17,25 @@
                     <td>{{der.firstName }}</td>
                     <td>{{der.lastName}}</td> 
                     <td>{{der.rating}}</td>
-                    <td><Button class="btn-success" text="Create" color="green"></Button></td>
+                    <td><Button @action-performed="clickedId(der.id)" class="btn" text="New" bgd_color="rgba(15, 95, 72, 0.95)" :style="{color : 'rgba(255,255,255, 0.9)'}"></Button></td>
                 </tr>
             </tbody>
         </table>
+        <ModalWindowAddAppointment 
+            @modal-closed = "modal_window_show = false" 
+            :modal_show = "modal_window_show"
+            :employeeIdToSend = "employeeId">
+        </ModalWindowAddAppointment>
     </div>
 </template>
 
 <script>
 import Button from './Button.vue';
+import ModalWindowAddAppointment from './ModalViewAddAppointment'
 
 export default {
     name: "Dermatologists",
-    components: { Button },
+    components: { Button, ModalWindowAddAppointment},
     props: {
         dermatologists : {
             type : Array,
@@ -40,7 +46,15 @@ export default {
     },
     data() {
         return {
+            modal_window_show : false,
+            employeeId : null,
         }
+    },
+    methods: {
+        clickedId: function(id){
+            this.employeeId = id;
+            this.modal_window_show = true;
+        },
     }
 }
 

@@ -46,6 +46,7 @@ export default new Router({
         {
             path: '/pharmacy',
             name: 'PharmacyView',
+            props: true,
             component: PharmacyView
         },
 

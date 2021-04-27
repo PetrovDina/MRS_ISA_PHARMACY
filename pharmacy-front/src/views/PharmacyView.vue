@@ -8,30 +8,16 @@
                     <h1>{{address}}, {{city}} {{zipCode}}</h1>
                 </div>
                 <v-spacer></v-spacer>
-            </v-card-title>  
-            <v-card-text>
-                <v-row>
-                <v-col  md="6">
-                    <v-card to="/pharmacy" >
-                    <v-card-title>Medication reservation</v-card-title>
-                    </v-card>
-                </v-col>  
-                <v-col md="6">
-                    <v-card to="/pharmacy" >
-                    <v-card-title>Check medication with eRecipe</v-card-title>
-                    </v-card>
-                </v-col>
-                </v-row>
-            </v-card-text>
+            </v-card-title>
         </v-card>
-        <Button 
+        <Button v-if="checkRoleTEST('PATIENT')"
             @action-performed="subscribedToggle" 
             id="sub-btn"
             class="btn"
             :text="!subscribed ? 'Subscribe' : 'Subscribed'"
             :bgd_color="!subscribed ? 'rgba(15, 95, 72, 0.95)' : 'grey'">
         </Button>
-        <TabNav
+        <TabNav v-if="checkRoleTEST('PHARMACY_ADMIN')"
             :tabs="['Dermatologists', 'Pharmacists', 'Medications']"
             :selected="selected"
             @selected="setSelected"
@@ -107,7 +93,14 @@ export default {
         };
     },
 
+    props: {
+        pharmacyId: null,
+    },
+
     methods: {
+        checkRoleTEST : function(userRole){
+            return this.$store.getters.getLoggedUserRole === userRole;
+        },
         toggleDermos : function(){
             this.showDermos = !this.showDermos;
         },
@@ -193,8 +186,13 @@ export default {
         // Za apoteku ce ovo biti kompletan izgled koji ce na pocetku da povuce podatak iz baze o konkretnoj apoteci
         // /pharmacy/{id} i dobavice sve podatke vezano za apoteku
         // primjera radi dobavljamo apoteku sa ID-em 1
+        if (!this.pharmacyId){
+            this.$router.push({name:"Home"});
+            return;
+        }                                    
+
         client({
-            url: "pharmacy/1",
+            url: "pharmacy/" + this.pharmacyId,
             method: "GET",
         }).then((response) => {
             this.pharmacy = response.data
@@ -202,10 +200,10 @@ export default {
             this.address = this.pharmacy.location.street;
             this.city = this.pharmacy.location.city;
             this.zipCode = this.pharmacy.location.zipcode;
-        });
+        }).catch((response) => alert("pharmacyId je los :("));
             // dobavljamo sve lijekove iz apoteke
         client({
-            url : "pharmacyStorageItem/fromPharmacy/1",
+            url : "pharmacyStorageItem/fromPharmacy/" + this.pharmacyId,
             method : "GET",
         }).then((response) => {
                 this.nesto = response.data;
@@ -231,7 +229,7 @@ export default {
                         };
                     this.medicationToSend = [...this.medicationToSend, medication]
                 }
-        });
+        }).catch((response) => alert("pharmacyId je null"));
     },
 };
 </script>
