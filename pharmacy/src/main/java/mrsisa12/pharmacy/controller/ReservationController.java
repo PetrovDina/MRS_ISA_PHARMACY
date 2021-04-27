@@ -122,8 +122,17 @@ public class ReservationController {
 		Reservation reservation = reservationService.findOne(reservationId);
 		System.out.println(reservation);
 		if(reservation != null) {
+			
+			//setting reservation status to cancelled
             reservation.setStatus(ReservationStatus.CANCELLED);
     		reservationService.update(reservation);
+    		
+    		//updating storage item quantity
+    		PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(reservation.getMedication().getId(), reservation.getPharmacy().getId());
+    		psi.setQuantity(psi.getQuantity() + reservation.getQuantity());
+    		pharmacyStorageItemService.save(psi);
+ 
+    		
             return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.OK);
         }
         else

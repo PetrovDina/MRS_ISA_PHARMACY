@@ -28,7 +28,7 @@ insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) value
 insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) values (550, true, '{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": null, "endTime": null }', 3);
 insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) values (250, false, '{ "startDate": [2021, 4, 2], "startTime": [23, 28, 14], "endDate": [2021, 4, 5], "endTime": [23, 28, 14]}', 1);
 insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) values (350, true, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": null, "endTime": null}', 4);
-insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) values (430, true, '{ "startDate": [2021, 4, 2], "startTime": [23, 28, 14], "endDate": null, "endTime": null}', 5);
+insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) values (410, true, '{ "startDate": [2021, 4, 2], "startTime": [23, 28, 14], "endDate": null, "endTime": null}', 5);
 insert into itemprice (price, current, timeperiod, pharmacystorageitem_id) values (370, true, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": null, "endTime": null}', 6);
 
  -- TREBA DA SE UBACE ROLE I BLA BLA NADALJE

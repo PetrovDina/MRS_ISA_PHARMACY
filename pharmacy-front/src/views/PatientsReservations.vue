@@ -1,6 +1,6 @@
 <template>
     <div class="patientsPrescriptions">
-        <p class="titl">
+        <p class="reservations-title">
             {{ this.$store.getters.getLoggedUsername }}'s reservations
         </p>
         <p></p>
@@ -78,14 +78,26 @@
                     </div>
 
                     <button
-                        :disabled="reservation.status!=='CREATED'"
+                        v-if="reservation.status == 'CREATED' && !checkCancellationDate(reservation.dueDate)"
                         class="btn btn-primary cancel-btn"
                         :class="{ disabled: reservation.status !== 'CREATED' }"
                         @click="selectReservation(reservation)"
                         data-toggle="modal"
                         data-target="#exampleModalCenter"
-                        >cancel reservation</button
                     >
+                        cancel reservation
+                    </button>
+
+                    <div
+                        v-if="
+                            checkCancellationDate(reservation.dueDate) &&
+                            reservation.status == 'CREATED'
+                        "
+                        class="cancellation-alert alert alert-dark"
+                        role="alert"
+                    >
+                        Cancellation period has ended!
+                    </div>
 
                     <!-- Modal -->
                     <div
@@ -117,11 +129,15 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">Are you sure you want to cancel the reservation?</div>
+                                <div class="modal-body">
+                                    Are you sure you want to cancel the
+                                    reservation?
+                                </div>
                                 <div class="modal-footer">
                                     <button
                                         type="button"
                                         class="btn btn-secondary"
+                                        data-dismiss="modal"
                                     >
                                         No
                                     </button>
@@ -129,7 +145,6 @@
                                         type="button"
                                         class="btn btn-confirm"
                                         data-dismiss="modal"
-
                                         @click="cancelReservation()"
                                     >
                                         Yes
@@ -162,7 +177,18 @@ export default {
             return moment(d).format("DD.MM.yyyy.");
         },
 
-        selectReservation(r){
+        checkCancellationDate(dueDate) {
+            let todaysDate = moment().format("YYYY-MM-DD");
+            dueDate = moment(dueDate).format("YYYY-MM-DD");
+
+            let b = moment(todaysDate).isBefore(
+                moment(dueDate).subtract(1, "day"),
+                "day"
+            );
+            return !b;
+        },
+
+        selectReservation(r) {
             this.selectedReservation = r;
         },
 
@@ -197,9 +223,9 @@ export default {
 
 <style scoped>
 
-
-.titl {
+.reservations-title {
     font-size: 5vh;
+    margin-top:30px;
 }
 .card {
     width: 70%;
@@ -231,11 +257,13 @@ export default {
     margin-top: 20px;
 }
 
-.btn-confirm{
+.btn-confirm {
     background-color: rgba(15, 95, 72, 0.95);
     color: white;
-
 }
 
+.cancellation-alert {
+    margin-top: 10px;
+}
 </style>
 
