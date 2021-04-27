@@ -12,6 +12,7 @@
             <span>
                 <input
                     v-model="chosenQuantity"
+                    ref="quantityInput"
                     type="number"
                     class="form-control"
                     id="quantityInput"
@@ -43,7 +44,7 @@
                 Complete reservation
             </button>
 
-            <!-- Modal -->
+            <!-- Modal for filling all fields -->
             <div
                 class="modal fade"
                 id="exampleModal"
@@ -54,7 +55,6 @@
             >
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
-                        
                         <div class="modal-body">Please fill all fields!</div>
                         <div class="modal-footer">
                             <button
@@ -64,13 +64,12 @@
                             >
                                 Ok
                             </button>
-
                         </div>
                     </div>
                 </div>
             </div>
 
-                        <!-- Modal -->
+            <!-- Modal for valid quantity -->
             <div
                 class="modal fade"
                 id="exampleModal2"
@@ -81,8 +80,9 @@
             >
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
-                        
-                        <div class="modal-body">Please input valid quantity!</div>
+                        <div class="modal-body">
+                            Please input valid quantity!
+                        </div>
                         <div class="modal-footer">
                             <button
                                 type="button"
@@ -91,13 +91,12 @@
                             >
                                 Ok
                             </button>
-
                         </div>
                     </div>
                 </div>
             </div>
 
-                                    <!-- Modal -->
+            <!-- Modal for success -->
             <div
                 class="modal fade"
                 id="exampleModal3"
@@ -108,7 +107,6 @@
             >
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
-                        
                         <div class="modal-body">Successfully reserved!</div>
                         <div class="modal-footer">
                             <button
@@ -119,7 +117,6 @@
                             >
                                 Go back
                             </button>
-
                         </div>
                     </div>
                 </div>
@@ -132,7 +129,7 @@
 import PharmaciesWithPriceComponent from "../components/PharmaciesWithPriceComponent.vue";
 import moment from "moment";
 import { client } from "@/client/axiosClient";
-import $ from 'jquery'
+import $ from "jquery";
 
 export default {
     name: "MedicationReservationView",
@@ -163,6 +160,7 @@ export default {
 
     methods: {
         chosenPharmacySelected(row) {
+            this.$refs.quantityInput.disabled = row.availableQuantity <= 0;
             this.chosenQuantity = null;
             this.chosenRow = row;
         },
@@ -173,7 +171,7 @@ export default {
                 !this.chosenQuantity ||
                 !this.chosenDueDate
             ) {
-                $("#exampleModal").modal('show');
+                $("#exampleModal").modal("show");
                 return;
             }
 
@@ -181,7 +179,7 @@ export default {
                 this.chosenQuantity == 0 ||
                 this.chosenQuantity > this.chosenRow.availableQuantity
             ) {
-                $("#exampleModal2").modal('show');
+                $("#exampleModal2").modal("show");
                 return;
             }
 
@@ -207,7 +205,7 @@ export default {
                 },
             }).then((response) => console.log(response.data));
 
-            $("#exampleModal3").modal('show');
+            $("#exampleModal3").modal("show");
 
             //this.$router.push({ name: "Home" });
         },
@@ -263,7 +261,7 @@ p {
     font-size: 20px;
 }
 
-.titl{
+.titl {
     font-size: 24px;
 }
 </style>

@@ -190,6 +190,7 @@ export default {
 
         selectReservation(r) {
             this.selectedReservation = r;
+
         },
 
         cancelReservation() {
