@@ -40,7 +40,7 @@ export default {
 #app {
     font-family: "Poppins", sans-serif;
     text-align: center;
-    margin-top: 30px; /* Da bi nam inicijalno sav content bio ispod navigacije koja je fiksirana na vrhu */
+    margin-top: 20px; /* Da bi nam inicijalno sav content bio ispod navigacije koja je fiksirana na vrhu */
     width: 100%;
 
 }

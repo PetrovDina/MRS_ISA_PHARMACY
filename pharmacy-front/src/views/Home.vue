@@ -1,6 +1,7 @@
 <template>
     <div id="homeDiv">
-        <h1>{{ msg }}</h1>
+        <img src="@/assets/logo2.png" alt="Girl in a jacket" height="100" width="100">
+                <h1>{{ msg }}</h1>
         <TabNav
             :tabs="['Medications', 'Pharmacies']"
             :selected="selected"
@@ -52,7 +53,7 @@ export default {
     data() {
         return {
             selected: "Medications",
-            msg: "Welcome to Team12 pharmacy",
+            msg: "Team12 pharmacy",
             medications: [],
             pharmacies: [],
             searchPlaceholder: "Search pharmacies...",

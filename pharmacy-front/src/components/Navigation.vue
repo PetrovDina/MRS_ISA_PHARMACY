@@ -1,9 +1,12 @@
 <template>
     <div class="topnav">
 
+        <!-- all -->
+        <a @click="homeRedirect()" class="homeNav"><i class="fa fa-home" style="font-size:24px"></i></a>
+
+
         <!--unauthenticated user (guest) -->
         <div v-if="isUserType('GUEST')">
-            <a @click="homeRedirect()" class="homeNav">{{ this.$store.getters.getLoggedUserRole }} Home</a>
             <a @click="loginRedirect()" class="loginNav">Log in</a>
             <a @click="registerRedirect()" class="registerNav">Register</a>
 
@@ -27,7 +30,6 @@
 
         <!--patient-->
         <div v-if="isUserType('PATIENT')">
-            <a @click="homeRedirect()" class="homeNav">{{ this.$store.getters.getLoggedUserType }} Home</a>
             <a @click="patientRedirect()" class="patientNav">Options</a>
 
         </div>
@@ -263,6 +265,7 @@ export default {
     position: fixed;
     top: 0;
     z-index: 999;
+    height: 50px;
 
 }
 
@@ -274,6 +277,7 @@ export default {
     text-decoration: none;
     font-size: 17px;
     z-index: 999;
+    max-height: 100%;
 }
 
 .topnav a:hover {
@@ -285,4 +289,5 @@ export default {
     background-color: #272327;
     color: white;
 }
+
 </style>

@@ -81,7 +81,7 @@ export default {
         },
 
         checkRole(){
-            return this.$store.getters.getLoggedUserRole != 'GUEST';
+            return this.$store.getters.getLoggedUserRole == 'PATIENT';
         }
     },
 
