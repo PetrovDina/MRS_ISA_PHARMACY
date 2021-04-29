@@ -31,6 +31,7 @@ import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.TimePeriod;
+import mrsisa12.pharmacy.service.ItemPriceService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.PharmacyStorageItemService;
@@ -48,8 +49,8 @@ public class PharmacyStorageItemController {
 	@Autowired
 	private MedicationService medicationService;
 
-//	@Autowired
-//	private ItemPriceService itemPriceService;
+	@Autowired
+	private ItemPriceService itemPriceService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyStorageItemDTO>> getAllPharmacyStorageItems() {
@@ -139,14 +140,9 @@ public class PharmacyStorageItemController {
 		pharmacyStorageItem.setQuantity(pharmacyStorageItemWIPDTO.getQuantity());
 		// postoje je kreiranje onda je deleted na false
 		pharmacyStorageItem.setDeleted(false);
-		// dodajemo pokazivac na apoteku
-		pharmacy.addPharmacyStorageItem(pharmacyStorageItem);
 		// dodajemo apotkue novom pharmacyStorageItem-u
 		pharmacyStorageItem.setPharmacy(pharmacy);
-		// cuvamo apoteku sa novim lijekom
-		// pharmacyService.save(pharmacy);
 		pharmacyStorageItemService.save(pharmacyStorageItem);
-		// itemPriceSerice.save(itemPrice);
 		return new ResponseEntity<>(
 				new PharmacyStorageItemDTO(pharmacyStorageItemService.findOne(pharmacyStorageItem.getId())),
 				HttpStatus.CREATED);
@@ -179,10 +175,10 @@ public class PharmacyStorageItemController {
 		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, timePeriod);
 		// dodajemo itemPrice-u referencu na pharmacyStorageItem
 		itemPrice.setPharmacyStorageItem(pharmacyStorageItem);
-		// dodajemo novu cijenu pharmacyStorageItem-u
-		pharmacyStorageItem.addItemPrice(itemPrice);
-		// cuvamo pharmacyStorageItem
-		pharmacyStorageItem = pharmacyStorageItemService.save(pharmacyStorageItem);
+		// cuvamo itemPrice
+		itemPriceService.save(itemPrice);
+		
+		pharmacyStorageItem.addItemPrice(itemPrice); // vracam update-ovan lijek - odnosno lijek koji sada ima novu cijenu
 		
 		return new ResponseEntity<>(new PharmacyStorageItemWithItemPricesDTO(pharmacyStorageItem), HttpStatus.OK);
 	}

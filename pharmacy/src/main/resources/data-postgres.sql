@@ -50,14 +50,27 @@ insert into system_user (username, password, email, firstname, lastname, locatio
 insert into pharmacyadmin (id) values (3);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('derma', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'derma@email.com', 'Dermos', 'Dermic', 1, 'MALE', 'ACTIVATED', 'False');
-insert into employees (id, workTime, rating ) values (4, '{ "startDate": [2021, 4, 3], "startTime": [7, 0, 0], "endDate": [2021, 4, 3], "endTime": [15, 0, 0]}', 2.2);
+insert into employees (id, rating ) values (4, 2.2);
 insert into dermatologist (id, dermatologistNickname) values (4, 'perica');
 
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('derma1', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'derma1@email.com', 'Dermos1', 'Dermic1', 1, 'FEMALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (5, 4.4);
+insert into dermatologist (id, dermatologistNickname) values (5, 'misko');
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('derma2', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'derma1@email.com', 'Dermos1', 'Dermic1', 1, 'MALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (6, 3.5);
+insert into dermatologist (id, dermatologistNickname) values (6, 'djuro');
+
+insert into employment (employee_id, workTime, pharmacy_id, deleted) values (4, '{ "startDate": [2021, 4, 3], "startTime": [7, 0, 0], "endDate": [2021, 4, 3], "endTime": [12, 0, 0]}', 1, 'False');
+insert into employment (employee_id, workTime, pharmacy_id, deleted) values (5, '{ "startDate": [2021, 4, 3], "startTime": [14, 0, 0], "endDate": [2021, 4, 3], "endTime": [19, 0, 0]}', 1, 'False');
+insert into employment (employee_id, workTime, pharmacy_id, deleted) values (6, '{ "startDate": [2021, 4, 3], "startTime": [8, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 2, 'False');
 
 INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
 INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT
 INSERT INTO user_role (user_id, role_id) VALUES (3, 6); --  ROLE_PHARMACY_ADMIN
-INSERT INTO user_role (user_id, role_id) VALUES (4, 4); --  ROLE_PHARMACY_ADMIN
+INSERT INTO user_role (user_id, role_id) VALUES (4, 4); --  DERMATOLOGIST
+INSERT INTO user_role (user_id, role_id) VALUES (5, 4); --  DERMATOLOGIST
+INSERT INTO user_role (user_id, role_id) VALUES (6, 4); --  DERMATOLOGIST
 
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 1, 1, 3, '1.25.2021.', 'COMPLETED'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 2, 2, 10, '5.21.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije

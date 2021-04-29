@@ -7,33 +7,22 @@ import mrsisa12.pharmacy.model.enums.Gender;
 
 public class EmployeeDTO extends UserDTO {
 
-	private TimePeriodDTO workTime;
 	private double rating;
 
 	public EmployeeDTO() {
 	}
 
 	public EmployeeDTO(Long id, String username, String password, String email, String firstName, String lastName, Location location,
-			Gender gender, TimePeriodDTO workTime, double rating) {
+			Gender gender, double rating) {
 		super(id, username, password, email, firstName, lastName, location, gender);
-		this.workTime = workTime;
 		this.rating = rating;
 	}
 
 	public EmployeeDTO(Employee employee) {
 		this(employee.getId(), employee.getUsername(), employee.getPassword(), employee.getEmail(), employee.getFirstName(),
-				employee.getLastName(), employee.getLocation(), employee.getGender(),
-				new TimePeriodDTO(employee.getWorkTime()), employee.getRating());
+				employee.getLastName(), employee.getLocation(), employee.getGender(), employee.getRating());
 	}
-
-	public TimePeriodDTO getWorkTimeDTO() {
-		return workTime;
-	}
-
-	public void setWorkTimeDTO(TimePeriodDTO workTime) {
-		this.workTime = workTime;
-	}
-
+	
 	public double getRating() {
 		return rating;
 	}

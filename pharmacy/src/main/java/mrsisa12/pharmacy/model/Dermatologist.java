@@ -2,11 +2,11 @@ package mrsisa12.pharmacy.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 
 import mrsisa12.pharmacy.model.enums.Gender;
 import mrsisa12.pharmacy.model.enums.UserStatus;
@@ -22,11 +22,22 @@ public class Dermatologist extends Employee {
 	@Column(name = "dermatologistNickname", unique=true, nullable=false)
 	private String dermatologistNickname;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "employee")
+	private List<Employment> employments;
+	
 	public Dermatologist() {}
 
 	public Dermatologist(Long id, String username, String password, String email, String firstName, String lastName,
-			Location location, Gender gender, UserStatus activeStatus, List<UserRole> userRoles, boolean deleted, TimePeriod workTime, double rating, String dermatologistNickname) {
-		super(id, username, password, email, firstName, lastName, location, gender, activeStatus, userRoles, deleted, workTime, rating);
+			Location location, Gender gender, UserStatus activeStatus, List<UserRole> userRoles, boolean deleted, double rating, String dermatologistNickname) {
+		super(id, username, password, email, firstName, lastName, location, gender, activeStatus, userRoles, deleted, rating);
 		this.dermatologistNickname = dermatologistNickname;
+	}
+
+	public List<Employment> getEmployments() {
+		return employments;
+	}
+
+	public void setEmployments(List<Employment> employments) {
+		this.employments = employments;
 	}
 }
