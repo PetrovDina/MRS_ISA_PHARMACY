@@ -3,7 +3,6 @@
         <p class="reservations-title">
             {{ this.$store.getters.getLoggedUsername }}'s reservations
         </p>
-        <p></p>
 
         <div :key="reservation.id" v-for="reservation in reservations">
             <div class="card mx-auto">
@@ -174,7 +173,7 @@ export default {
 
     methods: {
         convertDate(d) {
-            return moment(d).format("DD.MM.yyyy.");
+            return moment(d).format("MMMM Do yyyy.");
         },
 
         checkCancellationDate(dueDate) {

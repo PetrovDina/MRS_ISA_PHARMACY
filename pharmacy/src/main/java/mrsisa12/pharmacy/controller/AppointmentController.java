@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.model.AppointmentType;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.EmployeeService;
 import mrsisa12.pharmacy.service.PatientService;
+import mrsisa12.pharmacy.service.PharmacyService;
 
 @RestController
 @RequestMapping("/appointments")
@@ -38,11 +40,28 @@ public class AppointmentController {
 
 	@Autowired
 	private PatientService patientService;
+	
+	@Autowired
+	private PharmacyService pharmacyService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
 
 		List<Appointment> appointments = appointmentService.findAll();
+
+		// convert appointments to DTOs
+		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : appointments) {
+			appointmentsDTO.add(new AppointmentDTO(appointment));
+		}
+
+		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/allDermatologistAvailable")
+	public ResponseEntity<List<AppointmentDTO>> getAllAvailableDermatologistAppointments() {
+
+		List<Appointment> appointments = appointmentService.findAllAvailableDermatologistAppointments();
 
 		// convert appointments to DTOs
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
@@ -90,23 +109,31 @@ public class AppointmentController {
 
 		// Trebace vjerovatno da se nesto uradi sa datumom.
 		// appointment.setTimePeriod(appointmentDTO.getTimePeriodDTO());
-		boolean res = employeeService.checkAppointmentTime(new TimePeriod(appointmentDTO.getTimePeriodDTO()),
-				appointmentDTO.getEmployeeDTO().getId());
+		boolean res = employeeService.checkAppointmentTime(new TimePeriod(appointmentDTO.getTimePeriod()),
+				appointmentDTO.getEmployee().getId());
 		if (!res) {
 			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		// postavljamo vrijeme i datum
-		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriodDTO()));
+		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
 		// postavljamo status da je dostupan jer se kreira
 		appointment.setStatus(AppointmentStatus.AVAILABLE);
 		// postavljamo da je neobrisan
 		appointment.setDeleted(false);
 		// postavljamo dermatologa ili farmaceuta na termin
-		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployeeDTO().getId());
+		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
 		appointment.setEmployee(employee);
 		// postavljamo termin dermatologu ili farmaceutu
 		employee.addAppointment(appointment);
+		
+		//dina dodala - TODO izmeni da ne bude fiksno nego da se dobavi prava cena iz cenovnika onda kad se on kreira!
+		appointment.setPrice(1500);
+		
+		//dina dodala - TODO izmeni da bude apoteka gde radi dermatolog a ne uvek jedinica!!!
+		appointment.setPharmacy(pharmacyService.findOne(1l));
 
+		//dina: TODO dodaj AppointmentType pravi!
+		appointment.setType(AppointmentType.DERMATOLOGIST_EXAMINATION);
 		appointment = appointmentService.save(appointment);
 
 		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);

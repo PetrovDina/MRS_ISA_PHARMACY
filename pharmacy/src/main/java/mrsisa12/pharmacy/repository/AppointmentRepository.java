@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import mrsisa12.pharmacy.model.Appointment;
 
@@ -24,4 +25,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 	public List<Appointment> findAllByEmployeeId(Long id);
 
 	public List<Appointment> findAllByPatientId(Long id);
+
+	@Query("select app from Appointment app where app.status = 'AVAILABLE' and app.type = 'DERMATOLOGIST_EXAMINATION'")
+	public List<Appointment> findAllAvailableDermatologistAppointments();
 }

@@ -49,4 +49,8 @@ public class AppointmentService {
 	public void deleteAppointment(Appointment appointment) {
 		appointmentRepository.delete(appointment);
 	}
+
+	public List<Appointment> findAllAvailableDermatologistAppointments() {
+		return appointmentRepository.findAllAvailableDermatologistAppointments();
+	}
 }

@@ -16,7 +16,7 @@
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/dermatologistReservation">
                             <v-card-title class="wordBreak"
                                 >Book dermatologist appointment</v-card-title
                             >

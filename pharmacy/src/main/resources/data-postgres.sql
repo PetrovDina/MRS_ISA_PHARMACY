@@ -64,4 +64,6 @@ insert into reservation (patient_id, medication_id, pharmacy_id, quantity, dueda
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 3, 1, 1, '6.13.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 4, 1, 1, '4.28.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
 
-insert into appointment (appointmentStatus, timePeriod, employee_id, deleted) values ('AVAILABLE', '{ "startDate":  [2021, 4, 26], "startTime": [8, 0, 0], "endDate": [2021, 4, 26], "endTime": [9, 0, 0]}', 4, 'False');
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 4, 26], "startTime": [8, 0, 0], "endDate": [2021, 4, 26], "endTime": [9, 0, 0]}', 4, 1500, 1, 'False');
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 6, 10], "startTime": [13, 0, 0], "endDate": [2021, 6, 10], "endTime": [14, 0, 0]}', 4, 1500, 1, 'False');
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 6, 15], "startTime": [9, 0, 0], "endDate": [2021, 6, 15], "endTime": [10, 0, 0]}', 4, 1500, 1, 'False');

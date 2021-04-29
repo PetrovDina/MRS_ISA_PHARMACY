@@ -31,12 +31,23 @@ public class Appointment {
 	@Enumerated(EnumType.STRING)
 	private AppointmentStatus status;
 	
+	@Column(name = "appointmentType", unique=false, nullable=false)
+	@Enumerated(EnumType.STRING)
+	private AppointmentType type;
+	
 	@Type(type = "jsonb")
 	@Column(columnDefinition = "jsonb", name = "timePeriod")
 	private TimePeriod timePeriod;
 	
-//	@OneToOne()
-//	private Pharmacy pharmacy;
+	
+	@Column(name="price", unique=false, nullable=false)
+	private double price;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "PHARMACY_ID", referencedColumnName = "ID")
+	private Pharmacy pharmacy;
+	
+	
 //	private Report report;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -52,16 +63,20 @@ public class Appointment {
 
 	public Appointment() {}
 	
-	public Appointment(AppointmentStatus status, TimePeriod timePeriod, Employee employee, Patient patient) {
+	public Appointment(AppointmentStatus status, TimePeriod timePeriod, Employee employee, Patient patient, double price, Pharmacy pharmacy, AppointmentType type
+) {
 		super();
 		this.status = status;
 		this.timePeriod = timePeriod;
 		this.employee = employee;
 		this.patient = patient;
+		this.price = price;
+		this.pharmacy = pharmacy;
+		this.type = type;
 	}
 	
 	public Appointment(Appointment app) {
-		this(app.getStatus(), app.getTimePeriod(), app.getEmployee(), app.getPatient());
+		this(app.getStatus(), app.getTimePeriod(), app.getEmployee(), app.getPatient(), app.getPrice(), app.getPharmacy(), app.getType());
 	}
 	
 	public Long getId() {
@@ -88,6 +103,14 @@ public class Appointment {
 		this.timePeriod = timePeriod;
 	}
 
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
 	public Employee getEmployee() {
 		return employee;
 	}
@@ -103,6 +126,15 @@ public class Appointment {
 	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
+	
+
+	public Pharmacy getPharmacy() {
+		return pharmacy;
+	}
+
+	public void setPharmacy(Pharmacy pharmacy) {
+		this.pharmacy = pharmacy;
+	}
 
 	public boolean isDeleted() {
 		return deleted;
@@ -111,4 +143,14 @@ public class Appointment {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
+
+	public AppointmentType getType() {
+		return type;
+	}
+
+	public void setType(AppointmentType type) {
+		this.type = type;
+	}
+	
+	
 }
