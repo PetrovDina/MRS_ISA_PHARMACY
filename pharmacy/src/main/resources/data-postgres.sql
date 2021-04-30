@@ -14,7 +14,9 @@ insert into location (latitude, longitude, street, city, zipcode, streetNum) val
 
 insert into pharmacy (name, rating, location_id) values ('Apoteka Jankovic', 2.5, 1); --id 1
 insert into pharmacy (name, rating, location_id) values ('Benu', 4.5, 2); --id 2
-insert into pharmacy (name, rating, location_id) values ('Srbotrade', 4.8, 3); --id 3
+insert into pharmacy (name, rating, location_id) values ('Srbotrade', 1.8, 4); --id 3
+insert into pharmacy (name, rating, location_id) values ('Lilly', 3.8, 3); --id 4
+
 
 insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, deleted) values (3, 2, 1, 'False'); /* tri brufena */
 insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, deleted) values (5, 3, 1, 'False'); /* pet paracetamola */

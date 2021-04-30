@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.AppointmentDTO;
@@ -135,6 +136,18 @@ public class AppointmentController {
 		//dina: TODO dodaj AppointmentType pravi!
 		appointment.setType(AppointmentType.DERMATOLOGIST_EXAMINATION);
 		appointment = appointmentService.save(appointment);
+
+		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value = "/book")
+	public ResponseEntity<AppointmentDTO> reserveAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId) {
+
+		Appointment appointment = appointmentService.findOne(appointmentId);
+		appointment.setPatient(patientService.findByUsername(patientUsername));
+		appointment.setStatus(AppointmentStatus.RESERVED);
+		appointment = appointmentService.save(appointment);
+
 
 		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);
 	}
