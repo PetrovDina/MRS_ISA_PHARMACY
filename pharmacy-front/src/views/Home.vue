@@ -1,27 +1,37 @@
 <template>
     <div id="homeDiv">
-        <img src="@/assets/logo2.png" alt="Girl in a jacket" height="100" width="100">
-                <h1>{{ msg }}</h1>
+        <img
+            src="@/assets/logo2.png"
+            alt="Girl in a jacket"
+            height="100"
+            width="100"
+        />
+        <h1>{{ msg }}</h1>
         <TabNav
             :tabs="['Medications', 'Pharmacies']"
             :selected="selected"
             @selected="setSelected"
         >
-            
             <Tab :isSelected="selected === 'Medications'">
                 <SearchBar
                     :placeHolder="medicationSearchPlaceholder"
+                    :options="medicationSortOptions"
                     @search-performed="medicationSearchPerformed"
                 />
 
-                <MedicationsView :medications="medicationSearchResults"></MedicationsView>
+                <MedicationsView
+                    :medications="medicationSearchResults"
+                ></MedicationsView>
             </Tab>
 
             <Tab :isSelected="selected === 'Pharmacies'">
                 <SearchBar
                     :placeHolder="searchPlaceholder"
+                    :options="pharmaciesSortOptions"
                     @search-performed="searchPerformed"
+                    @sort-performed="pharmaciesSortPerformed"
                 />
+
                 <PharmaciesView
                     :pharmacies="pharmacySearchResults"
                 ></PharmaciesView>
@@ -61,6 +71,16 @@ export default {
             searchQuery: "",
             pharmacySearchResults: [],
             medicationSearchResults: [],
+
+            pharmaciesSortOptions: ["-", "name", "city", "rating"],
+            medicationSortOptions: [
+                "-",
+                "name",
+                "manufacturer",
+                "prescription",
+                "form",
+            ],
+
             // medications: [
             //     {
             //         id: 1,
@@ -129,13 +149,42 @@ export default {
             this.selected = tab;
         },
 
+        pharmaciesSortPerformed(sortCriterium) {
+            let self = this;
+            if (sortCriterium === "-") 
+                return;
+
+            else if (sortCriterium === "rating") {
+                this.pharmacySearchResults = this.pharmacies.sort(function (
+                    a,
+                    b
+                ) {
+                    return b.rating - a.rating;
+                });
+            }
+
+            else if (sortCriterium === "city") {
+                this.pharmacySearchResults = this.pharmacies.sort(function (
+                    a,
+                    b
+                ) {
+                    return a.location.city > b.location.city ? 1 : -1;
+                });
+            }
+
+            else if (sortCriterium === "name") {
+                this.pharmacySearchResults = this.pharmacies.sort(function (
+                    a,
+                    b
+                ) {
+                    return a.name > b.name ? 1 : -1;
+                });
+            }
+
+        },
+
         searchPerformed(text) {
             this.searchQuery = text;
-            // client({
-            //     url: "pharmacy/searchPharmacies",
-            //     params: {query: this.searchQuery},
-            //     method: "GET",
-            // }).then((response) => (this.pharmacies = response.data));
 
             let self = this;
             this.pharmacySearchResults = this.pharmacies.filter(function (
@@ -169,12 +218,12 @@ export default {
             });
         },
 
-        medicationSearchPerformed(text)
-        {
+        medicationSearchPerformed(text) {
             this.searchQuery = text;
             let self = this;
-            this.medicationSearchResults = this.medications.filter(function (medication) 
-            {
+            this.medicationSearchResults = this.medications.filter(function (
+                medication
+            ) {
                 return (
                     medication.name
                         .toLowerCase()

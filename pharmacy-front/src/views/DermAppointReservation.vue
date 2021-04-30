@@ -61,66 +61,51 @@
                         </div>
                     </div>
 
-                <Button 
-                    @action-performed="bookAppointment(appointment)" 
-                    text="Book appointment" 
-                    bgd_color="rgba(155, 82, 151, 0.7)" 
-                    style="color:white">
-                </Button>
-
-                    <!-- Modal -->
-                    <div
-                        class="modal fade"
-                        id="exampleModalCenter"
-                        tabindex="-1"
-                        role="dialog"
-                        aria-labelledby="exampleModalCenterTitle"
-                        aria-hidden="true"
+                    <Button
+                        @action-performed="bookAppointment(appointment)"
+                        text="Book appointment"
+                        class="book-button"
                     >
-                        <div
-                            class="modal-dialog modal-dialog-centered"
-                            role="document"
+                    </Button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div
+            class="modal fade"
+            id="bookModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Successfully booked!
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
                         >
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5
-                                        class="modal-title"
-                                        id="exampleModalLongTitle"
-                                    >
-                                        Confirm reservation
-                                    </h5>
-                                    <button
-                                        type="button"
-                                        class="close"
-                                        data-dismiss="modal"
-                                        aria-label="Close"
-                                    >
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    Are you sure you want to cancel the
-                                    reservation?
-                                </div>
-                                <div class="modal-footer">
-                                    <button
-                                        type="button"
-                                        class="btn btn-secondary"
-                                        data-dismiss="modal"
-                                    >
-                                        No
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="btn btn-confirm"
-                                        data-dismiss="modal"
-                                        @click="cancelReservation()"
-                                    >
-                                        Yes
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        You can see all your scheduled appointments on your page
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                        >
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
@@ -132,11 +117,12 @@
 import { client } from "@/client/axiosClient";
 import moment from "moment";
 import Button from "@/components/Button";
+import $ from "jquery";
 
 export default {
     name: "DermAppointReservation",
 
-    components: {Button},
+    components: { Button },
 
     data() {
         return {
@@ -149,9 +135,28 @@ export default {
             return moment(d).format("MMMM Do yyyy");
         },
 
-        bookAppointment(apt){
-            alert(apt.id);
-        }
+        bookAppointment(apt) {
+            client({
+                url: "appointments/book",
+                params: {
+                    patientUsername: this.$store.getters.getLoggedUsername,
+                    appointmentId: apt.id,
+                },
+                method: "GET",
+            }).then((response) => {
+                //alert message here
+
+                //refreshing available appointments
+                client({
+                    url: "appointments/allDermatologistAvailable",
+                    method: "GET",
+                }).then((response) => {
+                    this.appointments = response.data;
+                });
+            });
+
+            $("#bookModal").modal("show");
+        },
     },
 
     mounted() {
@@ -166,7 +171,6 @@ export default {
 
 
 <style scoped>
-
 .appointments-title {
     font-size: 5vh;
     margin-top: 40px;
@@ -174,7 +178,7 @@ export default {
 .card {
     width: 70%;
     margin-top: 40px;
-    border: 1px solid rgba(63, 63, 63, 0.349);
+    border: 1px solid rgba(63, 63, 63, 0.5);
 }
 
 .c1 {
@@ -192,9 +196,15 @@ export default {
     font-size: 30px;
 }
 
+.book-button {
+    margin-top: 20px;
+    /* width: %; */
+    border: 1px solid rgba(63, 63, 63, 0.3);
+    background-color: rgba(32, 102, 75, 0.2);
+}
 
-Button{
-    margin-top:20px;
+.book-button:hover {
+    background-color: rgba(32, 102, 75, 0.4);
 }
 </style>
 
