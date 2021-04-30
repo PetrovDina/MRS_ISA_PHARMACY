@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import mrsisa12.pharmacy.mail.EmailContent;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.repository.ReservationRepository;
@@ -17,6 +19,9 @@ public class ReservationService {
 
 	@Autowired
 	private ReservationRepository reservationRepository;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	public Reservation findOne(Long id) {
 		return reservationRepository.findById(id).orElseGet(null);
@@ -62,8 +67,9 @@ public class ReservationService {
 
             toUpdate.setStatus(ReservationStatus.COMPLETED);
             update(toUpdate);
-
-            //TODO email
+            EmailContent email = new EmailContent("Medicine pickup confirmation!",
+                    toUpdate.getPatient().getEmail(), emailBody + toUpdate.getId() + "!");
+            emailService.sendEmail(email);
             return true;
 
         }
