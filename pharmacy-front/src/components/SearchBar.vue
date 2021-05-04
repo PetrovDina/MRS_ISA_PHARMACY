@@ -19,7 +19,7 @@
 
         <!-- filter bar  -->
         <div id="filterDiv">
-            <PharmaciesFilterBar ref="filterBar" v-if="isSearchOf('pharmacies')"></PharmaciesFilterBar>
+            <PharmaciesFilterBar ref="filterBar" v-if="isSearchOf('pharmacies')" ></PharmaciesFilterBar>
             <!-- ovde ce ici filter bar za lekove -->
         </div>
 
@@ -93,7 +93,7 @@ export default {
 
 
 .sort-dropdown {
-    padding: 10px;
+    padding: 5px;
     border: 0.5px solid rgba(128, 128, 128, 0.473);
     display: inline-block;
 
