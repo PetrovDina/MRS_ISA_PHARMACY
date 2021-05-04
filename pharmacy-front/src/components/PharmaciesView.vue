@@ -73,7 +73,7 @@ export default {
 <style scoped>
 
 #pharmaciesViewDiv{
-    margin: 30px 60px 30px 60px;
+    margin: 10px 40px 30px 40px;
 }
 
 

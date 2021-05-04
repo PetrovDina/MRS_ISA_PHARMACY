@@ -91,7 +91,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #medicationsViewDiv {
-    margin: 30px 60px 30px 60px;
+    margin: 10px 40px 30px 40px;
 }
 
 thead {
