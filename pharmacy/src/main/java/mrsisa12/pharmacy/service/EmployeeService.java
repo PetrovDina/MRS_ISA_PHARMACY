@@ -9,14 +9,19 @@ import org.springframework.stereotype.Service;
 
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
+import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.repository.EmployeeRepository;
+import mrsisa12.pharmacy.repository.EmploymentRepository;
 
 @Service
 public class EmployeeService {
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
+
+	@Autowired
+	private EmploymentRepository employmentRepository;
 
 	public List<Employee> findAll() {
 		return employeeRepository.findAll();
@@ -35,13 +40,18 @@ public class EmployeeService {
 	}
 
 	public boolean checkAppointmentTime(TimePeriod timePeriod, Long id) {
+
 		Employee employee = employeeRepository.findOneWithAllAppointments(id);
-		// prvo provjera da li je u okvriu radnog vremena -- Samo LocalTime provjeravamo
-		LocalTime eWorkTSTime = employee.getWorkTime().getStartTime();
-		LocalTime eWorkTETime = employee.getWorkTime().getEndTime();
-		if (!eWorkTSTime.isBefore(timePeriod.getStartTime()) || !eWorkTETime.isAfter(timePeriod.getEndTime())) {
-			// ne upada u opseg radnog vremena
-			return false;
+
+		List<Employment> employments = employmentRepository.findAllByEmployee(employee);
+
+		LocalTime timePeriodSTime = timePeriod.getStartTime();
+		LocalTime timePeriodETime = timePeriod.getEndTime();
+
+		for (Employment employment : employments) {
+			if (!employment.getWorkTime().getStartTime().isBefore(timePeriodSTime)
+					|| !employment.getWorkTime().getEndTime().isAfter(timePeriodETime))
+				return false; // ne upada u radno vrijeme
 		}
 
 		// Ovdje se mora provjeravati i datum i vrijeme
@@ -53,7 +63,7 @@ public class EmployeeService {
 					&& eWorkTSDateTime.isAfter(timePeriod.getStartDate().atTime(timePeriod.getStartTime())))
 					&& !(eWorkTEDateTime.isBefore(timePeriod.getEndDate().atTime(timePeriod.getEndTime()))
 							&& eWorkTEDateTime.isBefore(timePeriod.getStartDate().atTime(timePeriod.getStartTime()))))
-				return false; // preklapanje
+				return false; // preklapanje sa postojecim terminom
 		}
 		// ako je u okviru radnog vremena i ne preklapa se ni sa jednim terminom koji
 		// postoji dobro je!

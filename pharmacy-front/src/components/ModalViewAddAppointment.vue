@@ -11,11 +11,11 @@
             <div>
                 <div class="md-form mx-5 my-5">
                     <label class="label" for="start_time">Choose starting time</label>
-                    <input type="time" id="start_time" class="moja-klasa form-control" :min="time">
+                    <input type="time" id="start_time" class="form-control">
                 </div>
                 <div class="md-form mx-5 my-5">
                     <label class="label" for="end_time">Choose ending time</label>
-                    <input type="time" id="end_time" class="moja-klasa form-control">
+                    <input type="time" id="end_time" class="form-control">
                 </div>
             </div>
             <Button 
@@ -38,18 +38,16 @@ export default {
     components : {Button },
     props : {
         modal_show : Boolean,
-        employeeIdToSend: null,
+        dermatologistIdToSend: Number,
     },
     data() {
         return {
             chosenDate: null,
-            today: moment().format("YYYY-MM-DD"),
-            today1: moment().format("HH:mm"),
-            time : "18:00",
+            today: moment().format("YYYY-MM-DD")
         }
     },
     mounted() {
-        if (!this.employeeIdToSend){
+        if (!this.dermatologistIdToSend){
             this.closeWindow();
         }   
     },
@@ -65,27 +63,29 @@ export default {
 
             if(!date || !start_time_value || !end_time_value){
                 alert("All inputs must be filled!");
-                return;
             }
-            // poziv na back appointmente kontroleru
-            client({
-            url: "appointments",
-            method: "POST",
-            data: {
-                employeeDTO: {
-                    //id: this.employeeIdToSend //// JER ZA SAD POSTOJI SAMO JEDAN DERMOS
-                    id: 4
-                },
-                timePeriodDTO: {
-                    startDate: date,
-                    startTime: start_time_value,
-                    endDate: date,
-                    endTime: end_time_value
-                }
+            else
+            {
+                // poziv na back appointmente kontroleru
+                client({
+                url: "appointments",
+                method: "POST",
+                data: {
+                        employeeDTO: {
+                            //id: this.employeeIdToSend //// JER ZA SAD POSTOJI SAMO JEDAN DERMOS
+                            id: this.dermatologistIdToSend
+                        },
+                        timePeriodDTO: {
+                            startDate: date,
+                            startTime: start_time_value,
+                            endDate: date,
+                            endTime: end_time_value
+                        }
+                    }
+                })
+                .then((response) => alert("Succsessfull!"))
+                .catch((response) => alert("Sorry... An appointment at that time is not available!"));
             }
-            })
-            .then((response) => alert("Succsessfull!"))
-            .catch((response) => alert("Sorry... An appointment at that time is not available!"));
         }
     }
 };
@@ -93,16 +93,6 @@ export default {
 
 
 <style scoped>
-
-/* .moja-klasa {
-    width: 120px;
-}
-
-.label {
-    float: left;
-    padding: 5px;
-    margin-right: 10px;
-} */
 
 #close_btn{
     height: 30px;

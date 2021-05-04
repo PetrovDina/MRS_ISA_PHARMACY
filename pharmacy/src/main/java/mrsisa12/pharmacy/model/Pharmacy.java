@@ -14,8 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
-
 @Entity
 public class Pharmacy {
 
@@ -34,6 +32,9 @@ public class Pharmacy {
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "pharmacy")
 	private List<PharmacyStorageItem> pharmacyStorageItems;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "pharmacy")
+	private List<Employment> employments;
 
 	public Pharmacy() {
 
@@ -122,5 +123,13 @@ public class Pharmacy {
 
 	public void setRating(double rating) {
 		this.rating = rating;
+	}
+
+	public List<Employment> getEmployments() {
+		return employments;
+	}
+
+	public void setEmployments(List<Employment> employments) {
+		this.employments = employments;
 	}
 }

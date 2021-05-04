@@ -164,7 +164,7 @@ table {
 }
 
 tr.selected {
-	 background-color: #aaaaaa;
+	 background-color: rgba(155, 82, 151, 0.527);
 }
 
 </style>

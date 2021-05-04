@@ -155,7 +155,6 @@ public class AppointmentController {
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<AppointmentDTO> updateAppointment(@RequestBody AppointmentDTO appointmentDTO) {
 
-		// a appointment must exist
 		Appointment appointment = appointmentService.findOne(appointmentDTO.getId());
 
 		if (appointment == null) {

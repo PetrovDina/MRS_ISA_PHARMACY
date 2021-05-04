@@ -1,30 +1,51 @@
 <template>
     <div id="dermos">
-        <table class="table table-hover" >
+        <table class="table table-hover" v-closable="{exclude: [], handler: 'onOutOfFocus'}">
             <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
                     <th scope="col">First name</th>
                     <th scope="col">Last name</th>
+                    <th scope="col">Gender</th>
                     <th scope="col">Rating</th>
+                    <th scope="col">Work time</th>
                     <th scope="col">Appointment</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr :key="der.id" v-for="der in dermatologists">
+                <tr  :key="der.id" v-for="der in dermatologists" @click="clickedOnRow(der)" v-bind:class="{selected : selected_dermatologist.id===der.id}">
                     <td>{{der.id}}</td>
-                    <td>{{der.firstName }}</td>
-                    <td>{{der.lastName}}</td> 
+                    <td>{{der.username}}</td>
+                    <td>{{der.email}}</td>
+                    <td>{{der.firstName}}</td>
+                    <td>{{der.lastName}}</td>
+                    <td><i v-bind:class="der.gender != 'MALE' ? 'fa fa-venus': 'fa fa-mars'"></i></td> 
                     <td>{{der.rating}}</td>
-                    <td><Button @action-performed="clickedId(der.id)" class="btn" text="New" bgd_color="rgba(15, 95, 72, 0.95)" :style="{color : 'rgba(255,255,255, 0.9)'}"></Button></td>
+                    <td>{{der.workTime.startTime}} - {{der.workTime.endTime}}</td>
+                    <td><Button @action-performed="clickedId(der.id)" class="btn" text="New" bgd_color="rgba(15, 95, 72, 0.85)" :style="{color : 'rgba(255,255,255, 0.9)'}"></Button></td>
                 </tr>
             </tbody>
         </table>
+        <Button
+            @action-performed="hireDermatologist()"
+            class="btn" 
+            text="Hire dermatologist" 
+            bgd_color="rgba(15, 95, 72, 0.85)" 
+            :style="{color : 'rgba(255,255,255, 0.9)', padding: '5px 5px', float:'left'}">
+        </Button>
+        <ModalWindowHireDermatologist
+            @hired-dermatologist = "hiredDermatologist"
+            @modal-closed = "mw_show_dermatologist = false" 
+            :modal_show = "mw_show_dermatologist"
+            :pharmacyId = "pharmacyId">
+        </ModalWindowHireDermatologist>
         <ModalWindowAddAppointment 
-            @modal-closed = "modal_window_show = false" 
-            :modal_show = "modal_window_show"
-            :employeeIdToSend = "employeeId">
+            @modal-closed = "mw_show_appointment = false" 
+            :modal_show = "mw_show_appointment"
+            :dermatologistIdToSend = "dermatologistId">
         </ModalWindowAddAppointment>
     </div>
 </template>
@@ -32,29 +53,47 @@
 <script>
 import Button from './Button.vue';
 import ModalWindowAddAppointment from './ModalViewAddAppointment'
+import ModalWindowHireDermatologist from './ModalWindowHireDermatologist'
 
 export default {
     name: "Dermatologists",
-    components: { Button, ModalWindowAddAppointment},
+    components: { Button, ModalWindowAddAppointment, ModalWindowHireDermatologist},
     props: {
         dermatologists : {
             type : Array,
             default() {
                 return [];
             }
-        }
+        },
+        pharmacyId : null
     },
     data() {
         return {
-            modal_window_show : false,
-            employeeId : null,
+            mw_show_appointment : false, // modal window cond-var
+            mw_show_dermatologist : false, // modal window cond-var
+            dermatologistId : null,
+            selected_dermatologist: {}
         }
     },
     methods: {
         clickedId: function(id){
-            this.employeeId = id;
-            this.modal_window_show = true;
+            this.dermatologistId = id;
+            this.mw_show_appointment = true;
         },
+        clickedOnRow: function(der){
+            this.selected_dermatologist = der;
+        },
+        hireDermatologist: function(){   
+            this.mw_show_dermatologist= true;
+        },
+        onOutOfFocus: function()
+        {
+            this.selected_dermatologist = {};
+        },
+        hiredDermatologist: function(dermatologist){
+            this.mw_show_dermatologist = false;
+            this.$emit('hired-dermatologist', dermatologist);
+        }
     }
 }
 
@@ -67,5 +106,9 @@ export default {
 thead { 
     /* background-color: rgba(15, 95, 72, 0.219); */
     background-color: rgba(32, 102, 75, 0.295)
+}
+
+tr.selected {
+	 background-color: rgba(155, 82, 151, 0.527);
 }
 </style>

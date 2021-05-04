@@ -28,9 +28,6 @@ public abstract class Employee extends User {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Type(type = "jsonb")
-	@Column(columnDefinition = "jsonb", name = "workTime")
-	private TimePeriod workTime;
 	
 	@Column(name = "rating", nullable = false)
 	private double rating;
@@ -41,18 +38,9 @@ public abstract class Employee extends User {
 	public Employee() {}
 
 	public Employee(Long id, String username, String password, String email, String firstName, String lastName,
-			Location location, Gender gender, UserStatus activeStatus, List<UserRole> userRoles, boolean deleted, TimePeriod workTime, double rating) {
+			Location location, Gender gender, UserStatus activeStatus, List<UserRole> userRoles, boolean deleted, double rating) {
 		super(id, username, password, email, firstName, lastName, location, gender, activeStatus, userRoles, deleted);
-		this.workTime = workTime;
 		this.rating = rating;
-	}
-
-	public TimePeriod getWorkTime() {
-		return workTime;
-	}
-
-	public void setWorkTime(TimePeriod workTime) {
-		this.workTime = workTime;
 	}
 
 	public double getRating() {
