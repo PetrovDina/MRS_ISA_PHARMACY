@@ -23,14 +23,17 @@
             @selected="setSelected"
         >
             <Tab :isSelected="selected === 'Dermatologists'">
-                <DermatologistsTable 
-                    :dermatologists = "dermatologistsToSend">
+                <DermatologistsTable
+                    @hired-dermatologist="addDermatologistToList"
+                    :dermatologists = "dermatologistsToSend"
+                    :pharmacyId = "pharmacyId">
                 </DermatologistsTable>
             </Tab>
 
             <Tab :isSelected="selected === 'Pharmacists'">
-                <!--<PharmaciesView :pharmacies="pharmacies"></PharmaciesView>-->
-                <h1>Farmaceuti</h1>
+                <PharmacistsTable 
+                    :pharmacists = "pharmacistsToSend">
+                </PharmacistsTable>
             </Tab>
             <Tab :isSelected="selected === 'Medications'">
                 <MedicationsTable 
@@ -52,9 +55,10 @@ import MedicationsTable from '../components/MedicationsTable.vue';
 import Button from '../components/Button';
 import TabNav from '../components/TabNav';
 import Tab from '../components/Tab';
+import PharmacistsTable from '../components/PharmacistsTable';
 
 export default {
-  components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab },
+  components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable },
     data() {
         return {
             selected: "Dermatologists",
@@ -66,27 +70,9 @@ export default {
             address: '',
             city: '',
             zipCode: '',
-            nesto : [],
-            dermatologistsToSend: [
-                {
-                    id: 1,
-                    firstName: "Pera",
-                    lastName: "Peric",
-                    rating: 3,
-                },
-                {
-                    id: 2,
-                    firstName: "Dragan",
-                    lastName: "Miljic",
-                    rating: 4.3,
-                },
-                {
-                    id: 3,
-                    firstName: "Simka",
-                    lastName: "Simic",
-                    rating: 2,
-                },
-            ],
+            pharmacyItems : [],
+            dermatologistsToSend: [],
+            pharmacistsToSend: [],
             medicationToSend: [],
             // lista svih slobodnih termina treba da se doda
             rating: 0.0
@@ -179,6 +165,27 @@ export default {
 				data: dataToUpdate
             })
             .catch((response) => (console.log(response)));
+        },
+        addDermatologistToList: function(dermatologist){
+            client({
+            url: "employments",
+            method: "POST",
+            data: {
+                employee: {
+                    id: dermatologist.id
+                },
+                workTime: dermatologist.workTime,
+                pharmacy: {
+                    id: this.pharmacyId
+                },
+                contractType: "DERMATOLOGIST_CONTRACT",
+            }
+            })
+            .then((response) => {
+                console.log("Hiring success!");
+                this.dermatologistsToSend = [...this.dermatologistsToSend, dermatologist];
+                })
+            .catch((response) => console.log("Hiring failed!"));
         }
     },
 
@@ -192,10 +199,19 @@ export default {
         }                                    
 
         client({
-            url: "pharmacy/" + this.pharmacyId,
+            url: "pharmacy/" + this.pharmacyId +"/withEmployments",
             method: "GET",
         }).then((response) => {
             this.pharmacy = response.data
+            // treba sada da se razvrstaju dermatolozi od farmaceuta
+            let employment = null;
+            for(employment of this.pharmacy.employments)
+                if(employment.contractType === 'DERMATOLOGIST_CONTRACT'){
+                    employment.employee['workTime'] = employment.workTime;
+                    this.dermatologistsToSend = [...this.dermatologistsToSend, employment.employee]
+                }
+                else
+                    this.pharmacistsToSend = [...this.pharmacistsToSend, employment.employee]
             this.pharmacyName = this.pharmacy.name;
             this.address = this.pharmacy.location.street;
             this.city = this.pharmacy.location.city;
@@ -206,9 +222,9 @@ export default {
             url : "pharmacyStorageItem/fromPharmacy/" + this.pharmacyId,
             method : "GET",
         }).then((response) => {
-                this.nesto = response.data;
+                this.pharmacyItems = response.data;
                 let pharmacy_item = null;
-                for(pharmacy_item of this.nesto){
+                for(pharmacy_item of this.pharmacyItems){
                     let current_price = 0;
                     let iter = null;
                     for(iter of pharmacy_item.itemPrices){

@@ -2,7 +2,6 @@ package mrsisa12.pharmacy.dto;
 
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Location;
-import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.Gender;
 
 public class EmployeeDTO extends UserDTO {

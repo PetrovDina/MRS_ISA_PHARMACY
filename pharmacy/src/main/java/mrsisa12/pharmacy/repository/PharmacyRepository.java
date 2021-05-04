@@ -10,17 +10,17 @@ import org.springframework.data.repository.query.Param;
 
 import mrsisa12.pharmacy.model.Pharmacy;
 
-public interface PharmacyRepository extends JpaRepository<Pharmacy, Long>{
-	
+public interface PharmacyRepository extends JpaRepository<Pharmacy, Long> {
+
 	public Page<Pharmacy> findAll(Pageable pageable);
-	
+
 	public List<Pharmacy> findAllByName(String name);
-	
+
 	public List<Pharmacy> findByNameAllIgnoringCase(String name);
-	
+
 	@Query("select s from Pharmacy s join fetch s.pharmacyStorageItems e where s.id =?1")
 	public Pharmacy findOneWithStorageItems(Long pharmacyId);
-	
+
 	@Query("select s from Pharmacy s join fetch s.pharmacyStorageItems e where e.id =?1")
 	public Pharmacy findOneByStorageItem(Long storageItemId);
 
@@ -33,7 +33,7 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, Long>{
 
 	public List<Pharmacy> findByQuery(@Param("query") String query);
 
-	
-
+	@Query("select s from Pharmacy s join fetch s.employments e where s.id =?1")
+	public Pharmacy findOneWithEmployments(Long id);
 
 }

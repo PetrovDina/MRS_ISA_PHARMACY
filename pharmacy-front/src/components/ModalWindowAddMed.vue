@@ -2,10 +2,10 @@
     <div v-if="modal_show === true" id="myModal" class="modal">
         <div class="modal-content">
             <Button id="close_btn" @action-performed="closeWindow" class="close" text="X" color="white"></Button>
-            <MedicationView 
+            <AddNewMedicationTable 
                 @clicked-on-row="selectMedication" 
                 :medications="medications">
-            </MedicationView>
+            </AddNewMedicationTable>
             <div style="display: block">
                 <v-text-field
                     label="Medication price"
@@ -28,11 +28,11 @@
 <script>
 import { client } from "@/client/axiosClient";
 import Button from "./Button";
-import MedicationView from "./MedicationsView";
+import AddNewMedicationTable from "./AddNewMedicationTable";
 
 export default {
     name : "ModalWindow",
-    components : {Button, MedicationView},
+    components : {Button, AddNewMedicationTable},
     props : {
         modal_show : Boolean,
     },

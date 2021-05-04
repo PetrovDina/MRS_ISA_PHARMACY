@@ -49,21 +49,51 @@ insert into patient (id, penaltypoints) values (2, 0);
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('padmin', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'padmin@email.com', 'Padmin', 'Padminic', 1, 'MALE', 'ACTIVATED', 'False');
 insert into pharmacyadmin (id) values (3);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('derma', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'derma@email.com', 'Dermos', 'Dermic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('milica', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milicam@email.com', 'Milica', 'Milic', 1, 'FEMALE', 'ACTIVATED', 'False');
 insert into employees (id, rating ) values (4, 2.2);
-insert into dermatologist (id, dermatologistNickname) values (4, 'perica');
+insert into dermatologist (id, dermatologistNickname) values (4, 'mica');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('derma1', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'derma1@email.com', 'Dermos1', 'Dermic1', 1, 'FEMALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('vanja', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'vanjav@email.com', 'Vanja', 'Vanjic', 1, 'FEMALE', 'ACTIVATED', 'False');
 insert into employees (id, rating ) values (5, 4.4);
-insert into dermatologist (id, dermatologistNickname) values (5, 'misko');
+insert into dermatologist (id, dermatologistNickname) values (5, 'vanjuska');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('derma2', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'derma1@email.com', 'Dermos1', 'Dermic1', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('pera', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'perap@email.com', 'Pera', 'Perovic', 1, 'MALE', 'ACTIVATED', 'False');
 insert into employees (id, rating ) values (6, 3.5);
-insert into dermatologist (id, dermatologistNickname) values (6, 'djuro');
+insert into dermatologist (id, dermatologistNickname) values (6, 'pera');
 
-insert into employment (employee_id, workTime, pharmacy_id, deleted) values (4, '{ "startDate": [2021, 4, 3], "startTime": [7, 0, 0], "endDate": [2021, 4, 3], "endTime": [12, 0, 0]}', 1, 'False');
-insert into employment (employee_id, workTime, pharmacy_id, deleted) values (5, '{ "startDate": [2021, 4, 3], "startTime": [14, 0, 0], "endDate": [2021, 4, 3], "endTime": [19, 0, 0]}', 1, 'False');
-insert into employment (employee_id, workTime, pharmacy_id, deleted) values (6, '{ "startDate": [2021, 4, 3], "startTime": [8, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 2, 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('mirko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'mirkov@email.com', 'Mirko', 'Visnjic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (7, 4.5);
+insert into pharmacist (id) values (7);
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('ana', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Ana', 'Tot', 1, 'FEMALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (8, 2.5);
+insert into pharmacist (id) values (8);
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('zarko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'zarkoz@email.com', 'Zarko', 'Zrenjanin', 1, 'MALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (9, 2.5);
+insert into dermatologist (id, dermatologistNickname) values (9, 'zare');
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('marko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'markok@email.com', 'Marko', 'Kraljevic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (10, 3.9);
+insert into dermatologist (id, dermatologistNickname) values (10, 'mare');
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('janko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'jankoh@email.com', 'Janko', 'Hajduk', 1, 'MALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (11, 4.1);
+insert into dermatologist (id, dermatologistNickname) values (11, 'jane');
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('petar', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'petarb@email.com', 'Petar', 'Babic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (12, 1.2);
+insert into dermatologist (id, dermatologistNickname) values (12, 'pele');
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('dmitar', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'dmitar@email.com', 'Mitar', 'Miric', 1, 'MALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (13, 3.5);
+insert into dermatologist (id, dermatologistNickname) values (13, 'dres bajerna');
+
+insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (4, '{ "startDate": [2021, 4, 3], "startTime": [7, 0, 0], "endDate": [2021, 4, 3], "endTime": [12, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
+insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (5, '{ "startDate": [2021, 4, 3], "startTime": [14, 0, 0], "endDate": [2021, 4, 3], "endTime": [19, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
+insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (6, '{ "startDate": [2021, 4, 3], "startTime": [8, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 2, 'False');
+insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (7, '{ "startDate": [2021, 4, 3], "startTime": [9, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 'PHARMACIST_CONTRACT', 1, 'False');
+insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (8, '{ "startDate": [2021, 4, 3], "startTime": [10, 0, 0], "endDate": [2021, 4, 3], "endTime": [18, 0, 0]}', 'PHARMACIST_CONTRACT', 2, 'False');
 
 INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
 INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT

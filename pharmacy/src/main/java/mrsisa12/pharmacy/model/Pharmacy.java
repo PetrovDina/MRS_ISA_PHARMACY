@@ -124,4 +124,12 @@ public class Pharmacy {
 	public void setRating(double rating) {
 		this.rating = rating;
 	}
+
+	public List<Employment> getEmployments() {
+		return employments;
+	}
+
+	public void setEmployments(List<Employment> employments) {
+		this.employments = employments;
+	}
 }

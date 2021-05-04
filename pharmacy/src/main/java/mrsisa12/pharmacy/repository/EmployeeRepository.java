@@ -11,7 +11,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
 
 	public Page<Employee> findAll(Pageable pageable);
 
-	@Query("select emp from Employee emp join fetch emp.appointments appos where emp.id =?1")
+	@Query("select emp from Employee emp left join fetch emp.appointments appos where emp.id =?1")
 	public Employee findOneWithAllAppointments(Long id);
 
 }

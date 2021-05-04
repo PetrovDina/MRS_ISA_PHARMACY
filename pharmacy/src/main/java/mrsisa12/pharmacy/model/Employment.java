@@ -2,6 +2,8 @@ package mrsisa12.pharmacy.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,11 +15,14 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
+import mrsisa12.pharmacy.model.enums.EmploymentContractType;
+import mrsisa12.pharmacy.model.enums.MedicationForm;
+
 @Entity
 @SQLDelete(sql = "UPDATE employment " + "SET deleted = true " + "WHERE id = ?")
 @Where(clause = "deleted = false")
 public class Employment {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -25,18 +30,22 @@ public class Employment {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "ID")
 	private Employee employee;
-	
+
 	@Type(type = "jsonb")
 	@Column(columnDefinition = "jsonb", name = "workTime")
 	private TimePeriod workTime;
-	
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "contractType", nullable = false)
+	private EmploymentContractType contractType;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PHARMACY_ID", referencedColumnName = "ID")
 	private Pharmacy pharmacy;
-	
+
 	@Column(name = "deleted")
 	private boolean deleted;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -61,6 +70,14 @@ public class Employment {
 		this.workTime = workTime;
 	}
 
+	public EmploymentContractType getContractType() {
+		return contractType;
+	}
+
+	public void setContractType(EmploymentContractType contractType) {
+		this.contractType = contractType;
+	}
+
 	public Pharmacy getPharmacy() {
 		return pharmacy;
 	}
@@ -76,5 +93,4 @@ public class Employment {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
-	
 }

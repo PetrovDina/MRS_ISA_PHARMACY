@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
+import mrsisa12.pharmacy.dto.pharmacy.PharmacyWithEmploymentsDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
@@ -43,7 +44,7 @@ public class PharmacyController {
 
 		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/searchPharmacies")
 	public ResponseEntity<List<PharmacyDTO>> searchPharmacies(@RequestParam String query) {
 
@@ -80,6 +81,18 @@ public class PharmacyController {
 		}
 
 		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/{id}/withEmployments")
+	public ResponseEntity<PharmacyWithEmploymentsDTO> getPharmacyWitEmployments(@PathVariable Long id) {
+
+		Pharmacy pharmacy = pharmacyService.findOneWithEmployments(id);
+
+		if (pharmacy == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(new PharmacyWithEmploymentsDTO(pharmacy), HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/create", consumes = "application/json")
@@ -135,12 +148,13 @@ public class PharmacyController {
 		}
 		return new ResponseEntity<>(pharmacyDTO, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/{pharmacyId}/pharmacyStorageItemsAndPrices")
-	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorageItemsAndPrices(@PathVariable Long pharmacyId) {
-		
+	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorageItemsAndPrices(
+			@PathVariable Long pharmacyId) {
+
 		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(pharmacyId);
-		
+
 		List<PharmacyStorageItem> pharmacyStorageItems = pharmacy.getPharmacyStorageItems();
 		List<PharmacyStorageItemDTO> pharmacyStorageItemsDTO = new ArrayList<>();
 		for (PharmacyStorageItem e : pharmacy.getPharmacyStorageItems()) {

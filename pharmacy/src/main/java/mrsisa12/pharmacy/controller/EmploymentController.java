@@ -22,6 +22,7 @@ import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
+import mrsisa12.pharmacy.model.enums.EmploymentContractType;
 import mrsisa12.pharmacy.service.EmployeeService;
 import mrsisa12.pharmacy.service.EmploymentService;
 import mrsisa12.pharmacy.service.PharmacyService;
@@ -102,6 +103,8 @@ public class EmploymentController {
 		employment.setWorkTime(new TimePeriod(employmentDTO.getWorkTime()));
 		// postavljanje da nije obrisan employment
 		employment.setDeleted(false);
+		// postavljanje tipa contract-a
+		employment.setContractType(EmploymentContractType.valueOf(employmentDTO.getContractType().toString()));
 
 		employmentService.save(employment);
 

@@ -2,28 +2,34 @@ package mrsisa12.pharmacy.dto;
 
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.model.Employment;
+import mrsisa12.pharmacy.model.enums.EmploymentContractType;
 
 public class EmploymentDTO {
 
 	private Long id;
 	private EmployeeDTO employee;
 	private TimePeriodDTO workTime;
+	private EmploymentContractType contractType;
 	private PharmacyDTO pharmacy;
 
-	public EmploymentDTO() {}
-	
-	public EmploymentDTO(Long id, EmployeeDTO employee, TimePeriodDTO workTime, PharmacyDTO pharmacy) {
+	public EmploymentDTO() {
+	}
+
+	public EmploymentDTO(Long id, EmployeeDTO employee, TimePeriodDTO workTime, EmploymentContractType contractType,
+			PharmacyDTO pharmacy) {
 		super();
 		this.id = id;
 		this.employee = employee;
 		this.workTime = workTime;
+		this.contractType = contractType;
 		this.pharmacy = pharmacy;
 	}
-	
+
 	public EmploymentDTO(Employment employment) {
-		this(employment.getId(), new EmployeeDTO(employment.getEmployee()), new TimePeriodDTO(employment.getWorkTime()), new PharmacyDTO(employment.getPharmacy()));
+		this(employment.getId(), new EmployeeDTO(employment.getEmployee()), new TimePeriodDTO(employment.getWorkTime()),
+				employment.getContractType(), new PharmacyDTO(employment.getPharmacy()));
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -48,6 +54,14 @@ public class EmploymentDTO {
 		this.workTime = workTime;
 	}
 
+	public EmploymentContractType getContractType() {
+		return contractType;
+	}
+
+	public void setContractType(EmploymentContractType contractType) {
+		this.contractType = contractType;
+	}
+
 	public PharmacyDTO getPharmacy() {
 		return pharmacy;
 	}
@@ -55,6 +69,5 @@ public class EmploymentDTO {
 	public void setPharmacy(PharmacyDTO pharmacy) {
 		this.pharmacy = pharmacy;
 	}
-	
-	
+
 }
