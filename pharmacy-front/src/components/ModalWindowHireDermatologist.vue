@@ -35,7 +35,6 @@
                     <label class="label" for="end_time">Choose ending work time</label>
                     <input type="time" id="end_time" class="form-control">
                 </div>
-
             </div>
             <label v-if="error_msg">{{error_msg_text}}</label>
             <Button 
@@ -73,7 +72,7 @@ export default {
             this.closeWindow();
         // ucitavamo sve dostupne dermatologe
         client({
-        url: "dermatologists/all",
+        url: "dermatologist/all",
         method: "GET"
         })
         .then((response) => {

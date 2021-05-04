@@ -47,6 +47,18 @@
 		                            <input type="date" name="date" id="date" class="form-control" required="" v-model="registration.birthDate"
 									oninvalid="this.setCustomValidity('Select date of birth.')"  oninput="setCustomValidity('')">
 		                        </div> -->
+								<div class="form-group" v-if="isPharmacist()">
+									<div class="md-form mx-5 my-5">
+										<label class="label" for="start_time">Choose starting work time</label>
+										<input type="time" id="start_time" class="form-control" required=""
+										oninvalid="this.setCustomValidity('Enter starting time.')"  oninput="setCustomValidity('')">
+									</div>
+									<div class="md-form mx-5 my-5">
+										<label class="label" for="end_time">Choose ending work time</label>
+										<input type="time" id="end_time" class="form-control" required=""
+										oninvalid="this.setCustomValidity('Enter ending time.')"  oninput="setCustomValidity('')">
+									</div>
+								</div>
 		                        <div class="form-group">
 									<button style="background: rgba(15, 95, 72, 0.95)" class="btn btn-info btn-md" value="Registration" @click="register(registration)">Register</button>
 								</div>
@@ -61,12 +73,19 @@
 <script>
 
 import { client } from "@/client/axiosClient";
+import moment from 'moment';
 
 export default {
     name: "UserRegistration",
 
 	props: {
-        typeToRegister: String,
+		pharmacyId : {
+			type : Number,
+			default() {
+				return -1;
+			}
+        },
+        typeToRegister: String
     },
 
     data() {
@@ -109,10 +128,17 @@ export default {
                 url: this.url,
                 method: "POST",
 				data: registration
-            }).then((response) => {this.homeRedirect(); alert("Registracija uspesno izvrsena.");}).
-			catch((response) => (console.log(response)));
+            }).then((response) => {
+				if(this.pharmacyId != -1)
+					this.createPharmacistEmployment(response.data);
+				else
+				{
+					this.homeRedirect(); 
+					alert("Registracija uspesno izvrsena.");
+					this.$emit('registered', response.data); // vracamo objekat koji je registrovan
+				}
+			}).catch((response) => (console.log(response)));
         },
-
 		checkPassword: function() {
 			var inputPasswordRepeat = document.getElementById('passwordRepeat');
 			var inputPassword 		= document.getElementById('password');
@@ -134,6 +160,8 @@ export default {
 			if(registration.firstName == '') return true;
 			if(registration.lastName == '') return true;
 			if(registration.email == '') return true;
+			if(document.getElementById('start_time').value == '') return true;
+			if(document.getElementById('end_time').value == '') return true;
 			return false;
 		},
 
@@ -173,6 +201,7 @@ export default {
 			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.url = 'systemAdmin/create'; }
 			else if(this.typeToRegister == 'SUPPLIER')  	{ this.url = 'supplier/create'; }
 			else if(this.typeToRegister == 'DERMATOLOGIST') { this.url = 'dermatologist/create'; }
+			else if(this.typeToRegister == 'PHARMACIST') { this.url = 'pharmacist/create'; }
 		},
 
 		setUserRole()
@@ -182,6 +211,7 @@ export default {
 			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.registration.userRole = 'SYSTEM_ADMIN'; }
 			else if(this.typeToRegister == 'SUPPLIER')  	{ this.registration.userRole = 'SUPPLIER'; }
 			else if(this.typeToRegister == 'DERMATOLOGIST') { this.registration.userRole = 'DERMATOLOGIST'; }
+			else if(this.typeToRegister == 'PHARMACIST') { this.registration.userRole = 'PHARMACIST'; }
 		},
 
 		setTitle()
@@ -191,8 +221,39 @@ export default {
 			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.title = 'System admin registration'; }
 			else if(this.typeToRegister == 'SUPPLIER')  	{ this.title = 'Supplier registration'; }
 			else if(this.typeToRegister == 'DERMATOLOGIST') { this.title = 'Dermatologist registration'; }
+			else if(this.typeToRegister == 'PHARMACIST') { this.title = 'Pharmacist registration'; }
+		},
+		isPharmacist: function(){
+			return this.typeToRegister === "PHARMACIST"; // Bojan pravio 
+		},
+		createPharmacistEmployment: function(pharmacist){ // Bojan pravio 
+			let time1 = moment().format(document.getElementById('start_time').value, 'HH:mm');
+			let time2 = moment().format(document.getElementById('end_time').value, 'HH:mm');
+			let myWorkTime = {
+				startDate: "2021-04-03",
+				startTime: time1,
+				endDate: "2021-04-03",
+				endTime: time2
+			};
+			client({
+				url: "employments",
+				method: "POST",
+				data: {
+					employee: {
+						id: pharmacist.id
+					},
+					workTime: myWorkTime,
+					pharmacy: {
+						id: this.pharmacyId
+					},
+					contractType: "PHARMACIST_CONTRACT",
+				}
+			}).then((response) => {
+				console.log("Hiring success!");
+				pharmacist['workTime'] = myWorkTime;
+				this.$emit('registered', pharmacist);
+			}).catch((response) => console.log("Hiring failed!"));
 		}
-	
 	},
 };
 </script>

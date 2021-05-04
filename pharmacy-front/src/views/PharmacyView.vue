@@ -31,8 +31,10 @@
             </Tab>
 
             <Tab :isSelected="selected === 'Pharmacists'">
-                <PharmacistsTable 
-                    :pharmacists = "pharmacistsToSend">
+                <PharmacistsTable
+                    @registeredPharmacist = "addPharmacistIntoList"
+                    :pharmacists = "pharmacistsToSend"
+                    :pharmacyId = "pharmacyId">
                 </PharmacistsTable>
             </Tab>
             <Tab :isSelected="selected === 'Medications'">
@@ -186,6 +188,9 @@ export default {
                 this.dermatologistsToSend = [...this.dermatologistsToSend, dermatologist];
                 })
             .catch((response) => console.log("Hiring failed!"));
+        },
+        addPharmacistIntoList: function(pharmacist){
+            this.pharmacistsToSend = [...this.pharmacistsToSend, pharmacist];
         }
     },
 
@@ -205,13 +210,13 @@ export default {
             this.pharmacy = response.data
             // treba sada da se razvrstaju dermatolozi od farmaceuta
             let employment = null;
-            for(employment of this.pharmacy.employments)
-                if(employment.contractType === 'DERMATOLOGIST_CONTRACT'){
-                    employment.employee['workTime'] = employment.workTime;
-                    this.dermatologistsToSend = [...this.dermatologistsToSend, employment.employee]
-                }
+            for(employment of this.pharmacy.employments){
+                employment.employee['workTime'] = employment.workTime;
+                if(employment.contractType === 'DERMATOLOGIST_CONTRACT')
+                    this.dermatologistsToSend = [...this.dermatologistsToSend, employment.employee];
                 else
-                    this.pharmacistsToSend = [...this.pharmacistsToSend, employment.employee]
+                    this.pharmacistsToSend = [...this.pharmacistsToSend, employment.employee];
+            }
             this.pharmacyName = this.pharmacy.name;
             this.address = this.pharmacy.location.street;
             this.city = this.pharmacy.location.city;

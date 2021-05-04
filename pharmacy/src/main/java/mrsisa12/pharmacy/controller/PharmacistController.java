@@ -35,7 +35,7 @@ public class PharmacistController {
 	private RoleService roleService;
 	
 	@PostMapping(value = "/create", consumes = "application/json")
-	public ResponseEntity<UserDTO> savePharmacist(@RequestBody UserDTO pharmacistDTO)
+	public ResponseEntity<PharmacistDTO> savePharmacist(@RequestBody UserDTO pharmacistDTO)
 	{
 		Pharmacist phar = new Pharmacist();
 		phar.setUsername(pharmacistDTO.getUsername());
@@ -51,7 +51,7 @@ public class PharmacistController {
 		phar.setDeleted(false);
 		
 		pharmacistService.save(phar);
-		return new ResponseEntity<>(new UserDTO(phar), HttpStatus.CREATED);
+		return new ResponseEntity<>(new PharmacistDTO(phar), HttpStatus.CREATED);
 	}
 	
 	@GetMapping(value = "/all")
