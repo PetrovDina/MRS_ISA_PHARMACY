@@ -47,7 +47,7 @@ public class DermatologistController {
 		d.setGender(dermatologistDTO.getGender());
 		d.setActiveStatus(UserStatus.UNVERIFIED);
 		d.setRoles(roleService.findByName("ROLE_DERMATOLOGIST"));
-		d.setWorkTime(null);
+		//d.setWorkTime(null);
 		d.setRating(0.0);
 		d.setAppointments(new ArrayList<Appointment>());
 		d.setDermatologistNickname(null);

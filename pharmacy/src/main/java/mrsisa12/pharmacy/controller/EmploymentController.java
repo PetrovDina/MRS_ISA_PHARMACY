@@ -89,10 +89,13 @@ public class EmploymentController {
 		Employment employment = new Employment();
 		// provjera da li se radno vrijeme koje je prosljednjeno poklapa sa radnim
 		// vremenom u nekoj drugoj apoteci
+
 		Employee employee = employeeService.findOne(employmentDTO.getEmployee().getId());
-		boolean res = employmentService.checkOtherWorkTimes(new TimePeriod(employmentDTO.getWorkTime()), employee);
-		if (!res)
-			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		if (employmentDTO.getContractType().compareTo(EmploymentContractType.DERMATOLOGIST_CONTRACT) == 0) {
+			boolean res = employmentService.checkOtherWorkTimes(new TimePeriod(employmentDTO.getWorkTime()), employee);
+			if (!res)
+				return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
 
 		// postavljanje zaposlenog
 		employment.setEmployee(employee);
