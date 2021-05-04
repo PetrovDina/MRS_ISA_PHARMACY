@@ -1,76 +1,114 @@
 <template>
     <div id="appointments">
         <p class="appointments-title">Available dermatologist appointments</p>
-        <div :key="appointment.id" v-for="appointment in appointments">
-            <div class="card mx-auto">
-                <div class="card-body">
-                    <!-- <h5 class="card-title">nesto ovde idk sta</h5> -->
 
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-sm">
-                                <div class="c1">
-                                    <p class="card-text">
-                                        Dermatologist:
-                                        <b
-                                            >{{
-                                                appointment.employee.firstName
-                                            }}
-                                            {{ appointment.employee.lastName }}
-                                        </b>
-                                    </p>
-                                    <p class="card-text">
-                                        Price:
-                                        <b> {{ appointment.price }},00 RSD </b>
-                                    </p>
-                                    <p class="card-text">
-                                        Dermatologist rating:
-                                        <b>
-                                            {{ appointment.employee.rating }}
-                                        </b>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-sm">
-                                <div class="c2">
-                                    <p class="card-text">
-                                        Pharmacy:
-                                        <b>{{ appointment.pharmacy.name }}</b>
-                                    </p>
-                                    <p class="card-text">
-                                        Date:
-                                        <b>{{
-                                            formatDate(
-                                                appointment.timePeriod.startDate
-                                            )
-                                        }}</b>
-                                    </p>
+        <div id="sort-and-filter">
+            <div id="sort">
+                <p class="sort-label">sort by</p>
 
-                                    <p class="card-text">
-                                        Time:
-                                        <b>
-                                            {{
-                                                appointment.timePeriod.startTime
-                                            }}
-                                            -
-                                            {{ appointment.timePeriod.endTime }}
-                                        </b>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <select
+                    class="sort-dropdown"
+                    name="optionsSelect"
+                    id="optionsSelect"
+                    @change="sortSelected"
+                >
+                    <option
+                        class="option"
+                        v-for="option in options"
+                        :key="option"
+                        :value="option"
 
-                    <Button
-                        @action-performed="bookAppointment(appointment)"
-                        text="Book appointment"
-                        class="book-button"
                     >
-                    </Button>
-                </div>
+                        {{ option }}
+                    </option>
+                </select>
             </div>
         </div>
 
+        <div id="appointmentCards">
+            <div :key="appointment.id" v-for="appointment in appointments">
+                <div class="card mx-auto">
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="c1">
+                                        <p class="card-text">
+                                            Dermatologist:
+                                            <b
+                                                >{{
+                                                    appointment.employee
+                                                        .firstName
+                                                }}
+                                                {{
+                                                    appointment.employee
+                                                        .lastName
+                                                }}
+                                            </b>
+                                        </p>
+                                        <p class="card-text">
+                                            Price:
+                                            <b>
+                                                {{ appointment.price }},00 RSD
+                                            </b>
+                                        </p>
+                                        <p class="card-text">
+                                            Dermatologist rating:
+                                            <b>
+                                                {{
+                                                    appointment.employee.rating
+                                                }}
+                                            </b>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-sm">
+                                    <div class="c2">
+                                        <p class="card-text">
+                                            Pharmacy:
+                                            <b>{{
+                                                appointment.pharmacy.name
+                                            }}</b>
+                                        </p>
+                                        <p class="card-text">
+                                            Date:
+                                            <b>{{
+                                                formatDate(
+                                                    appointment.timePeriod
+                                                        .startDate
+                                                )
+                                            }}</b>
+                                        </p>
+
+                                        <p class="card-text">
+                                            Time:
+                                            <b>
+                                                {{
+                                                    appointment.timePeriod
+                                                        .startTime
+                                                }}
+                                                -
+                                                {{
+                                                    appointment.timePeriod
+                                                        .endTime
+                                                }}
+                                            </b>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <Button
+                            @action-performed="bookAppointment(appointment)"
+                            text="Book appointment"
+                            class="book-button"
+                        >
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Modal -->
         <div
             class="modal fade"
@@ -127,12 +165,51 @@ export default {
     data() {
         return {
             appointments: [],
+            options: ["-", "price low first", "price high first", "rating"],
         };
     },
 
     methods: {
         formatDate(d) {
             return moment(d).format("MMMM Do yyyy");
+        },
+
+        sortSelected(event){
+
+            let sortCriterium = event.target.value;
+            let self = this;
+            if (sortCriterium === "-") 
+                return;
+
+            else if (sortCriterium === "rating") {
+                this.appointments = this.appointments.sort(function (
+                    a,
+                    b
+                ) {
+                    return b.employee.rating - a.employee.rating;
+                });
+            }
+
+            else if (sortCriterium === "price low first") {
+                this.appointments = this.appointments.sort(function (
+                    a,
+                    b
+                ) {
+                    return a.price - b.price;
+                });
+            }
+
+            
+            else if (sortCriterium === "price high first") {
+                this.appointments = this.appointments.sort(function (
+                    a,
+                    b
+                ) {
+                    return b.price - a.price;
+                });
+            }
+
+
         },
 
         bookAppointment(apt) {
@@ -165,6 +242,7 @@ export default {
             url: "appointments/allDermatologistAvailable",
             method: "GET",
         }).then((response) => (this.appointments = response.data));
+
     },
 };
 </script>
@@ -198,13 +276,39 @@ export default {
 
 .book-button {
     margin-top: 20px;
-    /* width: %; */
     border: 1px solid rgba(63, 63, 63, 0.3);
     background-color: rgba(32, 102, 75, 0.2);
 }
 
 .book-button:hover {
     background-color: rgba(32, 102, 75, 0.4);
+}
+
+/* sort */
+
+.sort-dropdown {
+    padding: 10px;
+    border: 0.5px solid rgba(128, 128, 128, 0.473);
+    display: inline-block;
+}
+
+#sort {
+
+        float: right;
+
+}
+
+.sort-label {
+    padding: 10px;
+    display: inline-block;
+}
+
+#sort-and-filter {
+    width: 85%;
+}
+
+#appointmentCards{
+    margin-top:80px;
 }
 </style>
 
