@@ -22,6 +22,9 @@ import UserRegistrationPage from '@/views/UserRegistrationPage'
 import PharmacyAdminRegistrationPage from '@/views/pharmacyAdminRegistrationPage'
 import MedicationRegistrationPage from '@/views/medicationRegistrationPage'
 import LoginPage from '@/views/LoginPage'
+import SystemAdminRegistrationPage from '@/views/systemAdminRegistrationPage'
+import SupplierRegistrationPage from '@/views/SupplierRegistrationPage'
+
 
 import MedicationReservationView from '@/views/MedicationReservationView'
 
@@ -179,6 +182,18 @@ export default new Router({
             path: '/pharmacyAdminRegistrationPage',
             name: 'PharmacyAdminRegistrationPage',
             component: PharmacyAdminRegistrationPage    
+        },
+
+        {
+          path: '/systemAdminRegistrationPage',
+          name: 'SystemAdminRegistrationPage',
+          component: SystemAdminRegistrationPage    
+        },
+
+        {
+          path: '/SupplierRegistrationPage',
+          name: 'SupplierRegistrationPage',
+          component: SupplierRegistrationPage    
         },
         
         {

@@ -25,7 +25,9 @@
         <div v-if="isUserType('SYSTEM_ADMIN')">
             <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
             <a @click="pharmacyAdminRegistrationRedirect()" class="registerNav">Pharmacy Admin registration</a>
+            <a @click="systemAdminRegistrationRedirect()" class="registerNav">System Admin Registration</a>
             <a @click="medicationRegistrationRedirect()" class="registerNav">Medication Registration</a>
+            <a @click="supplierRegistrationRedirect()" class="registerNav">Supplier Registration</a>
         </div>
 
         <!--patient-->
@@ -196,6 +198,30 @@ export default {
         pharmacyAdminRegistrationRedirect: function () {
             this.$router
                 .push({ name: "PharmacyAdminRegistrationPage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        systemAdminRegistrationRedirect: function () {
+            this.$router
+                .push({ name: "SystemAdminRegistrationPage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        supplierRegistrationRedirect: function () {
+            this.$router
+                .push({ name: "SupplierRegistrationPage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

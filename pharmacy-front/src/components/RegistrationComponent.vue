@@ -168,20 +168,26 @@ export default {
 
 		setUrl()
 		{
-			if(this.typeToRegister == 'PHARMACY_ADMIN') { this.url = 'pharmacyAdmin/create'; }
-			else if(this.typeToRegister == 'PATIENT')   { this.url = 'patient/create'; }
+			if(this.typeToRegister == 'PHARMACY_ADMIN') 	{ this.url = 'pharmacyAdmin/create'; }
+			else if(this.typeToRegister == 'PATIENT')   	{ this.url = 'patient/create'; }
+			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.url = 'systemAdmin/create'; }
+			else if(this.typeToRegister == 'SUPPLIER')  	{ this.url = 'supplier/create'; }
 		},
 
 		setUserRole()
 		{
-			if(this.typeToRegister == 'PHARMACY_ADMIN') { this.registration.userRole = 'PHARMACY_ADMIN'; }
-			else if(this.typeToRegister == 'PATIENT')   { this.registration.userRole = 'PATIENT'; }
+			if(this.typeToRegister == 'PHARMACY_ADMIN') 	{ this.registration.userRole = 'PHARMACY_ADMIN'; }
+			else if(this.typeToRegister == 'PATIENT')   	{ this.registration.userRole = 'PATIENT'; }
+			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.registration.userRole = 'SYSTEM_ADMIN'; }
+			else if(this.typeToRegister == 'SUPPLIER')  	{ this.registration.userRole = 'SUPPLIER'; }
 		},
 
-		setUserRole()
+		setTitle()
 		{
-			if(this.typeToRegister == 'PHARMACY_ADMIN') { this.title = 'Pharmacy admin registration'; }
-			else if(this.typeToRegister == 'PATIENT')   { this.title = 'Registration'; }
+			if(this.typeToRegister == 'PHARMACY_ADMIN') 	{ this.title = 'Pharmacy admin registration'; }
+			else if(this.typeToRegister == 'PATIENT')  	 	{ this.title = 'Registration'; }
+			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.title = 'System admin registration'; }
+			else if(this.typeToRegister == 'SUPPLIER')  	{ this.title = 'Supplier registration'; }
 		}
 	
 	},
