@@ -1,0 +1,57 @@
+package mrsisa12.pharmacy.controller;
+
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import mrsisa12.pharmacy.dto.UserDTO;
+import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.model.Dermatologist;
+import mrsisa12.pharmacy.model.enums.UserStatus;
+import mrsisa12.pharmacy.service.DermatologistService;
+import mrsisa12.pharmacy.service.RoleService;
+
+@RestController
+@RequestMapping("/dermatologist")
+public class DermatologistController {
+
+	@Autowired
+	private DermatologistService dermatologistService;		
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;		
+	
+	@Autowired
+	private RoleService roleService;
+	
+	@PostMapping(value = "/create", consumes = "application/json")
+	public ResponseEntity<UserDTO> saveSystemAdmin(@RequestBody UserDTO dermatologistDTO)
+	{
+		Dermatologist d = new Dermatologist();
+		d.setUsername(dermatologistDTO.getUsername());
+		d.setPassword(passwordEncoder.encode(dermatologistDTO.getPassword()));
+		d.setEmail(dermatologistDTO.getEmail());
+		d.setFirstName(dermatologistDTO.getFirstName());
+		d.setLastName(dermatologistDTO.getLastName());
+		d.setLocation(dermatologistDTO.getLocation());
+		d.setGender(dermatologistDTO.getGender());
+		d.setActiveStatus(UserStatus.UNVERIFIED);
+		d.setRoles(roleService.findByName("ROLE_DERMATOLOGIST"));
+		d.setWorkTime(null);
+		d.setRating(0.0);
+		d.setAppointments(new ArrayList<Appointment>());
+		d.setDermatologistNickname(null);
+		d.setDeleted(false);
+		
+		dermatologistService.save(d);
+		return new ResponseEntity<>(new UserDTO(d), HttpStatus.CREATED);
+	}
+	
+}

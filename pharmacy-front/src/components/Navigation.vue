@@ -28,6 +28,7 @@
             <a @click="systemAdminRegistrationRedirect()" class="registerNav">System Admin Registration</a>
             <a @click="medicationRegistrationRedirect()" class="registerNav">Medication Registration</a>
             <a @click="supplierRegistrationRedirect()" class="registerNav">Supplier Registration</a>
+            <a @click="dermatologistRegistrationRedirect()" class="registerNav">Dermos Registration</a>
         </div>
 
         <!--patient-->
@@ -222,6 +223,18 @@ export default {
         supplierRegistrationRedirect: function () {
             this.$router
                 .push({ name: "SupplierRegistrationPage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        dermatologistRegistrationRedirect: function() {
+            this.$router
+                .push({ name: "DermatologistRegistrationPage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

@@ -172,6 +172,7 @@ export default {
 			else if(this.typeToRegister == 'PATIENT')   	{ this.url = 'patient/create'; }
 			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.url = 'systemAdmin/create'; }
 			else if(this.typeToRegister == 'SUPPLIER')  	{ this.url = 'supplier/create'; }
+			else if(this.typeToRegister == 'DERMATOLOGIST') { this.url = 'dermatologist/create'; }
 		},
 
 		setUserRole()
@@ -180,6 +181,7 @@ export default {
 			else if(this.typeToRegister == 'PATIENT')   	{ this.registration.userRole = 'PATIENT'; }
 			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.registration.userRole = 'SYSTEM_ADMIN'; }
 			else if(this.typeToRegister == 'SUPPLIER')  	{ this.registration.userRole = 'SUPPLIER'; }
+			else if(this.typeToRegister == 'DERMATOLOGIST') { this.registration.userRole = 'DERMATOLOGIST'; }
 		},
 
 		setTitle()
@@ -188,6 +190,7 @@ export default {
 			else if(this.typeToRegister == 'PATIENT')  	 	{ this.title = 'Registration'; }
 			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.title = 'System admin registration'; }
 			else if(this.typeToRegister == 'SUPPLIER')  	{ this.title = 'Supplier registration'; }
+			else if(this.typeToRegister == 'DERMATOLOGIST') { this.title = 'Dermatologist registration'; }
 		}
 	
 	},

@@ -19,7 +19,8 @@ public class Dermatologist extends Employee {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "dermatologistNickname", unique=true, nullable=false)
+	// unique = true; izmenio sam na false
+	@Column(name = "dermatologistNickname", unique=false, nullable=true)
 	private String dermatologistNickname;
 	
 	public Dermatologist() {}
@@ -29,4 +30,13 @@ public class Dermatologist extends Employee {
 		super(id, username, password, email, firstName, lastName, location, gender, activeStatus, userRoles, deleted, workTime, rating);
 		this.dermatologistNickname = dermatologistNickname;
 	}
+
+	public String getDermatologistNickname() {
+		return dermatologistNickname;
+	}
+
+	public void setDermatologistNickname(String dermatologistNickname) {
+		this.dermatologistNickname = dermatologistNickname;
+	}
+	
 }

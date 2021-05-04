@@ -24,6 +24,7 @@ import MedicationRegistrationPage from '@/views/medicationRegistrationPage'
 import LoginPage from '@/views/LoginPage'
 import SystemAdminRegistrationPage from '@/views/systemAdminRegistrationPage'
 import SupplierRegistrationPage from '@/views/SupplierRegistrationPage'
+import DermatologistRegistrationPage from '@/views/DermatologistRegistrationPage'
 
 
 import MedicationReservationView from '@/views/MedicationReservationView'
@@ -191,9 +192,15 @@ export default new Router({
         },
 
         {
-          path: '/SupplierRegistrationPage',
+          path: '/supplierRegistrationPage',
           name: 'SupplierRegistrationPage',
           component: SupplierRegistrationPage    
+        },
+
+        {
+          path: '/dermatologistRegistrationPage',
+          name: 'DermatologistRegistrationPage',
+          component: DermatologistRegistrationPage    
         },
         
         {
