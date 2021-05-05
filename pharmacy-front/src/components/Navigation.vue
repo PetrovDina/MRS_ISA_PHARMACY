@@ -25,10 +25,10 @@
         <div v-if="isUserType('SYSTEM_ADMIN')">
             <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
             <a @click="pharmacyAdminRegistrationRedirect()" class="registerNav">Pharmacy Admin registration</a>
-            <a @click="systemAdminRegistrationRedirect()" class="registerNav">System Admin Registration</a>
+            <!-- <a @click="systemAdminRegistrationRedirect()" class="registerNav">System Admin Registration</a>
             <a @click="medicationRegistrationRedirect()" class="registerNav">Medication Registration</a>
             <a @click="supplierRegistrationRedirect()" class="registerNav">Supplier Registration</a>
-            <a @click="dermatologistRegistrationRedirect()" class="registerNav">Dermos Registration</a>
+            <a @click="dermatologistRegistrationRedirect()" class="registerNav">Dermos Registration</a> -->
         </div>
 
         <!--patient-->

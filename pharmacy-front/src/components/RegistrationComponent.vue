@@ -59,6 +59,10 @@
 										oninvalid="this.setCustomValidity('Enter ending time.')"  oninput="setCustomValidity('')">
 									</div>
 								</div>
+								<div v-if="typeToRegister=='PHARMACY_ADMIN'">
+									<label class="label">Choose pharmacy</label>
+									<PharmaciesWithSelect :pharmacies="pharmacies" @pharmacySelected="chosenPharmacySelected"></PharmaciesWithSelect>
+								</div>
 		                        <div class="form-group">
 									<button style="background: rgba(15, 95, 72, 0.95)" class="btn btn-info btn-md" value="Registration" @click="register(registration)">Register</button>
 								</div>
@@ -74,9 +78,12 @@
 
 import { client } from "@/client/axiosClient";
 import moment from 'moment';
+import PharmaciesWithSelect from "./PharmaciesWithSelect.vue";
 
 export default {
     name: "UserRegistration",
+
+	components: { PharmaciesWithSelect },
 
 	props: {
 		pharmacyId : {
@@ -93,7 +100,8 @@ export default {
 			registration: {},
 			passwordRepeat: "",
 			url: "",
-			title: ""
+			title: "",
+			pharmacies: []
 		};
     },
 
@@ -103,6 +111,16 @@ export default {
 		this.setUrl();
 		this.setUserRole();
 		this.setTitle();
+		if(this.typeToRegister == 'PHARMACY_ADMIN')
+		{
+			this.registration.pharmacyId = -1;
+			client({
+					url: "pharmacy/all",
+					method: "GET",
+				}).then((response) => {
+				this.pharmacies = response.data;
+        	});
+		}
     },
 
     methods: {
@@ -123,7 +141,7 @@ export default {
 					zipCode: '19000',
 					streetNum: 21
 			};
-
+			if(this.typeToRegister == "PHARMACY_ADMIN") registration.pharmacyId = 
 			client({
                 url: this.url,
                 method: "POST",
@@ -160,8 +178,12 @@ export default {
 			if(registration.firstName == '') return true;
 			if(registration.lastName == '') return true;
 			if(registration.email == '') return true;
-			if(document.getElementById('start_time').value == '') return true;
-			if(document.getElementById('end_time').value == '') return true;
+			if(document.getElementById('start_time'))	// Mora zbog undefined
+				if(document.getElementById('start_time').value == '') return true;
+			if(document.getElementById('end_time'))		// Mora zbog undefined
+				if(document.getElementById('end_time').value == '') return true;
+			if(this.typeToRegister == "PHARMACY_ADMIN")
+				if(registration.pharmacyId == -1) return true;
 			return false;
 		},
 
@@ -201,7 +223,7 @@ export default {
 			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.url = 'systemAdmin/create'; }
 			else if(this.typeToRegister == 'SUPPLIER')  	{ this.url = 'supplier/create'; }
 			else if(this.typeToRegister == 'DERMATOLOGIST') { this.url = 'dermatologist/create'; }
-			else if(this.typeToRegister == 'PHARMACIST') { this.url = 'pharmacist/create'; }
+			else if(this.typeToRegister == 'PHARMACIST') 	{ this.url = 'pharmacist/create'; }
 		},
 
 		setUserRole()
@@ -211,7 +233,7 @@ export default {
 			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.registration.userRole = 'SYSTEM_ADMIN'; }
 			else if(this.typeToRegister == 'SUPPLIER')  	{ this.registration.userRole = 'SUPPLIER'; }
 			else if(this.typeToRegister == 'DERMATOLOGIST') { this.registration.userRole = 'DERMATOLOGIST'; }
-			else if(this.typeToRegister == 'PHARMACIST') { this.registration.userRole = 'PHARMACIST'; }
+			else if(this.typeToRegister == 'PHARMACIST') 	{ this.registration.userRole = 'PHARMACIST'; }
 		},
 
 		setTitle()
@@ -221,7 +243,7 @@ export default {
 			else if(this.typeToRegister == 'SYSTEM_ADMIN')  { this.title = 'System admin registration'; }
 			else if(this.typeToRegister == 'SUPPLIER')  	{ this.title = 'Supplier registration'; }
 			else if(this.typeToRegister == 'DERMATOLOGIST') { this.title = 'Dermatologist registration'; }
-			else if(this.typeToRegister == 'PHARMACIST') { this.title = 'Pharmacist registration'; }
+			else if(this.typeToRegister == 'PHARMACIST') 	{ this.title = 'Pharmacist registration'; }
 		},
 		isPharmacist: function(){
 			return this.typeToRegister === "PHARMACIST"; // Bojan pravio 
@@ -253,8 +275,15 @@ export default {
 				pharmacist['workTime'] = myWorkTime;
 				this.$emit('registered', pharmacist);
 			}).catch((response) => console.log("Hiring failed!"));
+		},
+
+		chosenPharmacySelected: function(id)
+		{
+			this.registration.pharmacyId = id;
 		}
 	},
+
+	
 };
 </script>
 
