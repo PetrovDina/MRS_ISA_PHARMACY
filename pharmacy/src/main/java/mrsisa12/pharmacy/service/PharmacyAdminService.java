@@ -24,4 +24,7 @@ public class PharmacyAdminService
 		pharmacyAdminRepository.save(pharmacyAdmin);
 	}
 
+	public PharmacyAdmin findOne(Long id) {
+		return pharmacyAdminRepository.findById(id).orElse(null);
+	}
 }

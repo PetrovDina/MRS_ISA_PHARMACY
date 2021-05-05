@@ -1,16 +1,14 @@
 package mrsisa12.pharmacy.dto;
 
 import mrsisa12.pharmacy.model.Location;
-import mrsisa12.pharmacy.model.User;
+import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.enums.Gender;
 
 public class PharmacyAdminDTO extends UserDTO {
 
-	Long pharmacyId;
-	
-	public PharmacyAdminDTO() {
-		// TODO Auto-generated constructor stub
-	}
+	private Long pharmacyId;
+
+	public PharmacyAdminDTO() {}
 
 	public PharmacyAdminDTO(Long id, String username, String password, String email, String firstName, String lastName,
 			Location location, Gender gender, Long pharmacyId) {
@@ -18,9 +16,10 @@ public class PharmacyAdminDTO extends UserDTO {
 		this.pharmacyId = pharmacyId;
 	}
 
-	public PharmacyAdminDTO(User user) {
-		super(user);
-		// TODO Auto-generated constructor stub
+	public PharmacyAdminDTO(PharmacyAdmin pharmacyAdmin) {
+		this(pharmacyAdmin.getId(), pharmacyAdmin.getUsername(), pharmacyAdmin.getPassword(), pharmacyAdmin.getEmail(),
+				pharmacyAdmin.getFirstName(), pharmacyAdmin.getLastName(), pharmacyAdmin.getLocation(),
+				pharmacyAdmin.getGender(), pharmacyAdmin.getPharmacy().getId());
 	}
 
 	public Long getPharmacyId() {
@@ -30,6 +29,5 @@ public class PharmacyAdminDTO extends UserDTO {
 	public void setPharmacyId(Long pharmacyId) {
 		this.pharmacyId = pharmacyId;
 	}
-	
-	
+
 }

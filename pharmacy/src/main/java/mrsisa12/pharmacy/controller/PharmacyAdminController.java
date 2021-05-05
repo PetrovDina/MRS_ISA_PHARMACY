@@ -52,7 +52,7 @@ public class PharmacyAdminController
 	}
 	
 	@PostMapping(value = "/create", consumes = "application/json")
-	public ResponseEntity<UserDTO> savePharmacyAdmin(@RequestBody PharmacyAdminDTO pharmacyAdminDTO)
+	public ResponseEntity<PharmacyAdminDTO> savePharmacyAdmin(@RequestBody PharmacyAdminDTO pharmacyAdminDTO)
 	{
 		PharmacyAdmin pa = new PharmacyAdmin();
 		pa.setUsername(pharmacyAdminDTO.getUsername());
@@ -69,6 +69,6 @@ public class PharmacyAdminController
 		pa.setPharmacy(pharmacy);
 		
 		pharmacyAdminService.save(pa);
-		return new ResponseEntity<>(new UserDTO(pa), HttpStatus.CREATED);
+		return new ResponseEntity<>(new PharmacyAdminDTO(pa), HttpStatus.CREATED);
 	}
 }
