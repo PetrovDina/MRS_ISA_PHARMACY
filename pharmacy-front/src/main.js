@@ -16,6 +16,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
+import 'vue2-toast/lib/toast.css';
+import toasted from 'vue-toasted'
+
+Vue.use(toasted);
+
+
+
 
 Vue.use(Vuex)
 

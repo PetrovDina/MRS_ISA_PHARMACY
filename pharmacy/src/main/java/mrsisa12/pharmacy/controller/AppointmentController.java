@@ -19,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.AppointmentDTO;
+import mrsisa12.pharmacy.mail.EmailContent;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.AppointmentType;
 import mrsisa12.pharmacy.model.Employee;
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
@@ -44,6 +47,9 @@ public class AppointmentController {
 	
 	@Autowired
 	private PharmacyService pharmacyService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
@@ -101,6 +107,40 @@ public class AppointmentController {
 
 		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);
 	}
+	
+	
+	//dina pravila za kreiranja termina kod FARMACEUTA!
+	@PostMapping(value = "/savePharmacistAppointment", consumes = "application/json")
+	public ResponseEntity<AppointmentDTO> savePharmacistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+		Appointment appointment = new Appointment();
+
+		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
+		appointment.getTimePeriod().setEndTime(appointment.getTimePeriod().getStartTime().plusHours(1)); //todo promeni da bude pravo trajanje!
+		appointment.setStatus(AppointmentStatus.RESERVED); //rezervisemo ga!
+		appointment.setDeleted(false);
+		
+		// postavljamo farmaceuta na termin
+		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
+		appointment.setEmployee(employee);
+		
+		//postavljamo pacijenta na termin
+		Patient patient = patientService.findByUsername(appointmentDTO.getPatient().getUsername());
+		appointment.setPatient(patient);
+		
+		// postavljamo termin farmaceutu
+		employee.addAppointment(appointment);
+		
+		//dina dodala - TODO izmeni da ne bude fiksno nego da se dobavi prava cena iz cenovnika onda kad se on kreira!
+		appointment.setPrice(1500);
+		
+		appointment.setPharmacy(pharmacyService.findOne(appointmentDTO.getPharmacy().getId()));
+
+		appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
+		appointment = appointmentService.save(appointment);
+		employeeService.save(employee); //idk da l ovo treba
+
+		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);
+	}
 
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<AppointmentDTO> saveAppointment(@RequestBody AppointmentDTO appointmentDTO) {
@@ -147,6 +187,16 @@ public class AppointmentController {
 		appointment.setPatient(patientService.findByUsername(patientUsername));
 		appointment.setStatus(AppointmentStatus.RESERVED);
 		appointment = appointmentService.save(appointment);
+		
+		// email!
+		String emailBody = "This email is confirmation that you have successfully booked your appointment with " 
+		+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() + " at "
+		+ appointment.getTimePeriod().getStartDate() + " " 
+		+ appointment.getTimePeriod().getStartTime();
+		
+		EmailContent email = new EmailContent("Appointment booked",
+                appointment.getPatient().getEmail(), emailBody);
+        emailService.sendEmail(email);
 
 
 		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);

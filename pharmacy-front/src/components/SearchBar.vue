@@ -95,6 +95,8 @@ export default {
 .sort-dropdown {
     padding: 5px;
     border: 0.5px solid rgba(128, 128, 128, 0.473);
+    border-radius: 5px;
+
     display: inline-block;
 
 }
@@ -134,6 +136,8 @@ export default {
 
 input{
     border: 0.5px solid rgba(128, 128, 128, 0.473);
+    border-radius: 5px;
+
 
 }
 

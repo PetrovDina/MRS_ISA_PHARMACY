@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.ReservationDTO;
 import mrsisa12.pharmacy.dto.ReservationPickupDTO;
+import mrsisa12.pharmacy.mail.EmailContent;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -50,6 +52,9 @@ public class ReservationController {
 	
 	@Autowired
 	private PharmacyStorageItemService pharmacyStorageItemService;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<ReservationDTO>> getAllReservations() {
@@ -165,6 +170,12 @@ public class ReservationController {
 
 
 		reservation = reservationService.save(reservation);
+		
+		// email!
+		String emailBody = "This email is confirmation that you have successfully reserved " + medication.getName() + ". Your unique reservation number is: " + reservation.getId();
+		EmailContent email = new EmailContent("Medicine reservation confirmation",
+                reservation.getPatient().getEmail(), emailBody);
+        emailService.sendEmail(email);
 		return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.CREATED);
 	}
 	

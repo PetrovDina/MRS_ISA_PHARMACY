@@ -9,7 +9,7 @@
             <v-card-text>
                 <v-row>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/pharmacistReservation">
                             <v-card-title class="wordBreak"
                                 >Book pharmacist appointment</v-card-title
                             >

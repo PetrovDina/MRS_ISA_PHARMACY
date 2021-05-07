@@ -44,4 +44,6 @@ public class PatientService {
 	public Patient findByUsername(String username) {
 		return patientRepository.findByUsername(username);
 	}
+
+
 }

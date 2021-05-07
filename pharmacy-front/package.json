@@ -18,6 +18,8 @@
     "vue": "^2.5.2",
     "vue-axios": "^3.2.4",
     "vue-router": "^3.0.1",
+    "vue-toasted": "^1.1.28",
+    "vue2-toast": "^2.1.0",
     "vuetify": "^2.4.8",
     "vuex": "^3.6.2",
     "vuex-persistedstate": "^4.0.0-beta.3"
