@@ -93,6 +93,20 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/dermHistoryByPatient")
+	public ResponseEntity<List<AppointmentDTO>> getAllDermHistoryByPatient(@RequestParam String patientUsername) {
+
+		List<Appointment> appointments = appointmentService.getAllDermHistoryByPatient(patientUsername);
+
+		// convert appointments to DTOs
+		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : appointments) {
+			appointmentsDTO.add(new AppointmentDTO(appointment));
+		}
+
+		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
+	}
+	
 	@GetMapping(value = "/allDermatologistAvailable")
 	public ResponseEntity<List<AppointmentDTO>> getAllAvailableDermatologistAppointments() {
 
@@ -106,6 +120,8 @@ public class AppointmentController {
 
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
+	
+	
 
 	@GetMapping
 	public ResponseEntity<List<AppointmentDTO>> getAppointmentsPage(Pageable page) {

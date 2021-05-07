@@ -23,7 +23,7 @@
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/dermAppointHistory">
                             <v-card-title class="wordBreak"
                                 >Dermatologist appointment history</v-card-title
                             >

@@ -37,4 +37,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 	
 	@Query("select app from Appointment app where app.status = 'RESERVED' and app.type = 'PHARMACIST_CONSULTATION' and app.patient.username = :username")
 	public List<Appointment> getAllScheduledPharmByPatient(@Param("username") String patientUsername);
+
+	@Query("select app from Appointment app where app.status != 'RESERVED' and app.type = 'DERMATOLOGIST_EXAMINATION' and app.patient.username = :username")
+	public List<Appointment> getAllDermHistoryByPatient(@Param("username")String patientUsername);
 }

@@ -61,4 +61,8 @@ public class AppointmentService {
 	public List<Appointment> getAllScheduledPharmByPatient(String patientUsername) {
 		return appointmentRepository.getAllScheduledPharmByPatient(patientUsername);
 	}
+
+	public List<Appointment> getAllDermHistoryByPatient(String patientUsername) {
+		return appointmentRepository.getAllDermHistoryByPatient(patientUsername);
+	}
 }
