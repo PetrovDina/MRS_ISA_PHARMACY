@@ -19,6 +19,7 @@ import DermAppointReservation from '@/views/DermAppointReservation'
 import PharmAppointReservation from '@/views/PharmAppointReservation'
 import ScheduledAppointmentsView from '@/views/ScheduledAppointmentsView'
 import DermAppointHistory from '@/views/DermAppointHistory'
+import PharmAppointHistory from '@/views/PharmAppointHistory'
 
 import PharmacyRegistration from '@/views/PharmacyRegistration'
 import UserRegistrationPage from '@/views/UserRegistrationPage'
@@ -333,6 +334,21 @@ export default new Router({
                 }
               }
         },
+
+        {
+        path: '/pharmAppointHistory',
+        name: 'PharmAppointHistory',
+        component: PharmAppointHistory,
+        beforeEnter: function(to, from, next){
+            let user = CheckUser.getLoggedUserData();
+            if(user.userType == 'PATIENT'){
+              next();
+            }
+            else{
+              ({path: '/'});
+            }
+          }
+    },
 
         {
             path: '/LoginPage',

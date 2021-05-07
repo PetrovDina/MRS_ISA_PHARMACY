@@ -127,7 +127,6 @@ export default {
 
         pharmaciesSearchPerformed(text, city, minRating, maxRating) {
             this.searchQuery = text;
-            console.log(city + " " + minRating + " " + maxRating);
             let self = this;
 
             //first we check the text from the search bar

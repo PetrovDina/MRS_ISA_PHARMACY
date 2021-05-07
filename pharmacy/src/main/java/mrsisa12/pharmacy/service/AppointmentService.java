@@ -65,4 +65,8 @@ public class AppointmentService {
 	public List<Appointment> getAllDermHistoryByPatient(String patientUsername) {
 		return appointmentRepository.getAllDermHistoryByPatient(patientUsername);
 	}
+
+	public List<Appointment> getAllPharmHistoryByPatient(String patientUsername) {
+		return appointmentRepository.getAllPharmHistoryByPatient(patientUsername);
+	}
 }
