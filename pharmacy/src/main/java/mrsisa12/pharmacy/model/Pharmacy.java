@@ -35,6 +35,9 @@ public class Pharmacy {
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "pharmacy")
 	private List<Employment> employments;
+	
+	@OneToMany(mappedBy = "pharmacy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<PharmacyAdmin> pharmacyAdmins;
 
 	public Pharmacy() {
 
