@@ -65,6 +65,34 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/scheduledDermByPatient")
+	public ResponseEntity<List<AppointmentDTO>> getAllScheduledDermByPatient(@RequestParam String patientUsername) {
+
+		List<Appointment> appointments = appointmentService.getAllScheduledDermByPatient(patientUsername);
+
+		// convert appointments to DTOs
+		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : appointments) {
+			appointmentsDTO.add(new AppointmentDTO(appointment));
+		}
+
+		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/scheduledPharmByPatient")
+	public ResponseEntity<List<AppointmentDTO>> getAllScheduledPharmByPatient(@RequestParam String patientUsername) {
+
+		List<Appointment> appointments = appointmentService.getAllScheduledPharmByPatient(patientUsername);
+
+		// convert appointments to DTOs
+		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : appointments) {
+			appointmentsDTO.add(new AppointmentDTO(appointment));
+		}
+
+		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
+	}
+	
 	@GetMapping(value = "/allDermatologistAvailable")
 	public ResponseEntity<List<AppointmentDTO>> getAllAvailableDermatologistAppointments() {
 

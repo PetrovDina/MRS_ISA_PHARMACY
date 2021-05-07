@@ -46,18 +46,19 @@
                                                 }}
                                             </b>
                                         </p>
-                                        <p class="card-text">
-                                            Price:
-                                            <b>
-                                                {{ appointment.price }},00 RSD
-                                            </b>
-                                        </p>
+                                        
                                         <p class="card-text">
                                             Dermatologist rating:
                                             <b>
                                                 {{
                                                     appointment.employee.rating
                                                 }}
+                                            </b>
+                                        </p>
+                                        <p class="card-text">
+                                            Price:
+                                            <b>
+                                                {{ appointment.price }},00 RSD
                                             </b>
                                         </p>
                                     </div>

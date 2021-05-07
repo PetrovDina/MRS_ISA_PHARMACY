@@ -17,6 +17,7 @@ import PatientHomePage from '@/views/PatientHomePage'
 import PatientsReservations from '@/views/PatientsReservations'
 import DermAppointReservation from '@/views/DermAppointReservation'
 import PharmAppointReservation from '@/views/PharmAppointReservation'
+import ScheduledAppointmentsView from '@/views/ScheduledAppointmentsView'
 
 import PharmacyRegistration from '@/views/PharmacyRegistration'
 import UserRegistrationPage from '@/views/UserRegistrationPage'
@@ -291,6 +292,21 @@ export default new Router({
             path: '/pharmacistReservation',
             name: 'PharmAppointReservation',
             component: PharmAppointReservation,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PATIENT'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
+        },
+
+        {
+            path: '/scheduledAppointments',
+            name: 'ScheduledAppointmentsView',
+            component: ScheduledAppointmentsView,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PATIENT'){

@@ -53,4 +53,12 @@ public class AppointmentService {
 	public List<Appointment> findAllAvailableDermatologistAppointments() {
 		return appointmentRepository.findAllAvailableDermatologistAppointments();
 	}
+
+	public List<Appointment> getAllScheduledDermByPatient(String patientUsername) {
+		return appointmentRepository.getAllScheduledDermByPatient(patientUsername);
+	}
+
+	public List<Appointment> getAllScheduledPharmByPatient(String patientUsername) {
+		return appointmentRepository.getAllScheduledPharmByPatient(patientUsername);
+	}
 }

@@ -37,7 +37,7 @@
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/scheduledAppointments">
                             <v-card-title class="wordBreak"
                                 >Scheduled appointments</v-card-title
                             >
@@ -134,7 +134,9 @@ export default {
     data: function () {
         return {};
     },
-    methods: {},
+    methods: {
+
+    },
 
     mounted() {},
 };
