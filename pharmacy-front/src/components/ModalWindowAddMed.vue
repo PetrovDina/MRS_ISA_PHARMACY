@@ -16,7 +16,7 @@
                 <Button 
                     @action-performed="addMedication(selectedMedication, price)" 
                     text="Add medication" 
-                    bgd_color="green" 
+                    bgd_color="rgba(32, 102, 75, 0.95)" 
                     style="color:white">
                 </Button>
             </div>
@@ -69,6 +69,7 @@ export default {
                 this.error_msg_text = "Select medication and set a price!";
             }
             else {
+                this.selectedMedication = null;
                 this.$emit('add-medication', med, price);
                 this.$emit('modal-closed');
             }

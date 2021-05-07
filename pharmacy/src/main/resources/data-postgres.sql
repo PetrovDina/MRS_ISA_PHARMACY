@@ -83,7 +83,11 @@ insert into employment (employee_id, workTime, contractType, pharmacy_id, delete
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (5, '{ "startDate": [2021, 4, 3], "startTime": [14, 0, 0], "endDate": [2021, 4, 3], "endTime": [19, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (6, '{ "startDate": [2021, 4, 3], "startTime": [8, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 2, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (7, '{ "startDate": [2021, 4, 3], "startTime": [9, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 'PHARMACIST_CONTRACT', 1, 'False');
+-- update farmaceuta da mu podesimo employment_id
+UPDATE pharmacist SET employment_id = 4  WHERE id = 7;
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (8, '{ "startDate": [2021, 4, 3], "startTime": [10, 0, 0], "endDate": [2021, 4, 3], "endTime": [18, 0, 0]}', 'PHARMACIST_CONTRACT', 2, 'False');
+-- update farmaceuta da mu podesimo employment_id
+UPDATE pharmacist SET employment_id = 5  WHERE id = 8;
 
 INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
 INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT
@@ -106,10 +110,10 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 6, 15], "startTime": [9, 0, 0], "endDate": [2021, 6, 15], "endTime": [10, 0, 0]}', 4, 1500, 1, 'False');
 
 -- narudzbenice
-insert into orders (dueDate, pharmacyadmin_id, deleted) values ('2021-05-10', 3, 'False');
-insert into orders (dueDate, pharmacyadmin_id, deleted) values ('2021-05-11', 3, 'False');
-insert into orders (dueDate, pharmacyadmin_id, deleted) values ('2021-05-12', 3, 'False');
-insert into orders (dueDate, pharmacyadmin_id, deleted) values ('2021-05-13', 3, 'False');
+insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-10', 3, 1, 'False');
+insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-11', 3, 1, 'False');
+insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-12', 3, 1, 'False');
+insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-13', 3, 1, 'False');
 
 -- orderitem
 insert into orderitem (quantity, medication_id, order_id, deleted) values (2, 5, 1, 'False');

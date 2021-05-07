@@ -1,5 +1,6 @@
 package mrsisa12.pharmacy.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +24,13 @@ import mrsisa12.pharmacy.dto.order.OrderWithOrderItemsDTO;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Order;
 import mrsisa12.pharmacy.model.OrderItem;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.OrderItemService;
 import mrsisa12.pharmacy.service.OrderService;
 import mrsisa12.pharmacy.service.PharmacyAdminService;
+import mrsisa12.pharmacy.service.PharmacyService;
 
 @RestController
 @RequestMapping("/order")
@@ -35,6 +38,9 @@ public class OrderController {
 
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private PharmacyService pharmacyService;
 
 	@Autowired
 	private PharmacyAdminService pharmacyAdminService;
@@ -54,6 +60,21 @@ public class OrderController {
 		List<OrderDTO> ordersDTO = new ArrayList<>();
 		for (Order order : orders) {
 			ordersDTO.add(new OrderDTO(order));
+		}
+
+		return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/allFrom/{id}")
+	public ResponseEntity<List<OrderWithOrderItemsDTO>> getAllOrdersFromPharmacy(@PathVariable Long id) {
+
+		Pharmacy pharmacy = pharmacyService.findOne(id);
+		List<Order> orders = orderService.findAllFromPharmacy(pharmacy);
+
+		// convert orders to DTOs
+		List<OrderWithOrderItemsDTO> ordersDTO = new ArrayList<>();
+		for (Order order : orders) {
+			ordersDTO.add(new OrderWithOrderItemsDTO(orderService.findOneWithOrderItems(order.getId())));
 		}
 
 		return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
@@ -91,10 +112,13 @@ public class OrderController {
 	public ResponseEntity<OrderDTO> saveOrder(@RequestBody OrderWithOrderItemsDTO orderDTO) {
 		Order order = new Order();
 		// preuzimanje datuma
-		order.setDueDate(orderDTO.getDueDate());
+		order.setDueDate(LocalDate.parse(orderDTO.getDueDate()));
 		// postavljanje admina
-		PharmacyAdmin pharmacyAdmin = pharmacyAdminService.findOne(orderDTO.getPharmacyAdmin().getId());
+		PharmacyAdmin pharmacyAdmin = pharmacyAdminService.findOneByUsername(orderDTO.getPharmacyAdmin().getUsername());
 		order.setPharmacyAdmin(pharmacyAdmin);
+		// postavljanje apoteke
+		Pharmacy pharmacy = pharmacyService.findOne(pharmacyAdmin.getPharmacy().getId());
+		order.setPharmacy(pharmacy);
 		// nije obrisana
 		order.setDeleted(false);
 		// cuvamo order

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import mrsisa12.pharmacy.model.Order;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.repository.OrderRepository;
 
 @Service
@@ -40,5 +41,9 @@ public class OrderService {
 
 	public Order findOneWithOrderItems(Long id) {
 		return orderRepository.findOneWithOrderItems(id);
+	}
+
+	public List<Order> findAllFromPharmacy(Pharmacy pharmacy) {
+		return orderRepository.findAllFromPharmacy(pharmacy);
 	}
 }

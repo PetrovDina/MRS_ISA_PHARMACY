@@ -37,6 +37,9 @@ public class Order {
 	@ManyToOne(fetch = FetchType.EAGER)
 	private PharmacyAdmin pharmacyAdmin;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Pharmacy pharmacy;
+
 	@Column(name = "deleted")
 	private boolean deleted;
 
@@ -88,5 +91,13 @@ public class Order {
 
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	public Pharmacy getPharmacy() {
+		return pharmacy;
+	}
+
+	public void setPharmacy(Pharmacy pharmacy) {
+		this.pharmacy = pharmacy;
 	}
 }

@@ -8,13 +8,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.PharmacyAdminDTO;
+import mrsisa12.pharmacy.dto.PharmacyAdminDTO;
 import mrsisa12.pharmacy.dto.UserDTO;
+import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.enums.UserStatus;
@@ -37,6 +40,19 @@ public class PharmacyAdminController
 	
 	@Autowired
 	private RoleService roleService;
+	
+	@GetMapping(value = "/{username}")
+	public ResponseEntity<PharmacyAdminDTO> getPharmacyAdminByUsername(@PathVariable String username) {
+
+		PharmacyAdmin pharmacyAdmin = pharmacyAdminService.findOneByUsername(username);
+
+		// pharmacyAdmin must exist
+		if (pharmacyAdmin == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(new PharmacyAdminDTO(pharmacyAdmin), HttpStatus.OK);
+	}
 	
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<UserDTO>> getAllPharmacyAdmins() {

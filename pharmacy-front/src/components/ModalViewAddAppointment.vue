@@ -6,7 +6,7 @@
             <div class="md-form mx-5 my-5">
                 <label for="date">Pick up date</label>
                 <input type="date" id="date" name="date" :min="today"
-                    class="form-control" v-model="chosenDate"/>
+                    class="form-control"/>
             </div>
             <div>
                 <div class="md-form mx-5 my-5">
@@ -42,7 +42,6 @@ export default {
     },
     data() {
         return {
-            chosenDate: null,
             today: moment().format("YYYY-MM-DD")
         }
     },
@@ -71,15 +70,15 @@ export default {
                 url: "appointments",
                 method: "POST",
                 data: {
-                        employeeDTO: {
+                        employee: {
                             //id: this.employeeIdToSend //// JER ZA SAD POSTOJI SAMO JEDAN DERMOS
                             id: this.dermatologistIdToSend
                         },
-                        timePeriodDTO: {
+                        timePeriod: {
                             startDate: date,
-                            startTime: start_time_value,
+                            startTime:  start_time_value,
                             endDate: date,
-                            endTime: end_time_value
+                            endTime:  end_time_value
                         }
                     }
                 })

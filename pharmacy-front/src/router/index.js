@@ -51,8 +51,16 @@ export default new Router({
         {
             path: '/pharmacy',
             name: 'PharmacyView',
-            props: true,
-            component: PharmacyView
+            component: PharmacyView,
+            beforeEnter: function(to, from, next){
+              let user = CheckUser.getLoggedUserData();
+              if(user.userType == 'PHARMACY_ADMIN' || user.userType == "SYSTEM_ADMIN"){
+                next();
+              }
+              else{
+                ({path: '/'});
+              }
+            }
         },
 
         {

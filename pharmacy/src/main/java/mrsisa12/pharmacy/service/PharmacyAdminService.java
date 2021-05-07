@@ -27,4 +27,8 @@ public class PharmacyAdminService
 	public PharmacyAdmin findOne(Long id) {
 		return pharmacyAdminRepository.findById(id).orElse(null);
 	}
+
+	public PharmacyAdmin findOneByUsername(String username) {
+		return pharmacyAdminRepository.findByUsername(username);
+	}
 }

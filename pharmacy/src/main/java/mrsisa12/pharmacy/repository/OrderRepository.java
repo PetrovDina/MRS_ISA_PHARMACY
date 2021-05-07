@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import mrsisa12.pharmacy.model.Order;
+import mrsisa12.pharmacy.model.Pharmacy;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
@@ -17,5 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	@Query("select ord from Order ord left join fetch ord.orderItems e where ord.id =?1")
 	public Order findOneWithOrderItems(Long id);
+
+	@Query("select ord from Order ord where ord.pharmacy =?1")
+	public List<Order> findAllFromPharmacy(Pharmacy pharmacy);
 
 }
