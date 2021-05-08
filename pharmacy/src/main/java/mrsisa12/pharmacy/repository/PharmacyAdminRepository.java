@@ -11,8 +11,8 @@ import mrsisa12.pharmacy.model.PharmacyAdmin;
 public interface PharmacyAdminRepository extends JpaRepository<PharmacyAdmin, Long>
 {
 	
-	public List<PharmacyAdmin> findAllByUsername(String username);
-	
 	public Page<PharmacyAdmin> findAll(Pageable pageable);
+
+	public PharmacyAdmin findByUsername(String username);
 	
 }

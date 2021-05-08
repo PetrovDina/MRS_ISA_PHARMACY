@@ -49,7 +49,7 @@ insert into system_user (username, password, email, firstname, lastname, locatio
 insert into patient (id, penaltypoints) values (2, 0);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('padmin', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'padmin@email.com', 'Padmin', 'Padminic', 1, 'MALE', 'ACTIVATED', 'False');
-insert into pharmacyadmin (id) values (3);
+insert into pharmacyadmin (id, pharmacy_id) values (3, 1);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('milica', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milicam@email.com', 'Milica', 'Milic', 1, 'FEMALE', 'ACTIVATED', 'False');
 insert into employees (id, rating ) values (4, 2.2);
@@ -79,30 +79,26 @@ insert into system_user (username, password, email, firstname, lastname, locatio
 insert into employees (id, rating ) values (10, 3.9);
 insert into dermatologist (id, dermatologistNickname) values (10, 'mare');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('janko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'jankoh@email.com', 'Janko', 'Hajduk', 1, 'MALE', 'ACTIVATED', 'False');
-insert into employees (id, rating ) values (11, 4.1);
-insert into dermatologist (id, dermatologistNickname) values (11, 'jane');
-
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('petar', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'petarb@email.com', 'Petar', 'Babic', 1, 'MALE', 'ACTIVATED', 'False');
-insert into employees (id, rating ) values (12, 1.2);
-insert into dermatologist (id, dermatologistNickname) values (12, 'pele');
-
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('dmitar', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'dmitar@email.com', 'Mitar', 'Miric', 1, 'MALE', 'ACTIVATED', 'False');
-insert into employees (id, rating ) values (13, 3.5);
-insert into dermatologist (id, dermatologistNickname) values (13, 'dres bajerna');
-
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (4, '{ "startDate": [2021, 4, 3], "startTime": [7, 0, 0], "endDate": [2021, 4, 3], "endTime": [12, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (5, '{ "startDate": [2021, 4, 3], "startTime": [14, 0, 0], "endDate": [2021, 4, 3], "endTime": [19, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (6, '{ "startDate": [2021, 4, 3], "startTime": [8, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 2, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (7, '{ "startDate": [2021, 4, 3], "startTime": [9, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 'PHARMACIST_CONTRACT', 1, 'False');
+-- update farmaceuta da mu podesimo employment_id
+UPDATE pharmacist SET employment_id = 4  WHERE id = 7;
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (8, '{ "startDate": [2021, 4, 3], "startTime": [10, 0, 0], "endDate": [2021, 4, 3], "endTime": [18, 0, 0]}', 'PHARMACIST_CONTRACT', 2, 'False');
+-- update farmaceuta da mu podesimo employment_id
+UPDATE pharmacist SET employment_id = 5  WHERE id = 8;
 
 INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
 INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT
 INSERT INTO user_role (user_id, role_id) VALUES (3, 6); --  ROLE_PHARMACY_ADMIN
-INSERT INTO user_role (user_id, role_id) VALUES (4, 4); --  DERMATOLOGIST
-INSERT INTO user_role (user_id, role_id) VALUES (5, 4); --  DERMATOLOGIST
-INSERT INTO user_role (user_id, role_id) VALUES (6, 4); --  DERMATOLOGIST
+INSERT INTO user_role (user_id, role_id) VALUES (4, 4); --  ROLE_DERMATOLOGIST
+INSERT INTO user_role (user_id, role_id) VALUES (5, 4); --  ROLE_DERMATOLOGIST
+INSERT INTO user_role (user_id, role_id) VALUES (6, 4); --  ROLE_DERMATOLOGIST
+INSERT INTO user_role (user_id, role_id) VALUES (7, 5); --  ROLE_PHARMACIST
+INSERT INTO user_role (user_id, role_id) VALUES (8, 5); --  ROLE_PHARMACIST
+INSERT INTO user_role (user_id, role_id) VALUES (9, 4); --  ROLE_DERMATOLOGIST
+INSERT INTO user_role (user_id, role_id) VALUES (10, 4); --  ROLE_DERMATOLOGIST
 
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 1, 1, 3, '1.25.2021.', 'COMPLETED'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status) values (2, 2, 2, 10, '5.21.2021.', 'CREATED'); --za sad americki format dok ne skontamo kako drugacije
@@ -117,3 +113,22 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('PENALED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 2, 5], "startTime": [12, 0, 0], "endDate": [2021, 2, 5], "endTime": [13, 30, 0]}', 4, 1800, 1, 'False', 2);
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('CONCLUDED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 2, 25], "startTime": [12, 0, 0], "endDate": [2021, 2, 25], "endTime": [13, 0, 0]}', 7, 1200, 1, 'False', 2);
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('CONCLUDED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 4, 3], "startTime": [12, 0, 0], "endDate": [2021, 4, 3], "endTime": [13, 30, 0]}', 8, 1700, 2, 'False', 2);
+
+-- narudzbenice
+insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-10', 3, 1, 'False');
+insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-11', 3, 1, 'False');
+insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-12', 3, 1, 'False');
+insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-13', 3, 1, 'False');
+
+-- orderitem
+insert into orderitem (quantity, medication_id, order_id, deleted) values (2, 5, 1, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (5, 2, 1, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (3, 1, 2, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (14, 4, 2, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (12, 2, 2, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (7, 3, 3, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (4, 1, 3, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (15, 1, 4, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (3, 3, 4, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (5, 5, 4, 'False');
+insert into orderitem (quantity, medication_id, order_id, deleted) values (8, 4, 4, 'False');

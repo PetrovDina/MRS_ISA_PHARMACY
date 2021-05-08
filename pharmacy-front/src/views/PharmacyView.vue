@@ -18,7 +18,7 @@
             :bgd_color="!subscribed ? 'rgba(15, 95, 72, 0.95)' : 'grey'">
         </Button>
         <TabNav v-if="checkRoleTEST('PHARMACY_ADMIN')"
-            :tabs="['Dermatologists', 'Pharmacists', 'Medications']"
+            :tabs="['Dermatologists', 'Pharmacists', 'Medications', 'Orders']"
             :selected="selected"
             @selected="setSelected"
         >
@@ -45,6 +45,12 @@
                     :medications = "medicationToSend">
                 </MedicationsTable>
             </Tab>
+            <Tab :isSelected="selected === 'Orders'">
+                <OrdersTable 
+                    @order-added = "addNewOrder"
+                    :orders = "ordersToSend">
+                </OrdersTable>
+            </Tab>
         </TabNav>
     </div>
     
@@ -58,9 +64,11 @@ import Button from '../components/Button';
 import TabNav from '../components/TabNav';
 import Tab from '../components/Tab';
 import PharmacistsTable from '../components/PharmacistsTable';
+import OrdersTable from '../components/OrdersTable';
 
 export default {
-  components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable },
+    name: "PharmacyView",
+    components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable, OrdersTable},
     data() {
         return {
             selected: "Dermatologists",
@@ -68,6 +76,7 @@ export default {
             showDermos: false,
             showMedication: false,
             pharmacy : null,
+            pharmacyId: null,
             pharmacyName: '',
             address: '',
             city: '',
@@ -76,13 +85,10 @@ export default {
             dermatologistsToSend: [],
             pharmacistsToSend: [],
             medicationToSend: [],
+            ordersToSend: [],
             // lista svih slobodnih termina treba da se doda
             rating: 0.0
         };
-    },
-
-    props: {
-        pharmacyId: null,
     },
 
     methods: {
@@ -117,8 +123,27 @@ export default {
             .catch((response) => (console.log(response)));
         },
         addMedicationToDB : function(med, medicationPrice){
-            this.medicationToSend = [...this.medicationToSend, {
-                    id: this.medicationToSend.lenght,
+            // poziv na back da se doda novi pharmacyStorageItem u pharmacy
+            client({
+                url: "/pharmacyStorageItem",
+                method: "POST",
+				data: {
+                    quantity : 0,
+                    itemPrices : [
+                        {
+                            price: medicationPrice
+                        }
+                    ],
+                    medication: {
+                        id : med.id
+                    },
+                    pharmacy : {
+                        id : this.pharmacy.id
+                    }
+                }
+            }).then((response) => {
+                this.medicationToSend = [...this.medicationToSend, {
+                    id: response.data.id,
                     name: med.name,
                     manufacturer: med.manufacturer,
                     prescriptionReq: med.prescriptionReq,
@@ -126,29 +151,8 @@ export default {
                     quantity : 0,
                     price : medicationPrice,
                     price_edit : false
-                }
-            ]
-            // poziv na back da se doda novi pharmacyStorageItem u pharmacy
-            var dataToSave = {
-                quantity : 0,
-                itemPrices : [
-                    {
-                        price: medicationPrice
-                    }
-                ],
-                medication: {
-                    id : med.id
-                },
-                pharmacy : {
-                    id : this.pharmacy.id
-                }
-            }
-            client({
-                url: "/pharmacyStorageItem",
-                method: "POST",
-				data: dataToSave
-            })
-            .catch((response) => (console.log(response)));
+                }]
+            }).catch((response) => (console.log(response)));
         },
         updateMedicationPrice : function(med, priceToUpdate){
             var dataToUpdate = 
@@ -191,6 +195,9 @@ export default {
         },
         addPharmacistIntoList: function(pharmacist){
             this.pharmacistsToSend = [...this.pharmacistsToSend, pharmacist];
+        },
+        addNewOrder : function(order){
+            this.ordersToSend = [...this.ordersToSend, order];
         }
     },
 
@@ -198,59 +205,66 @@ export default {
         // Za apoteku ce ovo biti kompletan izgled koji ce na pocetku da povuce podatak iz baze o konkretnoj apoteci
         // /pharmacy/{id} i dobavice sve podatke vezano za apoteku
         // primjera radi dobavljamo apoteku sa ID-em 1
-        if (!this.pharmacyId){
-            this.$router.push({name:"Home"});
-            return;
-        }                                    
-
         client({
-            url: "pharmacy/" + this.pharmacyId +"/withEmployments",
+            url: "pharmacyAdmin/" + localStorage.getItem('USERNAME'),
             method: "GET",
         }).then((response) => {
-            this.pharmacy = response.data
-            // treba sada da se razvrstaju dermatolozi od farmaceuta
-            let employment = null;
-            for(employment of this.pharmacy.employments){
-                employment.employee['workTime'] = employment.workTime;
-                if(employment.contractType === 'DERMATOLOGIST_CONTRACT')
-                    this.dermatologistsToSend = [...this.dermatologistsToSend, employment.employee];
-                else
-                    this.pharmacistsToSend = [...this.pharmacistsToSend, employment.employee];
-            }
-            this.pharmacyName = this.pharmacy.name;
-            this.address = this.pharmacy.location.street;
-            this.city = this.pharmacy.location.city;
-            this.zipCode = this.pharmacy.location.zipcode;
-        }).catch((response) => alert("pharmacyId je los :("));
-            // dobavljamo sve lijekove iz apoteke
-        client({
-            url : "pharmacyStorageItem/fromPharmacy/" + this.pharmacyId,
-            method : "GET",
-        }).then((response) => {
-                this.pharmacyItems = response.data;
-                let pharmacy_item = null;
-                for(pharmacy_item of this.pharmacyItems){
-                    let current_price = 0;
-                    let iter = null;
-                    for(iter of pharmacy_item.itemPrices){
-                        if(iter.current === true){
-                            current_price = iter.price;
-                            break;
-                        }
-                    }
-                    let medication = {
-                            id: pharmacy_item.id,
-                            name: pharmacy_item.medication.name,
-                            manufacturer: pharmacy_item.medication.manufacturer,
-                            prescriptionReq: pharmacy_item.medication.prescriptionReq,
-                            form: pharmacy_item.medication.form,
-                            quantity : pharmacy_item.quantity,
-                            price : current_price,
-                            price_edit : false,
-                        };
-                    this.medicationToSend = [...this.medicationToSend, medication]
+            this.pharmacyId = response.data.pharmacyId;
+            client({
+                url: "pharmacy/" + this.pharmacyId +"/withEmployments",
+                method: "GET",
+            }).then((response) => {
+                this.pharmacy = response.data
+                // treba sada da se razvrstaju dermatolozi od farmaceuta
+                let employment = null;
+                for(employment of this.pharmacy.employments){
+                    employment.employee['workTime'] = employment.workTime;
+                    if(employment.contractType === 'DERMATOLOGIST_CONTRACT')
+                        this.dermatologistsToSend = [...this.dermatologistsToSend, employment.employee];
+                    else
+                        this.pharmacistsToSend = [...this.pharmacistsToSend, employment.employee];
                 }
-        }).catch((response) => alert("pharmacyId je null"));
+                this.pharmacyName = this.pharmacy.name;
+                this.address = this.pharmacy.location.street;
+                this.city = this.pharmacy.location.city;
+                this.zipCode = this.pharmacy.location.zipcode;
+            }).catch((response) => alert("pharmacyId je los :("));
+                // dobavljamo sve lijekove iz apoteke
+            client({
+                url : "pharmacyStorageItem/fromPharmacy/" + this.pharmacyId,
+                method : "GET",
+            }).then((response) => {
+                    this.pharmacyItems = response.data;
+                    for(const pharmacy_item of this.pharmacyItems){
+                        let current_price = 0;
+                        for(const iter of pharmacy_item.itemPrices){
+                            if(iter.current === true){
+                                current_price = iter.price;
+                                break;
+                            }
+                        }
+                        let medication = {
+                                id: pharmacy_item.id,
+                                name: pharmacy_item.medication.name,
+                                manufacturer: pharmacy_item.medication.manufacturer,
+                                prescriptionReq: pharmacy_item.medication.prescriptionReq,
+                                form: pharmacy_item.medication.form,
+                                quantity : pharmacy_item.quantity,
+                                price : current_price,
+                                price_edit : false,
+                            };
+                        this.medicationToSend = [...this.medicationToSend, medication]
+                    }
+            }).catch((response) => alert("pharmacyId je null"));
+
+            client({
+                url : "order/allFrom/" + this.pharmacyId,
+                method : "GET",
+            }).then((response) => {
+                this.ordersToSend = response.data;
+            }).catch((response) => alert("pharmacyId je null"));
+        });                              
+
     },
 };
 </script>

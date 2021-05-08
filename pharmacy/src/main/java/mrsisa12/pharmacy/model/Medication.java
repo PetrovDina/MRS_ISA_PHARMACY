@@ -39,17 +39,20 @@ public class Medication {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "form", nullable = false)
 	private MedicationForm form;
-	
+
 	@ManyToMany
 	@JoinTable(name = "alternative_medications", joinColumns = @JoinColumn(name = "medication_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "alternative_id", referencedColumnName = "id"))
 	private List<Medication> alternatives;
-	
+
 	@Column(name = "description", nullable = false)
 	private String description;
-	
+
 	@Column(name = "content", nullable = false)
 	private String content;
-	
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "medication")
+	private List<OrderItem> orderItems;
+
 	public Medication() {
 
 	}
@@ -127,7 +130,7 @@ public class Medication {
 	public void setForm(MedicationForm form) {
 		this.form = form;
 	}
-	
+
 	public List<Medication> getAlternatives() {
 		return alternatives;
 	}
@@ -143,14 +146,20 @@ public class Medication {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public List<MedicationDTO> getDTOAlternatives() {
 		List<MedicationDTO> alternatives = new ArrayList<MedicationDTO>();
-		for (Medication med : this.alternatives) 
-		{
+		for (Medication med : this.alternatives) {
 			alternatives.add(new MedicationDTO(med));
 		}
 		return alternatives;
 	}
-	
+
+	public List<OrderItem> getOrderItems() {
+		return orderItems;
+	}
+
+	public void setOrderItems(List<OrderItem> orderItems) {
+		this.orderItems = orderItems;
+	}
 }

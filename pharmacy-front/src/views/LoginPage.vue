@@ -74,7 +74,10 @@ export default {
                 localStorage.setItem("USERNAME", this.login.username); //dina dodala
                 this.$store.commit("changeLoggedUsername", this.login.username) //dina dodala
                 this.$store.commit("changeLoggedUserRole", payload.role);
-                this.homeRedirect();
+                if(localStorage.getItem('USER_TYPE') == 'PHARMACY_ADMIN')
+                    this.pharmacyAdminRedirect(localStorage.getItem('USERNAME'));
+                else
+                    this.homeRedirect();
             }).
 			catch((response) => 
             {
@@ -111,7 +114,19 @@ export default {
                         console.error(err);
                     }
                 });
-		}
+		},
+        pharmacyAdminRedirect(username){
+            // treba poziv na back da vidim u kojoj apoteci radi
+            this.$router
+                .push({ name: "PharmacyView"})
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        }
 
     }
 
