@@ -76,6 +76,10 @@ export default {
                 this.$store.commit("changeLoggedUserRole", payload.role);
                 if(localStorage.getItem('USER_TYPE') == 'PHARMACY_ADMIN')
                     this.pharmacyAdminRedirect(localStorage.getItem('USERNAME'));
+                else if(localStorage.getItem('USER_TYPE') == 'PHARMACIST')
+                    this.pharmacistHomeRedirect();
+                else if(localStorage.getItem('USER_TYPE') == 'DERMATOLOGIST')
+                    this.dermatologistHomeRedirect();
                 else
                     this.homeRedirect();
             }).
@@ -119,6 +123,30 @@ export default {
             // treba poziv na back da vidim u kojoj apoteci radi
             this.$router
                 .push({ name: "PharmacyView"})
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+        pharmacistHomeRedirect()
+        {
+            this.$router
+                .push({ name: "PharmacistHomePage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+        dermatologistHomeRedirect()
+        {
+            this.$router
+                .push({ name: "DermatologistHomePage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

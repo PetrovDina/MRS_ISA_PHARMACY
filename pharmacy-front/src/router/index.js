@@ -76,7 +76,7 @@ export default new Router({
         {
             path: '/calendar-page',
             name: 'CalendarPage',
-            component: CalendarPage/*,
+            component: CalendarPage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
@@ -85,7 +85,7 @@ export default new Router({
                 else{
                   ({path: '/'});
                 }
-              }*/
+              }
         },
 
         {
@@ -224,7 +224,7 @@ export default new Router({
         {
             path: '/pharmacist-home-page',
             name: 'PharmacistHomePage',
-            component: PharmacistHomePage/*,
+            component: PharmacistHomePage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PHARMACIST'){
@@ -233,13 +233,13 @@ export default new Router({
                 else{
                     ({path: '/'});
                 }
-              }*/
+              }
         },
 
         {
             path: '/dispense-medication-page',
             name: 'DispenseMedicationPage',
-            component: DispenseMedicationPage/*,
+            component: DispenseMedicationPage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PHARMACIST'){
@@ -248,7 +248,7 @@ export default new Router({
                 else{
                   ({path: '/'});
                 }
-              }*/
+              }
         },
 
         {

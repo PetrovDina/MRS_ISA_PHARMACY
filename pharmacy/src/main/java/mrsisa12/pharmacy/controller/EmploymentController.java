@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.EmploymentDTO;
+import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -180,5 +181,22 @@ public class EmploymentController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+	}
+	
+	@GetMapping(value = "/pharmacyOfLoggedInPharmacist")
+	public ResponseEntity<PharmacyDTO> getPharmacyOfLoggedInPharmacist(@RequestParam String username) {
+		List<Employment> employments = employmentService.findAllPharmacistEmployments();		
+		Employee emp = employeeService.findOneByUsername(username);
+		Pharmacy p = null;
+		for (Employment e : employments) {
+			if (e.getEmployee().getId() == emp.getId()) {
+				p = e.getPharmacy();
+			}
+		}
+		if (p == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(new PharmacyDTO(p), HttpStatus.OK);
 	}
 }

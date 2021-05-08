@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.AppointmentDTO;
+import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.AppointmentType;
 import mrsisa12.pharmacy.model.Employee;
+import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
@@ -298,4 +300,96 @@ public class AppointmentController {
 		}
 	}
 
+
+	@GetMapping(value = "/upcomingPatientsForEmployee")
+	public ResponseEntity<List<PatientDTO>> getUpcomingPatientsForEmployee(@RequestParam String username) {	
+		Employee emp = employeeService.findOneByUsername(username);
+		List<Appointment> appointments = appointmentService.findAll();
+		
+		List<PatientDTO> patientsDTO = new ArrayList<>();
+		for (Appointment appointment : appointments) {
+			if(appointment.getEmployee().getId().equals(emp.getId()) && appointment.getStatus() == AppointmentStatus.RESERVED) {
+				patientsDTO.add(new PatientDTO(appointment.getPatient()));				
+			}
+		}
+		
+		return new ResponseEntity<>(filterUniquePatients(patientsDTO), HttpStatus.OK);
+	}
+	
+	private List<PatientDTO> filterUniquePatients(List<PatientDTO> patients) {
+        List<PatientDTO> unique = new ArrayList<>();
+        for(PatientDTO patient : patients){
+            if(!hasPatientWithEmail(unique, patient.getEmail())){
+                unique.add(patient);
+            } else {
+                unique = overwrite(unique, patient);
+            }
+        }
+        return unique;
+    }
+
+    private List<PatientDTO> overwrite(List<PatientDTO> unique, PatientDTO patient) {
+        List<PatientDTO> overwritten = new ArrayList<>();
+
+        for(PatientDTO test : unique){
+            if(test.getEmail().equals(patient.getEmail())){
+                overwritten.add(patient);
+            } else {
+                overwritten.add(test);
+            }
+        }
+
+        return overwritten;
+    }
+
+    private boolean hasPatientWithEmail(List<PatientDTO> unique, String email) {
+        for(PatientDTO patient : unique){
+            if(patient.getEmail().equals(email)){
+                return true;
+            }
+        }
+        return false;
+    }
+	
+	@GetMapping(value = "/upcomingAppointmentsForPatient")
+	public ResponseEntity<List<AppointmentDTO>> getUpcomingAppointmentsForEmployee(@RequestParam("patientUsername") String patientUsername, @RequestParam String employeeUsername) {	
+		Patient patient = patientService.findByUsername(patientUsername);
+		Employee emp = employeeService.findOneByUsername(employeeUsername);
+		List<Appointment> appointments = appointmentService.findAll();
+		
+		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : appointments) {
+			if(appointment.getEmployee().getId().equals(emp.getId()) && appointment.getPatient().getId().equals(patient.getId()) && appointment.getStatus() == AppointmentStatus.RESERVED) {
+				appointmentsDTO.add(new AppointmentDTO(appointment));
+			}
+		}
+		
+		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/searchPatients")
+	public ResponseEntity<List<PatientDTO>> searchPatients(@RequestParam String patientFirstName, @RequestParam String patientLastName, @RequestParam String employeeUsername) {	
+		Employee emp = employeeService.findOneByUsername(employeeUsername);
+		List<Appointment> appointments = appointmentService.findAll();
+		
+		List<PatientDTO> patientsDTO = new ArrayList<>();
+		for (Appointment appointment : appointments) {
+			if(appointment.getEmployee().getId().equals(emp.getId()) && appointment.getStatus() == AppointmentStatus.RESERVED) {
+				if(patientLastName == "" && patientFirstName != "" && appointment.getPatient().getFirstName().toLowerCase().contains(patientFirstName.toLowerCase())) {
+					patientsDTO.add(new PatientDTO(appointment.getPatient()));	
+				}
+				else if(patientFirstName == "" && patientLastName != "" && appointment.getPatient().getLastName().toLowerCase().contains(patientLastName.toLowerCase())) {
+					patientsDTO.add(new PatientDTO(appointment.getPatient()));		
+				}
+				else if(patientLastName != ""  && patientFirstName != ""
+						 && appointment.getPatient().getFirstName().toLowerCase().contains(patientFirstName.toLowerCase()) 
+						 && appointment.getPatient().getLastName().toLowerCase().contains(patientLastName.toLowerCase())) {
+					patientsDTO.add(new PatientDTO(appointment.getPatient()));		
+				}
+			}
+		}
+		
+		return new ResponseEntity<>(filterUniquePatients(patientsDTO), HttpStatus.OK);
+	}
+	
 }

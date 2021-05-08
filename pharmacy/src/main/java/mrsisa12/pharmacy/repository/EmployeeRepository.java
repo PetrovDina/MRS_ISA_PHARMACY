@@ -13,5 +13,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
 
 	@Query("select emp from Employee emp left join fetch emp.appointments appos where emp.id =?1")
 	public Employee findOneWithAllAppointments(Long id);
+	
+	public Employee findByUsername(String username);
 
 }
