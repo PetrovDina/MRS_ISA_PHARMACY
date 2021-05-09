@@ -23,12 +23,17 @@
 
         <!--system admin-->
         <div v-if="isUserType('SYSTEM_ADMIN')">
-            <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
-            <a @click="pharmacyAdminRegistrationRedirect()" class="registerNav">Pharmacy Admin registration</a>
-            <!-- <a @click="systemAdminRegistrationRedirect()" class="registerNav">System Admin Registration</a>
-            <a @click="medicationRegistrationRedirect()" class="registerNav">Medication Registration</a>
+            <!-- <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a> -->
+            <!-- <a @click="pharmacyAdminRegistrationRedirect()" class="registerNav">Pharmacy Admin registration</a> -->
+            <a @click="systemAdminRegistrationRedirect()" class="registerNav">System Admin Registration</a>
+            <!-- <a @click="medicationRegistrationRedirect()" class="registerNav">Medication Registration</a> -->
             <a @click="supplierRegistrationRedirect()" class="registerNav">Supplier Registration</a>
-            <a @click="dermatologistRegistrationRedirect()" class="registerNav">Dermos Registration</a> -->
+            <a @click="dermatologistRegistrationRedirect()" class="registerNav">Dermos Registration</a> 
+        </div>
+
+        <!--supplier-->
+        <div v-if="isUserType('SUPPLIER')">
+            <a @click="medicationStorageRedirect()" class="registerNav">Medication Storage</a>
         </div>
 
         <!--patient-->
@@ -247,6 +252,18 @@ export default {
         medicationRegistrationRedirect: function () {
             this.$router
                 .push({ name: "MedicationRegistrationPage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        medicationStorageRedirect: function () {
+            this.$router
+                .push({ name: "SupplierMedicationReserves" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

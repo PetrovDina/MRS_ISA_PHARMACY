@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +47,14 @@ public class SupplierController {
 		
 		supplierService.save(su);
 		return new ResponseEntity<>(new UserDTO(su), HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value = "/getId/{username}", consumes = "application/json")
+	public ResponseEntity<Long> getSupplierId(@PathVariable String username)
+	{
+		Supplier supplier = supplierService.findOne(username);
+		
+		return new ResponseEntity<>(supplier.getId(), HttpStatus.OK);
 	}
 	
 

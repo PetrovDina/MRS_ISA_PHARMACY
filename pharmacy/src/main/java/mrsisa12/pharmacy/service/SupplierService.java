@@ -24,4 +24,14 @@ public class SupplierService {
 		supplierRepository.save(supplier);
 	}
 	
+	public Supplier findOneWithStorageItems(Long supplierId) 
+	{
+		return supplierRepository.findOneWithStorageItems(supplierId);
+	}
+	
+	public Supplier findOne(String username)
+	{
+		return supplierRepository.findOne(username);
+	}
+	
 }

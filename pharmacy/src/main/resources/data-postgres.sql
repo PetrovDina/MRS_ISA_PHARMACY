@@ -91,6 +91,14 @@ insert into system_user (username, password, email, firstname, lastname, locatio
 insert into employees (id, rating ) values (13, 3.5);
 insert into dermatologist (id, dermatologistNickname) values (13, 'dres bajerna');
 
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('supplier', '$2a$10$JP2z80y0qoRUFUb7KiT31OiwlX66Pso0dF/oRqRi9t0IWVLP731X6', 'supplier@email.com', 'Supplier', 'Supplieric', 1, 'MALE', 'ACTIVATED', 'False');
+insert into supplier (id) values (14);
+INSERT INTO user_role (user_id, role_id) VALUES (14, 7); --  ROLE_SUPPLIER
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('supplier2', '$2a$10$8goTXhVe385ifP/jkkWMyOqEpQ3fDZwby8q0VGViOn/Bd9Ovl/DMq', 'supplier2@email.com', 'Supplier', 'Supplierov', 1, 'MALE', 'ACTIVATED', 'False');
+insert into supplier (id) values (15);
+INSERT INTO user_role (user_id, role_id) VALUES (15, 7); --  ROLE_SUPPLIER
+
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (4, '{ "startDate": [2021, 4, 3], "startTime": [7, 0, 0], "endDate": [2021, 4, 3], "endTime": [12, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (5, '{ "startDate": [2021, 4, 3], "startTime": [14, 0, 0], "endDate": [2021, 4, 3], "endTime": [19, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (6, '{ "startDate": [2021, 4, 3], "startTime": [8, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 2, 'False');
@@ -112,3 +120,8 @@ insert into reservation (patient_id, medication_id, pharmacy_id, quantity, dueda
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 4, 26], "startTime": [8, 0, 0], "endDate": [2021, 4, 26], "endTime": [9, 0, 0]}', 4, 1500, 1, 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 6, 10], "startTime": [13, 0, 0], "endDate": [2021, 6, 10], "endTime": [14, 0, 0]}', 4, 1500, 1, 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 6, 15], "startTime": [9, 0, 0], "endDate": [2021, 6, 15], "endTime": [10, 0, 0]}', 4, 1500, 1, 'False');
+
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 4, 1, 14);
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 2, 2, 14);
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 1, 3, 15);
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 3, 4, 15);

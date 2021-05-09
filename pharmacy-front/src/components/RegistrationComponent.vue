@@ -141,7 +141,7 @@ export default {
 					zipCode: '19000',
 					streetNum: 21
 			};
-			if(this.typeToRegister == "PHARMACY_ADMIN") registration.pharmacyId = 
+
 			client({
                 url: this.url,
                 method: "POST",
@@ -178,10 +178,11 @@ export default {
 			if(registration.firstName == '') return true;
 			if(registration.lastName == '') return true;
 			if(registration.email == '') return true;
-			if(document.getElementById('start_time'))	// Mora zbog undefined
+			if(this.typeToRegister === "PHARMACIST")
+			{
 				if(document.getElementById('start_time').value == '') return true;
-			if(document.getElementById('end_time'))		// Mora zbog undefined
-				if(document.getElementById('end_time').value == '') return true;
+				if(document.getElementById('end_time').value == '')   return true;
+			}
 			if(this.typeToRegister == "PHARMACY_ADMIN")
 				if(registration.pharmacyId == -1) return true;
 			return false;

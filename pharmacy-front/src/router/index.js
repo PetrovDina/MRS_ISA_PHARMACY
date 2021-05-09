@@ -25,6 +25,7 @@ import LoginPage from '@/views/LoginPage'
 import SystemAdminRegistrationPage from '@/views/systemAdminRegistrationPage'
 import SupplierRegistrationPage from '@/views/SupplierRegistrationPage'
 import DermatologistRegistrationPage from '@/views/DermatologistRegistrationPage'
+import SupplierMedicationReserves from '@/views/SupplierMedicationReserves'
 
 
 import MedicationReservationView from '@/views/MedicationReservationView'
@@ -208,6 +209,12 @@ export default new Router({
             name: 'MedicationRegistrationPage',
             component: MedicationRegistrationPage    
         },
+
+        {
+          path: '/supplierMedicationReserves',
+          name: 'SupplierMedicationReserves',
+          component: SupplierMedicationReserves    
+      },
 
         {
             path: '/pharmacist-home-page',
