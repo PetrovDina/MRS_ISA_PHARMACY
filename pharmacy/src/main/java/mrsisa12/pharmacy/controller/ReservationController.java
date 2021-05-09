@@ -3,6 +3,7 @@ package mrsisa12.pharmacy.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.ReservationDTO;
 import mrsisa12.pharmacy.dto.ReservationPickupDTO;
+import mrsisa12.pharmacy.mail.EmailContent;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -50,6 +53,12 @@ public class ReservationController {
 	
 	@Autowired
 	private PharmacyStorageItemService pharmacyStorageItemService;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	private Random random = new Random();
+    private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 	
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<ReservationDTO>> getAllReservations() {
@@ -157,6 +166,7 @@ public class ReservationController {
 		reservation.setDueDate(resDTO.getDueDate());
 		reservation.setQuantity(resDTO.getQuantity());
 		reservation.setStatus(ReservationStatus.CREATED);
+		reservation.setCode(generateString());
 		
 		
 		PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
@@ -165,20 +175,25 @@ public class ReservationController {
 
 
 		reservation = reservationService.save(reservation);
+		
+		// email!
+		String emailBody = "This email is confirmation that you have successfully reserved " + medication.getName() + ". Your unique reservation number is: " + reservation.getCode();
+		EmailContent email = new EmailContent("Medicine reservation confirmation",
+                reservation.getPatient().getEmail(), emailBody);
+        emailService.sendEmail(email);
 		return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.CREATED);
 	}
 	
-	@GetMapping(value = "/pickup/{id}")
-    public ResponseEntity<ReservationPickupDTO> getReservationForPickup(@PathVariable String id){
-        //long pharmacyId = user.getPharmacy().getId();
-		//TODO dodati proveru apoteke izm rezervacije i farmaceuta
-
+	@GetMapping(value = "/pickup/{code}")
+    public ResponseEntity<ReservationPickupDTO> getReservationForPickup(@PathVariable String code, @RequestParam Long pharmId){
+		//TODO reservation code
 		List<Reservation> reservations = reservationService.findAll();
 		
         Reservation reservation = null;
         for (Reservation res : reservations) {
-			if(res.getId().equals(Long.parseLong(id))) {
+			if(res.getCode().equals(code) && res.getPharmacy().getId().equals(pharmId)) {
 				reservation = res;
+				break;
 			}
 		}
         if(reservation != null) {
@@ -202,5 +217,14 @@ public class ReservationController {
         } catch (ObjectOptimisticLockingFailureException e){
             return ResponseEntity.badRequest().build();
         }
+    }
+	
+	private String generateString() {
+        int length = 5;
+        char[] text = new char[length];
+        for (int i = 0; i < length; i++) {
+            text[i] = SOURCES.charAt(random.nextInt(SOURCES.length()));
+        }
+        return new String(text);
     }
 }

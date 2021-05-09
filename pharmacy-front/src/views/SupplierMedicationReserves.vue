@@ -44,13 +44,8 @@ export default {
 
         addSupplierStorageItem : function(med, quantity)
         {
-            alert(med.id);
-            console.log(med);
-            alert(quantity);
-
             for(let i = 0; i < this.supplierStorageItems.length; i++)
             {
-                console.log(this.supplierStorageItems[i]);
                 if(this.supplierStorageItems[i].medication.id == med.id)
                 {
                     this.supplierStorageItems[i].quantity = this.supplierStorageItems[i].quantity + parseInt(quantity);
@@ -132,7 +127,6 @@ export default {
             method: "GET"
         }).then((response) => {
             this.supplierStorageItems = response.data;
-            console.log(this.supplierStorageItems[0].medication);
         })
 
     },

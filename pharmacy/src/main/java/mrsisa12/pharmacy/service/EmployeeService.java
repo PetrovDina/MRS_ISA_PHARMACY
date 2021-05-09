@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
+import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.repository.EmployeeRepository;
 import mrsisa12.pharmacy.repository.EmploymentRepository;
@@ -68,6 +69,10 @@ public class EmployeeService {
 		// ako je u okviru radnog vremena i ne preklapa se ni sa jednim terminom koji
 		// postoji dobro je!
 		return true;
+	}
+	
+	public Employee findOneByUsername(String username) {
+		return employeeRepository.findByUsername(username);
 	}
 
 }

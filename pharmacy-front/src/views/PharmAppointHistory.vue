@@ -1,6 +1,6 @@
 <template>
     <div id="appointments">
-        <p class="appointments-title">Available dermatologist appointments</p>
+        <p class="appointments-title">Pharmacist appointment history</p>
 
         <div id="sort-and-filter">
             <div id="sort">
@@ -17,7 +17,6 @@
                         v-for="option in options"
                         :key="option"
                         :value="option"
-
                     >
                         {{ option }}
                     </option>
@@ -34,7 +33,7 @@
                                 <div class="col-sm">
                                     <div class="c1">
                                         <p class="card-text">
-                                            Dermatologist:
+                                            Pharmacist:
                                             <b
                                                 >{{
                                                     appointment.employee
@@ -46,9 +45,9 @@
                                                 }}
                                             </b>
                                         </p>
-                                        
+
                                         <p class="card-text">
-                                            Dermatologist rating:
+                                            Pharmacist rating:
                                             <b>
                                                 {{
                                                     appointment.employee.rating
@@ -95,56 +94,16 @@
                                                 }}
                                             </b>
                                         </p>
+                                        <p class="card-text">
+                                            Status:
+                                            <b>
+                                                {{ appointment.status }}
+                                            </b>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <Button
-                            @action-performed="bookAppointment(appointment)"
-                            text="Book appointment"
-                            class="book-button"
-                        >
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal -->
-        <div
-            class="modal fade"
-            id="bookModal"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalCenterTitle"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">
-                            Successfully booked!
-                        </h5>
-                        <button
-                            type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close"
-                        >
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        You can see all your scheduled appointments on your page
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-dismiss="modal"
-                        >
-                            Close
-                        </button>
                     </div>
                 </div>
             </div>
@@ -159,14 +118,24 @@ import Button from "@/components/Button";
 import $ from "jquery";
 
 export default {
-    name: "DermAppointReservation",
+    name: "PharmAppointReservation",
 
     components: { Button },
 
     data() {
         return {
             appointments: [],
-            options: ["-", "price low first", "price high first", "rating"],
+            appointmentSortResults: [],
+            options: [
+                "-",
+                "date older",
+                "date recent",
+                "price low",
+                "price high",
+                "duration short",
+                "duration long"
+
+            ],
         };
     },
 
@@ -175,75 +144,73 @@ export default {
             return moment(d).format("MMMM Do yyyy");
         },
 
-        sortSelected(event){
-
+        sortSelected(event) {
             let sortCriterium = event.target.value;
             let self = this;
-            if (sortCriterium === "-") 
+            if (sortCriterium === "-") {
+                this.appointmentSortResults = this.appointments;
                 return;
 
-            else if (sortCriterium === "rating") {
-                this.appointments = this.appointments.sort(function (
-                    a,
-                    b
-                ) {
-                    return b.employee.rating - a.employee.rating;
+            } else if (sortCriterium === "date recent") {
+                this.appointments = this.appointments.sort(function (a, b) {
+                    let dateA = new Date(a.timePeriod.startDate);
+                    let dateB = new Date(b.timePeriod.startDate);
+                    return dateB - dateA;
                 });
-            }
 
-            else if (sortCriterium === "price low first") {
-                this.appointments = this.appointments.sort(function (
-                    a,
-                    b
-                ) {
+            } else if (sortCriterium === "date older") {
+                this.appointments = this.appointments.sort(function (a, b) {
+                    let dateA = new Date(a.timePeriod.startDate);
+                    let dateB = new Date(b.timePeriod.startDate);
+                    return dateA - dateB;
+                });
+
+            } else if (sortCriterium === "price low") {
+                this.appointments = this.appointments.sort(function (a, b) {
                     return a.price - b.price;
                 });
-            }
-
-            
-            else if (sortCriterium === "price high first") {
-                this.appointments = this.appointments.sort(function (
-                    a,
-                    b
-                ) {
+            } else if (sortCriterium === "price high") {
+                this.appointments = this.appointments.sort(function (a, b) {
                     return b.price - a.price;
                 });
-            }
+            } else if (sortCriterium === "duration long") {
+                this.appointments = this.appointments.sort(function (a, b) {
+                    let startTimeA = moment(a.timePeriod.startTime, "hh:mm");
+                    let endTimeA = moment(a.timePeriod.endTime, "hh:mm");
+                    let durationA = moment.duration(startTimeA.diff(endTimeA));
 
+                    let startTimeB = moment(b.timePeriod.startTime, "hh:mm");
+                    let endTimeB = moment(b.timePeriod.endTime, "hh:mm");
+                    let durationB = moment.duration(startTimeB.diff(endTimeB));
 
-        },
+                    return durationA-durationB;
 
-        bookAppointment(apt) {
-            client({
-                url: "appointments/book",
-                params: {
-                    patientUsername: this.$store.getters.getLoggedUsername,
-                    appointmentId: apt.id,
-                },
-                method: "GET",
-            }).then((response) => {
-                //alert message here
-
-                //refreshing available appointments
-                client({
-                    url: "appointments/allDermatologistAvailable",
-                    method: "GET",
-                }).then((response) => {
-                    this.appointments = response.data;
                 });
-            });
+            } else if (sortCriterium === "duration short") {
+                this.appointments = this.appointments.sort(function (a, b) {
+                    let startTimeA = moment(a.timePeriod.startTime, "hh:mm");
+                    let endTimeA = moment(a.timePeriod.endTime, "hh:mm");
+                    let durationA = moment.duration(startTimeA.diff(endTimeA));
 
-            $("#bookModal").modal("show");
+                    let startTimeB = moment(b.timePeriod.startTime, "hh:mm");
+                    let endTimeB = moment(b.timePeriod.endTime, "hh:mm");
+                    let durationB = moment.duration(startTimeB.diff(endTimeB));
+
+                    return durationB-durationA;
+
+            })};
         },
     },
 
     mounted() {
-        //get appointments
+        //get appointment history
         client({
-            url: "appointments/allDermatologistAvailable",
+            url: "appointments/pharmHistoryByPatient",
+            params: { patientUsername: localStorage.getItem("USERNAME") },
             method: "GET",
         }).then((response) => (this.appointments = response.data));
 
+        this.appointmentSortResults = this.appointments;
     },
 };
 </script>
@@ -294,9 +261,7 @@ export default {
 }
 
 #sort {
-
-        float: right;
-
+    float: right;
 }
 
 .sort-label {
@@ -308,8 +273,8 @@ export default {
     width: 85%;
 }
 
-#appointmentCards{
-    margin-top:80px;
+#appointmentCards {
+    margin-top: 80px;
 }
 </style>
 

@@ -17,7 +17,6 @@
 
         <a href="#" class="search-icon inlinepls" id="iconHolder" @click="clearFilters">
             <i class="fa fa-refresh" title="clear filters" id="blackIcon"></i>
-
         </a>
     </div>
         
@@ -62,6 +61,8 @@ export default {
 
 input{
     border: 0.5px solid rgba(128, 128, 128, 0.473);
+    border-radius: 5px;
+
     padding: 5px;
 
 }

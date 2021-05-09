@@ -1,6 +1,8 @@
 <template>
     <div id="main-container" class="main-container">
-        <p class="title">Reserved medication dispensal</p>
+        <p class="titl">Reserved medication dispensal</p>
+        <br>
+        <br>
         <v-text-field
         v-model="query"
                 clearable
@@ -9,8 +11,8 @@
                 outlined
                 
         ></v-text-field>
-        <button class="finishButton btn btn-primary" @click="searchQuery()" >Search</button>
-        <button class="cancelButton btn btn-secondary" @click="resetList()" >Reset</button>
+        <v-btn class="finishButton btn btn-primary" color=" green " @click="searchQuery()" >Search</v-btn>
+        <v-btn class="cancelButton btn btn-secondary" color=" grey lighten-1 "  @click="resetList()" >Reset</v-btn>
         <br>
         <br>
         <div v-if="resultFound" class="inner-card">
@@ -97,23 +99,35 @@ export default {
     methods: {
 
         searchQuery: function(){
-            var link = 'reservation/pickup/' + this.query;
             client({
                 method: 'GET',
-                url: link
+                url: 'employments/pharmacyOfLoggedInPharmacist',
+                params: {username : localStorage.getItem('USERNAME')},
             })
             .then((response) => {
-                if(response.data.status != null){
-                    console.log(response.data);
-                    this.resultFound = true;
-                    var reservation = response.data;
-                    this.reservationFixed = reservation;
-                } else {
-                    this.resultFound = false;
-                    this.snackbarText = "No reservation found for the entered id!";
-                    this.snackbar = true;
+                if(response.data != null){
+                    var link = 'reservation/pickup/' + this.query;
+                    client({
+                        method: 'GET',
+                        url: link,
+                        params: {pharmId : response.data.id},
+                    })
+                    .then((response) => {
+                        if(response.data.status != null){
+                            console.log(response.data);
+                            this.resultFound = true;
+                            var reservation = response.data;
+                            this.reservationFixed = reservation;
+                        } else {
+                            this.resultFound = false;
+                            this.snackbarText = "No reservation found for the entered id!";
+                            this.snackbar = true;
+                        }
+                    })
                 }
             })
+
+            
         },
         resetList: function(){
             this.resultFound = false;
@@ -145,9 +159,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.main-container{
-        margin-top: 5%,
-}
 span{
         color: grey;
 }
@@ -163,8 +174,8 @@ p{
     font-size: 20px;
 }
 
-.title{
-    font-size: 24px;
+.titl{
+    font-size: 30px;
 
 }
 

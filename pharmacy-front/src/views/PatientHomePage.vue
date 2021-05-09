@@ -9,7 +9,7 @@
             <v-card-text>
                 <v-row>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/pharmacistReservation">
                             <v-card-title class="wordBreak"
                                 >Book pharmacist appointment</v-card-title
                             >
@@ -23,21 +23,21 @@
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/dermAppointHistory">
                             <v-card-title class="wordBreak"
                                 >Dermatologist appointment history</v-card-title
                             >
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/pharmAppointHistory">
                             <v-card-title class="wordBreak"
                                 >Pharmacist appointment history</v-card-title
                             >
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/scheduledAppointments">
                             <v-card-title class="wordBreak"
                                 >Scheduled appointments</v-card-title
                             >
@@ -134,7 +134,9 @@ export default {
     data: function () {
         return {};
     },
-    methods: {},
+    methods: {
+
+    },
 
     mounted() {},
 };

@@ -16,6 +16,10 @@ import DispenseMedicationPage from '@/views/DispenseMedicationPage'
 import PatientHomePage from '@/views/PatientHomePage'
 import PatientsReservations from '@/views/PatientsReservations'
 import DermAppointReservation from '@/views/DermAppointReservation'
+import PharmAppointReservation from '@/views/PharmAppointReservation'
+import ScheduledAppointmentsView from '@/views/ScheduledAppointmentsView'
+import DermAppointHistory from '@/views/DermAppointHistory'
+import PharmAppointHistory from '@/views/PharmAppointHistory'
 
 import PharmacyRegistration from '@/views/PharmacyRegistration'
 import UserRegistrationPage from '@/views/UserRegistrationPage'
@@ -52,8 +56,16 @@ export default new Router({
         {
             path: '/pharmacy',
             name: 'PharmacyView',
-            props: true,
-            component: PharmacyView
+            component: PharmacyView,
+            beforeEnter: function(to, from, next){
+              let user = CheckUser.getLoggedUserData();
+              if(user.userType == 'PHARMACY_ADMIN' || user.userType == "SYSTEM_ADMIN"){
+                next();
+              }
+              else{
+                ({path: '/'});
+              }
+            }
         },
 
         {
@@ -65,7 +77,7 @@ export default new Router({
         {
             path: '/calendar-page',
             name: 'CalendarPage',
-            component: CalendarPage/*,
+            component: CalendarPage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
@@ -74,7 +86,7 @@ export default new Router({
                 else{
                   ({path: '/'});
                 }
-              }*/
+              }
         },
 
         {
@@ -219,7 +231,7 @@ export default new Router({
         {
             path: '/pharmacist-home-page',
             name: 'PharmacistHomePage',
-            component: PharmacistHomePage/*,
+            component: PharmacistHomePage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PHARMACIST'){
@@ -228,13 +240,13 @@ export default new Router({
                 else{
                     ({path: '/'});
                 }
-              }*/
+              }
         },
 
         {
             path: '/dispense-medication-page',
             name: 'DispenseMedicationPage',
-            component: DispenseMedicationPage/*,
+            component: DispenseMedicationPage,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PHARMACIST'){
@@ -243,7 +255,7 @@ export default new Router({
                 else{
                   ({path: '/'});
                 }
-              }*/
+              }
         },
 
         {
@@ -292,6 +304,66 @@ export default new Router({
                 }
               }
         },
+
+        {
+            path: '/pharmacistReservation',
+            name: 'PharmAppointReservation',
+            component: PharmAppointReservation,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PATIENT'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
+        },
+
+        {
+            path: '/scheduledAppointments',
+            name: 'ScheduledAppointmentsView',
+            component: ScheduledAppointmentsView,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PATIENT'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
+        },
+
+        {
+            path: '/dermAppointHistory',
+            name: 'DermAppointHistory',
+            component: DermAppointHistory,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PATIENT'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
+        },
+
+        {
+        path: '/pharmAppointHistory',
+        name: 'PharmAppointHistory',
+        component: PharmAppointHistory,
+        beforeEnter: function(to, from, next){
+            let user = CheckUser.getLoggedUserData();
+            if(user.userType == 'PATIENT'){
+              next();
+            }
+            else{
+              ({path: '/'});
+            }
+          }
+    },
 
         {
             path: '/LoginPage',

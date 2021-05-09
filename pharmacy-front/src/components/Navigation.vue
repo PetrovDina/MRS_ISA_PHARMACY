@@ -2,17 +2,14 @@
     <div class="topnav">
 
         <!-- all -->
-        <a @click="homeRedirect()" class="homeNav"><i class="fa fa-home" style="font-size:24px"></i></a>
-
+        <div v-if="!isUserType('DERMATOLOGIST') && !isUserType('PHARMACIST')">
+            <a @click="homeRedirect()" class="homeNav"><i class="fa fa-home" style="font-size:24px"></i></a>
+        </div>
 
         <!--unauthenticated user (guest) -->
         <div v-if="isUserType('GUEST')">
             <a @click="loginRedirect()" class="loginNav">Log in</a>
             <a @click="registerRedirect()" class="registerNav">Register</a>
-
-            <!--TODO Delete later-->
-            <a @click="testLogin()" class="testNav">Test pharmacist login</a> 
-
 
         </div>
 
@@ -44,13 +41,13 @@
 
         <!--dermatologist-->
         <div v-if="isUserType('DERMATOLOGIST')">
-            <a @click="dermHomeRedirect()">DERMATOLOGIST Home</a>
+            <a @click="dermHomeRedirect()"><i class="fa fa-home" style="font-size:24px"></i></a>
             <a @click="dermProfileRedirect()">My Profile</a>
         </div>
 
         <!--pharmacist-->
         <div v-if="isUserType('PHARMACIST')">
-            <a @click="pharmacistHomeRedirect()">PHARMACIST Home</a>
+            <a @click="pharmacistHomeRedirect()"><i class="fa fa-home" style="font-size:24px"></i></a>
             <a @click="dermProfileRedirect()">My Profile</a>
         </div>
 

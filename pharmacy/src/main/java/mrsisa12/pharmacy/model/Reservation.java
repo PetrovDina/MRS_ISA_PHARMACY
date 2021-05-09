@@ -40,13 +40,15 @@ public class Reservation {
 	@Column(name = "status", nullable = false)
 	private ReservationStatus status;
 
+	@Column(name = "code", nullable = false, length =  5)
+	private String code;
 	
 	public Reservation() {
 		super();
 	}
 	
 	
-	public Reservation(Long id, Patient pat, Pharmacy ph, Medication med, int quanity, Date dueDate, ReservationStatus status) {
+	public Reservation(Long id, Patient pat, Pharmacy ph, Medication med, int quanity, Date dueDate, ReservationStatus status, String code) {
 		super();
 		this.patient = pat;
 		this.id = id;
@@ -55,6 +57,7 @@ public class Reservation {
 		this.quantity = quanity;
 		this.dueDate = dueDate;
 		this.status = status;
+		this.code = code;
 	}
 
 
@@ -127,7 +130,18 @@ public class Reservation {
 	public void setPharmacy(Pharmacy pharmacy) {
 		this.pharmacy = pharmacy;
 	}
+
 	
+	public String getCode() {
+		return code;
+	}
+
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+
 	public void update(Reservation reservation){
 	    this.id = reservation.getId();
 	    this.patient = reservation.getPatient();

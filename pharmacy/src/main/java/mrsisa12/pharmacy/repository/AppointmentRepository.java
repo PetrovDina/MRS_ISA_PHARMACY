@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import mrsisa12.pharmacy.model.Appointment;
 
@@ -28,4 +29,18 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
 	@Query("select app from Appointment app where app.status = 'AVAILABLE' and app.type = 'DERMATOLOGIST_EXAMINATION'")
 	public List<Appointment> findAllAvailableDermatologistAppointments();
+
+	
+	@Query("select app from Appointment app where app.status = 'RESERVED' and app.type = 'DERMATOLOGIST_EXAMINATION' and app.patient.username = :username")
+	public List<Appointment> getAllScheduledDermByPatient(@Param("username") String patientUsername);
+
+	
+	@Query("select app from Appointment app where app.status = 'RESERVED' and app.type = 'PHARMACIST_CONSULTATION' and app.patient.username = :username")
+	public List<Appointment> getAllScheduledPharmByPatient(@Param("username") String patientUsername);
+
+	@Query("select app from Appointment app where app.status != 'RESERVED' and app.type = 'DERMATOLOGIST_EXAMINATION' and app.patient.username = :username")
+	public List<Appointment> getAllDermHistoryByPatient(@Param("username") String patientUsername);
+
+	@Query("select app from Appointment app where app.status != 'RESERVED' and app.type = 'PHARMACIST_CONSULTATION' and app.patient.username = :username")
+	public List<Appointment> getAllPharmHistoryByPatient(@Param("username") String patientUsername);
 }
