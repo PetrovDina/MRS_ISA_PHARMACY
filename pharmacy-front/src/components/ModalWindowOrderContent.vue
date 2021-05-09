@@ -2,25 +2,30 @@
     <div v-if="modal_show === true" id="myModal" class="modal">
         <div class="modal-content">
             <Button id="close_btn" @action-performed="closeWindow" class="close" text="X" color="white"></Button>
-            <label> Expired date - <span style="font-size: 20px; color:rgba(32, 102, 75, 0.50);">{{convertDate(order.dueDate)}}</span></label>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Manufacturer</th>
-                        <th scope="col">Form</th>
-                        <th scope="col">Ordered quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr :key="orderItem.id" v-for="orderItem in order.orderItems">
-                        <td style="width:23%;">{{orderItem.medication.name}}</td>
-                        <td style="width:23%;">{{orderItem.medication.manufacturer}}</td>
-                        <td style="width:23%;">{{orderItem.medication.form}}</td>
-                        <td style="width:15%; background-color:rgba(155, 82, 151, 0.527);">{{orderItem.quantity}}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="orderTable">
+                <label> Expired date - <span style="font-size: 20px; color:rgba(32, 102, 75, 0.50);">{{convertDate(order.dueDate)}}</span></label>
+                <table class="table table-hover" style="margin-bottom: 60px;">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Manufacturer</th>
+                            <th scope="col">Form</th>
+                            <th scope="col">Ordered quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr :key="orderItem.id" v-for="orderItem in order.orderItems">
+                            <td style="width:23%;">{{orderItem.medication.name}}</td>
+                            <td style="width:23%;">{{orderItem.medication.manufacturer}}</td>
+                            <td style="width:23%;">{{orderItem.medication.form}}</td>
+                            <td style="background-color:rgba(155, 82, 151, 0.527);"> {{orderItem.quantity}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr class="solid">
+                <label><span style="font-size: 20px;">This order {{order.orderStatus == "NEW" ? "has no offers" : "has offers"}}</span></label>
+                <hr class="solid">
+            </div>
         </div>
     </div>
 </template>
@@ -37,7 +42,9 @@ export default {
         order : Object,
     },
     data() {
-        return {}
+        return {
+            today: moment().format("YYYY-MM-DD")
+        }
     },
     methods : {
         closeWindow : function(){
@@ -105,5 +112,14 @@ body {font-family: Arial, Helvetica, sans-serif;}
 thead { 
     /* background-color: rgba(15, 95, 72, 0.219); */
     background-color: rgba(32, 102, 75, 0.295)
+}
+
+.orderTable {
+    margin: 10px 60px 30px 60px;
+}
+
+/* Solid border */
+hr.solid {
+  border-top: 3px solid rgba(0,0,0,.075);;
 }
 </style>

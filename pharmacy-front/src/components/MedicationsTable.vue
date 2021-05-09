@@ -83,7 +83,11 @@ export default {
             if (confirm('Are you sure you want to delete "'+ name +'" from the pharmacy?')) {
                 this.$emit('record-deleted', id);
             } else {
-                alert('Deleting canceled.');
+                this.$toasted.show("Deleting canceled!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
             }
         },
         addMedicationInPharmacy(med, price){

@@ -47,6 +47,7 @@
             </Tab>
             <Tab :isSelected="selected === 'Orders'">
                 <OrdersTable 
+                    @order-updated = "orderUpdated"
                     @order-added = "addNewOrder"
                     :orders = "ordersToSend">
                 </OrdersTable>
@@ -198,6 +199,14 @@ export default {
         },
         addNewOrder : function(order){
             this.ordersToSend = [...this.ordersToSend, order];
+        },
+        orderUpdated : function(orderUpdated){
+            this.ordersToSend.forEach(order => {
+                if(order.id == orderUpdated.id){
+                    order.dueDate = orderUpdated.dueDate;
+                    order.orderItems = orderUpdated.orderItems;
+                }
+            });
         }
     },
 
