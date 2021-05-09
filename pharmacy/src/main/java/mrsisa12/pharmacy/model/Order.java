@@ -7,6 +7,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +19,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import mrsisa12.pharmacy.model.enums.OrderStatus;
 
 @Entity
 @Table(name = "orders")
@@ -30,6 +34,10 @@ public class Order {
 
 	@Column(name = "dueDate", nullable = false)
 	private LocalDate dueDate;
+	
+	@Column(name = "orderStatus", unique=false, nullable=false)
+	@Enumerated(EnumType.STRING)
+	private OrderStatus status;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
 	private List<OrderItem> orderItems;
@@ -57,6 +65,14 @@ public class Order {
 
 	public void setDueDate(LocalDate dueDate) {
 		this.dueDate = dueDate;
+	}
+
+	public OrderStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(OrderStatus status) {
+		this.status = status;
 	}
 
 	public List<OrderItem> getOrderItems() {
