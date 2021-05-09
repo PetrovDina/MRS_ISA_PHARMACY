@@ -58,11 +58,16 @@ export default {
     props : {
         modal_show : Boolean,
         pharmacyId : null,
+        dermatologists: {
+            type : Array,
+            default() {
+                return [];
+            }
+        },
     },
     data() {
         return {
             selected_dermos : {},
-            dermatologists : [],
             error_msg_text: "",
             error_msg : true,
         }
@@ -70,16 +75,6 @@ export default {
     mounted() {
         if(!this.pharmacyId)
             this.closeWindow();
-        // ucitavamo sve dostupne dermatologe
-        client({
-        url: "dermatologist/all",
-        method: "GET"
-        })
-        .then((response) => {
-                this.dermatologists = response.data;
-            }
-        )
-        .catch((response) => console.log("Dermatolozi nisu ucitani"));
     },
     methods : {
         closeWindow : function(){

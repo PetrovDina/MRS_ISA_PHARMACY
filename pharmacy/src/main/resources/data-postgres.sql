@@ -3,6 +3,10 @@ insert into medication (name, manufacturer, prescriptionReq, form, description, 
 insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Paracetamol', 'Krka', 'True', 'CAPSULE', 'Neki opis 3', 'Neki sadrzaj 3');
 insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Panadol', 'Jugoremedija', 'False', 'PASTE', 'Neki opis 4', 'Neki sadrzaj 4');
 insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Panklav', 'Krka', 'True', 'CAPSULE', 'Neki opis 5', 'Neki sadrzaj 5');
+insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Tylolhot', 'Nobel', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 3');
+insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Fervex', 'Upsa', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 4');
+insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Amoksicilin', 'Belupo', 'True', 'CAPSULE', 'Antibiotski lek za ...', 'Neki sadrzaj 5');
+
 
 insert into alternative_medications (medication_id, alternative_id) values (1, 5);
 insert into alternative_medications (medication_id, alternative_id) values (1, 3);

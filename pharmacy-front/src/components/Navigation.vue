@@ -18,7 +18,6 @@
 
         <!--pharmacy admin-->
         <div v-if="isUserType('PHARMACY_ADMIN')">
-            <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a>
         </div>
 
         <!--system admin-->
@@ -53,8 +52,8 @@
         <a v-if="!isUserType('GUEST')"
             @click="logoutRedirect()"
             v-show="!isUserType('GUEST')"
-            class="logoutNav"
-            >Log out</a
+            id="logoutNav"
+            ><i class="fa fa-sign-out" aria-hidden="true" style="font-size:24px"></i></a
         >
     </div>
 </template>
@@ -74,13 +73,24 @@ export default {
 
         homeRedirect: function () {
             //TODO: promeni putanju kasnije kada budu kreirane kommponente
-            this.$router.push({ name: "Home" }).catch((err) => {
-                // Ignore the vuex err regarding  navigating to the page they are already on.
-                if (err.name != "NavigationDuplicated") {
-                    // But print any other errors to the console
-                    console.error(err);
-                }
-            });
+            if(localStorage.getItem("USER_TYPE") === "PHARMACY_ADMIN")
+                this.$router
+                .push({ name: "PharmacyView"})
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+            else
+                this.$router.push({ name: "Home" }).catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
         },
 
         loginRedirect: function () {
@@ -327,6 +337,10 @@ export default {
 .topnav a.active {
     background-color: #272327;
     color: white;
+}
+
+#logoutNav {
+    float: right;
 }
 
 </style>

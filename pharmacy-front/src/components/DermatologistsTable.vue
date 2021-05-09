@@ -38,9 +38,10 @@
         </Button>
         <ModalWindowHireDermatologist
             @hired-dermatologist = "hiredDermatologist"
-            @modal-closed = "mw_show_dermatologist = false" 
-            :modal_show = "mw_show_dermatologist"
-            :pharmacyId = "pharmacyId">
+            @modal-closed = "mw_hire_dermatologist = false" 
+            :modal_show = "mw_hire_dermatologist"
+            :pharmacyId = "pharmacyId"
+            :dermatologists = "dermatologistsToHire">
         </ModalWindowHireDermatologist>
         <ModalWindowAddAppointment 
             @modal-closed = "mw_show_appointment = false" 
@@ -51,9 +52,10 @@
 </template>
 
 <script>
+import { client } from "@/client/axiosClient";
 import Button from './Button.vue';
 import ModalWindowAddAppointment from './ModalViewAddAppointment'
-import ModalWindowHireDermatologist from './ModalWindowHireDermatologist'
+import ModalWindowHireDermatologist from './ModalWindowHireDermatologist.vue'
 import Vue from 'vue'
 
 // This variable will hold the reference to
@@ -121,9 +123,10 @@ export default {
     data() {
         return {
             mw_show_appointment : false, // modal window cond-var
-            mw_show_dermatologist : false, // modal window cond-var
+            mw_hire_dermatologist : false, // modal window cond-var
             dermatologistId : null,
-            selected_dermatologist: {}
+            selected_dermatologist: {},
+            dermatologistsToHire : [],
         }
     },
     methods: {
@@ -135,14 +138,30 @@ export default {
             this.selected_dermatologist = der;
         },
         hireDermatologist: function(){   
-            this.mw_show_dermatologist= true;
+            this.mw_hire_dermatologist= true;
+            if(this.dermatologistsToHire.length == 0)
+                client({
+                    url: "dermatologist/all",
+                    method: "GET"
+                }).then((response) => {
+                    response.data.forEach(dermatologist => {
+                        let foundId = -1;
+                        this.dermatologists.forEach(hiredDermos => {
+                            if(dermatologist.id == hiredDermos.id){
+                                foundId = dermatologist.id;
+                            }
+                        });
+                        if(foundId == -1)
+                            this.dermatologistsToHire.push(dermatologist);
+                    });
+                });
         },
         onOutOfFocus: function()
         {
             this.selected_dermatologist = {};
         },
         hiredDermatologist: function(dermatologist){
-            this.mw_show_dermatologist = false;
+            this.mw_hire_dermatologist = false;
             this.$emit('hired-dermatologist', dermatologist);
         }
     }

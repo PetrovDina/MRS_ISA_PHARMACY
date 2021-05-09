@@ -64,7 +64,7 @@ import MedicationsTable from '../components/MedicationsTable.vue';
 import Button from '../components/Button';
 import TabNav from '../components/TabNav';
 import Tab from '../components/Tab';
-import PharmacistsTable from '../components/PharmacistsTable';
+import PharmacistsTable from '../components/PharmacistsTable.vue';
 import OrdersTable from '../components/OrdersTable';
 
 export default {
@@ -189,10 +189,20 @@ export default {
             }
             })
             .then((response) => {
-                console.log("Hiring success!");
+                this.$toasted.show("Hiring success", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
                 this.dermatologistsToSend = [...this.dermatologistsToSend, dermatologist];
                 })
-            .catch((response) => console.log("Hiring failed!"));
+            .catch((response) => 
+                this.$toasted.show("Hiring failed! Overlapping working hours.", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                })
+            );
         },
         addPharmacistIntoList: function(pharmacist){
             this.pharmacistsToSend = [...this.pharmacistsToSend, pharmacist];
@@ -260,6 +270,7 @@ export default {
                                 form: pharmacy_item.medication.form,
                                 quantity : pharmacy_item.quantity,
                                 price : current_price,
+                                medicationId: pharmacy_item.medication.id,
                                 price_edit : false,
                             };
                         this.medicationToSend = [...this.medicationToSend, medication]

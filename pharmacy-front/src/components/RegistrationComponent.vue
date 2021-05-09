@@ -141,7 +141,6 @@ export default {
 					zipCode: '19000',
 					streetNum: 21
 			};
-			if(this.typeToRegister == "PHARMACY_ADMIN") registration.pharmacyId = 
 			client({
                 url: this.url,
                 method: "POST",
@@ -271,7 +270,6 @@ export default {
 					contractType: "PHARMACIST_CONTRACT",
 				}
 			}).then((response) => {
-				console.log("Hiring success!");
 				pharmacist['workTime'] = myWorkTime;
 				this.$emit('registered', pharmacist);
 			}).catch((response) => console.log("Hiring failed!"));

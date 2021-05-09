@@ -44,13 +44,14 @@
         <ModalWindowAddMed 
             @add-medication="addMedicationInPharmacy" 
             @modal-closed = "closeModalWindow" 
-            :modal_show = "modal_window_show" >
+            :modal_show = "modal_window_show"
+            :medications = "medicationsForAdd" >
         </ModalWindowAddMed>
     </div>
 </template>
 
 <script>
-
+import { client } from "@/client/axiosClient";
 import Button from './Button.vue';
 import ModalWindowAddMed from './ModalWindowAddMed.vue';
 
@@ -69,11 +70,28 @@ export default {
     data() {
         return {
             modal_window_show : false,
+            medicationsForAdd : [],
         };
     },
     methods: {
         openModalWindow : function(){
             this.modal_window_show = true;
+            if(this.medicationsForAdd.length == 0)
+                client({
+                    url: "med/all",
+                    method: "GET",
+                }).then((response) => {
+                    response.data.forEach(medication => {
+                        let foundId = -1;
+                        this.medications.forEach(medicationInPharmacy => {
+                            if(medication.id == medicationInPharmacy.medicationId){
+                                foundId = medication.id;
+                            }
+                        });
+                        if(foundId == -1)
+                            this.medicationsForAdd.push(medication);
+                    });
+                });
         },
         closeModalWindow(){
             this.modal_window_show = false;

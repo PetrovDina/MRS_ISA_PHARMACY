@@ -46,7 +46,7 @@
 
 <script>
 import Button from './Button.vue';
-import ModalWindowHirePharmacist from './ModalWindowHirePharmacist';
+import ModalWindowHirePharmacist from './ModalWindowHirePharmacist.vue';
 
 export default {
     name: "PharmacistsTable",
