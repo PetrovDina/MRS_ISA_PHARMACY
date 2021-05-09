@@ -9,70 +9,77 @@
             <div style="display: block">
                 <v-text-field
                     label="Medication price"
-                    :rules="rules"
+                    :rules="[rules]"
                     hide-details="auto"
                     v-model="price"
                 ></v-text-field>
                 <Button 
                     @action-performed="addMedication(selectedMedication, price)" 
                     text="Add medication" 
-                    bgd_color="rgba(32, 102, 75, 0.95)" 
+                    bgd_color="rgba(15, 95, 72, 0.85)" 
                     style="color:white">
                 </Button>
             </div>
-            <label v-if="error_msg">{{error_msg_text}}</label>
         </div>
     </div>
 </template>
 
 <script>
-import { client } from "@/client/axiosClient";
 import Button from "./Button";
-import AddNewMedicationTable from "./AddNewMedicationTable";
+import AddNewMedicationTable from "./AddNewMedicationTable.vue";
 
 export default {
     name : "ModalWindow",
     components : {Button, AddNewMedicationTable},
     props : {
         modal_show : Boolean,
+        medications : {
+            type : Array,
+            default() {
+                return [];
+            }
+        },
     },
     data() {
         return {
-            medications : [],
-            rules : [
-                value => !!value || 'You need to enter price.',
-                //value => (value && value.length >= 3) || 'Min 3 characters',
-            ],
+            rules : value => {
+                if (!value.trim()) return true;
+                if (!isNaN(parseFloat(value)) && value > 0) return true;
+                return 'Set a proper value greater than zero.';
+            },
             selectedMedication : null,
             price : 0,
-            error_msg : false,
-            error_msg_text : '',
         }
     },
-    mounted() {
-        client({
-                url: "med/all",
-                method: "GET",
-            }).then((response) => (this.medications = response.data));
-    },
+    mounted() {},
     methods : {
         closeWindow : function(){
+            this.selectedMedication = null;
             this.$emit('modal-closed');
         },
         selectMedication : function(med) {
     		this.selectedMedication = med;
-            this.error_msg = false;
     	},
         addMedication : function(med, price){
-            if(med === null || price == 0) {
-                this.error_msg = true;
-                this.error_msg_text = "Select medication and set a price!";
+            if(med === null) {
+                this.$toasted.show("Select medication!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                return;
             }
-            else {
-                this.selectedMedication = null;
-                this.$emit('add-medication', med, price);
-                this.$emit('modal-closed');
+            if(price <= 0){
+                this.$toasted.show("Set a proper price!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                return;
             }
+            this.closeWindow();
+            this.$emit('add-medication', med, price);
+            this.$emit('modal-closed');
         }
     }
 };

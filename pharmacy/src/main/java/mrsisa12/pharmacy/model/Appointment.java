@@ -16,6 +16,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
+import mrsisa12.pharmacy.model.enums.AppointmentType;
 
 @Entity
 @SQLDelete(sql = "UPDATE appointment " + "SET deleted = true " + "WHERE id = ?")

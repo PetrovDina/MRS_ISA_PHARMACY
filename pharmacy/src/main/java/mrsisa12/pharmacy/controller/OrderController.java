@@ -26,6 +26,7 @@ import mrsisa12.pharmacy.model.Order;
 import mrsisa12.pharmacy.model.OrderItem;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
+import mrsisa12.pharmacy.model.enums.OrderStatus;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.OrderItemService;
 import mrsisa12.pharmacy.service.OrderService;
@@ -119,6 +120,8 @@ public class OrderController {
 		// postavljanje apoteke
 		Pharmacy pharmacy = pharmacyService.findOne(pharmacyAdmin.getPharmacy().getId());
 		order.setPharmacy(pharmacy);
+		// podesavanje statusa
+		order.setStatus(OrderStatus.NEW);
 		// nije obrisana
 		order.setDeleted(false);
 		// cuvamo order
@@ -144,7 +147,7 @@ public class OrderController {
 	}
 
 	@PutMapping(consumes = "application/json")
-	public ResponseEntity<OrderDTO> updateOrder(@RequestBody OrderDTO orderDTO) {
+	public ResponseEntity<OrderWithOrderItemsDTO> updateOrder(@RequestBody OrderWithOrderItemsDTO orderDTO) {
 
 		// an order must exist
 		Order order = orderService.findOne(orderDTO.getId());
@@ -152,10 +155,24 @@ public class OrderController {
 		if (order == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		// PRETPOTAVLJAM DA CE SE MOCI UREDJIVATI SAMO DATUM
-
+		// promjena datuma
+		order.setDueDate(LocalDate.parse(orderDTO.getDueDate()));
+		// cuvanje promjene datuma
 		order = orderService.save(order);
-		return new ResponseEntity<>(new OrderDTO(order), HttpStatus.OK);
+		
+		// promjena kolicine narucenih lijekova
+		for (OrderItemDTO orderItemDTO : orderDTO.getOrderItems()) {
+			// pronalazak orderItem-a (lijeka sa kolicinom)
+			OrderItem orderItem = orderItemService.findOne(orderItemDTO.getId());
+			if(orderItemDTO.getQuantity() != orderItem.getQuantity()) {
+				// postavljanje nove kolicine
+				orderItem.setQuantity(orderItemDTO.getQuantity());
+				// sacuvaj promjenu
+				orderItemService.save(orderItem);
+			}
+		}
+		order = orderService.findOneWithOrderItems(orderDTO.getId());
+		return new ResponseEntity<>(new OrderWithOrderItemsDTO(order), HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{id}")

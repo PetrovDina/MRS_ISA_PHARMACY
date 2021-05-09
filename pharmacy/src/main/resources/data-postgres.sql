@@ -3,6 +3,10 @@ insert into medication (name, manufacturer, prescriptionReq, form, description, 
 insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Paracetamol', 'Krka', 'True', 'CAPSULE', 'Neki opis 3', 'Neki sadrzaj 3');
 insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Panadol', 'Jugoremedija', 'False', 'PASTE', 'Neki opis 4', 'Neki sadrzaj 4');
 insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Panklav', 'Krka', 'True', 'CAPSULE', 'Neki opis 5', 'Neki sadrzaj 5');
+insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Tylolhot', 'Nobel', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 3');
+insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Fervex', 'Upsa', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 4');
+insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Amoksicilin', 'Belupo', 'True', 'CAPSULE', 'Antibiotski lek za ...', 'Neki sadrzaj 5');
+
 
 insert into alternative_medications (medication_id, alternative_id) values (1, 5);
 insert into alternative_medications (medication_id, alternative_id) values (1, 3);
@@ -129,10 +133,10 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 6, 3], "startTime": [12, 0, 0], "endDate": [2021, 6, 3], "endTime": [13, 30, 0]}', 8, 1700, 2, 'False', 11);
 
 -- narudzbenice
-insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-10', 3, 1, 'False');
-insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-11', 3, 1, 'False');
-insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-12', 3, 1, 'False');
-insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-13', 3, 1, 'False');
+insert into orders (dueDate, orderStatus, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-10', 'NEW', 3, 1, 'False');
+insert into orders (dueDate, orderStatus, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-11', 'NEW', 3, 1, 'False');
+insert into orders (dueDate, orderStatus, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-12', 'NEW', 3, 1, 'False');
+insert into orders (dueDate, orderStatus, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-13', 'NEW', 3, 1, 'False');
 
 -- orderitem
 insert into orderitem (quantity, medication_id, order_id, deleted) values (2, 5, 1, 'False');

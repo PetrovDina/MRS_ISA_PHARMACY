@@ -72,7 +72,6 @@ export default {
     data() {
         return {
             medications : [],
-            quantity : 0,
             orderItems : [],
             today: moment().format("YYYY-MM-DD"),
         }
@@ -85,6 +84,7 @@ export default {
     },
     methods : {
         closeWindow : function(){
+            this.orderItems = [];
             this.$emit('modal-closed');
         },
         deleteOrderItem : function(orderItemIdArrved){
@@ -98,7 +98,7 @@ export default {
         updateOrderItemQuantity : function(orderItemIdArrved, quantity){
             for(const orderItemId in this.orderItems){
                 if(this.orderItems[orderItemId].medId === orderItemIdArrved){
-                    this.orderItems.quantity = quantity;
+                    this.orderItems[orderItemId].quantity = quantity;
                     break;
                 }
             }
@@ -136,7 +136,8 @@ export default {
             }
             this.$emit('order-sent', {
                 'dueDate': document.getElementById('date').value,
-                'orderItems': this.orderItems
+                'orderItems': this.orderItems,
+                'orderStatus' : 'NEW'
             });
             this.orderItems = [];
         }
