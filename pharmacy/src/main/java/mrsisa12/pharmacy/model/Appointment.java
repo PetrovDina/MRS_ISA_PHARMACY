@@ -1,5 +1,10 @@
 package mrsisa12.pharmacy.model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Type;
@@ -61,7 +67,13 @@ public class Appointment {
 	
 	@Column(name = "deleted")
 	private boolean deleted;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "appointment")
+	private List<PrescriptionItem> prescriptionItems;
 
+	@Column(name = "report")
+	private String report;
+	
 	public Appointment() {}
 	
 	public Appointment(AppointmentStatus status, TimePeriod timePeriod, Employee employee, Patient patient, double price, Pharmacy pharmacy, AppointmentType type
@@ -74,6 +86,7 @@ public class Appointment {
 		this.price = price;
 		this.pharmacy = pharmacy;
 		this.type = type;
+		this.report = "";
 	}
 	
 	public Appointment(Appointment app) {
@@ -151,6 +164,60 @@ public class Appointment {
 
 	public void setType(AppointmentType type) {
 		this.type = type;
+	}
+
+	public List<PrescriptionItem> getPrescriptionItems() {
+		if(prescriptionItems == null)
+			prescriptionItems = new ArrayList<>();
+		return prescriptionItems;
+	}
+
+	public void setPrescriptionItems(List<PrescriptionItem> newPrescriptionItems) {
+		removeAllPrescriptionItems();
+		for (Iterator<PrescriptionItem> iter = newPrescriptionItems.iterator(); iter.hasNext();)
+			addPrescriptionItem(iter.next());
+	}
+	
+	public Iterator<PrescriptionItem> getIteratorPrescriptionItem() {
+		if (prescriptionItems == null)
+			prescriptionItems = new ArrayList<>();
+		return prescriptionItems.iterator();
+	}
+	
+	public void removeAllPrescriptionItems() {
+		if (prescriptionItems != null) {
+			PrescriptionItem oldItem;
+			for (Iterator<PrescriptionItem> iter = getIteratorPrescriptionItem(); iter.hasNext();) {
+				oldItem = iter.next();
+				iter.remove();
+			}
+		}
+	}
+	
+	public void removePrescriptionItem(PrescriptionItem oldPrescriptionItem) {
+		if (oldPrescriptionItem == null)
+			return;
+		if (this.prescriptionItems != null && this.prescriptionItems.contains(oldPrescriptionItem)) {
+			this.prescriptionItems.remove(oldPrescriptionItem);
+		}
+	}
+	
+	public void addPrescriptionItem(PrescriptionItem newPrescriptionItem) {
+		if (newPrescriptionItem == null)
+			return;
+		if (this.prescriptionItems == null)
+			this.prescriptionItems = new ArrayList<>();
+		if (!this.prescriptionItems.contains(newPrescriptionItem)) {
+			this.prescriptionItems.add(newPrescriptionItem);
+		}
+	}
+
+	public String getReport() {
+		return report;
+	}
+
+	public void setReport(String report) {
+		this.report = report;
 	}
 	
 	

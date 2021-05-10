@@ -13,4 +13,10 @@ import mrsisa12.pharmacy.repository.PrescriptionItemRepository;
 @Service
 public class PrescriptionItemService {
 
+	@Autowired
+	private PrescriptionItemRepository prescriptionItemRepository;
+	
+	public PrescriptionItem save(PrescriptionItem prescriptionItem) {
+		return prescriptionItemRepository.save(prescriptionItem);
+	}
 }

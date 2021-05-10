@@ -61,5 +61,9 @@ public class PharmacyService {
 	public Pharmacy findOneWithEmployments(Long id) {
 		return pharmacyRepository.findOneWithEmployments(id);
 	}
+	
+	public Pharmacy findOneWithPharmacyAdmins(Long id) {
+		return pharmacyRepository.findOneWithPharmacyAdmins(id);
+	}
 
 }

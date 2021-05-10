@@ -10,6 +10,8 @@ insert into medication (name, manufacturer, prescriptionReq, form, description, 
 
 insert into alternative_medications (medication_id, alternative_id) values (1, 5);
 insert into alternative_medications (medication_id, alternative_id) values (1, 3);
+insert into alternative_medications (medication_id, alternative_id) values (2, 5);
+insert into alternative_medications (medication_id, alternative_id) values (2, 3);
 
 insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Narodnog fronta','Novi Sad', '21000', 5);
 insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Bulevar Oslobođenja','Novi Sad', '21000', 88);

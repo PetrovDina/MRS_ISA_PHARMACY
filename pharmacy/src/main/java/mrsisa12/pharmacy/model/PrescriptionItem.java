@@ -2,9 +2,11 @@ package mrsisa12.pharmacy.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -20,15 +22,24 @@ public class PrescriptionItem {
 	@ManyToOne(optional=false)
 	private Medication medication;
 	
+	@Column(name = "therapyDuration", nullable = false)
+	private int therapyDuration;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "APPOINTMENT_ID", referencedColumnName = "ID")
+	private Appointment appointment;
+	
 	public PrescriptionItem() {
 		
 	}
 
-	public PrescriptionItem(Long id, Medication medication, int quantity) {
+	public PrescriptionItem(Long id, Medication medication, int quantity, int therapyDuration, Appointment appointment) {
 		super();
 		this.id = id;
 		this.medication = medication;
 		this.quantity = quantity;
+		this.therapyDuration = therapyDuration;
+		this.appointment = appointment;
 	}
 
 	public Long getId() {
@@ -55,6 +66,22 @@ public class PrescriptionItem {
 		this.medication = medication;
 	}
 
+	public int getTherapyDuration() {
+		return therapyDuration;
+	}
 
+	public void setTherapyDuration(int therapyDuration) {
+		this.therapyDuration = therapyDuration;
+	}
+
+	public Appointment getAppointment() {
+		return appointment;
+	}
+
+	public void setAppointment(Appointment appointment) {
+		this.appointment = appointment;
+	}
+
+	
 	
 }

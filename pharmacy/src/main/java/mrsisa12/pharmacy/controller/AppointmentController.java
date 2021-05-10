@@ -1,5 +1,6 @@
 package mrsisa12.pharmacy.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -254,8 +255,8 @@ public class AppointmentController {
 		+ appointment.getTimePeriod().getStartDate() + " " 
 		+ appointment.getTimePeriod().getStartTime();
 		
-		EmailContent email = new EmailContent("Appointment booked",
-                appointment.getPatient().getEmail(), emailBody);
+		EmailContent email = new EmailContent("Appointment booked", emailBody);
+		email.addRecipient(appointment.getPatient().getEmail());
         emailService.sendEmail(email);
 
 
@@ -392,4 +393,53 @@ public class AppointmentController {
 		return new ResponseEntity<>(filterUniquePatients(patientsDTO), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/allAppointmentsForEmployee")
+	public ResponseEntity<List<AppointmentDTO>> getAllAppointmentsForEmployee( @RequestParam String employeeUsername, @RequestParam String minDate, @RequestParam String maxDate) {	
+		Employee emp = employeeService.findOneByUsername(employeeUsername);
+		List<Appointment> appointments = appointmentService.findAll();
+		String min = minDate.split("T")[0];
+		String max = maxDate.split("T")[0];
+		
+		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : appointments) {
+			boolean afterMin = appointment.getTimePeriod().getStartDate().isAfter(LocalDate.parse(min));
+			boolean equalMin = appointment.getTimePeriod().getStartDate().isEqual(LocalDate.parse(min));
+			boolean beforeMax = appointment.getTimePeriod().getEndDate().isBefore(LocalDate.parse(max));
+			boolean equalMax = appointment.getTimePeriod().getEndDate().isEqual(LocalDate.parse(max));
+			if(appointment.getEmployee().getId().equals(emp.getId()) && appointment.getStatus() != AppointmentStatus.AVAILABLE
+					&& (afterMin || equalMin) && (beforeMax || equalMax)) {
+				appointmentsDTO.add(new AppointmentDTO(appointment));
+			}
+		}
+		
+		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/finishAppointment")
+	public ResponseEntity<Void> finishAppointment(  @RequestParam String appointmentId, @RequestParam String report) {	
+		Appointment appointment = appointmentService.findOne(Long.parseLong(appointmentId));
+		if (appointment == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		appointment.setReport(report);
+		appointment.setStatus(AppointmentStatus.CONCLUDED);
+		appointment = appointmentService.save(appointment);
+		return new ResponseEntity<>( HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/patientDidntShowUp")
+	public ResponseEntity<Void> patientDidntShowUp(@RequestParam String appointmentId) {	
+		Appointment appointment = appointmentService.findOne(Long.parseLong(appointmentId));
+		if (appointment == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		appointment.setStatus(AppointmentStatus.PENALED);
+		appointmentService.save(appointment);
+		
+		Patient patient = patientService.findOne(appointment.getPatient().getId());
+		patient.setPenaltyPoints(patient.getPenaltyPoints() + 1);
+		patientService.save(patient);
+		
+		return new ResponseEntity<>( HttpStatus.OK);
+	}
 }

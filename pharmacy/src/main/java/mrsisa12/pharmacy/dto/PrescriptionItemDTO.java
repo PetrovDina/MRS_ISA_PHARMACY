@@ -1,31 +1,34 @@
 package mrsisa12.pharmacy.dto;
 
+import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.PrescriptionItem;
 
 public class PrescriptionItemDTO {
 
 	private Long id;
 	private int quantity;
-	private Long medicationId;
+	private MedicationDTO medication;
+	private int therapyDuration;
+	private AppointmentDTO appointment;
 	
-public PrescriptionItemDTO() {
+	public PrescriptionItemDTO() {
 		
+	}	
+
+	public PrescriptionItemDTO(Long id, int quantity, Medication medication, int therapyDuration, Appointment appointment) {
+		this.id = id;
+		this.quantity = quantity;
+		this.medication = new MedicationDTO(medication);
+		this.therapyDuration = therapyDuration;
+		this.appointment = new AppointmentDTO(appointment);
 	}
 	
 	public PrescriptionItemDTO(PrescriptionItem reservationItem){
-        this.id = reservationItem.getId();
-        this.medicationId = reservationItem.getMedication().getId();
-        this.quantity = reservationItem.getQuantity();
+		this(reservationItem.getId(), reservationItem.getQuantity(), reservationItem.getMedication(),
+				reservationItem.getTherapyDuration(), reservationItem.getAppointment());
     }
 	
-	
-
-	public PrescriptionItemDTO(Long id, int quantity, Long medication) {
-		this.id = id;
-		this.quantity = quantity;
-		this.medicationId = medication;
-	}
-
 	public Long getId() {
 		return id;
 	}
@@ -42,13 +45,31 @@ public PrescriptionItemDTO() {
 		this.quantity = quantity;
 	}
 
-	public Long getMedicationId() {
-		return medicationId;
+	public MedicationDTO getMedication() {
+		return medication;
 	}
 
-	public void setMedicationId(Long medicationId) {
-		this.medicationId = medicationId;
+	public void setMedication(MedicationDTO medication) {
+		this.medication = medication;
 	}
+
+	public int getTherapyDuration() {
+		return therapyDuration;
+	}
+
+	public void setTherapyDuration(int therapyDuration) {
+		this.therapyDuration = therapyDuration;
+	}
+
+	public AppointmentDTO getAppointment() {
+		return appointment;
+	}
+
+	public void setAppointment(AppointmentDTO appointment) {
+		this.appointment = appointment;
+	}
+
+	
 
 
 }

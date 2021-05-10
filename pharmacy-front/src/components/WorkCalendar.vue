@@ -101,18 +101,32 @@
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
-            <v-card-text>
-              <span v-html="selectedEvent.patient"></span><br>
+            <v-card-text>              
               <span v-html="selectedEvent.time1"></span> -
-              <span v-html="selectedEvent.time2"></span>
+              <span v-html="selectedEvent.time2"></span><br> Status: 
+              <span v-html="selectedEvent.status"></span><br>
+              <span v-html="selectedEvent.email"></span><br>
+              <span v-html="selectedEvent.pharmacyName"></span>
             </v-card-text>
             <v-card-actions>
+              <v-btn  text
+                color="secondary"
+              @click="startAppointment(selectedEvent)"
+              v-if="selectedEvent.available === true">
+                Start Appointment
+              </v-btn>
+              <v-btn  text
+                color="secondary"
+              @click="didntShowUp(selectedEvent)"
+              v-if="selectedEvent.available === true">
+                Didn't show up
+              </v-btn>
               <v-btn
                 text
                 color="secondary"
                 @click="selectedOpen = false"
               >
-                Cancel
+                Close
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -123,6 +137,7 @@
 </template>
 
 <script>
+import {client} from '@/client/axiosClient';
   export default {
     name: "WorkCalendar",
     data: () => ({
@@ -138,12 +153,11 @@
       selectedElement: null,
       selectedOpen: false,
       events: [],
-      colors: ['rgb(30,144,255)', 'rgb(0,0,205)', 'rgb(218,112,214)', 'rgb(127,255,212)', 'rgb(0.255.0)', 'rgb(255,192,203)', 'rgb(148,0,211)'],
-      names: ['Appointment 1', 'Appointment 2', 'Appointment 3', 'Appointment 4', 'Appointment 5', 'Appointment 6', 'Appointment 7', 'Appointment 8'],
-      patients: ['Patient 1','Patient 2','Patient 3','Patient 4','Patient 5','Patient 6','Patient 7','Patient 8',]
+      appointments: []
     }),
     mounted () {
       this.$refs.calendar.checkChange()
+      
     },
     methods: {
       viewDay ({ date }) {
@@ -180,31 +194,61 @@
       },
       updateRange ({ start, end }) {
         const events = []
-        const min = new Date(`${start.date}T00:00:00`)
-        const max = new Date(`${end.date}T23:59:59`)
-        const days = (max.getTime() - min.getTime()) / 86400000
-        const eventCount = this.rnd(days, days + 20)
-        for (let i = 0; i < eventCount; i++) {
-          const allDay = this.rnd(0, 3) === 0
-          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-          const second = new Date(first.getTime() + secondTimestamp)
-          events.push({
-            name: this.names[this.rnd(0, this.names.length - 1)],
-            start: first,
-            end: second,
-            color: this.colors[this.rnd(0, this.colors.length - 1)],
-            timed: !allDay,
-            patient: this.patients[this.rnd(0, this.names.length - 1)],
-            time1: first.getHours() +":"+first.getMinutes(),
-            time2: second.getHours() +":"+second.getMinutes(),
-          })
-        }
-        this.events = events
+        const min = new Date(`${start.date}`).toISOString();
+        const max = new Date(`${end.date}`).toISOString();
+        client({
+            url: "appointments/allAppointmentsForEmployee",
+            params: { employeeUsername : localStorage.getItem('USERNAME'),
+                      minDate : min, maxDate : max },
+            method: "GET",
+            }).then((response) => {
+                  this.appointments = response.data;
+                  for(var appointment of response.data) {
+                      var avail = false;
+                      if(appointment.status === 'RESERVED' && (new Date(appointment.timePeriod.startDate) >= new Date()) === true){
+                        avail = true;
+                      } 
+                      var patientFullName = appointment.patient.firstName + " " + appointment.patient.lastName;
+                      events.push({
+                        name: patientFullName,
+                        start: appointment.timePeriod.startDate,
+                        end: appointment.timePeriod.endDate,
+                        color: 'purple lighten-2',
+                        email: appointment.patient.email,
+                        patientUsername: appointment.patient.username,
+                        time1: appointment.timePeriod.startTime,
+                        time2: appointment.timePeriod.endTime,
+                        pharmacyName : appointment.pharmacy.name,
+                        status : appointment.status,
+                        available : avail,
+                        pharmacy : appointment.pharmacy.id,
+                        appointmentId : appointment.id,
+                      })
+                    
+                  }
+                  this.events = events
+            });
       },
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
+      },
+
+      startAppointment: function(selectedEvent){
+        var link = '/appointmentInProgress';
+        const encoded = encodeURI(link + '?patientUsername=' + selectedEvent.patientUsername + '&pharmacyId=' + 
+        selectedEvent.pharmacy + '&appointmentId=' + selectedEvent.appointmentId);
+        this.$router.push(encoded);
+      },
+      
+      didntShowUp: function(selectedEvent){
+        client({
+          method: 'GET',
+          url: 'appointments/patientDidntShowUp',
+          params: {appointmentId: selectedEvent.appointmentId}
+        })
+        this.selectedOpen = false;
+        selectedEvent.disabled = true;
+        this.$router.go();
       },
     },
   }
