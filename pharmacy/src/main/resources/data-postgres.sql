@@ -129,10 +129,10 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 6, 3], "startTime": [12, 0, 0], "endDate": [2021, 6, 3], "endTime": [13, 30, 0]}', 8, 1700, 2, 'False', 11);
 
 -- narudzbenice
-insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-10', 3, 1, 'False');
-insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-11', 3, 1, 'False');
-insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-12', 3, 1, 'False');
-insert into orders (dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('2021-05-13', 3, 1, 'False');
+insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-05-10', 3, 1, 'False');
+insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-05-11', 3, 1, 'False');
+insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('HAS_OFFERS', '2021-05-12', 3, 1, 'False');
+insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-05-13', 3, 1, 'False');
 
 -- orderitem
 insert into orderitem (quantity, medication_id, order_id, deleted) values (2, 5, 1, 'False');
@@ -147,7 +147,11 @@ insert into orderitem (quantity, medication_id, order_id, deleted) values (3, 3,
 insert into orderitem (quantity, medication_id, order_id, deleted) values (5, 5, 4, 'False');
 insert into orderitem (quantity, medication_id, order_id, deleted) values (8, 4, 4, 'False');
 
-insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 4, 1, 12);
-insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 2, 2, 12);
-insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 1, 3, 13);
-insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 3, 4, 13);
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 200, 1, 12);
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 200, 2, 12);
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 200, 3, 12);
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 200, 4, 12);
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 200, 3, 13);
+insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 200, 4, 13);
+
+insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-14', 2000, 3, 12, 'PENDING');

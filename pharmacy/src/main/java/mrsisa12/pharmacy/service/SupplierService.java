@@ -29,6 +29,11 @@ public class SupplierService {
 		return supplierRepository.findOneWithStorageItems(supplierId);
 	}
 	
+	public Supplier findOneWithStorageItems(String supplierUsername) 
+	{
+		return supplierRepository.findOneWithStorageItems(supplierUsername);
+	}
+	
 	public Supplier findOne(String username)
 	{
 		return supplierRepository.findOne(username);

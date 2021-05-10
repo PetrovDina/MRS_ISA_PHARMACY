@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import mrsisa12.pharmacy.model.Order;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.Supplier;
 import mrsisa12.pharmacy.repository.OrderRepository;
 
 @Service
@@ -46,4 +47,13 @@ public class OrderService {
 	public List<Order> findAllFromPharmacy(Pharmacy pharmacy) {
 		return orderRepository.findAllFromPharmacy(pharmacy);
 	}
+	
+	public List<Order> findAllFromSupplier(Supplier supplier) {
+		return orderRepository.findAllFromSupplier(supplier);
+	}
+	
+	public List<Order> findAllFromNotSupplier(Supplier supplier) {
+		return orderRepository.findAllFromNotSupplier(supplier);
+	}
+	
 }

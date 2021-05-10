@@ -42,7 +42,7 @@ export default {
         return {
             medications : [],
             selectedMedication : null,
-            quantity : 0,
+            quantity : '',
         }
     },
     mounted() {
@@ -69,7 +69,7 @@ export default {
 
             this.$emit('add-medication', med, quantity);
             this.selectedMedication = null;
-            this.quantity = 0;
+            this.quantity = '';
             this.$emit('modal-closed');
         }
     }

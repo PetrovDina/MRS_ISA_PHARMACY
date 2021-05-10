@@ -26,11 +26,14 @@ import mrsisa12.pharmacy.model.Order;
 import mrsisa12.pharmacy.model.OrderItem;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
+import mrsisa12.pharmacy.model.Supplier;
+import mrsisa12.pharmacy.model.enums.OrderStatus;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.OrderItemService;
 import mrsisa12.pharmacy.service.OrderService;
 import mrsisa12.pharmacy.service.PharmacyAdminService;
 import mrsisa12.pharmacy.service.PharmacyService;
+import mrsisa12.pharmacy.service.SupplierService;
 
 @RestController
 @RequestMapping("/order")
@@ -47,6 +50,9 @@ public class OrderController {
 
 	@Autowired
 	private OrderItemService orderItemService;
+	
+	@Autowired
+	private SupplierService supplierService;
 
 	@Autowired
 	private MedicationService medicationService;
@@ -64,6 +70,25 @@ public class OrderController {
 
 		return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
 	}
+	
+	@GetMapping(value = "/allNotDone/{username}")
+	public ResponseEntity<List<OrderWithOrderItemsDTO>> getAllNotDoneOrdersForSupplier(@PathVariable String username) {
+		Supplier supplier = supplierService.findOne(username);
+		
+		// Vraca sve nraudzbenice koje nisu DONE i koje nisu od prosledjenog dobavljaca
+		List<Order> orders = orderService.findAllFromNotSupplier(supplier);
+
+		// convert orders to DTOs
+		List<OrderWithOrderItemsDTO> ordersDTO = new ArrayList<>();
+		for (Order order : orders) 
+		{
+			if(order.getStatus() != OrderStatus.DONE)
+				ordersDTO.add(new OrderWithOrderItemsDTO(orderService.findOneWithOrderItems(order.getId())));
+		}
+
+		return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
+	}
+
 	
 	@GetMapping(value = "/allFrom/{id}")
 	public ResponseEntity<List<OrderWithOrderItemsDTO>> getAllOrdersFromPharmacy(@PathVariable Long id) {

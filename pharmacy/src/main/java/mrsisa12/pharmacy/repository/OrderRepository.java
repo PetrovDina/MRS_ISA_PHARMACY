@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import mrsisa12.pharmacy.model.Order;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.Supplier;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
@@ -21,5 +22,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	@Query("select ord from Order ord where ord.pharmacy =?1")
 	public List<Order> findAllFromPharmacy(Pharmacy pharmacy);
-
+	
+	@Query("select ord from Order ord left join fetch ord.offers offer where offer.supplier =?1")
+	public List<Order> findAllFromSupplier(Supplier supplier);
+	
+	@Query("select ord from Order ord left join fetch ord.offers offer where (offer.supplier !=?1 or offer.supplier = null) and ord.status != 'DONE' ")
+	public List<Order> findAllFromNotSupplier(Supplier supplier);
 }

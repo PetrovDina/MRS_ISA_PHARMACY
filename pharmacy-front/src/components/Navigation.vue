@@ -31,6 +31,8 @@
         <!--supplier-->
         <div v-if="isUserType('SUPPLIER')">
             <a @click="medicationStorageRedirect()" class="registerNav">Medication Storage</a>
+            <a @click="supplierOrdersRedirect()" class="registerNav">Pharmacy orders</a>
+            <a @click="supplierOrdersOffersRedirect()" class="registerNav">Orders for my offers</a>
         </div>
 
         <!--patient-->
@@ -261,6 +263,30 @@ export default {
         medicationStorageRedirect: function () {
             this.$router
                 .push({ name: "SupplierMedicationReserves" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        supplierOrdersRedirect: function () {
+            this.$router
+                .push({ name: "SupplierOrdersPage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        supplierOrdersOffersRedirect: function () {
+            this.$router
+                .push({ name: "SupplierOrdersOffersPage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

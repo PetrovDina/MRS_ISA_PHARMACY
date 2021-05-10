@@ -30,6 +30,8 @@ import SystemAdminRegistrationPage from '@/views/systemAdminRegistrationPage'
 import SupplierRegistrationPage from '@/views/SupplierRegistrationPage'
 import DermatologistRegistrationPage from '@/views/DermatologistRegistrationPage'
 import SupplierMedicationReserves from '@/views/SupplierMedicationReserves'
+import SupplierOrdersPage from '@/views/SupplierOrdersPage'
+import SupplierOrdersOffersPage from '@/views/SupplierOrdersOffersPage'
 
 
 import MedicationReservationView from '@/views/MedicationReservationView'
@@ -226,7 +228,20 @@ export default new Router({
           path: '/supplierMedicationReserves',
           name: 'SupplierMedicationReserves',
           component: SupplierMedicationReserves    
-      },
+        },
+
+        {
+          path: '/supplierOrdersPage',
+          name: 'SupplierOrdersPage',
+          component: SupplierOrdersPage    
+        },
+
+        {
+          path: '/supplierOrdersOffersPage',
+          name: 'SupplierOrdersOffersPage',
+          component: SupplierOrdersOffersPage    
+        },
+
 
         {
             path: '/pharmacist-home-page',
