@@ -23,7 +23,30 @@
                     </tbody>
                 </table>
                 <hr class="solid">
-                <label><span style="font-size: 20px;">This order {{order.orderStatus == "NEW" ? "has no offers" : "has offers"}}</span></label>
+                    <label v-if="order.offers.length == 0"><span style="font-size: 20px;">This order {{order.orderStatus == "NEW" ? "has no offers" : "has offers"}}</span></label>
+                    <div v-if="order.offers.length != 0">
+                        <label><span style="font-size: 20px;">Order's offers</span></label>
+                        <table class="table table-hover" >
+                            <thead>
+                                <tr>
+                                    <th scope="col">Delivery due date</th>
+                                    <th scope="col">Supplier</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Offer Status</th>
+                                    <th scope="col">Accept?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr :key="offer.id" v-for="offer in order.offers">
+                                    <td style="width:24%;">{{convertDate(offer.deliveryDueDate)}}</td>
+                                    <td style="width:24%;">{{offer.supplierUsername}}</td>
+                                    <td style="width:24%;">{{offer.price}}</td>
+                                    <td style="width:23%;">{{offer.status}}</td>
+                                    <td style="width:5%;"><button @click="accept(offer)"><i class="fa fa-check fa-2x"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 <hr class="solid">
             </div>
         </div>
@@ -53,6 +76,9 @@ export default {
         convertDate : function(date){
             return moment(date).format('DD. MMM YYYY.');
         },
+        accept : function(offer){
+            console.log("Accepted");
+        }
     }
 };
 </script>

@@ -43,6 +43,10 @@ public class OrderService {
 	public Order findOneWithOrderItems(Long id) {
 		return orderRepository.findOneWithOrderItems(id);
 	}
+	
+	public Order findOneWithOffers(Long id) {
+		return orderRepository.findOneWithOffers(id);
+	}
 
 	public List<Order> findAllFromPharmacy(Pharmacy pharmacy) {
 		return orderRepository.findAllFromPharmacy(pharmacy);

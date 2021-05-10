@@ -278,7 +278,7 @@ export default {
             }).catch((response) => alert("pharmacyId je null"));
 
             client({
-                url : "order/allFrom/" + this.pharmacyId,
+                url : "order/allFrom/" + this.pharmacyId + "/withOffers",
                 method : "GET",
             }).then((response) => {
                 this.ordersToSend = response.data;

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.OrderItemDTO;
 import mrsisa12.pharmacy.dto.order.OrderDTO;
+import mrsisa12.pharmacy.dto.order.OrderWithOffersDTO;
 import mrsisa12.pharmacy.dto.order.OrderWithOrderItemsDTO;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Order;
@@ -90,16 +91,18 @@ public class OrderController {
 	}
 
 	
-	@GetMapping(value = "/allFrom/{id}")
-	public ResponseEntity<List<OrderWithOrderItemsDTO>> getAllOrdersFromPharmacy(@PathVariable Long id) {
-
+	@GetMapping(value = "/allFrom/{id}/withOffers")
+	public ResponseEntity<List<OrderWithOffersDTO>> getAllOrdersFromPharmacy(@PathVariable Long id) {
+		// Orders with offers and orderItems
 		Pharmacy pharmacy = pharmacyService.findOne(id);
 		List<Order> orders = orderService.findAllFromPharmacy(pharmacy);
 
 		// convert orders to DTOs
-		List<OrderWithOrderItemsDTO> ordersDTO = new ArrayList<>();
+		List<OrderWithOffersDTO> ordersDTO = new ArrayList<>();
 		for (Order order : orders) {
-			ordersDTO.add(new OrderWithOrderItemsDTO(orderService.findOneWithOrderItems(order.getId())));
+			Order orderTemp = orderService.findOneWithOrderItems(order.getId());
+			orderTemp.setOffers(orderService.findOneWithOffers(order.getId()).getOffers());
+			ordersDTO.add(new OrderWithOffersDTO(orderTemp));
 		}
 
 		return new ResponseEntity<>(ordersDTO, HttpStatus.OK);

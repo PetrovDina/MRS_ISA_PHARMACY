@@ -19,6 +19,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	@Query("select ord from Order ord left join fetch ord.orderItems e where ord.id =?1")
 	public Order findOneWithOrderItems(Long id);
+	
+	@Query("select ord from Order ord left join fetch ord.offers e where ord.id =?1")
+	public Order findOneWithOffers(Long id);
 
 	@Query("select ord from Order ord where ord.pharmacy =?1")
 	public List<Order> findAllFromPharmacy(Pharmacy pharmacy);

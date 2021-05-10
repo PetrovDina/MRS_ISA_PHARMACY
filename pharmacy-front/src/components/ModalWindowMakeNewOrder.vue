@@ -137,7 +137,8 @@ export default {
             this.$emit('order-sent', {
                 'dueDate': document.getElementById('date').value,
                 'orderItems': this.orderItems,
-                'orderStatus' : 'NEW'
+                'orderStatus' : 'NEW',
+                'offers' : []
             });
             this.orderItems = [];
         }

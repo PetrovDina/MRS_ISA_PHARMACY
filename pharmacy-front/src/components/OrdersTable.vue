@@ -5,6 +5,7 @@
                 <tr>
                     <th scope="col">Duedate</th>
                     <th scope="col">Pharmacy admin</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Order content</th>
                 </tr>
             </thead>
@@ -12,6 +13,7 @@
                 <tr :key="order.id" v-for="order in orders">
                     <td>{{convertDate(order.dueDate)}}</td>
                     <td>{{order.pharmacyAdmin.username}}</td>
+                    <td>{{order.orderStatus}}</td>
                     <td><button style="margin-right: 20px;" @click="showMore(order)"><i class="fa fa-ellipsis-h fa-2x"></i></button><button @click="editOrderContent(order)"><i class="fa fa-edit fa-2x"></i></button></td>
                 </tr>
             </tbody>
@@ -80,8 +82,16 @@ export default {
             this.mw_show_order_content = true;
         },
         editOrderContent : function(order){
-            this.orderToSend = order
-            this.mw_show_edit_order_content = true;
+            if(order.orderStatus == "NEW"){
+                this.orderToSend = order
+                this.mw_show_edit_order_content = true;
+            }
+            else
+                this.$toasted.show("This order cannot be changed anymore!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
         },
         makeANewOrder : function(){
             this.mw_show_new_order = true;

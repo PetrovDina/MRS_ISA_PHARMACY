@@ -130,6 +130,7 @@ export default {
                         'orderItems': this.order.orderItems,
                         'orderStatus' : 'NEW'
                     });
+                this.disableEditQuantity();
             }
             else{
                 this.$toasted.show("Change something to save edited!", {
@@ -138,7 +139,6 @@ export default {
                     duration: 2000,
                 });
             }
-            this.disableEditQuantity();
         },
         updateOrderItemQuantity : function(orderItemIdArrived, quantity){
             for(const orderItemId in this.orderItemsEdited){
