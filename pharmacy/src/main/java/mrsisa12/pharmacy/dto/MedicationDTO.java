@@ -10,6 +10,7 @@ public class MedicationDTO {
 	private String manufacturer;
 	private boolean prescriptionReq;
 	private MedicationForm form;
+	private String nameAndForm;
 	
 	public MedicationDTO() {
 		
@@ -17,6 +18,7 @@ public class MedicationDTO {
 	
 	public MedicationDTO(Medication medication) {
 		this(medication.getId(), medication.getName(), medication.getManufacturer(), medication.isPrescriptionReq(), medication.getForm());
+		this.nameAndForm = medication.getName() + " (" + medication.getForm().toString() + ")";
 	}
 
 	public MedicationDTO(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form) {
@@ -26,6 +28,7 @@ public class MedicationDTO {
 		this.manufacturer = manufacturer;
 		this.prescriptionReq = prescriptionReq;
 		this.form = form;
+		this.nameAndForm = name + " (" + form.toString() + ")";
 	}
 
 	public Long getId() {
@@ -66,6 +69,14 @@ public class MedicationDTO {
 
 	public void setForm(MedicationForm form) {
 		this.form = form;
+	}
+	
+	public String getNameAndForm() {
+		return nameAndForm;
+	}
+
+	public void setNameAndForm(String nameAndForm) {
+		this.nameAndForm = nameAndForm;
 	}
 
 	@Override

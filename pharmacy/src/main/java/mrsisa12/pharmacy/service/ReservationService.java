@@ -67,8 +67,8 @@ public class ReservationService {
 
             toUpdate.setStatus(ReservationStatus.COMPLETED);
             update(toUpdate);
-            EmailContent email = new EmailContent("Medicine pickup confirmation!",
-                    toUpdate.getPatient().getEmail(), emailBody + toUpdate.getId() + "!");
+            EmailContent email = new EmailContent("Medicine pickup confirmation!",emailBody + toUpdate.getId() + "!");
+            email.addRecipient(toUpdate.getPatient().getEmail());
             emailService.sendEmail(email);
             return true;
 

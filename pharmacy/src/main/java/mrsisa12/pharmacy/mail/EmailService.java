@@ -3,6 +3,8 @@ package mrsisa12.pharmacy.mail;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +14,21 @@ public class EmailService {
 
 	@Autowired
 	private JavaMailSender javaMailSender;	
+	
+	private static final int NUM_OF_QUICK_SERVICE_THREADS = 10;
+
+    private final ScheduledExecutorService quickService = Executors.newScheduledThreadPool(NUM_OF_QUICK_SERVICE_THREADS);
 
     public void sendEmail(EmailContent content){
+    	String[] emailIds = new String[content.getRecipients().size()];
+    	for(int i = 0; i <content.getRecipients().size(); i++) {
+    		emailIds[i] = content.getRecipients().get(i);
+    	}
+    	
         SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(content.getRecipient());
+        email.setTo(emailIds);
         email.setSubject(content.getSubject());
         email.setText(content.getBody());
-        javaMailSender.send(email);
+        quickService.submit(() -> javaMailSender.send(email));
     }
 }

@@ -31,6 +31,7 @@ public class PharmacyController {
 
 	@Autowired
 	private PharmacyService pharmacyService;
+	
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
@@ -166,4 +167,5 @@ public class PharmacyController {
 		}
 		return new ResponseEntity<>(pharmacyStorageItemsDTO, HttpStatus.OK);
 	}
+	
 }

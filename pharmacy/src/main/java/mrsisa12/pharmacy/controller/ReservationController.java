@@ -178,8 +178,8 @@ public class ReservationController {
 		
 		// email!
 		String emailBody = "This email is confirmation that you have successfully reserved " + medication.getName() + ". Your unique reservation number is: " + reservation.getCode();
-		EmailContent email = new EmailContent("Medicine reservation confirmation",
-                reservation.getPatient().getEmail(), emailBody);
+		EmailContent email = new EmailContent("Medicine reservation confirmation", emailBody);
+		email.addRecipient(reservation.getPatient().getEmail());
         emailService.sendEmail(email);
 		return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.CREATED);
 	}

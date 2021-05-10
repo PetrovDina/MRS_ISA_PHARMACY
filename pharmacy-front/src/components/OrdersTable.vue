@@ -10,14 +10,19 @@
             </thead>
             <tbody>
                 <tr :key="order.id" v-for="order in orders">
-                    <!-- <td><button @click="deleteRecord(med.id, med.name)"><i class="fa fa-trash fa-lg"></i></button></td> -->
                     <td>{{convertDate(order.dueDate)}}</td>
                     <td>{{order.pharmacyAdmin.username}}</td>
-                    <td><button @click="showMore(order)"><i class="fa fa-ellipsis-h fa-2x"></i></button></td>
+                    <td><button style="margin-right: 20px;" @click="showMore(order)"><i class="fa fa-ellipsis-h fa-2x"></i></button><button @click="editOrderContent(order)"><i class="fa fa-edit fa-2x"></i></button></td>
                 </tr>
             </tbody>
         </table>
         <!-- The Modal -->
+        <ModalWindowEditOrderContent
+            @order-updated = "updateOrder"
+            @modal-closed = "mw_show_edit_order_content = false"
+            :modal_show = "mw_show_edit_order_content"
+            :order = "orderToSend">
+        </ModalWindowEditOrderContent>
         <ModalWindowOrderContent
             @modal-closed = "mw_show_order_content = false"
             :modal_show = "mw_show_order_content"
@@ -44,10 +49,11 @@ import moment from "moment";
 import Button from './Button.vue';
 import ModalWindowOrderContent from './ModalWindowOrderContent.vue';
 import ModalWindowMakeNewOrder from './ModalWindowMakeNewOrder.vue';
+import ModalWindowEditOrderContent from './ModalWindowEditOrderContent.vue';
 
 export default {
     name: "MedicationsTable",
-    components: {Button, ModalWindowOrderContent, ModalWindowMakeNewOrder},
+    components: {Button, ModalWindowOrderContent, ModalWindowMakeNewOrder, ModalWindowEditOrderContent},
     props: {
         orders: {
             type : Array,
@@ -61,19 +67,21 @@ export default {
         return {
             mw_show_order_content : false,
             mw_show_new_order : false,
+            mw_show_edit_order_content : false,
             orderToSend: null
         };
     },
     methods: {
-        closeModalWindow(){
-            this.mw_show_order_content = false;
-        },
         convertDate : function(date){
             return moment(date).format('DD. MMM YYYY.');
         },
         showMore: function(order){
             this.orderToSend = order
             this.mw_show_order_content = true;
+        },
+        editOrderContent : function(order){
+            this.orderToSend = order
+            this.mw_show_edit_order_content = true;
         },
         makeANewOrder : function(){
             this.mw_show_new_order = true;
@@ -85,7 +93,21 @@ export default {
                 url: "order",
                 method: "POST",
                 data: order
-            }).then((response) => this.$emit('order-added', order))
+            }).then((response) => {
+                order['id'] = response.data.id;
+                for(const orderItemId in order.orderItems){
+                    order.orderItems[orderItemId]['id'] = response.data.orderItems[orderItemId].id;
+                }
+                this.$emit('order-added', order);
+            })
+        },
+        updateOrder : function(order){
+            this.mw_show_edit_order_content = false;
+            client({
+                url: "order",
+                method: "PUT",
+                data: order
+            }).then((response) => this.$emit('order-updated', order))
         }
     },
 };

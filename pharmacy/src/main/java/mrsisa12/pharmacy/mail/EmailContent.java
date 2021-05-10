@@ -1,16 +1,24 @@
 package mrsisa12.pharmacy.mail;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EmailContent {
     private String subject;
-    private String recipient;
+    private List<String> recipients;
     private String body;
 
-    public EmailContent(String subject, String recipient, String body) {
+    public EmailContent(String subject, List<String> recipients, String body) {
         this.subject = subject;
-        this.recipient = recipient;
+        this.recipients = recipients;
         this.body = body;
     }
 
+    public EmailContent(String subject, String body) {
+        this.subject = subject;
+        this.recipients = new ArrayList<String>();
+        this.body = body;
+    }
 
     public String getSubject() {
         return subject;
@@ -20,12 +28,18 @@ public class EmailContent {
         this.subject = subject;
     }
 
-    public String getRecipient() {
-        return recipient;
+    public List<String> getRecipients() {
+    	if(recipients == null) {
+    		this.recipients = new ArrayList<String>();
+    	}
+        return recipients;
     }
 
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
+    public void setRecipients(List<String> recipients) {
+    	if(recipients == null) {
+    		this.recipients = new ArrayList<String>();
+    	}
+        this.recipients = recipients;
     }
 
     public String getBody() {
@@ -34,6 +48,21 @@ public class EmailContent {
 
     public void setBody(String body) {
         this.body = body;
+    }
+    
+    public void addRecipient(String recipient) {
+    	if(recipients == null) {
+    		this.recipients = new ArrayList<String>();
+    	}
+    	if(!recipients.contains(recipient)) {
+    		this.recipients.add(recipient);
+    	}
+    }
+    
+    public void removeRecipient(String recipient) {
+    	if(recipients.contains(recipient)) {
+    		this.recipients.remove(recipient);
+    	}
     }
 }
 

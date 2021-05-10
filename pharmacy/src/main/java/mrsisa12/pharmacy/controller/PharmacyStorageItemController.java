@@ -22,13 +22,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mrsisa12.pharmacy.dto.MedicationDTO;
 import mrsisa12.pharmacy.dto.PharmacyWithMedicationPriceDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemWithItemPricesDTO;
+import mrsisa12.pharmacy.mail.EmailContent;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.ItemPrice;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.service.ItemPriceService;
@@ -51,6 +55,9 @@ public class PharmacyStorageItemController {
 
 	@Autowired
 	private ItemPriceService itemPriceService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyStorageItemDTO>> getAllPharmacyStorageItems() {
@@ -220,5 +227,64 @@ public class PharmacyStorageItemController {
 
 	}
 	
+	private void sendNotification(String storageId, String pharmacyId) {
+		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));
+		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemService.findOne(Long.parseLong(storageId));
+		
+		String emailBody = "This email is an alert that the quantity of medication " + pharmacyStorageItem.getMedication().getName() + " in storage item #" + pharmacyStorageItem.getId() + " has become 0.";
+		EmailContent email = new EmailContent("Storage item low quantity alert", emailBody);
+		for (PharmacyAdmin padmin : pharmacy.getPharmacyAdmins()) {
+			email.addRecipient(padmin.getEmail());
+		}
+        emailService.sendEmail(email);        
+	}
+	
+	@GetMapping(value = "/checkAvailableQuantity")
+	public ResponseEntity<Integer> checkAvailableQuantity(@RequestParam String storageId, @RequestParam String pharmacyId) {
+		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemService.findOne(Long.parseLong(storageId));
 
+		int quantity = pharmacyStorageItem.getQuantity();
+		if(quantity == 0) {
+			sendNotification(storageId, pharmacyId);
+		}
+		return new ResponseEntity<>(quantity, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/getPharmacyStorage")
+	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorage(@RequestParam String pharmacyId) {
+		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));
+
+		List<PharmacyStorageItemDTO> pharmacyStorageItemsDTO = new ArrayList<>();
+		for (PharmacyStorageItem e : pharmacy.getPharmacyStorageItems()) {
+			pharmacyStorageItemsDTO.add(new PharmacyStorageItemDTO(e));
+		}
+		return new ResponseEntity<>(pharmacyStorageItemsDTO, HttpStatus.OK);
+	}
+	
+	
+	@GetMapping(value = "/getAlternatives")
+	public ResponseEntity<List<PharmacyStorageItemDTO>> getAlternatives(@RequestParam String pharmacyId, @RequestParam String medicationId, @RequestParam String patientUsername) {
+		//TODO allergies
+		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));
+		//Patient patient = patientService.findByUsername(patientUsername);
+		
+		List<PharmacyStorageItemDTO> pharmacyStorageItemDTO = new ArrayList<>();
+		List<Long> alts = new ArrayList<>();
+		Medication medication = medicationService.findOneWithAlternatives(Long.parseLong(medicationId));
+		if(medication != null)  {
+			for (Medication med : medication.getAlternatives()) {
+				alts.add(med.getId());
+			} 
+			for (PharmacyStorageItem e : pharmacy.getPharmacyStorageItems()) {
+				if(alts.contains(e.getMedication().getId())) {
+					pharmacyStorageItemDTO.add(new PharmacyStorageItemDTO(e));
+				}
+			}
+		}
+		
+		return new ResponseEntity<>(pharmacyStorageItemDTO, HttpStatus.OK);
+	}
+	
+	
+	
 }

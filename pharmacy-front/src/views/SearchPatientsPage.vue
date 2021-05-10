@@ -88,17 +88,16 @@
                     :key="item.id"
                     >
                     <v-list-item-content>
-                        <v-col
-                        cols="12"
-                        >
+                        <v-row>
                         <v-list-item-title v-text="item.fixedDate"></v-list-item-title>
-                        </v-col>
+                        <v-list-item-title v-text="item.pharmacy.name"></v-list-item-title>
+                        </v-row>
                         <v-col
                         cols="12"
                         >
                         <v-btn
                         plain 
-                        @click="openAppointment(item)"
+                        @click="startAppointment(item)"
                         >
                         Start Appointment
                         </v-btn>
@@ -106,7 +105,7 @@
                         <v-btn plain
                         color="error"
                         @click="didntShowUp(item)">
-                        Didnt show
+                        Didnt show up
                         </v-btn>
                         </v-col>
 
@@ -169,8 +168,8 @@ export default {
             }).then((response) => (this.patients = response.data));
         },
 
-        toDateTime: function(d, t){
-            return d + " " + t;
+        toDateTime: function(d, t1, t2){
+            return d + " " + t1 + "-" + t2;
         },
 
         closeDialog: function(){
@@ -188,7 +187,7 @@ export default {
             })
             .then((response) => {
                 for(var appointment of response.data){
-                    appointment.fixedDate = this.toDateTime(appointment.timePeriod.startDate, appointment.timePeriod.startTime);
+                    appointment.fixedDate = this.toDateTime(appointment.timePeriod.startDate, appointment.timePeriod.startTime, appointment.timePeriod.endTime);
                     this.allAppointments.push(appointment);
                 }
 
@@ -219,6 +218,24 @@ export default {
                 }
                 this.patients = response.data;
             })
+        },
+
+        startAppointment: function(appointment){
+            var link = '/appointmentInProgress';
+            const encoded = encodeURI(link + '?patientUsername=' + appointment.patient.username + '&pharmacyId=' + 
+                                        appointment.pharmacy.id + '&appointmentId=' + appointment.id);
+            this.$router.push(encoded);
+        },
+
+         didntShowUp: function(appointment){
+            client({
+            method: 'GET',
+            url: 'appointments/patientDidntShowUp',
+            params: {appointmentId: appointment.id}
+            })
+            
+            this.getAllPatients();
+            this.closeDialog();
         },
     },
 };

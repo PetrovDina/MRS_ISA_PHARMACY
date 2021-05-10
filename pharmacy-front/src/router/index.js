@@ -12,6 +12,7 @@ import SearchPatientsPage from '@/views/SearchPatientsPage'
 import DermatologistHomePage from '@/views/DermatologistHomePage'
 import PharmacistHomePage from '@/views/PharmacistHomePage'
 import DispenseMedicationPage from '@/views/DispenseMedicationPage'
+import AppointmentInProgress from '@/components/AppointmentInProgress'
 
 import PatientHomePage from '@/views/PatientHomePage'
 import PatientsReservations from '@/views/PatientsReservations'
@@ -392,6 +393,21 @@ export default new Router({
                 }
               }
 
+        },
+
+        {
+          path: '/appointmentInProgress',
+          name: 'AppointmentInProgress',
+          component: AppointmentInProgress,
+          beforeEnter: function(to, from, next){
+            let user = CheckUser.getLoggedUserData();
+            if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
+              next();
+            }
+            else{
+              ({path: '/'});
+            }
+          }
         },
 
     ]

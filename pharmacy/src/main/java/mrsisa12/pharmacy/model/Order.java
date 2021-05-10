@@ -70,6 +70,14 @@ public class Order {
 		this.dueDate = dueDate;
 	}
 
+	public OrderStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(OrderStatus status) {
+		this.status = status;
+	}
+
 	public List<OrderItem> getOrderItems() {
 		return orderItems;
 	}
@@ -110,14 +118,6 @@ public class Order {
 
 	public void setPharmacy(Pharmacy pharmacy) {
 		this.pharmacy = pharmacy;
-	}
-
-	public OrderStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(OrderStatus status) {
-		this.status = status;
 	}
 	
 }
