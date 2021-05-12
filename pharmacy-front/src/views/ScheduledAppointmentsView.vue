@@ -94,11 +94,27 @@
                                 </div>
 
                                 <Button
+                                    v-if="
+                                        !checkCancellationDate(
+                                            appointment.timePeriod.startDate
+                                        )
+                                    "
                                     text="Cancel derm appointment"
                                     class="book-button"
                                     @action-performed="cancelDerm(appointment)"
                                 >
                                 </Button>
+                                <div
+                                    v-if="
+                                        checkCancellationDate(
+                                            appointment.timePeriod.startDate
+                                        )
+                                    "
+                                    class="cancellation-alert alert alert-dark"
+                                    role="alert"
+                                >
+                                    Cancellation period has ended!
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -192,11 +208,26 @@
                                 </div>
 
                                 <Button
-                                    text="Cancel appointment"
+                                    v-if="
+                                        !checkCancellationDate(
+                                            appointment.timePeriod.startDate
+                                        )
+                                    "
+                                    text="Cancel derm appointment"
                                     class="book-button"
                                     @action-performed="cancelPharm(appointment)"
                                 >
                                 </Button>
+                                <div
+                                    v-if="
+                                        checkCancellationDate(
+                                            appointment.timePeriod.startDate)
+                                    "
+                                    class="cancellation-alert alert alert-dark"
+                                    role="alert"
+                                >
+                                    Cancellation period has ended!
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -231,9 +262,9 @@
                     <div class="modal-body">
                         <!-- <p style="text-align:justify"> You have received one (1) penalty point for cancelling an appointment.</p>
                         <p style="text-align:justify"> For more information about our reward and penalty system, visit your profile.</p> -->
-                        <p style="text-align:justify">Successfully cancelled appointment.</p> 
-
-
+                        <p style="text-align: justify">
+                            Successfully cancelled appointment.
+                        </p>
                     </div>
                     <div class="modal-footer">
                         <button
@@ -296,7 +327,6 @@ export default {
                 }).then((response) => (this.dermAppointments = response.data)); //refreshing page
             });
             $("#cancelModal").modal("show");
-
         },
 
         cancelPharm(appointment) {
@@ -314,7 +344,17 @@ export default {
                 }).then((response) => (this.pharmAppointments = response.data)); //refreshing page
             });
             $("#cancelModal").modal("show");
+        },
 
+        checkCancellationDate(dueDate) {
+            let todaysDate = moment().format("YYYY-MM-DD");
+            dueDate = moment(dueDate).format("YYYY-MM-DD");
+
+            let b = moment(todaysDate).isBefore(
+                moment(dueDate).subtract(1, "day"),
+                "day"
+            );
+            return !b;
         },
     },
 
