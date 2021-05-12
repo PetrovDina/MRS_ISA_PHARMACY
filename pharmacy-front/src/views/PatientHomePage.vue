@@ -91,7 +91,7 @@
             <v-card-text>
                 <v-row>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/patientProfile">
                             <v-card-title class="wordBreak"
                                 >My profile</v-card-title
                             >

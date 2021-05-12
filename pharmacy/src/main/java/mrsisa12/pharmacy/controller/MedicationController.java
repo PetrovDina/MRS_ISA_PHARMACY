@@ -47,6 +47,19 @@ public class MedicationController {
 		return new ResponseEntity<>(medicationsDTO, HttpStatus.OK);
 	}
 	
+	public ResponseEntity<List<MedicationDTO>> allPatientNotAllergic(@RequestParam String username) {
+
+		List<Medication> medications = medicationService.findAll();
+
+		// convert medications to DTOs
+		List<MedicationDTO> medicationsDTO = new ArrayList<>();
+		for (Medication m : medications) {
+			medicationsDTO.add(new MedicationDTO(m));
+		}
+
+		return new ResponseEntity<>(medicationsDTO, HttpStatus.OK);
+	}
+	
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<MedicationCreationDTO> savePharmacyAdmin(@RequestBody MedicationCreationDTO medicationDTO)
 	{

@@ -45,5 +45,14 @@ public class PatientService {
 		return patientRepository.findByUsername(username);
 	}
 
+	public Patient findByUsernameWithAllergies(String patientUsername) {
+		return patientRepository.findByUsernameWithAllergies(patientUsername);
+	}
+
+	public void removeAllergy(Long patientId, Long allergyId) {
+		patientRepository.removeAllergy(patientId, allergyId);
+		
+	}
+
 
 }

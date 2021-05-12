@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import mrsisa12.pharmacy.model.Patient;
 
@@ -33,4 +35,12 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 	public List<Patient> findAllByPenaltyPoints(Integer penaltyPoints);
 
 	public Patient findByUsername(String username);
+
+	@Query("select pat from Patient pat left join fetch pat.allergies al where pat.username = ?1")
+	public Patient findByUsernameWithAllergies(String patientUsername);
+
+    @Transactional
+	@Modifying
+	@Query(value = "delete from allergies alg where alg.patient_id = ?1 and alg.medication_id = ?2", nativeQuery = true)
+	public void removeAllergy(Long patientId, Long allergyId);
 }

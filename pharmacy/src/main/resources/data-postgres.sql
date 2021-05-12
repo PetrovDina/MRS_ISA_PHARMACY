@@ -134,6 +134,11 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 5, 25], "startTime": [12, 0, 0], "endDate": [2021, 5, 25], "endTime": [13, 0, 0]}', 8, 1200, 1, 'False', 2);
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 6, 3], "startTime": [12, 0, 0], "endDate": [2021, 6, 3], "endTime": [13, 30, 0]}', 8, 1700, 2, 'False', 11);
 
+
+-- alergije
+insert into allergies (patient_id, medication_id) values (2, 6);
+insert into allergies (patient_id, medication_id) values (2, 8);
+
 -- narudzbenice
 insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-05-10', 3, 1, 'False');
 insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-05-11', 3, 1, 'False');

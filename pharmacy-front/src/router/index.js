@@ -15,6 +15,8 @@ import DispenseMedicationPage from '@/views/DispenseMedicationPage'
 import AppointmentInProgress from '@/components/AppointmentInProgress'
 
 import PatientHomePage from '@/views/PatientHomePage'
+import PatientProfile from '@/views/PatientProfile'
+
 import PatientsReservations from '@/views/PatientsReservations'
 import DermAppointReservation from '@/views/DermAppointReservation'
 import PharmAppointReservation from '@/views/PharmAppointReservation'
@@ -171,6 +173,21 @@ export default new Router({
             path: '/patientHomePage',
             name: 'PatientHomePage',
             component: PatientHomePage,
+            beforeEnter: function(to, from, next){
+                let user = CheckUser.getLoggedUserData();
+                if(user.userType == 'PATIENT'){
+                  next();
+                }
+                else{
+                  ({path: '/'});
+                }
+              }
+        },
+
+        {
+            path: '/patientProfile',
+            name: 'PatientProfile',
+            component: PatientProfile,
             beforeEnter: function(to, from, next){
                 let user = CheckUser.getLoggedUserData();
                 if(user.userType == 'PATIENT'){

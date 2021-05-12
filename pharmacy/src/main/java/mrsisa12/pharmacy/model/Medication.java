@@ -44,6 +44,17 @@ public class Medication {
 	@JoinTable(name = "alternative_medications", joinColumns = @JoinColumn(name = "medication_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "alternative_id", referencedColumnName = "id"))
 	private List<Medication> alternatives;
 
+//	@ManyToMany(mappedBy = "allergies")
+//    private List<Patient> allergicPatients;
+	
+//	public List<Patient> getAllergicPatients() {
+//		return allergicPatients;
+//	}
+//
+//	public void setAllergicPatients(List<Patient> allergicPatients) {
+//		this.allergicPatients = allergicPatients;
+//	}
+
 	@Column(name = "description", nullable = false)
 	private String description;
 
