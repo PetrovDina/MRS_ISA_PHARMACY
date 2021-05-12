@@ -1,7 +1,7 @@
 <template>
     <div v-if="medication != null" id="reservationDiv">
         <p class="titl">Pharmacies that carry {{ medication.name }}</p>
-        <p>Please select one</p>
+        <p class="titl2">Please select one</p>
 
         <PharmaciesWithPriceComponent
             :results="results"
@@ -107,7 +107,14 @@
             >
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
-                        <div class="modal-body">Successfully reserved!</div>
+                         <div class="modal-header">
+                            Successfully reserved!
+
+                            </div>
+                        <div class="modal-body">
+                            <p style="text-align:justify"> You can see all your reserved medications on your profile.</p> 
+
+                            </div>
                         <div class="modal-footer">
                             <button
                                 type="button"
@@ -257,7 +264,7 @@ span {
     margin: 100px 60px 30px 60px;
 }
 
-p {
+.titl2 {
     font-size: 20px;
 }
 

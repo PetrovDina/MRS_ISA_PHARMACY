@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.repository.AppointmentRepository;
 
 @Service
@@ -69,4 +70,6 @@ public class AppointmentService {
 	public List<Appointment> getAllPharmHistoryByPatient(String patientUsername) {
 		return appointmentRepository.getAllPharmHistoryByPatient(patientUsername);
 	}
+
+
 }

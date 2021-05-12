@@ -77,7 +77,10 @@
                     </div>
 
                     <button
-                        v-if="reservation.status == 'CREATED' && !checkCancellationDate(reservation.dueDate)"
+                        v-if="
+                            reservation.status == 'CREATED' &&
+                            !checkCancellationDate(reservation.dueDate)
+                        "
                         class="btn btn-primary cancel-btn"
                         :class="{ disabled: reservation.status !== 'CREATED' }"
                         @click="selectReservation(reservation)"
@@ -116,8 +119,10 @@
                                     <h5
                                         class="modal-title"
                                         id="exampleModalLongTitle"
+                                        style="text-align: justify"
                                     >
-                                        Confirm reservation
+                                        Are you sure you want to cancel the
+                                        reservation?
                                     </h5>
                                     <button
                                         type="button"
@@ -129,8 +134,15 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure you want to cancel the
-                                    reservation?
+
+                                    <p style="text-align: justify">
+                                        You will receive one (1) penalty point
+                                        for cancelling a reservation.
+                                    </p>
+                                    <p style="text-align: justify">
+                                        For more information about our reward
+                                        and penalty system, visit your profile.
+                                    </p>
                                 </div>
                                 <div class="modal-footer">
                                     <button
@@ -189,7 +201,6 @@ export default {
 
         selectReservation(r) {
             this.selectedReservation = r;
-
         },
 
         cancelReservation() {
@@ -222,10 +233,9 @@ export default {
 
 
 <style scoped>
-
 .reservations-title {
     font-size: 5vh;
-    margin-top:30px;
+    margin-top: 30px;
 }
 .card {
     width: 70%;

@@ -32,7 +32,7 @@
                                                         }}
                                                     </b>
                                                 </p>
-                                              
+
                                                 <p class="card-text">
                                                     Dermatologist rating:
                                                     <b>
@@ -42,7 +42,7 @@
                                                         }}
                                                     </b>
                                                 </p>
-                                                  <p class="card-text">
+                                                <p class="card-text">
                                                     Price:
                                                     <b>
                                                         {{
@@ -94,8 +94,9 @@
                                 </div>
 
                                 <Button
-                                    text="Cancel appointment"
+                                    text="Cancel derm appointment"
                                     class="book-button"
+                                    @action-performed="cancelDerm(appointment)"
                                 >
                                 </Button>
                             </div>
@@ -129,7 +130,7 @@
                                                         }}
                                                     </b>
                                                 </p>
-                                                
+
                                                 <p class="card-text">
                                                     Pharamacist rating:
                                                     <b>
@@ -193,6 +194,7 @@
                                 <Button
                                     text="Cancel appointment"
                                     class="book-button"
+                                    @action-performed="cancelPharm(appointment)"
                                 >
                                 </Button>
                             </div>
@@ -201,6 +203,50 @@
                 </div>
             </Tab>
         </TabNav>
+
+        <!-- Modal -->
+        <div
+            class="modal fade"
+            id="cancelModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Success!
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- <p style="text-align:justify"> You have received one (1) penalty point for cancelling an appointment.</p>
+                        <p style="text-align:justify"> For more information about our reward and penalty system, visit your profile.</p> -->
+                        <p style="text-align:justify">Successfully cancelled appointment.</p> 
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -233,6 +279,42 @@ export default {
 
         setSelected(tab) {
             this.selected = tab;
+        },
+
+        cancelDerm(appointment) {
+            client({
+                url: "appointments/cancel",
+                params: { appointmentId: appointment.id },
+                method: "GET",
+            }).then((response) => {
+                client({
+                    url: "appointments/scheduledDermByPatient",
+                    params: {
+                        patientUsername: localStorage.getItem("USERNAME"),
+                    },
+                    method: "GET",
+                }).then((response) => (this.dermAppointments = response.data)); //refreshing page
+            });
+            $("#cancelModal").modal("show");
+
+        },
+
+        cancelPharm(appointment) {
+            client({
+                url: "appointments/cancel",
+                params: { appointmentId: appointment.id },
+                method: "GET",
+            }).then((response) => {
+                client({
+                    url: "appointments/scheduledPharmByPatient",
+                    params: {
+                        patientUsername: localStorage.getItem("USERNAME"),
+                    },
+                    method: "GET",
+                }).then((response) => (this.pharmAppointments = response.data)); //refreshing page
+            });
+            $("#cancelModal").modal("show");
+
         },
     },
 
