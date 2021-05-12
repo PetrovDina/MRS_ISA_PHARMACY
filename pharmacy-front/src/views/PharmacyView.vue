@@ -25,6 +25,7 @@
             <Tab :isSelected="selected === 'Dermatologists'">
                 <DermatologistsTable
                     @hired-dermatologist="addDermatologistToList"
+                    @fired-dermatologist="removeDermatologistFromList"
                     :dermatologists = "dermatologistsToSend"
                     :pharmacyId = "pharmacyId">
                 </DermatologistsTable>
@@ -109,8 +110,7 @@ export default {
             this.subscribed = !this.subscribed;
         },
         deleteRecordFromDB : function(id){
-            let medId = 0;
-            for(medId in this.medicationToSend){
+            for(const medId in this.medicationToSend){
                 if(this.medicationToSend[medId].id === id){
                     this.medicationToSend.splice(medId, 1);
                     break;
@@ -194,6 +194,7 @@ export default {
                     position: "top-center",
                     duration: 2000,
                 });
+                dermatologist['employmentId'] = response.data.id;
                 this.dermatologistsToSend = [...this.dermatologistsToSend, dermatologist];
                 })
             .catch((response) => 
@@ -203,6 +204,14 @@ export default {
                     duration: 2000,
                 })
             );
+        },
+        removeDermatologistFromList : function(dermatologist){
+            for(const dermIter in this.dermatologistsToSend){
+                if(this.dermatologistsToSend[dermIter].id === dermatologist.id){
+                    this.dermatologistsToSend.splice(dermIter, 1);
+                    return;
+                }
+            }
         },
         addPharmacistIntoList: function(pharmacist){
             this.pharmacistsToSend = [...this.pharmacistsToSend, pharmacist];
@@ -238,6 +247,7 @@ export default {
                 let employment = null;
                 for(employment of this.pharmacy.employments){
                     employment.employee['workTime'] = employment.workTime;
+                    employment.employee['employmentId'] = employment.id;
                     if(employment.contractType === 'DERMATOLOGIST_CONTRACT')
                         this.dermatologistsToSend = [...this.dermatologistsToSend, employment.employee];
                     else
