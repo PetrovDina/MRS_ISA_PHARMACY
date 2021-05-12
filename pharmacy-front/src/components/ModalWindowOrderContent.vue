@@ -22,7 +22,8 @@
                         </tr>
                     </tbody>
                 </table>
-                <hr class="solid">
+                <div v-if="isPharmacyAdmin()">
+                    <hr class="solid">
                     <label v-if="order.offers.length == 0"><span style="font-size: 20px;">This order {{order.orderStatus == "NEW" ? "has no offers" : "has offers"}}</span></label>
                     <div v-if="order.offers.length != 0">
                         <label><span style="font-size: 20px;">Order's offers</span></label>
@@ -47,7 +48,8 @@
                             </tbody>
                         </table>
                     </div>
-                <hr class="solid">
+                    <hr class="solid">
+                </div>
             </div>
         </div>
     </div>
@@ -78,6 +80,9 @@ export default {
         },
         accept : function(offer){
             console.log("Accepted");
+        },
+        isPharmacyAdmin : function(){
+            return localStorage.getItem('USER_TYPE') === "PHARMACY_ADMIN"
         }
     }
 };
