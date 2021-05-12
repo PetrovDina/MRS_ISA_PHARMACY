@@ -26,22 +26,19 @@
                     </tr>
                 </tbody>
             </table>
-            <div>
-                <div class="md-form mx-5 my-5">
-                    <label class="label" for="start_time">Choose starting work time</label>
-                    <input type="time" id="start_time" class="form-control">
-                </div>
-                <div class="md-form mx-5 my-5">
-                    <label class="label" for="end_time">Choose ending work time</label>
-                    <input type="time" id="end_time" class="form-control">
-                </div>
+            <div class="md-form mx-5 my-5">
+                <label class="label" for="start_time">Choose starting work time</label>
+                <input type="time" id="start_time" class="form-control">
             </div>
-            <label v-if="error_msg">{{error_msg_text}}</label>
+            <div class="md-form mx-5 my-5">
+                <label class="label" for="end_time">Choose ending work time</label>
+                <input type="time" id="start_time" class="form-control">
+            </div>
             <Button 
-                    @action-performed="hireDermatologist()" 
-                    text="Hire dermatologist" 
-                    bgd_color="rgba(15, 95, 72, 0.95)" 
-                    style="color:white; width:200px; text-align:center; margin: auto">
+                @action-performed="hireDermatologist()" 
+                text="Hire dermatologist" 
+                bgd_color="rgba(15, 95, 72, 0.95)" 
+                style="color:white; width:200px; text-align:center; margin: auto">
             </Button>
         </div>
     </div>
@@ -49,7 +46,6 @@
 
 <script>
 import Button from "./Button";
-import { client } from "@/client/axiosClient";
 import moment from 'moment'
 
 export default {
@@ -67,9 +63,7 @@ export default {
     },
     data() {
         return {
-            selected_dermos : {},
-            error_msg_text: "",
-            error_msg : true,
+            selected_dermos : {id : -1},
         }
     },
     mounted() {
@@ -78,33 +72,73 @@ export default {
     },
     methods : {
         closeWindow : function(){
+            this.selected_dermos = { id : -1}
             this.$emit('modal-closed');
         },
         clickedOnRow: function(der){
             this.selected_dermos = der;
         },
-        hireDermatologist: function(){
-            
-            let start_time_value = document.getElementById('start_time').value;
-            let end_time_value = document.getElementById('end_time').value;
+        checkInputFields : function(){
+            if(this.selected_dermos.id == -1){
+                this.$toasted.show("Please select one dermatologist!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                return true;
+            } 
 
-            let time1 = moment().format(start_time_value, 'HH:mm');
-            let time2 = moment().format(end_time_value, 'HH:mm');
+            if(document.getElementById('start_time') === undefined || document.getElementById('end_time') === undefined){
+                this.$toasted.show("Starting time must be before ending time!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                return true;
+            }
+            else
+                if(document.getElementById('start_time').value == ''){
+                    this.$toasted.show("Please insert starting time!", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                    return true;
+                }
+                if(document.getElementById('end_time').value == ''){
+                    this.$toasted.show("Please insert ending time!", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                    return true;
+                }
+            return false;
+        },
+        hireDermatologist: function(){
+            if(this.checkInputFields()) return;
+
+            let time1 = moment().format(document.getElementById('start_time').value, 'HH:mm');
+            let time2 = moment().format(document.getElementById('end_time').value, 'HH:mm');
 
             if(time1 > time2){
-                this.error_msg_text = "Starting time must be before ending time!";
-                this.error_msg = true;
+                this.$toasted.show("Starting time must be before ending time!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
             }
             else
             {
                 let myWorkTime = {
-                    startDate: "2021-04-03",
+                    startDate: moment().format("YYYY-MM-DD"),
                     startTime: time1,
-                    endDate: "2021-04-03",
+                    endDate: moment().format("YYYY-MM-DD"),
                     endTime: time2
                 };
                 this.selected_dermos['workTime'] = myWorkTime;
                 this.$emit('hired-dermatologist', this.selected_dermos);
+                this.selected_dermos = { id : -1};
             }
         }
     }

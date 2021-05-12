@@ -1,6 +1,7 @@
 <template>
     <div id="pahrmas">
-        <table class="table table-hover" v-closable="{exclude: [], handler: 'onOutOfFocus'}">
+        <table class="table table-hover"> 
+        <!-- v-closable="{exclude: [], handler: 'onOutOfFocus'}"> -->
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -68,7 +69,7 @@ export default {
     data() {
         return {
             modal_window_show_pharmacist_reg : false,
-            selected_pharmacist: {},
+            selected_pharmacist: { id : -1},
         }
     },
     methods: {
@@ -80,7 +81,7 @@ export default {
         },
         onOutOfFocus: function()
         {
-            this.selected_pharmacist = {};
+            this.selected_pharmacist = { id : -1};
         },
         addPharmacistIntoList: function(pharmacist){
             this.modal_window_show_pharmacist_reg = false;
