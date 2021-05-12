@@ -13,4 +13,13 @@ public class Pharmacist extends Employee {
 	
 	@OneToOne
 	private Employment employment;
+
+	public Employment getEmployment() {
+		return employment;
+	}
+
+	public void setEmployment(Employment employment) {
+		this.employment = employment;
+	}
+
 }

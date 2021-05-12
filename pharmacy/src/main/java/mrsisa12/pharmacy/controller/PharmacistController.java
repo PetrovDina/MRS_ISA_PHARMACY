@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.DermatologistDTO;
 import mrsisa12.pharmacy.dto.PharmacistDTO;
 import mrsisa12.pharmacy.dto.UserDTO;
 import mrsisa12.pharmacy.model.Pharmacist;
@@ -27,16 +28,15 @@ public class PharmacistController {
 
 	@Autowired
 	PharmacistService pharmacistService;
-	
+
 	@Autowired
-	private PasswordEncoder passwordEncoder;		
-	
+	private PasswordEncoder passwordEncoder;
+
 	@Autowired
 	private RoleService roleService;
-	
+
 	@PostMapping(value = "/create", consumes = "application/json")
-	public ResponseEntity<PharmacistDTO> savePharmacist(@RequestBody UserDTO pharmacistDTO)
-	{
+	public ResponseEntity<PharmacistDTO> savePharmacist(@RequestBody UserDTO pharmacistDTO) {
 		Pharmacist phar = new Pharmacist();
 		phar.setUsername(pharmacistDTO.getUsername());
 		phar.setPassword(passwordEncoder.encode(pharmacistDTO.getPassword()));
@@ -49,11 +49,11 @@ public class PharmacistController {
 		phar.setRoles(roleService.findByName("ROLE_PHARMACIST"));
 		phar.setRating(0.0);
 		phar.setDeleted(false);
-		
+
 		pharmacistService.save(phar);
 		return new ResponseEntity<>(new PharmacistDTO(phar), HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacistDTO>> getAllPharmacists() {
 
@@ -66,5 +66,18 @@ public class PharmacistController {
 		}
 
 		return new ResponseEntity<>(pharmacistsDTOs, HttpStatus.OK);
+	}
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+
+		Pharmacist pharmacist = pharmacistService.findOne(id);
+
+		if (pharmacist != null) {
+			pharmacistService.deletePharmacist(pharmacist);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 }

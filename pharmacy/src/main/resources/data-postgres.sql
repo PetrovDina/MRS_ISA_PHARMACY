@@ -96,6 +96,14 @@ insert into system_user (username, password, email, firstname, lastname, locatio
 insert into supplier (id) values (13);
 INSERT INTO user_role (user_id, role_id) VALUES (13, 7); --  ROLE_SUPPLIER
 
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('milojko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milojko@email.com', 'Milojko', 'Pantic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (14, 1.78);
+insert into pharmacist (id) values (14);
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('jelisaveta', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Jelisaveta', 'Salvetic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into employees (id, rating ) values (15, 3.24);
+insert into pharmacist (id) values (15);
+
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (4, '{ "startDate": [2021, 4, 3], "startTime": [7, 0, 0], "endDate": [2021, 4, 3], "endTime": [12, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (5, '{ "startDate": [2021, 4, 3], "startTime": [14, 0, 0], "endDate": [2021, 4, 3], "endTime": [19, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (6, '{ "startDate": [2021, 4, 3], "startTime": [8, 0, 0], "endDate": [2021, 4, 3], "endTime": [16, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 2, 'False');
@@ -105,6 +113,14 @@ UPDATE pharmacist SET employment_id = 4  WHERE id = 7;
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (8, '{ "startDate": [2021, 4, 3], "startTime": [10, 0, 0], "endDate": [2021, 4, 3], "endTime": [18, 0, 0]}', 'PHARMACIST_CONTRACT', 2, 'False');
 -- update farmaceuta da mu podesimo employment_id
 UPDATE pharmacist SET employment_id = 5  WHERE id = 8;
+
+insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (14, '{ "startDate": [2021, 4, 3], "startTime": [7, 0, 0], "endDate": [2021, 4, 3], "endTime": [18, 0, 0]}', 'PHARMACIST_CONTRACT', 1, 'False');
+-- update farmaceuta da mu podesimo employment_id
+UPDATE pharmacist SET employment_id = 6  WHERE id = 14;
+
+insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (15, '{ "startDate": [2021, 4, 3], "startTime": [8, 0, 0], "endDate": [2021, 4, 3], "endTime": [21, 0, 0]}', 'PHARMACIST_CONTRACT', 1, 'False');
+-- update farmaceuta da mu podesimo employment_id
+UPDATE pharmacist SET employment_id = 7  WHERE id = 15;
 
 INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
 INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT

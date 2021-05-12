@@ -24,11 +24,13 @@ import mrsisa12.pharmacy.dto.EmploymentDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
+import mrsisa12.pharmacy.model.Pharmacist;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.EmploymentContractType;
 import mrsisa12.pharmacy.service.EmployeeService;
 import mrsisa12.pharmacy.service.EmploymentService;
+import mrsisa12.pharmacy.service.PharmacistService;
 import mrsisa12.pharmacy.service.PharmacyService;
 
 @RestController
@@ -40,6 +42,9 @@ public class EmploymentController {
 
 	@Autowired
 	private EmployeeService employeeService;
+
+	@Autowired
+	private PharmacistService pharmacistService;
 
 	@Autowired
 	private PharmacyService pharmacyService;
@@ -57,9 +62,10 @@ public class EmploymentController {
 
 		return new ResponseEntity<>(employmentsDTO, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/pharmacistEmploymentsByTime")
-	public ResponseEntity<List<EmploymentDTO>> getAllPharmacistEmploymentsByTime(@RequestParam("startDate") String startDate, @RequestParam String startTime) {
+	public ResponseEntity<List<EmploymentDTO>> getAllPharmacistEmploymentsByTime(
+			@RequestParam("startDate") String startDate, @RequestParam String startTime) {
 
 		LocalDate startDate2 = LocalDate.parse(startDate);
 		LocalDate endDate2 = LocalDate.parse(startDate);
@@ -69,18 +75,13 @@ public class EmploymentController {
 //		List<Employment> employments = employmentService.findAllPharmacistEmploymentsByTime(startTime2);
 		List<Employment> employments = employmentService.findAllPharmacistEmployments();
 
-		
 		List<Employment> matches = new ArrayList<Employment>();
-		//---------
+
 		for (Employment e : employments) {
 			if (employeeService.checkAppointmentTime(tp, e.getEmployee().getId())) {
 				matches.add(e);
 			}
 		}
-
-		//--------
-		
-		
 		// convert employments to DTOs
 		List<EmploymentDTO> employmentsDTO = new ArrayList<>();
 		for (Employment employment : matches) {
@@ -147,6 +148,11 @@ public class EmploymentController {
 
 		employmentService.save(employment);
 
+		if (employmentDTO.getContractType().compareTo(EmploymentContractType.PHARMACIST_CONTRACT) == 0) {
+			Pharmacist pharmacist = pharmacistService.findOne(employmentDTO.getEmployee().getId());
+			pharmacist.setEmployment(employment);
+			pharmacistService.save(pharmacist);
+		}
 		return new ResponseEntity<>(new EmploymentDTO(employment), HttpStatus.CREATED);
 	}
 
@@ -177,10 +183,10 @@ public class EmploymentController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@GetMapping(value = "/pharmacyOfLoggedInPharmacist")
 	public ResponseEntity<PharmacyDTO> getPharmacyOfLoggedInPharmacist(@RequestParam String username) {
-		List<Employment> employments = employmentService.findAllPharmacistEmployments();		
+		List<Employment> employments = employmentService.findAllPharmacistEmployments();
 		Employee emp = employeeService.findOneByUsername(username);
 		Pharmacy p = null;
 		for (Employment e : employments) {

@@ -24,8 +24,8 @@
         >
             <Tab :isSelected="selected === 'Dermatologists'">
                 <DermatologistsTable
-                    @hired-dermatologist="addDermatologistToList"
-                    @fired-dermatologist="removeDermatologistFromList"
+                    @hired-dermatologist = "addDermatologistToList"
+                    @fired-dermatologist = "removeDermatologistFromList"
                     :dermatologists = "dermatologistsToSend"
                     :pharmacyId = "pharmacyId">
                 </DermatologistsTable>
@@ -34,6 +34,7 @@
             <Tab :isSelected="selected === 'Pharmacists'">
                 <PharmacistsTable
                     @registeredPharmacist = "addPharmacistIntoList"
+                    @fired-pharmacist = "removePharmacistFromList"
                     :pharmacists = "pharmacistsToSend"
                     :pharmacyId = "pharmacyId">
                 </PharmacistsTable>
@@ -215,6 +216,14 @@ export default {
         },
         addPharmacistIntoList: function(pharmacist){
             this.pharmacistsToSend = [...this.pharmacistsToSend, pharmacist];
+        },
+        removePharmacistFromList : function(pharmacist){
+            for(const pharIter in this.pharmacistsToSend){
+                if(this.pharmacistsToSend[pharIter].id === pharmacist.id){
+                    this.pharmacistsToSend.splice(pharIter, 1);
+                    return;
+                }
+            }
         },
         addNewOrder : function(order){
             this.ordersToSend = [...this.ordersToSend, order];

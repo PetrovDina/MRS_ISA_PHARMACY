@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
-import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.repository.EmployeeRepository;
 import mrsisa12.pharmacy.repository.EmploymentRepository;
@@ -38,6 +38,11 @@ public class EmployeeService {
 
 	public Employee findOneWithAllAppointments(Long id) {
 		return employeeRepository.findOneWithAllAppointments(id);
+	}
+
+	@Transactional(readOnly = false)
+	public void deleteEmployee(Employee employee) {
+		employeeRepository.delete(employee);
 	}
 
 	public boolean checkAppointmentTime(TimePeriod timePeriod, Long id) {
@@ -70,7 +75,7 @@ public class EmployeeService {
 		// postoji dobro je!
 		return true;
 	}
-	
+
 	public Employee findOneByUsername(String username) {
 		return employeeRepository.findByUsername(username);
 	}

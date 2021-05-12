@@ -1,40 +1,43 @@
 <template>
     <div id="pahrmas">
-        <table class="table table-hover"> 
-        <!-- v-closable="{exclude: [], handler: 'onOutOfFocus'}"> -->
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">First name</th>
-                    <th scope="col">Last name</th>
-                    <th scope="col">Gender</th>
-                    <th scope="col">Work time</th>
-                    <th scope="col">Rating</th>
-                </tr>
-            </thead>
+        <label v-if="pharmacists.length == 0"><span style="font-size: 20px;">There are no hired pharmacists.</span></label>
+        <div v-if="pharmacists.length != 0">
+            <table class="table table-hover"> 
+            <!-- v-closable="{exclude: [], handler: 'onOutOfFocus'}"> -->
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">First name</th>
+                        <th scope="col">Last name</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Work time</th>
+                        <th scope="col">Rating</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr :key="phar.id" v-for="phar in pharmacists" @click="clickedOnRow(phar)" v-bind:class="{selected : selected_pharmacist.id===phar.id}">
-                    <td>{{phar.id}}</td>
-                    <td>{{phar.username}}</td>
-                    <td>{{phar.email}}</td>
-                    <td>{{phar.firstName}}</td>
-                    <td>{{phar.lastName}}</td>
-                    <td><i v-bind:class="phar.gender != 'MALE' ? 'fa fa-venus': 'fa fa-mars'"></i></td> 
-                    <td>{{phar.workTime.startTime}} - {{phar.workTime.endTime}}</td>
-                    <td>{{phar.rating}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <Button
-            @action-performed="hirePharmacist()"
-            class="btn" 
-            text="Hire pharmacist" 
-            bgd_color="rgba(15, 95, 72, 0.85)" 
-            :style="{color : 'rgba(255,255,255, 0.9)', padding: '5px 5px', float:'left'}">
-        </Button>
+                <tbody>
+                    <tr :key="phar.id" v-for="phar in pharmacists" @click="clickedOnRow(phar)" v-bind:class="{selected : selected_pharmacist.id===phar.id}">
+                        <td>{{phar.id}}</td>
+                        <td>{{phar.username}}</td>
+                        <td>{{phar.email}}</td>
+                        <td>{{phar.firstName}}</td>
+                        <td>{{phar.lastName}}</td>
+                        <td><i v-bind:class="phar.gender != 'MALE' ? 'fa fa-venus': 'fa fa-mars'"></i></td> 
+                        <td>{{phar.workTime.startTime}} - {{phar.workTime.endTime}}</td>
+                        <td>{{phar.rating}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <Button
+                @action-performed="firePharmacist()"
+                class="btn" 
+                text="Fire pharmacist" 
+                bgd_color="rgba(15, 95, 72, 0.85)" 
+                :style="{color : 'rgba(255,255,255, 0.9)', padding: '5px 5px', float:'left'}">
+            </Button>
+        </div>
         <ModalWindowHirePharmacist
             @registeredPharmacist = "addPharmacistIntoList"
             @modal-closed = "modal_window_show_pharmacist_reg = false" 
@@ -42,10 +45,18 @@
             :pharmacyId = "pharmacyId"
         >
         </ModalWindowHirePharmacist>
+        <Button
+            @action-performed="hirePharmacist()"
+            class="btn" 
+            text="Hire pharmacist" 
+            bgd_color="rgba(15, 95, 72, 0.85)" 
+            :style="{color : 'rgba(255,255,255, 0.9)', padding: '5px 5px', float:'right'}">
+        </Button>
     </div>
 </template>
 
 <script>
+import { client } from "@/client/axiosClient";
 import Button from './Button.vue';
 import ModalWindowHirePharmacist from './ModalWindowHirePharmacist.vue';
 
@@ -86,6 +97,22 @@ export default {
         addPharmacistIntoList: function(pharmacist){
             this.modal_window_show_pharmacist_reg = false;
             this.$emit('registeredPharmacist', pharmacist);
+        },
+        firePharmacist : function(){
+            if(this.selected_pharmacist.id != -1){
+                client({
+                    url: "employments/" + this.selected_pharmacist.employmentId,
+                    method: "DELETE"
+                }).then((response) => {
+                    this.$emit('fired-pharmacist', this.selected_pharmacist);
+                });
+            }
+            else
+                this.$toasted.show("Please select pharmacist to fire!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
         }
     }
 }

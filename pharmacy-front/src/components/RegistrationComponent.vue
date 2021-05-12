@@ -75,7 +75,6 @@
 </template>
 
 <script>
-
 import { client } from "@/client/axiosClient";
 import moment from 'moment';
 import PharmaciesWithSelect from "./PharmaciesWithSelect.vue";
@@ -130,6 +129,8 @@ export default {
 			if(!this.isMailValid()) return;
 			//if(registration.birthDate == undefined) return;
 			if(this.isSomeFieldEmpty(registration)) return;
+
+			if(this.checkInputFields()) return true;
 			
 			registration.location = 
 			{
@@ -248,13 +249,49 @@ export default {
 		isPharmacist: function(){
 			return this.typeToRegister === "PHARMACIST"; // Bojan pravio 
 		},
-		createPharmacistEmployment: function(pharmacist){ // Bojan pravio 
+		checkInputFields : function(){
+            if(document.getElementById('start_time') === undefined || document.getElementById('end_time') === undefined){
+                return true;
+            }
+            else {
+                if(document.getElementById('start_time').value == ''){
+                    this.$toasted.show("Please insert starting time!", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                    return true;
+                }
+                if(document.getElementById('end_time').value == ''){
+                    this.$toasted.show("Please insert ending time!", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                    return true;
+                }
+				let time1 = moment().format(document.getElementById('start_time').value, 'HH:mm');
+				let time2 = moment().format(document.getElementById('end_time').value, 'HH:mm');
+
+				if(time1 >= time2){
+					this.$toasted.show("Starting time must be before ending time!", {
+						theme: "toasted-primary",
+						position: "top-center",
+						duration: 2000,
+					});
+					return true;
+				}
+			}
+            return false;
+        },
+		createPharmacistEmployment: function(pharmacist){ // Bojan pravio
 			let time1 = moment().format(document.getElementById('start_time').value, 'HH:mm');
 			let time2 = moment().format(document.getElementById('end_time').value, 'HH:mm');
+
 			let myWorkTime = {
-				startDate: "2021-04-03",
+				startDate: moment().format("YYYY-MM-DD"),
 				startTime: time1,
-				endDate: "2021-04-03",
+				endDate: moment().format("YYYY-MM-DD"),
 				endTime: time2
 			};
 			client({
@@ -272,6 +309,7 @@ export default {
 				}
 			}).then((response) => {
 				pharmacist['workTime'] = myWorkTime;
+				pharmacist['employmentId'] = response.data.id;
 				this.$emit('registered', pharmacist);
 			}).catch((response) => console.log("Hiring failed!"));
 		},

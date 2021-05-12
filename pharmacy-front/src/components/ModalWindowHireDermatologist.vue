@@ -89,14 +89,9 @@ export default {
             } 
 
             if(document.getElementById('start_time') === undefined || document.getElementById('end_time') === undefined){
-                this.$toasted.show("Starting time must be before ending time!", {
-                    theme: "toasted-primary",
-                    position: "top-center",
-                    duration: 2000,
-                });
                 return true;
             }
-            else
+            else {
                 if(document.getElementById('start_time').value == ''){
                     this.$toasted.show("Please insert starting time!", {
                         theme: "toasted-primary",
@@ -113,6 +108,7 @@ export default {
                     });
                     return true;
                 }
+            }
             return false;
         },
         hireDermatologist: function(){
@@ -121,7 +117,7 @@ export default {
             let time1 = moment().format(document.getElementById('start_time').value, 'HH:mm');
             let time2 = moment().format(document.getElementById('end_time').value, 'HH:mm');
 
-            if(time1 > time2){
+            if(time1 >= time2){
                 this.$toasted.show("Starting time must be before ending time!", {
                     theme: "toasted-primary",
                     position: "top-center",

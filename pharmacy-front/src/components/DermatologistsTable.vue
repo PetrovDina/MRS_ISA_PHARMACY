@@ -1,48 +1,56 @@
 <template>
     <div id="dermos">
-        <table class="table table-hover">
-        <!-- v-closable="{exclude: [], handler: 'onOutOfFocus'}"> -->
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">First name</th>
-                    <th scope="col">Last name</th>
-                    <th scope="col">Gender</th>
-                    <th scope="col">Rating</th>
-                    <th scope="col">Work time</th>
-                    <th scope="col">Appointment</th>
-                </tr>
-            </thead>
+        <label v-if="dermatologists.length == 0"><span style="font-size: 20px;">There are no hired dermatologists.</span></label>
+        <div v-if="dermatologists.length != 0">
+            <table class="table table-hover">
+            <!-- v-closable="{exclude: [], handler: 'onOutOfFocus'}"> -->
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">First name</th>
+                        <th scope="col">Last name</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Rating</th>
+                        <th scope="col">Work time</th>
+                        <th scope="col">Appointment</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr  :key="der.id" v-for="der in dermatologists" @click="clickedOnRow(der)" v-bind:class="{selected : selected_dermatologist.id===der.id}">
-                    <td>{{der.id}}</td>
-                    <td>{{der.username}}</td>
-                    <td>{{der.email}}</td>
-                    <td>{{der.firstName}}</td>
-                    <td>{{der.lastName}}</td>
-                    <td><i v-bind:class="der.gender != 'MALE' ? 'fa fa-venus': 'fa fa-mars'"></i></td> 
-                    <td>{{der.rating}}</td>
-                    <td>{{der.workTime.startTime}} - {{der.workTime.endTime}}</td>
-                    <td><Button @action-performed="clickedId(der.id)" class="btn" text="New" bgd_color="rgba(15, 95, 72, 0.85)" :style="{color : 'rgba(255,255,255, 0.9)'}"></Button></td>
-                </tr>
-            </tbody>
-        </table>
+                <tbody>
+                    <tr  :key="der.id" v-for="der in dermatologists" @click="clickedOnRow(der)" v-bind:class="{selected : selected_dermatologist.id===der.id}">
+                        <td>{{der.id}}</td>
+                        <td>{{der.username}}</td>
+                        <td>{{der.email}}</td>
+                        <td>{{der.firstName}}</td>
+                        <td>{{der.lastName}}</td>
+                        <td><i v-bind:class="der.gender != 'MALE' ? 'fa fa-venus': 'fa fa-mars'"></i></td> 
+                        <td>{{der.rating}}</td>
+                        <td>{{der.workTime.startTime}} - {{der.workTime.endTime}}</td>
+                        <td><Button @action-performed="clickedId(der.id)" class="btn" text="New" bgd_color="rgba(15, 95, 72, 0.85)" :style="{color : 'rgba(255,255,255, 0.9)'}"></Button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <Button
+                @action-performed="fireDermatologist()"
+                class="btn" 
+                text="Fire dermatologist" 
+                bgd_color="rgba(15, 95, 72, 0.85)" 
+                :style="{color : 'rgba(255,255,255, 0.9)', padding: '5px 5px', float:'left'}">
+            </Button>
+            <ModalWindowAddAppointment 
+                @modal-closed = "mw_show_appointment = false" 
+                :modal_show = "mw_show_appointment"
+                :dermatologistIdToSend = "dermatologistId">
+            </ModalWindowAddAppointment>
+        </div>
         <Button
             @action-performed="hireDermatologist()"
             class="btn" 
             text="Hire dermatologist" 
             bgd_color="rgba(15, 95, 72, 0.85)" 
             :style="{color : 'rgba(255,255,255, 0.9)', padding: '5px 5px', float:'right'}">
-        </Button>
-        <Button
-            @action-performed="fireDermatologist()"
-            class="btn" 
-            text="Fire dermatologist" 
-            bgd_color="rgba(15, 95, 72, 0.85)" 
-            :style="{color : 'rgba(255,255,255, 0.9)', padding: '5px 5px', float:'left'}">
         </Button>
         <ModalWindowHireDermatologist
             @hired-dermatologist = "hiredDermatologist"
@@ -51,11 +59,6 @@
             :pharmacyId = "pharmacyId"
             :dermatologists = "dermatologistsToHire">
         </ModalWindowHireDermatologist>
-        <ModalWindowAddAppointment 
-            @modal-closed = "mw_show_appointment = false" 
-            :modal_show = "mw_show_appointment"
-            :dermatologistIdToSend = "dermatologistId">
-        </ModalWindowAddAppointment>
     </div>
 </template>
 
