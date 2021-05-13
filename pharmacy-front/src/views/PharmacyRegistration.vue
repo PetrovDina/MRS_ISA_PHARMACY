@@ -9,15 +9,21 @@
 								<h4 class="text-center " style="margin-bottom: 40px;">Pharmacy Registration</h4>
 		                        <div class="form-group">
 		                            <label for="pharmacyName" >Pharmacy name:</label><br>
-		                            <input type="text" name="pharmacyName" id="pharmacyName" class="form-control" required="" v-model="pharmacy.name"
-									oninvalid="this.setCustomValidity('Please enter pharmacy name.')">
+		                            <input type="text" name="pharmacyName" id="pharmacyName" class="form-control" v-model="pharmacy.name">
 		                        </div>
-
                                 <div class="form-group">
-		                            <label for="pharmacyName" >Location:</label><br>
-		                            <input type="text" name="pharmacyName" id="pharmacyLocation" class="form-control" v-model="pharmacy.location">
+		                            <label for="pharmacyLocation" >Location:</label><br>
+		                            <input type="text" name="pharmacyLocation" id="pharmacyLocation" class="form-control" v-model="pharmacy.location">
+		                        </div>
+								<div class="form-group">
+		                            <label for="examinationPrice" >Examination price:</label><br>
+		                            <input type="text" name="examinationPrice" id="examinationPrice" class="form-control" v-model="pharmacy.appointmentPriceCatalog.examinationPrice">
 		                        </div>
 
+								<div class="form-group">
+		                            <label for="consultationPrice" >Consultation price:</label><br>
+		                            <input type="text" name="consultationPrice" id="consultationPrice" class="form-control" v-model="pharmacy.appointmentPriceCatalog.consultationPrice">
+		                        </div>
 		                        <div class="form-group">
 		                            <input type="submit" name="submit" class="btn btn-info btn-md" style="background: rgba(15, 95, 72, 0.95)" value="Register" v-on:click="register(pharmacy)">
 		                        </div>
@@ -38,8 +44,13 @@ export default {
 
     data() {
         return {
-			pharmacy: {}
-
+			pharmacy: {
+				name : '',
+				appointmentPriceCatalog : {
+					examinationPrice : '',
+					consultationPrice : '',
+				}
+			},
 		};
     },
 
@@ -47,29 +58,55 @@ export default {
     },
 
     methods: {
-
-		register: function (registration) {
-
-			var p = 
-            {
-                id: null,
-                name: this.pharmacy.name,
-                location: {
-					id: 4,
-					latitude: 30.00,
-					longitude: 30.00,
-					street: 'Ljube Nesica',
-					city: 'Zajecar',
-					zipCode: '19000',
-					streetNum: 21
-				},
-                rating: 0.0
-            }
+		checkInputFields : function(pharmacy) {
+			if(pharmacy.name == '') {
+				this.$toasted.show("Please insert pharmacy name!", {
+					theme: "toasted-primary",
+					position: "top-center",
+					duration: 2000,
+				});
+				return true;
+			}
+			if(pharmacy.appointmentPriceCatalog.examinationPrice == '' || parseInt(pharmacy.appointmentPriceCatalog.examinationPrice) <= 0) {
+				this.$toasted.show("Please insert a proper value for examination price!", {
+					theme: "toasted-primary",
+					position: "top-center",
+					duration: 2000,
+				});
+				return true;
+			}
+			if( pharmacy.appointmentPriceCatalog.consultationPrice == '' || parseInt(pharmacy.appointmentPriceCatalog.consultationPrice) <= 0) {
+				this.$toasted.show("Please insert a proper value for consultation price!", {
+					theme: "toasted-primary",
+					position: "top-center",
+					duration: 2000,
+				});
+				return true;
+			}
+			return false;
+		},
+		register: function (pharmacy) {
+			if(this.checkInputFields(pharmacy)) return;
 
 			client({
                 url: "pharmacy/create",
                 method: "POST",
-				data: p
+				data: {
+					name: this.pharmacy.name,
+					location: {
+						id: 4,
+						latitude: 30.00,
+						longitude: 30.00,
+						street: 'Ljube Nesica',
+						city: 'Zajecar',
+						zipCode: '19000',
+						streetNum: 21
+					},
+					appointmentPriceCatalog:{
+						examinationPrice: this.pharmacy.appointmentPriceCatalog.examinationPrice,
+						consultationPrice: this.pharmacy.appointmentPriceCatalog.consultationPrice,
+					}
+				}
             }).then((response) => (this.homeRedirect())).
 			catch((response) => (console.log(response)));
         },
