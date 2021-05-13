@@ -21,19 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.dto.PatientDTO;
-import mrsisa12.pharmacy.dto.ReservationDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
-import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Patient;
-import mrsisa12.pharmacy.model.PharmacyStorageItem;
-import mrsisa12.pharmacy.model.Reservation;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.model.enums.AppointmentType;
-import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.EmployeeService;
 import mrsisa12.pharmacy.service.PatientService;
@@ -210,10 +206,11 @@ public class AppointmentController {
 		// postavljamo termin farmaceutu
 		employee.addAppointment(appointment);
 		
-		//dina dodala - TODO izmeni da ne bude fiksno nego da se dobavi prava cena iz cenovnika onda kad se on kreira!
-		appointment.setPrice(1500);
+		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
 		
-		appointment.setPharmacy(pharmacyService.findOne(appointmentDTO.getPharmacy().getId()));
+		appointment.setPrice(pharmacy.getAppointmentPriceCatalog().getConsultationPrice());
+		
+		appointment.setPharmacy(pharmacy);
 
 		appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
 		appointment = appointmentService.save(appointment);
@@ -223,7 +220,7 @@ public class AppointmentController {
 	}
 
 	@PostMapping(consumes = "application/json")
-	public ResponseEntity<AppointmentDTO> saveAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+	public ResponseEntity<AppointmentDTO> saveDermatologistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
 		// prilikom kreiranja bih trebao samo da proslijedim id zaposlenog... ID
 		// pacijenta ce se naknadno ubacivati i proglasavati termin zauzetim
 		Appointment appointment = new Appointment();
@@ -247,11 +244,13 @@ public class AppointmentController {
 		// postavljamo termin dermatologu ili farmaceutu
 		employee.addAppointment(appointment);
 		
-		//dina dodala - TODO izmeni da ne bude fiksno nego da se dobavi prava cena iz cenovnika onda kad se on kreira!
-		appointment.setPrice(1500);
+		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
 		
-		//dina dodala - TODO izmeni da bude apoteka gde radi dermatolog a ne uvek jedinica!!!
-		appointment.setPharmacy(pharmacyService.findOne(1l));
+		// postavljanje cijene pregleda kod dermatologa
+		appointment.setPrice(pharmacy.getAppointmentPriceCatalog().getExaminationPrice());
+		
+		// postavljanje apoteke
+		appointment.setPharmacy(pharmacy);
 
 		//dina: TODO dodaj AppointmentType pravi!
 		appointment.setType(AppointmentType.DERMATOLOGIST_EXAMINATION);

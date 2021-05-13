@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyWithEmploymentsDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
+import mrsisa12.pharmacy.model.AppointmentPriceCatalog;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.service.PharmacyService;
@@ -31,7 +32,6 @@ public class PharmacyController {
 
 	@Autowired
 	private PharmacyService pharmacyService;
-	
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
@@ -103,6 +103,11 @@ public class PharmacyController {
 
 		pharmacy.setName(pharmacyDTO.getName());
 		pharmacy.setLocation(pharmacyDTO.getLocation());
+		// prilikom kreiranja postavljamo cijenovnik
+		AppointmentPriceCatalog appointmentPriceCatalog = new AppointmentPriceCatalog(
+				pharmacyDTO.getAppointmentPriceCatalog().getExaminationPrice(),
+				pharmacyDTO.getAppointmentPriceCatalog().getConsultationPrice());
+		pharmacy.setAppointmentPriceCatalog(appointmentPriceCatalog);
 
 		pharmacy = pharmacyService.save(pharmacy);
 		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.CREATED);
@@ -119,7 +124,7 @@ public class PharmacyController {
 
 		pharmacy.setName(pharmacyDTO.getName());
 		pharmacy.setLocation(pharmacyDTO.getLocation());
-
+		
 		pharmacy = pharmacyService.save(pharmacy);
 		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.CREATED);
 	}
@@ -167,5 +172,5 @@ public class PharmacyController {
 		}
 		return new ResponseEntity<>(pharmacyStorageItemsDTO, HttpStatus.OK);
 	}
-	
+
 }
