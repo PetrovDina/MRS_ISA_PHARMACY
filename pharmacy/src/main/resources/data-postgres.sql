@@ -122,6 +122,9 @@ insert into employment (employee_id, workTime, contractType, pharmacy_id, delete
 -- update farmaceuta da mu podesimo employment_id
 UPDATE pharmacist SET employment_id = 7  WHERE id = 15;
 
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('zikica', '$2a$10$JP2z80y0qoRUFUb7KiT31OiwlX66Pso0dF/oRqRi9t0IWVLP731X6', 'zikicam@email.com', 'Zivorad', 'Markovic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into supplier (id) values (16);
+
 INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
 INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT
 INSERT INTO user_role (user_id, role_id) VALUES (3, 6); --  ROLE_PHARMACY_ADMIN
@@ -131,7 +134,11 @@ INSERT INTO user_role (user_id, role_id) VALUES (6, 4); --  ROLE_DERMATOLOGIST
 INSERT INTO user_role (user_id, role_id) VALUES (7, 5); --  ROLE_PHARMACIST
 INSERT INTO user_role (user_id, role_id) VALUES (8, 5); --  ROLE_PHARMACIST
 INSERT INTO user_role (user_id, role_id) VALUES (9, 4); --  ROLE_DERMATOLOGIST
-INSERT INTO user_role (user_id, role_id) VALUES (10, 3); --  ROLE_PATIENT
+INSERT INTO user_role (user_id, role_id) VALUES (10, 4); --  ROLE_PATIENT
+INSERT INTO user_role (user_id, role_id) VALUES (11, 3); --  ROLE_PATIENT
+INSERT INTO user_role (user_id, role_id) VALUES (14, 5); --  ROLE_PHARMACIST
+INSERT INTO user_role (user_id, role_id) VALUES (15, 5); --  ROLE_PHARMACIST
+INSERT INTO user_role (user_id, role_id) VALUES (16, 7); --  ROLE_SUPPLIER
 
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 1, 1, 3, '1.25.2021.', 'COMPLETED', 'res01'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 2, 2, 10, '5.21.2021.', 'CREATED', 'res02'); --za sad americki format dok ne skontamo kako drugacije
@@ -182,3 +189,5 @@ insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) 
 insert into supplierstorageitem (deleted, quantity, medication_id, supplier_id) values('False', 200, 4, 13);
 
 insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-14', 2000, 3, 12, 'PENDING');
+insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-17', 4000, 3, 13, 'PENDING');
+insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-16', 7000, 3, 16, 'PENDING');
