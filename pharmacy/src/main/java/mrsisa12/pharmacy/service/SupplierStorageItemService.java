@@ -38,6 +38,15 @@ public class SupplierStorageItemService {
 		supplierStorageItemRepository.delete(supplierStorageItem);
 	}
 	
+	public void updateSupplierStorageItemQuantity(Medication medication, Supplier supplier, int quantity) 
+	{
+		SupplierStorageItem supplierStorageItem = supplierStorageItemRepository.findOneByMedication(medication, supplier);
+		// umanjujemo kolicinu za porucenu kolicinu
+		supplierStorageItem.setQuantity(supplierStorageItem.getQuantity() - quantity);
+		//supplierStorageItem.setReservedQuantity(supplierStorageItem.getReservedQuantity() - quantity);
+		supplierStorageItemRepository.save(supplierStorageItem);
+	}
+	
 	public SupplierStorageItem findOneWithMedication(Long supplierStorageItemId) 
 	{
 		return supplierStorageItemRepository.findOneWithMedication(supplierStorageItemId);

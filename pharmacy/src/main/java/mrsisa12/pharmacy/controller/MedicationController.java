@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.MedicationCreationDTO;
 import mrsisa12.pharmacy.dto.MedicationDTO;
-import mrsisa12.pharmacy.dto.UserDTO;
 import mrsisa12.pharmacy.model.Medication;
-import mrsisa12.pharmacy.model.Patient;
-import mrsisa12.pharmacy.model.enums.UserStatus;
+import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.service.MedicationService;
+import mrsisa12.pharmacy.service.PharmacyService;
 
 @RestController
 @RequestMapping("/med")
@@ -32,6 +32,9 @@ public class MedicationController {
 
 	@Autowired
 	private MedicationService medicationService;
+	
+	@Autowired
+	private PharmacyService pharmacyService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<MedicationDTO>> getAllMedications() {
@@ -42,6 +45,28 @@ public class MedicationController {
 		List<MedicationDTO> medicationsDTO = new ArrayList<>();
 		for (Medication m : medications) {
 			medicationsDTO.add(new MedicationDTO(m));
+		}
+
+		return new ResponseEntity<>(medicationsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/forPharmacyToAdd/{id}")
+	public ResponseEntity<List<MedicationDTO>> getAllMedicationsToAddIntoPharmacy(@PathVariable Long id) {
+
+		List<Medication> medications = medicationService.findAll();
+
+		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(id);
+		// convert medications to DTOs
+		List<MedicationDTO> medicationsDTO = new ArrayList<>();
+		boolean found = false;
+		for (Medication medication : medications) {
+			found = false;
+			for (PharmacyStorageItem psi : pharmacy.getPharmacyStorageItems()) {
+				if(psi.getMedication().getId() == medication.getId())
+					found = true;
+			}
+			if(!found)
+				medicationsDTO.add(new MedicationDTO(medication));
 		}
 
 		return new ResponseEntity<>(medicationsDTO, HttpStatus.OK);

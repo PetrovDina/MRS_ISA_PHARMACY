@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.model.Medication;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.repository.PharmacyStorageItemRepository;
 
@@ -36,6 +38,14 @@ public class PharmacyStorageItemService {
 	@Transactional(readOnly = false)
 	public void deletePharmacyStorageItem(PharmacyStorageItem pharmacyStorageItem) {
 		pharmacyStorageItemRepository.delete(pharmacyStorageItem);
+	}
+	
+	public void updatePharmacyStorageItemQuantity(Medication medication, Pharmacy pharmacy, int quantity) 
+	{
+		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemRepository.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
+		// umanjujemo kolicinu za porucenu kolicinu
+		pharmacyStorageItem.setQuantity(pharmacyStorageItem.getQuantity() + quantity);
+		pharmacyStorageItemRepository.save(pharmacyStorageItem);
 	}
 
 	public PharmacyStorageItem findOneWithItemPrices(Long pharmacyStorageItemId) {

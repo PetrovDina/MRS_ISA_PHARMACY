@@ -42,7 +42,7 @@
         </table>
         <!-- The Modal -->
         <ModalWindowAddMed 
-            @add-medication="addMedicationInPharmacy" 
+            @add-medication="addMedicationIntoPharmacyStorage" 
             @modal-closed = "closeModalWindow" 
             :modal_show = "modal_window_show"
             :medications = "medicationsForAdd" >
@@ -66,6 +66,7 @@ export default {
                 return [];
             }
         },
+        pharmacyId : Number
     },
     data() {
         return {
@@ -75,23 +76,20 @@ export default {
     },
     methods: {
         openModalWindow : function(){
-            this.modal_window_show = true;
-            if(this.medicationsForAdd.length == 0)
-                client({
-                    url: "med/all",
-                    method: "GET",
-                }).then((response) => {
-                    response.data.forEach(medication => {
-                        let foundId = -1;
-                        this.medications.forEach(medicationInPharmacy => {
-                            if(medication.id == medicationInPharmacy.medicationId){
-                                foundId = medication.id;
-                            }
-                        });
-                        if(foundId == -1)
-                            this.medicationsForAdd.push(medication);
+            client({
+                url: "/med/forPharmacyToAdd/" + this.pharmacyId,
+                method: "GET",
+            }).then((response) => {
+                this.medicationsForAdd = response.data;
+                if(response.data.length == 0)
+                    this.$toasted.show("There are no medications to add into pharmacy storage!", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
                     });
-                });
+                else
+                    this.modal_window_show = true;
+            });
         },
         closeModalWindow(){
             this.modal_window_show = false;
@@ -108,7 +106,7 @@ export default {
                 });
             }
         },
-        addMedicationInPharmacy(med, price){
+        addMedicationIntoPharmacyStorage(med, price){
             this.$emit('add-med-into-pharmacy', med, price);
         },
         updateMedicationPrice: function(med, item){

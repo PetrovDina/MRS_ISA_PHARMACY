@@ -174,6 +174,7 @@ public class PharmacyStorageItemController {
 				ip.setCurrent(false);
 				ip.getTimePeriod().setEndDate(localDateNow);
 				ip.getTimePeriod().setEndTime(localTimeNow);
+				itemPriceService.save(ip);
 			}
 		}
 		// kreiramo trenutni datum i vrijeme za datum i vrijeme kreiranja, datum i vrijeme isteka je null

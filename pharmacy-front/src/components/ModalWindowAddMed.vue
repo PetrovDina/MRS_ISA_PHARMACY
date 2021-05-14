@@ -48,12 +48,13 @@ export default {
                 return 'Set a proper value greater than zero.';
             },
             selectedMedication : null,
-            price : 0,
+            price : '',
         }
     },
     mounted() {},
     methods : {
         closeWindow : function(){
+            this.price = '';
             this.selectedMedication = null;
             this.$emit('modal-closed');
         },
