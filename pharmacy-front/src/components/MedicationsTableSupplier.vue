@@ -10,6 +10,7 @@
                     <th scope="col">Prescription</th>
                     <th scope="col">Form</th>
                     <th scope="col">Quantity</th>
+                    <th scope="col">Reserved Quantity</th>
                     <td>
                         <button @click="openModalWindow">
                                 <i class="fa fa-plus-circle fa-2x"></i>
@@ -20,13 +21,17 @@
 
             <tbody>
                 <tr :key="suppItem.id" v-for="suppItem in supplierStorageItems">
-                    <td><button @click="deleteSuppItem(suppItem.id, suppItem.medication.name)"><i class="fa fa-trash fa-lg"></i></button></td>
+                    <td><button 
+                        :disabled="suppItem.reservedQuantity!=0"
+                        @click="deleteSuppItem(suppItem.id, suppItem.medication.name)"><i class="fa fa-trash fa-lg"></i></button>
+                    </td>
                     <td>{{suppItem.id}}</td>
                     <td>{{suppItem.medication.name}}</td>
                     <td>{{suppItem.medication.manufacturer}}</td> 
                     <td>{{suppItem.medication.prescriptionReq? "required":"not required"}}</td> 
                     <td>{{suppItem.medication.form}}</td>
                     <td>{{suppItem.quantity}}</td>
+                    <td>{{suppItem.reservedQuantity}}</td>
                 </tr>
             </tbody>
         </table>
@@ -83,6 +88,10 @@ export default {
             this.$emit('add-med-to-supplier', med, quantity);
         },
     },
+
+    mounted() {
+        console.log(this.supplierStorageItems[0]);
+    }
 };
 </script>
 

@@ -30,6 +30,7 @@ import mrsisa12.pharmacy.service.OfferService;
 import mrsisa12.pharmacy.service.OrderItemService;
 import mrsisa12.pharmacy.service.OrderService;
 import mrsisa12.pharmacy.service.SupplierService;
+import mrsisa12.pharmacy.service.SupplierStorageItemService;
 
 @RestController
 @RequestMapping("/offer")
@@ -44,6 +45,9 @@ public class OfferController {
 	@SuppressWarnings("unused")
 	@Autowired
 	private OrderItemService orderItemService;
+	
+	@Autowired
+	private SupplierStorageItemService supplierStorageItemService;
 	
 	@Autowired
 	private SupplierService supplierService;
@@ -69,6 +73,11 @@ public class OfferController {
 				}
 
 			}
+		}
+		
+		for (OrderItem orderItem : order.getOrderItems()) 
+		{
+            supplierStorageItemService.updateSupplierStorageItemReservedQuantity(orderItem.getMedication(), supplier, orderItem.getQuantity());
 		}
 		
 		if(order.getStatus() == OrderStatus.NEW)
@@ -133,7 +142,7 @@ public class OfferController {
 		{
 			if(supplierStorageItem.getMedication().getId() == orderItem.getMedication().getId())
 			{
-				if(supplierStorageItem.getQuantity() >= orderItem.getQuantity())
+				if(supplierStorageItem.getQuantity() - supplierStorageItem.getReservedQuantity() >= orderItem.getQuantity())
 					return true;
 			}
 		}

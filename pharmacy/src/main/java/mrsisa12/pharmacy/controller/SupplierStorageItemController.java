@@ -68,6 +68,7 @@ public class SupplierStorageItemController {
 
 		suppleirStorageItem.setMedication(medication);
 		suppleirStorageItem.setQuantity(supplierStorageItemDTO.getQuantity());
+		suppleirStorageItem.setReservedQuantity(0);
 		suppleirStorageItem.setDeleted(false);
 		suppleirStorageItem.setSupplier(supplier);
 		

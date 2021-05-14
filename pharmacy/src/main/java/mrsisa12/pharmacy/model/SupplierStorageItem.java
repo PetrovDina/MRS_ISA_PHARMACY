@@ -16,25 +16,29 @@ import org.hibernate.annotations.Where;
 @SQLDelete(sql = "UPDATE supplierstorageitem " + "SET deleted = true " + "WHERE id = ?")
 @Where(clause = "deleted = false")
 public class SupplierStorageItem {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "quantity", nullable = false)
 	private int quantity;
-	
+
+	@Column(name = "reservedQuantity", nullable = false)
+	private int reservedQuantity;
+
 	@ManyToOne(optional = false)
 	private Medication medication;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUPPLIER_ID", referencedColumnName = "ID")
 	private Supplier supplier;
-	
+
 	@Column(name = "deleted")
 	private boolean deleted;
 
-	public SupplierStorageItem() { }
+	public SupplierStorageItem() {
+	}
 
 	public SupplierStorageItem(Long id, int quantity, Medication medication, Supplier supplier, boolean deleted) {
 		super();
@@ -84,7 +88,13 @@ public class SupplierStorageItem {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
-	
-	
-	
+
+	public int getReservedQuantity() {
+		return reservedQuantity;
+	}
+
+	public void setReservedQuantity(int reservedQuantity) {
+		this.reservedQuantity = reservedQuantity;
+	}
+
 }

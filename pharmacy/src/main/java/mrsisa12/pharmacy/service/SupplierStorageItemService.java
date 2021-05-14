@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.model.Medication;
+import mrsisa12.pharmacy.model.Supplier;
 import mrsisa12.pharmacy.model.SupplierStorageItem;
 import mrsisa12.pharmacy.repository.SupplierStorageItemRepository;
 
@@ -40,5 +42,13 @@ public class SupplierStorageItemService {
 	{
 		return supplierStorageItemRepository.findOneWithMedication(supplierStorageItemId);
 	}
+	
+	public void updateSupplierStorageItemReservedQuantity(Medication medication, Supplier supplier, int quantityToReserve) 
+    {
+        SupplierStorageItem supplierStorageItem = supplierStorageItemRepository.findOneByMedication(medication, supplier);
+        System.out.println(supplierStorageItem);
+        supplierStorageItem.setReservedQuantity(supplierStorageItem.getReservedQuantity() + quantityToReserve);
+        supplierStorageItemRepository.save(supplierStorageItem);
+    }
 
 }

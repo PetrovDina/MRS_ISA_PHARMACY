@@ -7,22 +7,24 @@ public class SupplierStorageItemDTO {
 	
 	private Long id;
 	private int quantity;
+	private int reservedQuantity;
 	private MedicationDTO medication;
 	private Long supplierId;
 	
 	public SupplierStorageItemDTO() { }
 
-	public SupplierStorageItemDTO(Long id, int quantity, Medication medication, Long supplierId) {
+	public SupplierStorageItemDTO(Long id, int quantity, Medication medication, Long supplierId, int reservedQuantity) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
 		this.medication = new MedicationDTO(medication);
 		this.supplierId = supplierId;
+		this.reservedQuantity = reservedQuantity;
 	}
 	
 	public SupplierStorageItemDTO(SupplierStorageItem supplierStorageItem) {
 		this(supplierStorageItem.getId(), supplierStorageItem.getQuantity(), supplierStorageItem.getMedication(),
-				supplierStorageItem.getSupplier().getId());
+				supplierStorageItem.getSupplier().getId(), supplierStorageItem.getReservedQuantity());
 	}
 
 	public Long getId() {
@@ -55,6 +57,14 @@ public class SupplierStorageItemDTO {
 
 	public void setSupplierId(Long supplierId) {
 		this.supplierId = supplierId;
+	}
+
+	public int getReservedQuantity() {
+		return reservedQuantity;
+	}
+
+	public void setReservedQuantity(int reservedQuantity) {
+		this.reservedQuantity = reservedQuantity;
 	}
 
 }
