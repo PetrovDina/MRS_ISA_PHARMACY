@@ -27,13 +27,16 @@
         </ModalWindowEditOrderContent>
         <ModalWindowOrderContent
             @modal-closed = "mw_show_order_content = false"
+            @update-quantities-accpeted-order = "updateMedicationQuantites"
             :modal_show = "mw_show_order_content"
             :order = "orderToSend">
         </ModalWindowOrderContent>
         <ModalWindowMakeNewOrder
             @order-sent = "saveOrder"
+            @new-medications-added-from-order = "addMedicationsIntoPharmacyStorage"
             @modal-closed = "mw_show_new_order = false"
-            :modal_show = "mw_show_new_order">
+            :modal_show = "mw_show_new_order"
+            :medicationsInPharmacy = "medicationsInPharmacy">
         </ModalWindowMakeNewOrder>
         <Button
             @action-performed="makeANewOrder()"
@@ -64,6 +67,12 @@ export default {
             }
         },
         pharmacyAdminId : Number,
+        medicationsInPharmacy : {
+            type : Array,
+            default() {
+                return [];
+            }
+        },
     },
     data() {
         return {
@@ -118,6 +127,12 @@ export default {
                 method: "PUT",
                 data: order
             }).then((response) => this.$emit('order-updated', order))
+        },
+        addMedicationsIntoPharmacyStorage : function(medications){
+            this.$emit("new-medications-added-from-order", medications)
+        },
+        updateMedicationQuantites : function(order){
+            this.$emit('update-quanities-for-medications', order);
         }
     },
 };

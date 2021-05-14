@@ -44,14 +44,18 @@
                     @update-medication="updateMedicationPrice" 
                     @add-med-into-pharmacy="addMedicationToDB" 
                     @record-deleted="deleteRecordFromDB" 
-                    :medications = "medicationToSend">
+                    :medications = "medicationToSend"
+                    :pharmacyId = "pharmacyId">
                 </MedicationsTable>
             </Tab>
             <Tab :isSelected="selected === 'Orders'">
                 <OrdersTable 
                     @order-updated = "orderUpdated"
                     @order-added = "addNewOrder"
-                    :orders = "ordersToSend">
+                    @new-medications-added-from-order = "addMedIntoPharStorage"
+                    @update-quanities-for-medications = "updateQuantities"
+                    :orders = "ordersToSend"
+                    :medicationsInPharmacy = "medicationToSend">
                 </OrdersTable>
             </Tab>
         </TabNav>
@@ -151,26 +155,25 @@ export default {
                     prescriptionReq: med.prescriptionReq,
                     form: med.form,
                     quantity : 0,
+                    medicationId : med.id,
                     price : medicationPrice,
                     price_edit : false
                 }]
             }).catch((response) => (console.log(response)));
         },
         updateMedicationPrice : function(med, priceToUpdate){
-            var dataToUpdate = 
-            {
-                id: med.id,
-                itemPrices: [
-                    {
-                        price: priceToUpdate
-                    }
-                ]
-            }
             // poziv na back da se update-uje cijena pharmacyStorageItem u pharmacy
 			client({
                 url: "/pharmacyStorageItem",
                 method: "PUT",
-				data: dataToUpdate
+                data: {
+                    id: med.id,
+                    itemPrices: [
+                        {
+                            price: priceToUpdate
+                        }
+                    ]
+                }
             })
             .catch((response) => (console.log(response)));
         },
@@ -234,6 +237,49 @@ export default {
                     order.dueDate = orderUpdated.dueDate;
                     order.orderItems = orderUpdated.orderItems;
                 }
+            });
+        },
+        addMedIntoPharStorage : function(medications){
+            for (let medIndex = 0; medIndex < medications.length; medIndex++) {
+                const medication = medications[medIndex];
+                client({
+                    url: "pharmacyStorageItem",
+                    method: "POST",
+                    data : {
+                        quantity : 0,
+                        itemPrices : [
+                            {
+                                price: medication["price"]
+                            }
+                        ],
+                        medication: {
+                            id : medication.id
+                        },
+                        pharmacy : {
+                            id : this.pharmacy.id
+                        }
+                }
+                }).then((response) => {
+                    this.medicationToSend = [... this.medicationToSend, {
+                        id: response.data.id,
+                        name: medication.name,
+                        manufacturer: medication.manufacturer,
+                        prescriptionReq: medication.prescriptionReq,
+                        form: medication.form,
+                        quantity : 0,
+                        price : medication["price"],
+                        medicationId: medication.id,
+                        price_edit : false,
+                    }]
+                });
+            }
+        },
+        updateQuantities : function(order){
+            order.orderItems.forEach(orderItem => {
+                this.medicationToSend.forEach(med => {
+                    if(med.medicationId === orderItem.medication.id)
+                        med.quantity += orderItem.quantity;
+                });
             });
         }
     },

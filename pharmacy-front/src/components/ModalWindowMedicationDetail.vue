@@ -59,11 +59,13 @@
                     </tbody>
                 </table>
             </div>
-            <label><b>Available in pharmacies</b></label>
-            <PharmaciesWithPriceComponent
-                        :results="pharmacies"
-                        :canSelect=false
-            ></PharmaciesWithPriceComponent>
+            <div v-if="!isPharmacyAdmin()">
+                <label><b>Available in pharmacies</b></label>
+                <PharmaciesWithPriceComponent
+                            :results="pharmacies"
+                            :canSelect=false
+                ></PharmaciesWithPriceComponent>
+            </div>
         </div>
     </div>
 </template>
@@ -104,17 +106,19 @@ export default {
                         method: "GET",
                 }).then((response) => {
                         this.medication = response.data;
-                        console.log(this.medication);
                         client({
-                        url: "pharmacyStorageItem/allByMedicationAndQuantity",
-                        params: {medicationId: this.medication.id},
-                        method: "GET",
-                    }).then((response) => (this.pharmacies = response.data));
+                            url: "pharmacyStorageItem/allByMedicationAndQuantity",
+                            params: {medicationId: this.medication.id},
+                            method: "GET",
+                        }).then((response) => (this.pharmacies = response.data));
                 });
 
             }
                 
             return this.modal_show === true;
+        },
+        isPharmacyAdmin : function(){
+            return localStorage.getItem('USER_TYPE') === "PHARMACY_ADMIN";
         }
     }
 };

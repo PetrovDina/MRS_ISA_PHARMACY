@@ -34,7 +34,7 @@
                                     <th scope="col">Supplier</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">Offer Status</th>
-                                    <th scope="col">Accept?</th>
+                                    <th v-if="isAcceptableTableHeader()" scope="col">Accept?</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,7 +43,7 @@
                                     <td style="width:24%;">{{offer.supplierUsername}}</td>
                                     <td style="width:24%;">{{offer.price}}</td>
                                     <td style="width:23%;">{{offer.status}}</td>
-                                    <td style="width:5%;"><button @click="accept(offer)"><i class="fa fa-check fa-2x"></i></button></td>
+                                    <td v-if="isAcceptableTableHeader(offer)" style="width:5%;"><button @click="accept(offer)"><i class="fa fa-check fa-2x"></i></button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { client } from "@/client/axiosClient";
 import Button from "./Button";
 import moment from "moment";
 
@@ -79,10 +80,32 @@ export default {
             return moment(date).format('DD. MMM YYYY.');
         },
         accept : function(offer){
-            console.log("Accepted");
+            client({
+                url: "/offer/accept",
+                method: "POST",
+                data : {
+                    id: offer.id,
+                    supplierUsername: offer.supplierUsername,
+                    orderId: offer.orderId,
+                    price: offer.price
+                }
+            });
+            this.order.offers.forEach(offerToUpdateStatus => {
+                if(offerToUpdateStatus.id === offer.id)
+                    offerToUpdateStatus.status = 'ACCEPTED';
+                else
+                    offerToUpdateStatus.status = 'REJECTED';
+            });
+            this.$emit('update-quantities-accpeted-order', this.order);
         },
         isPharmacyAdmin : function(){
             return localStorage.getItem('USER_TYPE') === "PHARMACY_ADMIN"
+        },
+        isAcceptableTableHeader : function(){
+            return this.order.offers[0].status === 'PENDING' && localStorage.getItem('USERNAME') === this.order.pharmacyAdmin.username;
+        },
+        isAcceptableTableData : function(offer){
+            return offer.status === 'PENDING' && localStorage.getItem('USERNAME') === this.order.pharmacyAdmin.username;
         }
     }
 };

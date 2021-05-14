@@ -115,7 +115,7 @@ public class OfferController {
 		return new ResponseEntity<>(new OfferDTO(offer), HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/accept", consumes = "application/json")
+	@PostMapping(value = "/accept", consumes = "application/json")
 	public ResponseEntity<OfferDTO> acceptOffer(@RequestBody OfferDTO offerDTO) {
 		
 		Order orderWithOrderItems = orderService.findOneWithOrderItems(offerDTO.getOrderId());

@@ -125,6 +125,9 @@ UPDATE pharmacist SET employment_id = 7  WHERE id = 15;
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('zikica', '$2a$10$JP2z80y0qoRUFUb7KiT31OiwlX66Pso0dF/oRqRi9t0IWVLP731X6', 'zikicam@email.com', 'Zivorad', 'Markovic', 1, 'MALE', 'ACTIVATED', 'False');
 insert into supplier (id) values (16);
 
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('mojadmin', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'baskalo@email.com', 'Baki', 'Baskalo', 1, 'MALE', 'ACTIVATED', 'False');
+insert into pharmacyadmin (id, pharmacy_id) values (17, 1);
+
 INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
 INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT
 INSERT INTO user_role (user_id, role_id) VALUES (3, 6); --  ROLE_PHARMACY_ADMIN
@@ -139,6 +142,7 @@ INSERT INTO user_role (user_id, role_id) VALUES (11, 3); --  ROLE_PATIENT
 INSERT INTO user_role (user_id, role_id) VALUES (14, 5); --  ROLE_PHARMACIST
 INSERT INTO user_role (user_id, role_id) VALUES (15, 5); --  ROLE_PHARMACIST
 INSERT INTO user_role (user_id, role_id) VALUES (16, 7); --  ROLE_SUPPLIER
+INSERT INTO user_role (user_id, role_id) VALUES (17, 6); --  ROLE_SUPPLIER
 
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 1, 1, 3, '1.25.2021.', 'COMPLETED', 'res01'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 2, 2, 10, '5.21.2021.', 'CREATED', 'res02'); --za sad americki format dok ne skontamo kako drugacije

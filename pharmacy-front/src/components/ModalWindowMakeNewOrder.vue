@@ -53,6 +53,13 @@
                     style="color:white; width:200px; text-align:center;">
                 </Button>
             </div>
+            <ModalWindowAddMedFromOrder
+                @modal-closed = "modal_show_add_price = false"
+                @med-added = "addMedicationForPharmacyStorage"
+                :modal_show = "modal_show_add_price"
+                :medication = "selected_medication"
+            >
+            </ModalWindowAddMedFromOrder>
         </div>
     </div>
 </template>
@@ -61,19 +68,29 @@
 import Button from "./Button";
 import { client } from "@/client/axiosClient";
 import AddNewMedicationTable from './AddNewMedicationTable';
+import ModalWindowAddMedFromOrder from './ModalWindowAddMedFromOrder.vue';
 import moment from 'moment';
 
 export default {
     name : "ModalWindowMakeNewOrder",
-    components : {Button, AddNewMedicationTable},
+    components : {Button, AddNewMedicationTable, ModalWindowAddMedFromOrder},
     props : {
         modal_show : Boolean,
+        medicationsInPharmacy: {
+            type : Array,
+            default() {
+                return [];
+            }
+        },
     },
     data() {
         return {
             medications : [],
             orderItems : [],
+            newMedicationsInPharmacy : [],
+            modal_show_add_price : false,
             today: moment().format("YYYY-MM-DD"),
+            selected_medication : {}
         }
     },
     mounted() {
@@ -84,13 +101,22 @@ export default {
     },
     methods : {
         closeWindow : function(){
+            this.newMedicationsInPharmacy = [];
             this.orderItems = [];
             this.$emit('modal-closed');
         },
         deleteOrderItem : function(orderItemIdArrved){
+            // brisemo iz orderItem-a
             for(const orderItemId in this.orderItems){
                 if(this.orderItems[orderItemId].medId === orderItemIdArrved){
                     this.orderItems.splice(orderItemId, 1);
+                    break;
+                }
+            }
+            // brisemo iz liste lijekova koji ce se dodati nakon sto se posalje porudzbina
+            for(const medicationId in this.newMedicationsInPharmacy){
+                if(this.newMedicationsInPharmacy[medicationId].medId === orderItemIdArrved.medicationId){
+                    this.newMedicationsInPharmacy.splice(medicationId, 1);
                     break;
                 }
             }           
@@ -107,40 +133,84 @@ export default {
     		// ako sam vec taj dodavao
             for(const orderItemId in this.orderItems){
                 if(this.orderItems[orderItemId].medId === selectedMedication.id){
+                    this.$toasted.show('Medication '+ this.orderItems[orderItemId].medication.name +' is already in order!', {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
                     return;
                 }
             }
-            // ako se prvi put dodajte
-            this.orderItems.push({
-                "medId": selectedMedication.id,
-                "quantity" : 0,
-                "medication" : selectedMedication,
-                "quantity_edit" : false
-            });
+            // provjera da li je taj lijek u apoteci
+            for(const medicationIter in this.medicationsInPharmacy){
+                if(this.medicationsInPharmacy[medicationIter].medicationId === selectedMedication.id){
+                    // ako se prvi put dodaje i u apoteci je
+                    this.orderItems.push({
+                        "medId": selectedMedication.id,
+                        "quantity" : 0,
+                        "medication" : selectedMedication,
+                        "quantity_edit" : false
+                    });
+                    return;
+                }
+            }
+
+            // posto nije u apoteci treba ga dodati  
+            this.selected_medication = selectedMedication;
+            this.modal_show_add_price = true; // otvaramo prozor za dodavanje cijene
     	},
         sendOrder : function(){
             if(document.getElementById('date'))
                 if(document.getElementById('date').value === ''){
-                    alert("Date must be selected!");
+                    this.$toasted.show("Date must be selected!", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
                     return;
                 }
             if(this.orderItems.length === 0){
-                alert("You need to select at least one medication!");
+                this.$toasted.show("You need to select at least one medication!", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
                 return;
             }
             for(const orderItemId in this.orderItems){
                 if(parseInt(this.orderItems[orderItemId].quantity) === 0){
-                    alert('Order item '+ this.orderItems[orderItemId].medication.name +' has quantity 0');
+                    this.$toasted.show('Medication'+ this.orderItems[orderItemId].medication.name +' has quantity 0', {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
                     return;
                 }
             }
+
+            // treba da dodamo sve lijekove koji su poruceni a nisu u apoteci
+            if(this.newMedicationsInPharmacy.length != 0)
+                this.$emit("new-medications-added-from-order", this.newMedicationsInPharmacy);
+
+            // saljemo narudzbenicu
             this.$emit('order-sent', {
                 'dueDate': document.getElementById('date').value,
                 'orderItems': this.orderItems,
                 'orderStatus' : 'NEW',
                 'offers' : []
             });
-            this.orderItems = [];
+
+            this.closeWindow();
+        },
+        addMedicationForPharmacyStorage : function(medication){
+            this.modal_show_add_price = false;
+            this.newMedicationsInPharmacy.push(medication);
+            this.orderItems.push({
+                "medId": medication.id,
+                "quantity" : 0,
+                "medication" : medication,
+                "quantity_edit" : false
+            });
         }
     }
 };
