@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.MedicationDTO;
 import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.dto.UserDTO;
+import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.enums.UserStatus;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
@@ -58,12 +61,16 @@ public class PatientController {
 	public ResponseEntity<PatientDTO> getOneByUsername(@PathVariable("username") String username) {
 
 		Patient patient = patientService.findByUsername(username);
+		
+		if (patient == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
 
 
 		return new ResponseEntity<>(new PatientDTO(patient), HttpStatus.OK);
 	}
-	
-	
+		
 	@GetMapping(value = "/addAllergy")
 	public ResponseEntity<PatientDTO> addAllergyToPatient(@RequestParam("patientUsername") String patientUsername, @RequestParam("allergyId") Long allergyId) {
 
@@ -127,6 +134,24 @@ public class PatientController {
 			}
 		}
 		return false;
+	}
+	
+	@PutMapping(consumes = "application/json")
+	public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patientDTO) {
+
+		Patient p = patientService.findOne(patientDTO.getId());
+
+		if (p == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		p.setFirstName(patientDTO.getFirstName());
+		p.setLastName(patientDTO.getLastName());
+		p.setUsername(patientDTO.getUsername());
+		p.setLocation(patientDTO.getLocation());
+
+		patientService.save(p);
+		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.CREATED);
 	}
 	
 	@SuppressWarnings("deprecation")

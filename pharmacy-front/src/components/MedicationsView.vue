@@ -21,13 +21,15 @@
                         {{ med.prescriptionReq ? "required" : "not required" }}
                     </td>
                     <td>{{ med.form }}</td>
-                    <td><button
+                    <td>
+                        <!-- <button
                         v-if="checkRole()"
                         class="reserveButton"
                         @click="reserveMedication(med)"
                     >
                         RESERVE
-                    </button></td>
+                    </button> -->
+                    <i v-if="checkRole()" @click="reserveMedication(med)" class="fa fa-2x fa-shopping-cart" aria-hidden="true"></i></td>
                 </tr>
             </tbody>
         </table>

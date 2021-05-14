@@ -1,10 +1,10 @@
 <template>
-<v-app>
-    <div id="app">
-        <Navigation></Navigation>
-        <router-view />
-    </div>
-</v-app>
+    <v-app>
+        <div id="app">
+            <Navigation></Navigation>
+            <router-view />
+        </div>
+    </v-app>
 </template>
 
 <script>
@@ -17,12 +17,9 @@ export default {
     },
 
     data() {
-        return {
-        };
+        return {};
     },
-    mounted() {
-
-    },
+    mounted() {},
 };
 </script>
 
@@ -42,6 +39,10 @@ export default {
     text-align: center;
     margin-top: 20px; /* Da bi nam inicijalno sav content bio ispod navigacije koja je fiksirana na vrhu */
     width: 100%;
+}
 
+.form-control:focus {
+    border-color: rgba(155, 82, 151, 0.527);
+    box-shadow: 0 0 0 0.1rem rgba(155, 82, 151, 0.527);
 }
 </style>

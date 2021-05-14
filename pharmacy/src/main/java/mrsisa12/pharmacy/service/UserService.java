@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.User;
 import mrsisa12.pharmacy.repository.UserRepository;
 
@@ -23,5 +24,14 @@ public class UserService implements UserDetailsService {
 		} else {
 			return user;
 		}
+	}
+
+	public User findByUsername(String username) {
+		// TODO Auto-generated method stub
+		return userRepository.findByUsername(username);
+	}
+	
+	public void save(User user) {
+		userRepository.save(user);
 	}
 }
