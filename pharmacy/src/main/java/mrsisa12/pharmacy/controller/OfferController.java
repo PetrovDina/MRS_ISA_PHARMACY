@@ -53,9 +53,6 @@ public class OfferController {
 	@SuppressWarnings("unused")
 	@Autowired
 	private OrderItemService orderItemService;
-
-	@Autowired
-	private SupplierStorageItemService supplierStorageItemService;
 	
 	@Autowired
 	private SupplierService supplierService;

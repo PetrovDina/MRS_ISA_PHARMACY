@@ -331,45 +331,33 @@ public class AppointmentController {
 				patientsDTO.add(new PatientDTO(appointment.getPatient()));				
 			}
 		}
-		
-		return new ResponseEntity<>(filterUniquePatients(patientsDTO), HttpStatus.OK);
-	}
-	
-	private List<PatientDTO> filterUniquePatients(List<PatientDTO> patients) {
-        List<PatientDTO> unique = new ArrayList<>();
-        for(PatientDTO patient : patients){
-            if(!hasPatientWithEmail(unique, patient.getEmail())){
+		List<PatientDTO> unique = new ArrayList<>();
+        for(PatientDTO patient : patientsDTO){
+        	boolean hasPatientWithEmail = false;
+        	for(PatientDTO p : unique){
+                if(p.getEmail().equals(patient.getEmail())){
+                	hasPatientWithEmail = true;
+                }
+            }
+            if(!hasPatientWithEmail){
                 unique.add(patient);
             } else {
-                unique = overwrite(unique, patient);
+            	List<PatientDTO> overwritten = new ArrayList<>();
+
+                for(PatientDTO test : unique){
+                    if(test.getEmail().equals(patient.getEmail())){
+                        overwritten.add(patient);
+                    } else {
+                        overwritten.add(test);
+                    }
+                }
+                unique = overwritten;
             }
-        }
-        return unique;
-    }
-
-    private List<PatientDTO> overwrite(List<PatientDTO> unique, PatientDTO patient) {
-        List<PatientDTO> overwritten = new ArrayList<>();
-
-        for(PatientDTO test : unique){
-            if(test.getEmail().equals(patient.getEmail())){
-                overwritten.add(patient);
-            } else {
-                overwritten.add(test);
-            }
-        }
-
-        return overwritten;
-    }
-
-    private boolean hasPatientWithEmail(List<PatientDTO> unique, String email) {
-        for(PatientDTO patient : unique){
-            if(patient.getEmail().equals(email)){
-                return true;
-            }
-        }
-        return false;
-    }
-	
+        }		
+		
+		return new ResponseEntity<>(unique, HttpStatus.OK);
+	}
+		
 	@GetMapping(value = "/upcomingAppointmentsForPatient")
 	public ResponseEntity<List<AppointmentDTO>> getUpcomingAppointmentsForEmployee(@RequestParam("patientUsername") String patientUsername, @RequestParam String employeeUsername) {	
 		Patient patient = patientService.findByUsername(patientUsername);
@@ -408,7 +396,31 @@ public class AppointmentController {
 			}
 		}
 		
-		return new ResponseEntity<>(filterUniquePatients(patientsDTO), HttpStatus.OK);
+		List<PatientDTO> unique = new ArrayList<>();
+        for(PatientDTO patient : patientsDTO){
+        	boolean hasPatientWithEmail = false;
+        	for(PatientDTO p : unique){
+                if(p.getEmail().equals(patient.getEmail())){
+                	hasPatientWithEmail = true;
+                }
+            }
+            if(!hasPatientWithEmail){
+                unique.add(patient);
+            } else {
+            	List<PatientDTO> overwritten = new ArrayList<>();
+
+                for(PatientDTO test : unique){
+                    if(test.getEmail().equals(patient.getEmail())){
+                        overwritten.add(patient);
+                    } else {
+                        overwritten.add(test);
+                    }
+                }
+                unique = overwritten;
+            }
+        }	
+		
+		return new ResponseEntity<>(unique, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/allAppointmentsForEmployee")

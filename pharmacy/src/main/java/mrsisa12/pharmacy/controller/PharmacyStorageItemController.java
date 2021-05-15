@@ -31,12 +31,14 @@ import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.ItemPrice;
 import mrsisa12.pharmacy.model.Medication;
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.service.ItemPriceService;
 import mrsisa12.pharmacy.service.MedicationService;
+import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.PharmacyStorageItemService;
 
@@ -55,6 +57,9 @@ public class PharmacyStorageItemController {
 
 	@Autowired
 	private ItemPriceService itemPriceService;
+	
+	@Autowired
+	private PatientService patientService;
 	
 	@Autowired
 	private EmailService emailService;
@@ -228,36 +233,41 @@ public class PharmacyStorageItemController {
 
 	}
 	
-	private void sendNotification(String storageId, String pharmacyId) {
-		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));
-		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemService.findOne(Long.parseLong(storageId));
-		
-		String emailBody = "This email is an alert that the quantity of medication " + pharmacyStorageItem.getMedication().getName() + " in storage item #" + pharmacyStorageItem.getId() + " has become 0.";
-		EmailContent email = new EmailContent("Storage item low quantity alert", emailBody);
-		for (PharmacyAdmin padmin : pharmacy.getPharmacyAdmins()) {
-			email.addRecipient(padmin.getEmail());
-		}
-        emailService.sendEmail(email);        
-	}
-	
 	@GetMapping(value = "/checkAvailableQuantity")
 	public ResponseEntity<Integer> checkAvailableQuantity(@RequestParam String storageId, @RequestParam String pharmacyId) {
 		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemService.findOne(Long.parseLong(storageId));
 
 		int quantity = pharmacyStorageItem.getQuantity();
 		if(quantity == 0) {
-			sendNotification(storageId, pharmacyId);
+			Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));
+			
+			String emailBody = "This email is an alert that the quantity of medication " + pharmacyStorageItem.getMedication().getName() + " in storage item #" + pharmacyStorageItem.getId() + " has become 0.";
+			EmailContent email = new EmailContent("Storage item low quantity alert", emailBody);
+			for (PharmacyAdmin padmin : pharmacy.getPharmacyAdmins()) {
+				email.addRecipient(padmin.getEmail());
+			}
+	        emailService.sendEmail(email);  
 		}
 		return new ResponseEntity<>(quantity, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/getPharmacyStorage")
-	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorage(@RequestParam String pharmacyId) {
+	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorage(@RequestParam String pharmacyId, @RequestParam String patientUsername) {
 		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));
+		Patient patient = patientService.findByUsernameWithAllergies(patientUsername);
 
 		List<PharmacyStorageItemDTO> pharmacyStorageItemsDTO = new ArrayList<>();
 		for (PharmacyStorageItem e : pharmacy.getPharmacyStorageItems()) {
-			pharmacyStorageItemsDTO.add(new PharmacyStorageItemDTO(e));
+			boolean bad = false;
+			for(Medication med : patient.getAllergies()) {
+				if(e.getMedication().getId() == med.getId()) {
+					bad = true;
+					break;
+				}
+			}
+			if(!bad) {
+				pharmacyStorageItemsDTO.add(new PharmacyStorageItemDTO(e));
+			}
 		}
 		return new ResponseEntity<>(pharmacyStorageItemsDTO, HttpStatus.OK);
 	}
@@ -265,16 +275,24 @@ public class PharmacyStorageItemController {
 	
 	@GetMapping(value = "/getAlternatives")
 	public ResponseEntity<List<PharmacyStorageItemDTO>> getAlternatives(@RequestParam String pharmacyId, @RequestParam String medicationId, @RequestParam String patientUsername) {
-		//TODO allergies
 		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));
-		//Patient patient = patientService.findByUsername(patientUsername);
+		Patient patient = patientService.findByUsernameWithAllergies(patientUsername);
 		
 		List<PharmacyStorageItemDTO> pharmacyStorageItemDTO = new ArrayList<>();
 		List<Long> alts = new ArrayList<>();
 		Medication medication = medicationService.findOneWithAlternatives(Long.parseLong(medicationId));
 		if(medication != null)  {
 			for (Medication med : medication.getAlternatives()) {
-				alts.add(med.getId());
+				boolean bad = false;
+				for(Medication m : patient.getAllergies()) {
+					if(med.getId() == m.getId()) {
+						bad = true;
+						break;
+					}
+				}
+				if(!bad) {
+					alts.add(med.getId());
+				}
 			} 
 			for (PharmacyStorageItem e : pharmacy.getPharmacyStorageItems()) {
 				if(alts.contains(e.getMedication().getId())) {

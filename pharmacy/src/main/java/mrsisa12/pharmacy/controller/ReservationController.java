@@ -23,12 +23,14 @@ import mrsisa12.pharmacy.dto.ReservationDTO;
 import mrsisa12.pharmacy.dto.ReservationPickupDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
+import mrsisa12.pharmacy.model.EPrescription;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
+import mrsisa12.pharmacy.service.EPrescriptionService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
@@ -56,6 +58,9 @@ public class ReservationController {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private EPrescriptionService ePrescriptionService;
 	
 	private Random random = new Random();
     private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
@@ -166,7 +171,13 @@ public class ReservationController {
 		reservation.setDueDate(resDTO.getDueDate());
 		reservation.setQuantity(resDTO.getQuantity());
 		reservation.setStatus(ReservationStatus.CREATED);
-		reservation.setCode(generateString());
+		//generates code
+		int length = 10;
+        char[] text = new char[length];
+        for (int i = 0; i < length; i++) {
+            text[i] = SOURCES.charAt(random.nextInt(SOURCES.length()));
+        }
+		reservation.setCode(new String(text));
 		
 		
 		PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
@@ -186,12 +197,11 @@ public class ReservationController {
 	
 	@GetMapping(value = "/pickup/{code}")
     public ResponseEntity<ReservationPickupDTO> getReservationForPickup(@PathVariable String code, @RequestParam Long pharmId){
-		//TODO reservation code
-		List<Reservation> reservations = reservationService.findAll();
+		List<Reservation> reservations = reservationService.findAllByPharmacy(pharmId);
 		
         Reservation reservation = null;
         for (Reservation res : reservations) {
-			if(res.getCode().equals(code) && res.getPharmacy().getId().equals(pharmId)) {
+			if(res.getCode().equals(code) ) {
 				reservation = res;
 				break;
 			}
@@ -218,13 +228,5 @@ public class ReservationController {
             return ResponseEntity.badRequest().build();
         }
     }
-	
-	private String generateString() {
-        int length = 5;
-        char[] text = new char[length];
-        for (int i = 0; i < length; i++) {
-            text[i] = SOURCES.charAt(random.nextInt(SOURCES.length()));
-        }
-        return new String(text);
-    }
 }
+

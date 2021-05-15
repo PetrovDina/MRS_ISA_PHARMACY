@@ -40,7 +40,7 @@ public class Reservation {
 	@Column(name = "status", nullable = false)
 	private ReservationStatus status;
 
-	@Column(name = "code", nullable = false, length =  5)
+	@Column(name = "code", nullable = false, length =  10)
 	private String code;
 	
 	public Reservation() {

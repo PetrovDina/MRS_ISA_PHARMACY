@@ -319,9 +319,6 @@ import {client} from '@/client/axiosClient';
     name: "AppointmentInProgress",
     data () {
       return {
-        e6: 1,
-        e7: null,
-        e8: null,
         disabledDates: {
           to: new Date(Date.now() - 8640000)
         },
@@ -358,7 +355,7 @@ import {client} from '@/client/axiosClient';
         client({
             method: 'GET',
             url: 'pharmacyStorageItem/getPharmacyStorage',
-            params: { pharmacyId : this.pharmacyId}
+            params: { pharmacyId : this.pharmacyId, patientUsername : this.patientUsername}
         })
         .then((response) => {
             this.storage = response.data;
@@ -458,8 +455,6 @@ import {client} from '@/client/axiosClient';
               this.snackbar = true;
               this.snackbarText = "Must write report!";
             }else{
-              this.e6 = 3;
-              
               var snackText = null;            
               for(var item of this.items){
                   client({
@@ -474,14 +469,23 @@ import {client} from '@/client/axiosClient';
                   })
               }
               if(snackText === null){
-                for(var item of this.items){
+                client({
+                  method: 'GET',
+                  url: 'eprescription/create',
+                  params: { appointmentId: this.appointmentId}
+                })
+                .then((response) => {
+                  for(var item of this.items){
                   client({
                     method: 'GET',
                     url: 'prescriptionItem/addPrescription',
                     params: { storageId: item.storageId, quantity: item.quantity, duration: item.therapyDuration,
-                            appointmentId: this.appointmentId, pharmacyId: this.pharmacyId},
+                            pharmacyId: this.pharmacyId, ePrescriptionId: response.data.id},
                     })
+                    
                 }
+                })
+                
                 this.finishAppointment();
               }else{
                 this.snackbar = true;
@@ -489,7 +493,7 @@ import {client} from '@/client/axiosClient';
                 client({
                     method: 'GET',
                     url: 'pharmacyStorageItem/getPharmacyStorage',
-                    params: { pharmacyId : this.pharmacyId}
+                    params: { pharmacyId : this.pharmacyId, patientUsername : this.patientUsername}
                 })
                 .then((response) => {
                     this.storage = response.data;

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.model.PharmacyStorageItem;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
@@ -43,4 +44,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
 	@Query("select app from Appointment app where app.status != 'RESERVED' and app.type = 'PHARMACIST_CONSULTATION' and app.patient.username = :username")
 	public List<Appointment> getAllPharmHistoryByPatient(@Param("username") String patientUsername);
+	
+	@Query("select app from Appointment app join fetch app.patient e where app.id =?1")
+	public Appointment findOneWithPatient(Long id);
 }

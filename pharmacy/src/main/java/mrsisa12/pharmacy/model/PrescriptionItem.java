@@ -26,21 +26,24 @@ public class PrescriptionItem {
 	private int therapyDuration;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "APPOINTMENT_ID", referencedColumnName = "ID")
-	private Appointment appointment;
+	@JoinColumn(name = "EPRESCRIPTION_ID", referencedColumnName = "ID")
+	private EPrescription ePrescription;
 	
 	public PrescriptionItem() {
 		
 	}
 
-	public PrescriptionItem(Long id, Medication medication, int quantity, int therapyDuration, Appointment appointment) {
+
+	public PrescriptionItem(Long id, int quantity, Medication medication, int therapyDuration,
+			EPrescription ePrescription) {
 		super();
 		this.id = id;
-		this.medication = medication;
 		this.quantity = quantity;
+		this.medication = medication;
 		this.therapyDuration = therapyDuration;
-		this.appointment = appointment;
+		this.ePrescription = ePrescription;
 	}
+
 
 	public Long getId() {
 		return id;
@@ -74,12 +77,13 @@ public class PrescriptionItem {
 		this.therapyDuration = therapyDuration;
 	}
 
-	public Appointment getAppointment() {
-		return appointment;
+	public EPrescription getEPrescription() {
+		return ePrescription;
 	}
 
-	public void setAppointment(Appointment appointment) {
-		this.appointment = appointment;
+
+	public void setEPrescription(EPrescription ePrescription) {
+		this.ePrescription = ePrescription;
 	}
 
 	

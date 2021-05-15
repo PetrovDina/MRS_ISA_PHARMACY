@@ -10,23 +10,21 @@ public class PrescriptionItemDTO {
 	private int quantity;
 	private MedicationDTO medication;
 	private int therapyDuration;
-	private AppointmentDTO appointment;
 	
 	public PrescriptionItemDTO() {
 		
 	}	
 
-	public PrescriptionItemDTO(Long id, int quantity, Medication medication, int therapyDuration, Appointment appointment) {
+	public PrescriptionItemDTO(Long id, int quantity, Medication medication, int therapyDuration) {
 		this.id = id;
 		this.quantity = quantity;
 		this.medication = new MedicationDTO(medication);
 		this.therapyDuration = therapyDuration;
-		this.appointment = new AppointmentDTO(appointment);
 	}
 	
 	public PrescriptionItemDTO(PrescriptionItem reservationItem){
 		this(reservationItem.getId(), reservationItem.getQuantity(), reservationItem.getMedication(),
-				reservationItem.getTherapyDuration(), reservationItem.getAppointment());
+				reservationItem.getTherapyDuration());
     }
 	
 	public Long getId() {
@@ -60,16 +58,5 @@ public class PrescriptionItemDTO {
 	public void setTherapyDuration(int therapyDuration) {
 		this.therapyDuration = therapyDuration;
 	}
-
-	public AppointmentDTO getAppointment() {
-		return appointment;
-	}
-
-	public void setAppointment(AppointmentDTO appointment) {
-		this.appointment = appointment;
-	}
-
-	
-
 
 }
