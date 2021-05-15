@@ -130,7 +130,8 @@ export default {
 			//if(registration.birthDate == undefined) return;
 			if(this.isSomeFieldEmpty(registration)) return;
 
-			if(this.checkInputFields()) return true;
+			if(this.typeToRegister === "PHARMACIST")
+				if(this.checkInputFields()) return true;
 			
 			registration.location = 
 			{

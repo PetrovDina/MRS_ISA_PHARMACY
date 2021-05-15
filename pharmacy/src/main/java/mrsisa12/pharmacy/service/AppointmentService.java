@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import mrsisa12.pharmacy.model.Appointment;
-import mrsisa12.pharmacy.model.PharmacyStorageItem;
-import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.repository.AppointmentRepository;
 
 @Service
