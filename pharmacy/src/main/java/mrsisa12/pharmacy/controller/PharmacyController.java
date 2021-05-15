@@ -20,11 +20,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyWithEmploymentsDTO;
+import mrsisa12.pharmacy.dto.pharmacy.PlainPharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
+import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.AppointmentPriceCatalog;
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
+import mrsisa12.pharmacy.model.Reservation;
+import mrsisa12.pharmacy.model.enums.AppointmentStatus;
+import mrsisa12.pharmacy.model.enums.ReservationStatus;
+import mrsisa12.pharmacy.service.AppointmentService;
+import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
+import mrsisa12.pharmacy.service.ReservationService;
 
 @RestController
 @RequestMapping("/pharmacy")
@@ -32,6 +41,15 @@ public class PharmacyController {
 
 	@Autowired
 	private PharmacyService pharmacyService;
+	
+	@Autowired
+	private PatientService patientService;
+	
+	@Autowired
+	private ReservationService reservationService;
+	
+	@Autowired
+	private AppointmentService appointmentService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
@@ -172,5 +190,40 @@ public class PharmacyController {
 		}
 		return new ResponseEntity<>(pharmacyStorageItemsDTO, HttpStatus.OK);
 	}
+	
+	@GetMapping(value = "/{username}/complaints")
+	public ResponseEntity<List<PlainPharmacyDTO>> getPharmaciesForComplaint(
+			@PathVariable String username) {
+
+		Patient patient = patientService.findByUsername(username);
+		List<Pharmacy> pharmacies = new ArrayList<Pharmacy>();
+		
+		List<Reservation> reservations = reservationService.findAllByPatient(patient.getUsername());
+		for (Reservation reservation : reservations) 
+		{	
+			if(!pharmacyService.containsPharmacy(pharmacies, reservation.getPharmacy()))
+				if(reservation.getStatus() == ReservationStatus.COMPLETED)
+					pharmacies.add(reservation.getPharmacy());
+		}
+		
+		List<Appointment> appointemts = appointmentService.findAllByPatientId(patient.getId());
+		for (Appointment appointment : appointemts) 
+		{
+			if(!pharmacyService.containsPharmacy(pharmacies, appointment.getPharmacy()))
+				if(appointment.getStatus() == AppointmentStatus.CONCLUDED)
+					pharmacies.add(appointment.getPharmacy());
+		}
+		
+		// Dodati i za recepte
+		
+		List<PlainPharmacyDTO> pharmaciesDTO = new ArrayList<PlainPharmacyDTO>();
+		for (Pharmacy pharmacy : pharmacies) 
+		{
+			pharmaciesDTO.add(new PlainPharmacyDTO(pharmacy));
+		}
+
+		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
+	}
+	
 
 }

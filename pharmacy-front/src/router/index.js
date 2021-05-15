@@ -35,6 +35,8 @@ import DermatologistRegistrationPage from '@/views/DermatologistRegistrationPage
 import SupplierMedicationReserves from '@/views/SupplierMedicationReserves'
 import SupplierOrdersPage from '@/views/SupplierOrdersPage'
 import SupplierOrdersOffersPage from '@/views/SupplierOrdersOffersPage'
+import PharmacyComplaintPage from '@/views/PharmacyComplaintPage'
+import EmployeeComplaintPage from '@/views/EmployeeComplaintPage'
 
 
 import MedicationReservationView from '@/views/MedicationReservationView'
@@ -260,6 +262,17 @@ export default new Router({
           component: SupplierOrdersOffersPage    
         },
 
+        {
+          path: '/pharmacyComplaintPage',
+          name: 'PharmacyComplaintPage',
+          component: PharmacyComplaintPage
+        },
+
+        {
+          path: '/employeeComplaintPage',
+          name: 'EmployeeComplaintPage',
+          component: EmployeeComplaintPage
+        },
 
         {
             path: '/pharmacist-home-page',

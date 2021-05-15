@@ -106,9 +106,16 @@
                     </v-col>
 
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
+                        <v-card class="oneCard" to="/pharmacyComplaintPage">
                             <v-card-title class="wordBreak"
-                                >File a complaint</v-card-title
+                                >File a pharmacy complaint</v-card-title
+                            >
+                        </v-card>
+                    </v-col>
+                    <v-col class="staticPosition" md="3">
+                        <v-card class="oneCard" to="/employeeComplaintPage">
+                            <v-card-title class="wordBreak"
+                                >File a employee complaint</v-card-title
                             >
                         </v-card>
                     </v-col>

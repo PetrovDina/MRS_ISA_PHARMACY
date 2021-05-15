@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.dto.PlainEmployeeDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
@@ -78,6 +79,16 @@ public class EmployeeService {
 
 	public Employee findOneByUsername(String username) {
 		return employeeRepository.findByUsername(username);
+	}
+	
+	public boolean containsEmployee(List<PlainEmployeeDTO> employeeDTOs, Employee employee)
+	{
+		for (PlainEmployeeDTO empl : employeeDTOs) 
+		{
+			if(empl.getId() == employee.getId())
+				return true;
+		}
+		return false;
 	}
 
 }

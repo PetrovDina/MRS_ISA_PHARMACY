@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import mrsisa12.pharmacy.dto.ItemPriceDTO;
-import mrsisa12.pharmacy.model.ItemPrice;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.repository.PharmacyRepository;
 
@@ -64,6 +62,15 @@ public class PharmacyService {
 	
 	public Pharmacy findOneWithPharmacyAdmins(Long id) {
 		return pharmacyRepository.findOneWithPharmacyAdmins(id);
+	}
+	
+	public boolean containsPharmacy(List<Pharmacy> pharmacies, Pharmacy pharmacy)
+	{
+		for (Pharmacy pharm : pharmacies) {
+			if(pharm.getId() == pharmacy.getId())
+				return true;
+		}
+		return false;
 	}
 
 }
