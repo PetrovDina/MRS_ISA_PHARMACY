@@ -69,12 +69,20 @@ export default {
             
             if(price < 1)
             {
-                alert("Price must be greater than 1");
+                this.$toasted.show("Price must be greater than 1.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
                 return;
             }
             if(moment(deliveryDueDate).isSameOrBefore(order.dueDate)) 
             {
-                alert("Delivery date must not be before or same date as offer due date.");
+                this.$toasted.show("Delivery date must not be before or same date as offer due date.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
                 return;
             }
             

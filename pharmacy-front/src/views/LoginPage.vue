@@ -65,7 +65,6 @@ export default {
             })
             .then((response) => 
             {
-                console.log(response);
                 var payload = this.parseJwt(response.data.accessToken);
                 localStorage.user = payload.sub;
                 localStorage.setItem("USER_TOKEN", response.data.accessToken);
@@ -85,7 +84,22 @@ export default {
             }).
 			catch((response) => 
             {
-                alert("Wrong username/password");
+                if(response.response.status == 423)
+                {
+                    this.$toasted.show("Account is not verified. Check your email.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 3000,
+                    });
+                }
+                else
+                {
+                    this.$toasted.show("Wrong username/password", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                }
             });
             
         },

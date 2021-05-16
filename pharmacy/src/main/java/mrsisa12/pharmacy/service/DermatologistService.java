@@ -23,5 +23,10 @@ public class DermatologistService {
 	{
 		dermatologistRepository.save(dermatologist);
 	}
+
+	public Dermatologist findByUsername(String username) 
+	{
+		return dermatologistRepository.findOneByUsername(username);
+	}
 	
 }

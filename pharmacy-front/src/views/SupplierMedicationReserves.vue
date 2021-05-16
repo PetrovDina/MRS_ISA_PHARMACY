@@ -55,7 +55,13 @@ export default {
                         method: "PUT",
                         data: this.supplierStorageItems[i]
                     }).then((response) => {
-                        alert("Successfully added more medication to storage.")
+
+                        this.$toasted.show("Successfully added more medication to storage.", {
+                            theme: "toasted-primary",
+                            position: "top-center",
+                            duration: 2000,
+                        });
+
                     })
                     return;
                 }
@@ -93,7 +99,13 @@ export default {
                 method: "POST",
                 data: suppStorageItemDTO
             }).then((response) => {
-                alert("Successfully added new medication to storage.")
+
+                this.$toasted.show("Successfully added new medication to storage.", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                
                 this.supplierStorageItems.push(response.data);
             })       
         },
@@ -105,7 +117,13 @@ export default {
                 url: "supplierStorageItem/delete/" + id,
                 method: "DELETE",
             }).then((response) => {
-                alert("Successfully removed medication from storage.");
+
+                this.$toasted.show("Successfully removed medication from storage.", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+
                 var j = 0;
                 for (j = 0; j < this.supplierStorageItems.length; j++)
                 {

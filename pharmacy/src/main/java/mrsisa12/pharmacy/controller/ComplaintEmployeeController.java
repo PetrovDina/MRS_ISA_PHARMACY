@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.ComplaintAdminEmployeeDTO;
-import mrsisa12.pharmacy.dto.ComplaintAdminEmployeeResponseDTO;
-import mrsisa12.pharmacy.dto.ComplaintEmployeeDTO;
-import mrsisa12.pharmacy.dto.ComplaintUserEmployeeDTO;
-import mrsisa12.pharmacy.dto.ComplaintUserEmployeeResponseDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintAdminEmployeeDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintAdminEmployeeResponseDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintEmployeeDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintUserEmployeeDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintUserEmployeeResponseDTO;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.ComplaintEmployee;
 import mrsisa12.pharmacy.model.Employee;

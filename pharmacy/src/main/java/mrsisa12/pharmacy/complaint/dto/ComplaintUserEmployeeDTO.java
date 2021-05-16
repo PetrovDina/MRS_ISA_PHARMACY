@@ -1,5 +1,6 @@
-package mrsisa12.pharmacy.dto;
+package mrsisa12.pharmacy.complaint.dto;
 
+import mrsisa12.pharmacy.dto.PlainEmployeeDTO;
 import mrsisa12.pharmacy.model.ComplaintEmployee;
 
 public class ComplaintUserEmployeeDTO extends ComplaintUserDTO {

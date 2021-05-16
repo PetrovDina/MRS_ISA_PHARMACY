@@ -61,11 +61,23 @@ export default {
         addMedication : function(med, quantity){
             if(!med) 
             {
-                alert('Please select medication');
+                this.$toasted.show("Please select medication.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
                 return;
             }
             if(this.quantity=='') return;
-            if(this.quantity < 1) { alert("Quantity must be greater than 0"); return; }
+            if(this.quantity < 1) 
+            { 
+                this.$toasted.show("Quantity must be greater than 0.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                return; 
+            }
 
             this.$emit('add-medication', med, quantity);
             this.selectedMedication = null;

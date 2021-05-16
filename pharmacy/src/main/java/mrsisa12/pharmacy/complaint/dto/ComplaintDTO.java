@@ -1,4 +1,4 @@
-package mrsisa12.pharmacy.dto;
+package mrsisa12.pharmacy.complaint.dto;
 
 public class ComplaintDTO {
 	

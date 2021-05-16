@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.PharmacyAdminDTO;
-import mrsisa12.pharmacy.dto.PharmacyAdminDTO;
 import mrsisa12.pharmacy.dto.UserDTO;
-import mrsisa12.pharmacy.model.PharmacyAdmin;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.enums.UserStatus;
@@ -40,6 +39,9 @@ public class PharmacyAdminController
 	
 	@Autowired
 	private RoleService roleService;
+	
+	@Autowired
+	EmailService emailService;
 	
 	@GetMapping(value = "/{username}")
 	public ResponseEntity<PharmacyAdminDTO> getPharmacyAdminByUsername(@PathVariable String username) {
@@ -85,6 +87,8 @@ public class PharmacyAdminController
 		pa.setPharmacy(pharmacy);
 		
 		pharmacyAdminService.save(pa);
+		emailService.confirmationEmailUserRegistration(pa);
+		
 		return new ResponseEntity<>(new PharmacyAdminDTO(pa), HttpStatus.CREATED);
 	}
 }
