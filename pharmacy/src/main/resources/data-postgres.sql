@@ -199,7 +199,7 @@ insert into offers (deliveryDueDate, price, order_id, supplier_id, status) value
 insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Losa usluga generalno.', null);
 insert into ComplaintPharmacy(pharmacy_id, id) values (1, 1);
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Lekovima istekao rok.', null);
+insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Losa higijena.', null);
 insert into ComplaintPharmacy(pharmacy_id, id) values (2, 2);
 
 insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', null);

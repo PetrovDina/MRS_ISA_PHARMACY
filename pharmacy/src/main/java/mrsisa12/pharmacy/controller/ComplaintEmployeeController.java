@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.ComplaintAdminEmployeeDTO;
 import mrsisa12.pharmacy.dto.ComplaintAdminEmployeeResponseDTO;
 import mrsisa12.pharmacy.dto.ComplaintEmployeeDTO;
+import mrsisa12.pharmacy.dto.ComplaintUserEmployeeDTO;
+import mrsisa12.pharmacy.dto.ComplaintUserEmployeeResponseDTO;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.ComplaintEmployee;
 import mrsisa12.pharmacy.model.Employee;
@@ -117,6 +119,50 @@ public class ComplaintEmployeeController {
 		for (ComplaintEmployee complaint : complaints) 
 		{
 			complaintDTOs.add(new ComplaintAdminEmployeeResponseDTO(complaint));
+		}
+		
+		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/NotResponsed/{username}")
+	public ResponseEntity<List<ComplaintUserEmployeeDTO>> getEmployeeComplaintUserNotResponsed(@PathVariable String username)
+	{
+		/*
+		 * Vraca listu ComplaintUserEmlpoyeeDTO na koje admin nije odgovorio za pacijenta
+		 * */
+		
+		Patient patient = patientService.findByUsername(username);
+		List<ComplaintEmployee> complaints = complaintEmployeeService.findAllByPatient(patient);
+		List<ComplaintUserEmployeeDTO> complaintDTOs = new ArrayList<ComplaintUserEmployeeDTO>();
+		
+		if(complaints == null) return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+		
+		for (ComplaintEmployee complaint : complaints) 
+		{
+			if(complaint.getSystemAdmin() == null)
+				complaintDTOs.add(new ComplaintUserEmployeeDTO(complaint));
+		}
+		
+		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/Responsed/{username}")
+	public ResponseEntity<List<ComplaintUserEmployeeResponseDTO>> getEmployeeComplaintUserResponsed(@PathVariable String username)
+	{
+		/*
+		 * Vraca listu ComplaintEmployeePharmacyDTO na koje je admin odgovorio za pacijenta
+		 * */
+		
+		Patient patient = patientService.findByUsername(username);
+		List<ComplaintEmployee> complaints = complaintEmployeeService.findAllByPatient(patient);
+		List<ComplaintUserEmployeeResponseDTO> complaintDTOs = new ArrayList<ComplaintUserEmployeeResponseDTO>();
+		
+		if(complaints == null) return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+		
+		for (ComplaintEmployee complaint : complaints) 
+		{
+			if(complaint.getSystemAdmin() != null)
+				complaintDTOs.add(new ComplaintUserEmployeeResponseDTO(complaint));
 		}
 		
 		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);

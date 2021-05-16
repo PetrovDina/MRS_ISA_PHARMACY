@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import mrsisa12.pharmacy.model.ComplaintEmployee;
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.SystemAdmin;
 
 public interface ComplaintEmployeeRepository extends JpaRepository<ComplaintEmployee, Long> {
@@ -19,6 +20,8 @@ public interface ComplaintEmployeeRepository extends JpaRepository<ComplaintEmpl
 	
 	public ComplaintEmployee findOneById(Long id);
 	
-	public List<ComplaintEmployee> findAllBySystemAdmin(SystemAdmin systemAdmin); 
+	public List<ComplaintEmployee> findAllBySystemAdmin(SystemAdmin systemAdmin);
+
+	public List<ComplaintEmployee> findAllByPatient(Patient patient); 
 
 }

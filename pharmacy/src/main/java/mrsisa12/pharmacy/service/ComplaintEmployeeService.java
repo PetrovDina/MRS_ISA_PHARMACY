@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mrsisa12.pharmacy.model.ComplaintEmployee;
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.SystemAdmin;
 import mrsisa12.pharmacy.repository.ComplaintEmployeeRepository;
 
@@ -38,6 +39,11 @@ public class ComplaintEmployeeService {
 	public List<ComplaintEmployee> findAllBySystemAdmin(SystemAdmin systemAdmin)
 	{
 		return complaintEmployeeRepository.findAllBySystemAdmin(systemAdmin);
+	}
+
+	public List<ComplaintEmployee> findAllByPatient(Patient patient) 
+	{
+		return complaintEmployeeRepository.findAllByPatient(patient);
 	}
 
 }

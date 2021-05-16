@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import mrsisa12.pharmacy.model.ComplaintPharmacy;
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.SystemAdmin;
 
 public interface ComplaintPharmacyRepository extends JpaRepository<ComplaintPharmacy, Long>{
@@ -19,5 +20,7 @@ public interface ComplaintPharmacyRepository extends JpaRepository<ComplaintPhar
 	
 	public ComplaintPharmacy findOneById(Long id);
 	
-	public List<ComplaintPharmacy> findAllBySystemAdmin(SystemAdmin systemAdmin); 
+	public List<ComplaintPharmacy> findAllBySystemAdmin(SystemAdmin systemAdmin);
+
+	public List<ComplaintPharmacy> findAllByPatient(Patient patient); 
 }

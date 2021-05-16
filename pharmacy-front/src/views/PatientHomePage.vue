@@ -112,6 +112,15 @@
                             >
                         </v-card>
                     </v-col>
+
+                    <v-col class="staticPosition" md="3">
+                        <v-card class="oneCard" to="/complaintPharmacyUserPage">
+                            <v-card-title class="wordBreak"
+                                >All my pharmacy complaints</v-card-title
+                            >
+                        </v-card>
+                    </v-col>
+
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/employeeComplaintPage">
                             <v-card-title class="wordBreak"
@@ -119,6 +128,15 @@
                             >
                         </v-card>
                     </v-col>
+
+                    <v-col class="staticPosition" md="3">
+                        <v-card class="oneCard" to="/complaintEmployeeUserPage">
+                            <v-card-title class="wordBreak"
+                                >All my employee complaints</v-card-title
+                            >
+                        </v-card>
+                    </v-col>
+
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/">
                             <v-card-title class="wordBreak"
