@@ -29,6 +29,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query("select ord from Order ord left join fetch ord.offers offer where offer.supplier =?1")
 	public List<Order> findAllFromSupplier(Supplier supplier);
 	
-	@Query("select ord from Order ord left join fetch ord.offers offer where (offer.supplier !=?1 or offer.supplier = null) and ord.status != 'DONE' ")
+	@Query("select distinct ord from Order ord left join fetch ord.offers offer where (offer.supplier !=?1 or offer.supplier = null) and ord.status != 'DONE' ")
 	public List<Order> findAllFromNotSupplier(Supplier supplier);
 }

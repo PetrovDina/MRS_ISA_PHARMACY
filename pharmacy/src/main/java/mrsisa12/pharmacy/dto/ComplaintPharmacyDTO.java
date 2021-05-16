@@ -8,13 +8,13 @@ public class ComplaintPharmacyDTO extends ComplaintDTO {
 	
 	public ComplaintPharmacyDTO() {}
 
-	public ComplaintPharmacyDTO(Long id, String patientId, Long systemAdminId, String content, String response, Long pharmacyId) {
-		super(id, patientId, systemAdminId, content, response);
+	public ComplaintPharmacyDTO(Long id, String patientId, String systemAdminUsername, String content, String response, Long pharmacyId) {
+		super(id, patientId, systemAdminUsername, content, response);
 		this.pharmacyId = pharmacyId;
 	}
 	
 	public ComplaintPharmacyDTO(ComplaintPharmacy complaintPharmacy) {
-		this(complaintPharmacy.getId(), complaintPharmacy.getPatient().getUsername(), complaintPharmacy.getSystemAdmin().getId(),
+		this(complaintPharmacy.getId(), complaintPharmacy.getPatient().getUsername(), complaintPharmacy.getSystemAdmin().getUsername(),
 				complaintPharmacy.getContent(), complaintPharmacy.getResponse(), complaintPharmacy.getPharmacy().getId());
 	}
 

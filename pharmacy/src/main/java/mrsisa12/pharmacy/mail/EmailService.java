@@ -8,9 +8,13 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Order;
 import mrsisa12.pharmacy.model.OrderItem;
+import mrsisa12.pharmacy.model.Patient;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.Supplier;
+import mrsisa12.pharmacy.model.SystemAdmin;
 
 @Service
 public class EmailService {
@@ -48,5 +52,29 @@ public class EmailService {
 		EmailContent email = new EmailContent("Your offer has been " + kind, emailBody);
 		email.addRecipient(supplier.getEmail());
 		this.sendEmail(email);
+    }
+    
+    public void sendEmailToPatientComplaintEmployeeResponse(Patient patient, SystemAdmin admin, Employee employee)
+    {
+		String emailBody = "Hello " + patient.getFirstName() + " " + patient.getLastName()
+				+ ",\n\nWe want inform you that our administrator " + admin.getUsername() + " responded to your complaint about our "
+				+ "employee " + employee.getFirstName() + " " + employee.getLastName() + "."
+				+ "\n\nThis is an automatically generated email – please do not reply to it. ©Tim12-MRS-ISA";
+		
+		EmailContent email = new EmailContent("Employee complaint response notification", emailBody);
+		email.addRecipient(patient.getEmail());
+        this.sendEmail(email);
+    }
+    
+    public void sendEmailToPatientComplaintPharmacyResponse(Patient patient, SystemAdmin admin, Pharmacy pharmacy)
+    {
+		String emailBody = "Hello " + patient.getFirstName() + " " + patient.getLastName()
+				+ ",\n\nWe want inform you that our administrator " + admin.getUsername() + " responded to your complaint about "
+				+ "pharmacy " + pharmacy.getName() + "."
+				+ "\n\nThis is an automatically generated email – please do not reply to it. ©Tim12-MRS-ISA";
+		
+		EmailContent email = new EmailContent("Pharmacy complaint response notification", emailBody);
+		email.addRecipient(patient.getEmail());
+        this.sendEmail(email);
     }
 }

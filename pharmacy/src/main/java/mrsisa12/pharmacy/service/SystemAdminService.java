@@ -23,5 +23,10 @@ public class SystemAdminService {
 	{
 		systemAdminRepository.save(systemAdmin);
 	}
+	
+	public SystemAdmin findOneByUsername(String username)
+	{
+		return systemAdminRepository.findOneByUsername(username);
+	}
 
 }

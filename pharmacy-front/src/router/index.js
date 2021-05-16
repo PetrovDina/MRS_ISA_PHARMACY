@@ -37,7 +37,8 @@ import SupplierOrdersPage from '@/views/SupplierOrdersPage'
 import SupplierOrdersOffersPage from '@/views/SupplierOrdersOffersPage'
 import PharmacyComplaintPage from '@/views/PharmacyComplaintPage'
 import EmployeeComplaintPage from '@/views/EmployeeComplaintPage'
-
+import AdminPharmacyComplaintPage from '@/views/AdminPharmacyComplaintPage'
+import AdminEmployeeComplaintPage from '@/views/AdminEmployeeComplaintPage'
 
 import MedicationReservationView from '@/views/MedicationReservationView'
 
@@ -272,6 +273,18 @@ export default new Router({
           path: '/employeeComplaintPage',
           name: 'EmployeeComplaintPage',
           component: EmployeeComplaintPage
+        },
+
+        {
+          path: '/adminPharmacyComplaintPage',
+          name: 'AdminPharmacyComplaintPage',
+          component: AdminPharmacyComplaintPage
+        },
+
+        {
+          path: '/adminEmployeeComplaintPage',
+          name: 'AdminEmployeeComplaintPage',
+          component: AdminEmployeeComplaintPage
         },
 
         {

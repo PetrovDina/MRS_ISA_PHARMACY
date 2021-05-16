@@ -195,3 +195,29 @@ insert into supplierstorageitem (deleted, quantity, reservedQuantity, medication
 insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-14', 2000, 3, 12, 'PENDING');
 insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-17', 4000, 3, 13, 'PENDING');
 insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-16', 7000, 3, 16, 'PENDING');
+
+insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Losa usluga generalno.', null);
+insert into ComplaintPharmacy(pharmacy_id, id) values (1, 1);
+
+insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Lekovima istekao rok.', null);
+insert into ComplaintPharmacy(pharmacy_id, id) values (2, 2);
+
+insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', null);
+insert into ComplaintPharmacy(pharmacy_id, id) values (3, 3);
+
+insert into complaint (patient_id, system_admin_id, content, response) values (2, 1, 'Farmaceut hteo da vrsi psihicko nasilje nadamnome.', 'Farmaceut kaze nije.');
+insert into ComplaintPharmacy(pharmacy_id, id) values (3, 4);
+
+insert into complaint (patient_id, system_admin_id, content, response) values (2, 1, 'Lekovima istekao rok.', 'Ma to nije tacno.');
+insert into ComplaintPharmacy(pharmacy_id, id) values (2, 5);
+
+insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Dermatologa interesuje ga ono sto radi.', null);
+insert into ComplaintEmployee(employee_id, id) values (4, 6);
+
+insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Zakasnio na pregled.', null);
+insert into ComplaintEmployee(employee_id, id) values (5, 7);
+
+insert into complaint (patient_id, system_admin_id, content, response) values (2, 1, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', 'Farmaceut kaze nije.');
+insert into ComplaintEmployee(employee_id, id) values (7, 8);
+
+

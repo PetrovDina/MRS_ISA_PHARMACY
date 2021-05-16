@@ -1,18 +1,31 @@
 package mrsisa12.pharmacy.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import mrsisa12.pharmacy.dto.ComplaintAdminPharmacyDTO;
+import mrsisa12.pharmacy.dto.ComplaintAdminPharmacyResponseDTO;
 import mrsisa12.pharmacy.dto.ComplaintPharmacyDTO;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.ComplaintPharmacy;
+import mrsisa12.pharmacy.model.Patient;
+import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.SystemAdmin;
 import mrsisa12.pharmacy.service.ComplaintPharmacyService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
+import mrsisa12.pharmacy.service.SystemAdminService;
 
 @RestController
 @RequestMapping("/complaintPharmacy")
@@ -26,6 +39,12 @@ public class ComplaintPharmacyController {
 	
 	@Autowired
 	PharmacyService pharmacyService;
+	
+	@Autowired
+	SystemAdminService systemAdminService;
+	
+	@Autowired
+	EmailService emailService;
 	
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<ComplaintPharmacyDTO> savePharmacyComplaint(@RequestBody ComplaintPharmacyDTO complaintDTO)
@@ -45,6 +64,62 @@ public class ComplaintPharmacyController {
 		ret.setContent(complaintPharmacy.getContent());
 		
 		return new ResponseEntity<>(ret, HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value = "/all/forResponse")
+	public ResponseEntity<List<ComplaintAdminPharmacyDTO>> getPharmacyComplaintForResponse()
+	{
+		
+		List<ComplaintPharmacy> complaints = complaintPharmacyService.findAllByAdminNull();
+		List<ComplaintAdminPharmacyDTO> complaintDTOs = new ArrayList<ComplaintAdminPharmacyDTO>();
+		
+		if(complaints == null) return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+		
+		for (ComplaintPharmacy complaint : complaints) 
+		{
+			complaintDTOs.add(new ComplaintAdminPharmacyDTO(complaint));
+		}
+		
+		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/update", consumes = "application/json")
+	public ResponseEntity<ComplaintPharmacyDTO> updateComplaint(@RequestBody ComplaintPharmacyDTO complaintDTO) 
+	{
+		ComplaintPharmacy complaintPharmacy = complaintPharmacyService.findOneById(complaintDTO.getId());
+		SystemAdmin systemAdmin = systemAdminService.findOneByUsername(complaintDTO.getSystemAdminUsername());
+		
+		complaintPharmacy.setResponse(complaintDTO.getResponse());
+		complaintPharmacy.setSystemAdmin(systemAdmin);
+		
+		complaintPharmacyService.save(complaintPharmacy);
+		
+		Patient patient = patientService.findByUsername(complaintDTO.getPatientUsername());
+		Pharmacy pharmacy = pharmacyService.findOne(complaintDTO.getPharmacyId());
+		emailService.sendEmailToPatientComplaintPharmacyResponse(patient, systemAdmin, pharmacy);
+
+		return new ResponseEntity<>(new ComplaintPharmacyDTO(complaintPharmacy), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/all/{username}")
+	public ResponseEntity<List<ComplaintAdminPharmacyResponseDTO>> getPharmacyComplaintResponsed(@PathVariable String username)
+	{
+		/*
+		 * Vraca listu ComplaintPharmacy na osnovu admina
+		 * */
+		
+		SystemAdmin systemAdmin = systemAdminService.findOneByUsername(username);
+		List<ComplaintPharmacy> complaints = complaintPharmacyService.findAllBySystemAdmin(systemAdmin);
+		List<ComplaintAdminPharmacyResponseDTO> complaintDTOs = new ArrayList<ComplaintAdminPharmacyResponseDTO>();
+		
+		if(complaints == null) return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+		
+		for (ComplaintPharmacy complaint : complaints) 
+		{
+			complaintDTOs.add(new ComplaintAdminPharmacyResponseDTO(complaint));
+		}
+		
+		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
 	}
 	
 }

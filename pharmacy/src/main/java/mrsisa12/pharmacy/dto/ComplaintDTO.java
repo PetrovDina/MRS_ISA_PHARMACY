@@ -6,7 +6,7 @@ public class ComplaintDTO {
 	
 	private String patientUsername;
 	
-	private Long systemAdminId;
+	private String systemAdminUsername;
 
 	private String content;
 
@@ -14,11 +14,11 @@ public class ComplaintDTO {
 	
 	public ComplaintDTO() { }
 	
-	public ComplaintDTO(Long id, String patientUsername, Long systemAdminId, String content, String response) {
+	public ComplaintDTO(Long id, String patientUsername, String systemAdminUsername, String content, String response) {
 		super();
 		this.id = id;
 		this.patientUsername = patientUsername;
-		this.systemAdminId = systemAdminId;
+		this.systemAdminUsername = systemAdminUsername;
 		this.content = content;
 		this.response = response;
 	}
@@ -39,12 +39,12 @@ public class ComplaintDTO {
 		this.patientUsername = patientUsername;
 	}
 
-	public Long getSystemAdminId() {
-		return systemAdminId;
+	public String getSystemAdminUsername() {
+		return systemAdminUsername;
 	}
 
-	public void setSystemAdminId(Long systemAdminId) {
-		this.systemAdminId = systemAdminId;
+	public void setSystemAdminUsername(String systemAdminUsername) {
+		this.systemAdminUsername = systemAdminUsername;
 	}
 
 	public String getContent() {

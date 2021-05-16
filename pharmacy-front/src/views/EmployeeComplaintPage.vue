@@ -73,11 +73,12 @@ export default {
                     });
                 return;
             } 
+            alert(this.selectedEmployee.username)
             let complaintDTO =
             {
                 patientUsername: localStorage.user,
                 content: complaint.text,
-                employeeId: this.selectedEmployee.id
+                employeeUsername: this.selectedEmployee.username
             };
 
             client({

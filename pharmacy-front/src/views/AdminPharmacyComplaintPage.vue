@@ -1,0 +1,135 @@
+<template>
+    <div>
+        <v-card class="ma-5">
+            <v-card-title>
+                <v-spacer></v-spacer>
+                <div >
+                    <h2>All complaints for pharmacies</h2>
+                </div>
+                <v-spacer></v-spacer>
+            </v-card-title>
+        </v-card>
+
+        <TabNav
+            :tabs="['To response', 'Responsed']"
+            :selected="selected"
+            @selected="setSelected"
+        >
+            <Tab :isSelected="selected === 'To response'">
+
+                <AdminPharmacyComplaintTable
+                    :complaints="complaints"
+                    @send-response-table="sendResponse"
+                >
+                </AdminPharmacyComplaintTable>
+
+            </Tab>
+
+            <Tab :isSelected="selected === 'Responsed'">
+
+                <AdminPharmacyComplaintTable
+                    :complaints="responsedComplaints"
+                    :disableResponse="true"
+                >
+                </AdminPharmacyComplaintTable>
+
+            </Tab>
+        </TabNav>
+
+    </div>
+    
+</template>
+
+<script>
+
+import AdminPharmacyComplaintTable from "../components/AdminPharmacyComplaintTable.vue";
+import { client } from "@/client/axiosClient";
+import TabNav from "../components/TabNav.vue";
+import Tab from "../components/Tab.vue";
+
+export default {
+
+    name: 'AdminPharmacyComplaintPage',
+
+    components : {
+        AdminPharmacyComplaintTable, TabNav, Tab
+    },
+
+    data() {
+        return {
+            complaints: [],
+            responsedComplaints: [],
+            selected: "To response"
+        }
+    },
+
+    methods: {
+
+        setSelected(tab) {
+            this.selected = tab;
+        },
+
+        sendResponse: function(complaint, response)
+        {
+            let complaintDTO = 
+            {
+                id: complaint.id,
+                patientUsername: complaint.patientUsername,
+                content: complaint.content,
+                response: response,
+                systemAdminUsername: localStorage.user,
+                pharmacyId: complaint.pharmacyId
+            }
+
+            client
+            ({
+
+                url : "complaintPharmacy/update",
+                method : "PUT",
+                data : complaintDTO
+
+            }).then((response) => {
+
+                this.$toasted.show("Response successfully sent.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                this.removeFromTable(complaintDTO.id, complaintDTO.response);
+
+            });
+        },
+
+        removeFromTable: function(complaintId, response)
+        {
+             for(let i = 0; i < this.complaints.length; i++)
+                {
+                    if(this.complaints[i].id == complaintId)
+                    {
+                        this.complaints[i].response = response;
+                        this.responsedComplaints.push(this.complaints[i]);
+                        this.complaints.splice(i, 1)
+                        break;
+                    }
+                }
+        }
+
+    },
+
+    mounted() {
+            client({
+					url: "complaintPharmacy/all/forResponse",
+					method: "GET",
+				}).then((response) => {
+				this.complaints = response.data;
+        	});
+
+            client({
+					url: "complaintPharmacy/all/" + localStorage.user,
+					method: "GET",
+				}).then((response) => {
+				this.responsedComplaints = response.data;
+        	});
+        }
+};
+</script>

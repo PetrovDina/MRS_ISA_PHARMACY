@@ -25,6 +25,8 @@
             <!-- <a @click="medicationRegistrationRedirect()" class="registerNav">Medication Registration</a> -->
             <a @click="supplierRegistrationRedirect()" class="registerNav">Supplier Registration</a>
             <a @click="dermatologistRegistrationRedirect()" class="registerNav">Dermos Registration</a> 
+            <a @click="pharmacyComplaintRegistrationRedirect()" class="registerNav">Pharmacy Complaints</a> 
+            <a @click="employeeComplaintRegistrationRedirect()" class="registerNav">Employee Complaints</a>
         </div>
 
         <!--supplier-->
@@ -297,6 +299,30 @@ export default {
         supplierOrdersOffersRedirect: function () {
             this.$router
                 .push({ name: "SupplierOrdersOffersPage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        pharmacyComplaintRegistrationRedirect: function() {
+            this.$router
+                .push({ name: "AdminPharmacyComplaintPage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        employeeComplaintRegistrationRedirect: function() {
+            this.$router
+                .push({ name: "AdminEmployeeComplaintPage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

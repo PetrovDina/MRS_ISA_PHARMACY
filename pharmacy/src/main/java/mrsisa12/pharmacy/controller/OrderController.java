@@ -84,7 +84,11 @@ public class OrderController {
 		for (Order order : orders) 
 		{
 			if(order.getStatus() != OrderStatus.DONE)
+			{
+				System.err.println("Dodajem novi order sa id: " + order.getId());
 				ordersDTO.add(new OrderWithOrderItemsDTO(orderService.findOneWithOrderItems(order.getId())));
+			}
+				
 		}
 
 		return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
