@@ -3,7 +3,6 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Address</th>
                     <th scope="col">Rating</th>
@@ -12,7 +11,6 @@
 
             <tbody>
                 <tr :key="ph.id" v-for="ph in pharmacies">
-                    <td>{{ph.id}}</td>
                     <td>{{ph.name }}</td>
                     <td>{{ph.location.street}} {{ph.location.streetNum}}, {{ph.location.zipcode}} {{ph.location.city}}</td> 
                     <td>{{ph.rating}}/5</td>

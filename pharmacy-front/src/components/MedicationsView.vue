@@ -3,7 +3,6 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Manufacturer</th>
                     <th scope="col">Prescription</th>
@@ -14,7 +13,6 @@
 
             <tbody>
                 <tr :key="med.id" v-for="med in medications" @dblclick="dblClickedOnRow(med.id)" >
-                    <td>{{ med.id }}</td>
                     <td>{{ med.name }}</td>
                     <td>{{ med.manufacturer }}</td>
                     <td>

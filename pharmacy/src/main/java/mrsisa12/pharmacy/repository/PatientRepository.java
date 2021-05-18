@@ -43,4 +43,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 	@Modifying
 	@Query(value = "delete from allergies alg where alg.patient_id = ?1 and alg.medication_id = ?2", nativeQuery = true)
 	public void removeAllergy(Long patientId, Long allergyId);
+
+	@Query("select pat from Patient pat left join fetch pat.subscriptions al where pat.username = ?1")
+	public Patient findByUsernameWithSubscriptions(String patientUsername);
 }

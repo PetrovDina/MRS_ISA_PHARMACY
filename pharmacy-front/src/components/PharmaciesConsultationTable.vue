@@ -25,7 +25,7 @@
                         {{ ph.location.zipcode }} {{ ph.location.city }}
                     </td>
                     <td>{{ ph.rating }}/5</td>
-                    <td>1500,00 RSD</td>
+                    <td>{{ph.appointmentPriceCatalog.consultationPrice}}</td>
                     <!-- todo change to get actual price-->
                 </tr>
             </tbody>
@@ -64,9 +64,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#pharmaciesViewDiv {
-    /* margin: 10px 40px 30px 40px; */
-}
+
 
 thead {
     /* background-color: rgba(15, 95, 72, 0.219); */

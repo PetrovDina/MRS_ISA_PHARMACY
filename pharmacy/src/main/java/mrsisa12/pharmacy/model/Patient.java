@@ -32,6 +32,13 @@ public class Patient extends User {
 	@OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Complaint> complaints;
 	
+
+	@ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "subscriptions",
+            joinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "pharmacy_id", referencedColumnName = "id"))
+    private List<Pharmacy> subscriptions;
+	
 	public Patient() { }
 
 	public Patient(Long id, String username, String password, String email, String firstName, String lastName,
@@ -44,6 +51,14 @@ public class Patient extends User {
 
 	public List<Medication> getAllergies() {
 		return allergies;
+	}
+
+	public List<Pharmacy> getSubscriptions() {
+		return subscriptions;
+	}
+
+	public void setSubscriptions(List<Pharmacy> subscriptions) {
+		this.subscriptions = subscriptions;
 	}
 
 	public void setAllergies(List<Medication> allergies) {
@@ -66,4 +81,14 @@ public class Patient extends User {
 		this.complaints = complaints;
 	}
 
+	public boolean removeSubscription(Long subId) {
+	for (Pharmacy p : subscriptions) {
+		if (p.getId() == subId) {
+			subscriptions.remove(p);
+			return true;
+		}
+		
+	}
+	return false;
+	}
 }

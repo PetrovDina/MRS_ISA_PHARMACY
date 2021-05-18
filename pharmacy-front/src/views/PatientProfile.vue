@@ -39,6 +39,14 @@
                     <Tab :isSelected="selected === 'Allergies'">
                         <AllergiesAddEdit></AllergiesAddEdit>
                     </Tab>
+
+                    <Tab :isSelected="selected === 'Subscriptions'">
+                        <SubscriptionsView></SubscriptionsView>
+                    </Tab>
+
+                    <Tab :isSelected="selected === 'Penalty system'">
+                        <PenaltySystemComponent></PenaltySystemComponent>
+                    </Tab>
                 </TabNav>
             </div>
         </div>
@@ -54,13 +62,15 @@ import Tab from "../components/Tab.vue";
 import AllergiesAddEdit from "../components/AllergiesAddEdit.vue";
 import PatientProfileEdit from "../components/PatientProfileEdit.vue";
 import PasswordChangeComponent from "../components/PasswordChangeComponent.vue";
+import PenaltySystemComponent from "../components/PenaltySystemComponent.vue";
+import SubscriptionsView from "../components/SubscriptionsView.vue";
 
 import $ from "jquery";
 
 export default {
     name: "PatientProfile",
 
-    components: { Button, TabNav, Tab, AllergiesAddEdit, PatientProfileEdit, PasswordChangeComponent },
+    components: { Button, TabNav, Tab, AllergiesAddEdit, PatientProfileEdit, PasswordChangeComponent, PenaltySystemComponent, SubscriptionsView},
 
     data() {
         return {

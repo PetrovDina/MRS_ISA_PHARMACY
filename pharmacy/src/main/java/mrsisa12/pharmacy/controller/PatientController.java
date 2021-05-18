@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +25,10 @@ import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.enums.UserStatus;
+import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
+import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.RoleService;
 
 @RestController
@@ -37,6 +40,12 @@ public class PatientController {
 	
 	@Autowired
 	private MedicationService medicationService;
+	
+	@Autowired
+	private LocationService locationService;
+	
+	@Autowired
+	private PharmacyService pharmacyService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -136,6 +145,36 @@ public class PatientController {
 		return false;
 	}
 	
+	@GetMapping(value = "/removeSubscription")
+	public ResponseEntity<Void> removeSubscriptionFromPatient(@RequestParam("patientUsername") String patientUsername,
+			@RequestParam("subscriptionId") Long subscriptionId) {
+
+		patientService.removeSubscription(patientUsername, subscriptionId);
+		
+		return new ResponseEntity<>( HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/addSubscription")
+	public ResponseEntity<Void> addSubscriptionFromPatient(@RequestParam("patientUsername") String patientUsername,
+			@RequestParam("subscriptionId") Long subscriptionId) {
+
+		patientService.addSubscription(patientUsername, subscriptionId);
+		
+		return new ResponseEntity<>( HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/getSubscriptions")
+	public ResponseEntity<List<PharmacyDTO>> getPatientsSubsriptions(@RequestParam("patientUsername") String patientUsername) {
+
+		Patient patient = patientService.findByUsernameWithSubscriptions(patientUsername);
+		ArrayList<PharmacyDTO> subscriptions = new ArrayList<PharmacyDTO>();
+		for (Pharmacy subscription : patient.getSubscriptions()) {
+			subscriptions.add(new PharmacyDTO(subscription));
+		}
+		
+		return new ResponseEntity<List<PharmacyDTO>>(subscriptions, HttpStatus.OK);
+	}
+	
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patientDTO) {
 
@@ -149,8 +188,9 @@ public class PatientController {
 		p.setLastName(patientDTO.getLastName());
 		p.setUsername(patientDTO.getUsername());
 		p.setLocation(patientDTO.getLocation());
-
+		System.err.println(p.getLocation().getStreet());
 		patientService.save(p);
+		locationService.save(p.getLocation());
 		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.CREATED);
 	}
 	

@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -43,6 +44,10 @@ public class Pharmacy {
 
 	@OneToMany(mappedBy = "pharmacy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Order> orders;
+	
+	@ManyToMany(mappedBy = "subscriptions")
+	private List<Patient> subscribedPatients;
+
 
 	@Type(type = "jsonb")
 	@Column(columnDefinition = "jsonb", name = "appointmentPriceCatalog")
@@ -167,5 +172,24 @@ public class Pharmacy {
 
 	public void setAppointmentPriceCatalog(AppointmentPriceCatalog appointmentPriceCatalog) {
 		this.appointmentPriceCatalog = appointmentPriceCatalog;
+	}
+	
+	public List<Patient> getSubscribedPatients() {
+		return subscribedPatients;
+	}
+
+	public void setSubscribedPatients(List<Patient> subscribedPatients) {
+		this.subscribedPatients = subscribedPatients;
+	}
+	
+	public boolean removeSubscribedPatient(String patientUsername) {
+	for (Patient p : subscribedPatients) {
+		if (p.getUsername().equals(patientUsername)) {
+			subscribedPatients.remove(p);
+			return true;
+		}
+		
+	}
+	return false;
 	}
 }

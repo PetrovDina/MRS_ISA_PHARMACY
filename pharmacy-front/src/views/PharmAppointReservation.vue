@@ -226,9 +226,20 @@ export default {
                 this.employments = response.data;
                 this.resultsAvailable = true;
                 for (let empl of this.employments) {
-                    this.pharmacies.push(empl.pharmacy);
+                    if (!this.pharmacyAlreadyInList(empl.pharmacy.id)){
+                        this.pharmacies.push(empl.pharmacy);
+                    }
+                    
                 }
             });
+        },
+        pharmacyAlreadyInList(pharmacyId){
+            for (let pharm of this.pharmacies){
+                if (pharm.id == pharmacyId){
+                    return true;
+                }
+            }
+            return false;
         },
 
         pharmacySelected(ph) {
