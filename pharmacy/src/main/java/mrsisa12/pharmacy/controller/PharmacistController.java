@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.PharmacistDTO;
 import mrsisa12.pharmacy.dto.UserDTO;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Pharmacist;
 import mrsisa12.pharmacy.model.enums.UserStatus;
 import mrsisa12.pharmacy.service.PharmacistService;
@@ -34,6 +35,9 @@ public class PharmacistController {
 
 	@Autowired
 	private RoleService roleService;
+	
+	@Autowired
+	EmailService emailService;
 
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<PharmacistDTO> savePharmacist(@RequestBody UserDTO pharmacistDTO) {
@@ -51,6 +55,8 @@ public class PharmacistController {
 		phar.setDeleted(false);
 
 		pharmacistService.save(phar);
+		emailService.confirmationEmailUserRegistration(phar);
+		
 		return new ResponseEntity<>(new PharmacistDTO(phar), HttpStatus.CREATED);
 	}
 

@@ -73,5 +73,9 @@ public class AppointmentService {
 	public Appointment findOneWithPatient(Long appointmentId) {
 		return appointmentRepository.findOneWithPatient(appointmentId);
 	}
+	
+	public List<Appointment> findAllByPatientUsername(String username) {
+		return appointmentRepository.findAllByPatientUsername(username);
+	}
 
 }

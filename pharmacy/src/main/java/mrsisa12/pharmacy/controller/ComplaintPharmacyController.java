@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.ComplaintAdminPharmacyDTO;
-import mrsisa12.pharmacy.dto.ComplaintAdminPharmacyResponseDTO;
-import mrsisa12.pharmacy.dto.ComplaintPharmacyDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintAdminPharmacyDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintAdminPharmacyResponseDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintPharmacyDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintUserPharmacyDTO;
+import mrsisa12.pharmacy.complaint.dto.ComplaintUserPharmacyResponseDTO;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.ComplaintPharmacy;
 import mrsisa12.pharmacy.model.Patient;
@@ -105,7 +107,7 @@ public class ComplaintPharmacyController {
 	public ResponseEntity<List<ComplaintAdminPharmacyResponseDTO>> getPharmacyComplaintResponsed(@PathVariable String username)
 	{
 		/*
-		 * Vraca listu ComplaintPharmacy na osnovu admina
+		 * Vraca listu ComplaintAdminPharmacyResponseDTO na osnovu admina
 		 * */
 		
 		SystemAdmin systemAdmin = systemAdminService.findOneByUsername(username);
@@ -117,6 +119,50 @@ public class ComplaintPharmacyController {
 		for (ComplaintPharmacy complaint : complaints) 
 		{
 			complaintDTOs.add(new ComplaintAdminPharmacyResponseDTO(complaint));
+		}
+		
+		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/NotResponsed/{username}")
+	public ResponseEntity<List<ComplaintUserPharmacyDTO>> getPharmacyComplaintUserNotResponsed(@PathVariable String username)
+	{
+		/*
+		 * Vraca listu ComplaintUserPharmacyDTO na koje admin nije odgovorio za pacijenta
+		 * */
+		
+		Patient patient = patientService.findByUsername(username);
+		List<ComplaintPharmacy> complaints = complaintPharmacyService.findAllByPatient(patient);
+		List<ComplaintUserPharmacyDTO> complaintDTOs = new ArrayList<ComplaintUserPharmacyDTO>();
+		
+		if(complaints == null) return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+		
+		for (ComplaintPharmacy complaint : complaints) 
+		{
+			if(complaint.getSystemAdmin() == null)
+				complaintDTOs.add(new ComplaintUserPharmacyDTO(complaint));
+		}
+		
+		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/Responsed/{username}")
+	public ResponseEntity<List<ComplaintUserPharmacyResponseDTO>> getPharmacyComplaintUserResponsed(@PathVariable String username)
+	{
+		/*
+		 * Vraca listu ComplaintUserPharmacyDTO na koje je admin odgovorio za pacijenta
+		 * */
+		
+		Patient patient = patientService.findByUsername(username);
+		List<ComplaintPharmacy> complaints = complaintPharmacyService.findAllByPatient(patient);
+		List<ComplaintUserPharmacyResponseDTO> complaintDTOs = new ArrayList<ComplaintUserPharmacyResponseDTO>();
+		
+		if(complaints == null) return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
+		
+		for (ComplaintPharmacy complaint : complaints) 
+		{
+			if(complaint.getSystemAdmin() != null)
+				complaintDTOs.add(new ComplaintUserPharmacyResponseDTO(complaint));
 		}
 		
 		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);

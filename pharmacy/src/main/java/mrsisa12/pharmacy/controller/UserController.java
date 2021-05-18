@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.LoginDTO;
 import mrsisa12.pharmacy.dto.UserTokenStateDTO;
-import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.User;
+import mrsisa12.pharmacy.model.enums.UserStatus;
 import mrsisa12.pharmacy.service.UserService;
 import mrsisa12.pharmacy.utils.TokenUtils;
 
@@ -64,6 +64,11 @@ public class UserController {
 		// Potrebno srediti uloge - koje slati iz liste ili slati celu listu
 		String jwt = tokenUtils.generateToken(user.getUsername(), user.getRoles().get(0).getName().substring(5));
 		int expiresIn = tokenUtils.getExpiredIn();
+		
+		if(user.getActiveStatus() != UserStatus.ACTIVATED)
+		{
+			return new ResponseEntity<>(null, HttpStatus.LOCKED);
+		}
 
 		// Vrati token kao odgovor na uspesnu autentifikaciju
 		return ResponseEntity.ok(new UserTokenStateDTO(jwt, expiresIn));
@@ -108,6 +113,22 @@ public class UserController {
 		
 
 		return new ResponseEntity<>(true, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/confirm-registration/{username}")
+	public ResponseEntity<Object> confirmRegistration(@PathVariable("username") String username) {
+
+		User user = userService.findByUsername(username);
+		
+		if (user == null) 
+		{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		user.setActiveStatus(UserStatus.ACTIVATED);
+		userService.save(user);
+
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

@@ -1,5 +1,5 @@
 <template>
-<div class="main-container">
+<div class="container">
   <p class="titl">Appointment in progress</p>
   <br>
   <div id="homeDiv">
@@ -90,7 +90,7 @@
                 color="green"
                 @click="newAppointmentDialog = true"
               >
-                Book another checkup
+                Book another appointment
               </v-btn>
               <v-btn
                 plain
@@ -288,7 +288,165 @@
     </v-dialog>
   </v-row>
 
-  <!-- TODO New appointment -->
+<!-- Derm available appointment -->
+  <v-row justify="center">
+    <v-dialog
+      v-model="dermAppointmentDialog"
+      persistent
+      max-width="700px"
+    >
+    <v-card>
+        <v-card-title>
+          <span class="headline">Available appointments</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-list-item-group
+                      color="primary"
+                  >
+                  
+                      <v-list-item
+                      v-for="(appointment, i) in availableAppointments"
+                      :key="i"
+                      >
+                      <v-list-item-content>
+                          <v-col
+                          cols="12"
+                          sm="7"
+                          md="4"
+                          >
+                          <v-list-item-title>{{formatDate(
+                                                    appointment.timePeriod
+                                                        .startDate
+                                                )}}</v-list-item-title>
+                          </v-col>
+                          <v-col
+                          cols="12"
+                          sm="6"
+                          md="3"
+                          >
+                          <v-list-item-title >{{
+                                                    appointment.timePeriod
+                                                        .startTime
+                                                }}
+                                                -
+                                                {{
+                                                    appointment.timePeriod
+                                                        .endTime
+                                                }}</v-list-item-title>
+                          </v-col>
+                          
+                          <v-col
+                          cols="12"
+                          sm="6"
+                          md="3"
+                          >
+                          <v-btn color="green" plain @click="bookAvailableAppointment(appointment)">Book appointment</v-btn>
+                          </v-col>
+
+                      </v-list-item-content>
+                      </v-list-item>
+                  </v-list-item-group>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            plain
+            @click="dermAppointmentDialog = false"
+            color="grey darken-4"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+    </v-card>
+    </v-dialog>
+  </v-row>
+
+  <!-- New appointment -->
+  <v-row justify="center">
+    <v-dialog
+      v-model="newAppointmentDialog"
+      persistent
+      max-width="600px"
+    >
+    <v-card>
+        <v-card-title>
+          <span class="headline">New appointment</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <div class="col-sm">
+                        <div class="c1">
+                            <div class="md-form mx-5 my-5">
+                                <label for="date">Choose date</label>
+                                <input
+                                    type="date"
+                                    id="date"
+                                    name="date"
+                                    :min="today"
+                                    class="form-control"
+                                    v-model="chosenDate"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm">
+                        <div class="c2">
+                            <div class="md-form mx-5 my-5">
+                                <label class="label" for="start_time"
+                                    >Choose time</label
+                                >
+                                <input
+                                    type="time"
+                                    id="start_time"
+                                    class="form-control"
+                                    v-model="chosenTime"
+                                />
+                            </div>
+                        </div>
+                    </div>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green"
+            plain
+            @click="testFree()"
+          >
+            Test availability
+          </v-btn>
+          <v-btn
+            color="green"
+            plain
+            @click="addAppointment()"
+            v-if="appFree === true"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            color="green"
+            plain
+            @click="chooseExistingClicked()"
+            v-if="isDermatologist === true"
+          >
+            Choose existing 
+          </v-btn>
+          <v-btn
+            plain
+            @click="newAppointmentDialog = false"
+            color="grey darken-4"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+    </v-card>
+    </v-dialog>
+  </v-row>
     
     <v-snackbar
       v-model="snackbar"
@@ -315,6 +473,7 @@
 
 <script>
 import {client} from '@/client/axiosClient';
+import moment from "moment";
   export default {
     name: "AppointmentInProgress",
     data () {
@@ -322,12 +481,13 @@ import {client} from '@/client/axiosClient';
         disabledDates: {
           to: new Date(Date.now() - 8640000)
         },
-        datePicker: null,
+        today: moment().format("YYYY-MM-DD"),
         patientUsername: null,
         report: null,
         medicineInput: null,//storageItem
         quantityInput: 0,
         dialog: false,
+        dermAppointmentDialog: false,
         alternativesDialog: false,
         alternatives: [],
         showAltBtn: false,
@@ -335,6 +495,7 @@ import {client} from '@/client/axiosClient';
         selectedItem: 1,
         storage: [],
         items: [],
+        availableAppointments: [],
         snackbar: false,
         snackbarText: null,
         vertical: false,
@@ -342,9 +503,11 @@ import {client} from '@/client/axiosClient';
         itemAvailable: false,
         pharmacyId: null,
         newAppointmentDialog: false,
-        dateAvailable: false,
-        priceInput: 0,
         appointmentId: null,
+        chosenDate: null,
+        chosenTime: null,
+        appFree: false,
+        isDermatologist: false,
       }
       
     },
@@ -360,9 +523,15 @@ import {client} from '@/client/axiosClient';
         .then((response) => {
             this.storage = response.data;
         })
+        if(localStorage.getItem("USER_TYPE")=='DERMATOLOGIST'){
+            this.isDermatologist = true;
+        }
     },
 
     methods: {
+        formatDate(d) {
+            return moment(d).format("MMMM Do yyyy");
+        },
         addPrescriptionItem: function(){
             this.items.push({
                 medicine: this.medicineInput.medication,
@@ -377,6 +546,27 @@ import {client} from '@/client/axiosClient';
             this.itemAvailable = false;
             this.showAltBtn = false;
         },
+
+        bookAvailableAppointment: function(appointment){
+          client({
+            method: 'GET',
+            url: 'appointments/bookAvailableAppointment',
+            params: { patientUsername : this.patientUsername, appointmentId : appointment.id}
+          })
+          .then((response) => {
+              if(response.data === "Free"){
+              this.snackbarText = "Successfully booked appointment!";
+              this.snackbar = true;
+              this.dermAppointmentDialog = false;
+            }else{
+              this.snackbarText = response.data;
+              this.snackbar = true;
+              //this.dermAppointmentDialog = false;
+              chooseExistingClicked();
+            }
+          })
+        },
+
         removeItem: function(toRemove){
             const backup = this.items;
             this.items = [];
@@ -443,7 +633,7 @@ import {client} from '@/client/axiosClient';
             }else{
               this.itemAvailable = false;
               
-              this.snackbarText = this.quantityInput + " NOT AVAILABLE " + ",  " + input.quantity + " " + input.medication.nameAndForm + " available.";
+              this.snackbarText = this.quantityInput + " NOT AVAILABLE,  " + input.quantity + " " + input.medication.nameAndForm + " available.";
               this.snackbar = true;
               this.showAltBtn = true;
             }
@@ -523,6 +713,67 @@ import {client} from '@/client/axiosClient';
           this.snackbarText = "Successfully finished appointment!";
           })
         },
+
+        testFree: function(){
+          client({
+              method: 'GET',
+              params: {employeeUsername: localStorage.getItem("USERNAME"), patientUsername: this.patientUsername, 
+                      pharmacyId: this.pharmacyId, startDate: this.chosenDate, startTime: this.chosenTime,
+                       userType: localStorage.getItem("USER_TYPE")},
+              url: 'appointments/checkAvailableAppointmentByEmployee',
+          }).then((response) => {
+              console.log(response.data);
+              if(response.data == "Free"){
+                this.appFree = true;
+                this.snackbarText = "Appointment is available. Click 'SAVE' to book it.";
+                this.snackbar = true;
+              }else{
+                this.snackbarText = response.data;
+                this.snackbar = true;
+                this.appFree = false;
+              }
+          })
+        },
+
+        addAppointment: function(){
+          client({
+              method: 'GET',
+              params: {employeeUsername: localStorage.getItem("USERNAME"), patientUsername: this.patientUsername, 
+                      pharmacyId: this.pharmacyId, startDate: this.chosenDate, startTime: this.chosenTime,
+                       userType: localStorage.getItem("USER_TYPE")},
+              url: 'appointments/createNewAppointmentByEmployee',
+          }).then((response) => {
+            if(response.data === true){
+              this.snackbarText = "Successfully booked new appointment!";
+              this.snackbar = true;
+              this.appFree = false;
+              this.chosenDate = null;
+              this.chosenTime = null;
+              this.newAppointmentDialog = false;
+            }else{
+              this.snackbarText = "Appointment is unavailable!";
+              this.snackbar = true;
+              this.appFree = false;
+            }
+          })
+          
+        },
+
+        chooseExistingClicked: function(){          
+          if(localStorage.getItem("USER_TYPE")=='DERMATOLOGIST'){
+            this.isDermatologist = true;
+              client({
+                  method: 'GET',
+                  url: 'appointments/getAvailableDermAppointments',
+                  params: { employeeUsername: localStorage.getItem("USERNAME"), pharmacyId : this.pharmacyId}
+              })
+              .then((response) => {
+                  this.availableAppointments = response.data;
+              })            
+          }
+          this.newAppointmentDialog = false;
+          this.dermAppointmentDialog = true;
+        }
     },
   }
 </script>

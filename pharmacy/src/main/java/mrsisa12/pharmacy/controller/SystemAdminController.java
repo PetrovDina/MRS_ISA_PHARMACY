@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.UserDTO;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.SystemAdmin;
 import mrsisa12.pharmacy.model.enums.UserStatus;
 import mrsisa12.pharmacy.service.RoleService;
@@ -28,6 +29,9 @@ public class SystemAdminController {
 	@Autowired
 	private RoleService roleService;
 	
+	@Autowired
+	EmailService emailService;
+	
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<UserDTO> saveSystemAdmin(@RequestBody UserDTO systemAdminDTO)
 	{
@@ -44,6 +48,8 @@ public class SystemAdminController {
 		sa.setDeleted(false);
 		
 		systemAdminService.save(sa);
+		emailService.confirmationEmailUserRegistration(sa);
+		
 		return new ResponseEntity<>(new UserDTO(sa), HttpStatus.CREATED);
 	}
 

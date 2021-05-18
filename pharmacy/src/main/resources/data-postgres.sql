@@ -162,6 +162,12 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 6, 3], "startTime": [12, 0, 0], "endDate": [2021, 6, 3], "endTime": [13, 30, 0]}', 8, 1400, 2, 'False', 11);
 
 
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 5], "startTime": [12, 0, 0], "endDate": [2021, 7, 5], "endTime": [13, 30, 0]}', 4, 2000, 1, 'False', 2);
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 28], "startTime": [11, 0, 0], "endDate": [2021, 7, 28], "endTime": [12, 0, 0]}', 4, 2000, 1, 'False', 11);
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 23], "startTime": [12, 0, 0], "endDate": [2021, 7, 23], "endTime": [13, 30, 0]}', 4, 2000, 1, 'False', 2);
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 5, 19], "startTime": [10, 0, 0], "endDate": [2021, 5, 19], "endTime": [11, 0, 0]}', 4, 2000, 1, 'False', 11);
+
+
 -- alergije
 insert into allergies (patient_id, medication_id) values (2, 6);
 insert into allergies (patient_id, medication_id) values (2, 8);
@@ -204,7 +210,7 @@ insert into offers (deliveryDueDate, price, order_id, supplier_id, status) value
 insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Losa usluga generalno.', null);
 insert into ComplaintPharmacy(pharmacy_id, id) values (1, 1);
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Lekovima istekao rok.', null);
+insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Losa higijena.', null);
 insert into ComplaintPharmacy(pharmacy_id, id) values (2, 2);
 
 insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', null);

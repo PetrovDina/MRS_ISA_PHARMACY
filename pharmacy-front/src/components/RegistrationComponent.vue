@@ -153,7 +153,11 @@ export default {
 				else
 				{
 					this.homeRedirect(); 
-					alert("Registracija uspesno izvrsena.");
+					this.$toasted.show("Registration ended successfully. Check your email to confirm it.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 10000,
+                    });
 					this.$emit('registered', response.data); // vracamo objekat koji je registrovan
 				}
 			}).catch((response) => (console.log(response)));

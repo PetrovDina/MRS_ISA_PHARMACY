@@ -67,7 +67,11 @@ export default {
             if(complaint.text === "") return;
             if(!this.selectedPharmacy)
             {
-                alert("Please select pharmacy.");
+                this.$toasted.show("Please select pharmacy.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
                 return;
             } 
             let complaintDTO =

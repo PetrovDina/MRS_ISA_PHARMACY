@@ -1,4 +1,4 @@
-package mrsisa12.pharmacy.dto;
+package mrsisa12.pharmacy.complaint.dto;
 
 import mrsisa12.pharmacy.model.ComplaintEmployee;
 

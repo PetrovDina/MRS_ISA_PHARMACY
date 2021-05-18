@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.UserDTO;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Supplier;
 import mrsisa12.pharmacy.model.enums.UserStatus;
 import mrsisa12.pharmacy.service.RoleService;
@@ -30,6 +31,9 @@ public class SupplierController {
 	@Autowired
 	private RoleService roleService;
 	
+	@Autowired
+	EmailService emailService;
+	
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<UserDTO> saveSupplier(@RequestBody UserDTO supplierDTO)
 	{
@@ -46,6 +50,8 @@ public class SupplierController {
 		su.setDeleted(false);
 		
 		supplierService.save(su);
+		emailService.confirmationEmailUserRegistration(su);
+		
 		return new ResponseEntity<>(new UserDTO(su), HttpStatus.CREATED);
 	}
 	

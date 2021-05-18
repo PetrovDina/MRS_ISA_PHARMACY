@@ -73,7 +73,7 @@ export default {
                     });
                 return;
             } 
-            alert(this.selectedEmployee.username)
+
             let complaintDTO =
             {
                 patientUsername: localStorage.user,

@@ -81,6 +81,7 @@ public class EmployeeService {
 		return employeeRepository.findByUsername(username);
 	}
 	
+
 	public boolean containsEmployee(List<PlainEmployeeDTO> employeeDTOs, Employee employee)
 	{
 		for (PlainEmployeeDTO empl : employeeDTOs) 
@@ -89,6 +90,10 @@ public class EmployeeService {
 				return true;
 		}
 		return false;
+	}
+	
+	public Employee findOneByUsernameWithAppointments(String username) {
+		return employeeRepository.findOneByUsernameWithAppointments(username);
 	}
 
 }

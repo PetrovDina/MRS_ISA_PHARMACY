@@ -15,6 +15,7 @@ import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.Supplier;
 import mrsisa12.pharmacy.model.SystemAdmin;
+import mrsisa12.pharmacy.model.User;
 
 @Service
 public class EmailService {
@@ -77,4 +78,17 @@ public class EmailService {
 		email.addRecipient(patient.getEmail());
         this.sendEmail(email);
     }
+    
+    public void confirmationEmailUserRegistration(User user)
+    {
+    	String emailBody = "Hello " + user.getFirstName() + " " + user.getLastName()
+		+ ",\n\nTo verify registration on our website click on following link: "
+		+ "http://localhost:8080/auth/confirm-registration/" + user.getUsername() 
+		+ "\n\nThis is an automatically generated email – please do not reply to it. ©Tim12-MRS-ISA";
+    	
+    	EmailContent email = new EmailContent("Registration confirmation", emailBody);
+		email.addRecipient(user.getEmail());
+        this.sendEmail(email);
+    }
+    
 }

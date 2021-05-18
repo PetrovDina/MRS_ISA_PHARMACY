@@ -21,6 +21,7 @@ import mrsisa12.pharmacy.dto.MedicationDTO;
 import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.dto.UserDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -52,6 +53,9 @@ public class PatientController {
 	
 	@Autowired
 	private RoleService roleService;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PatientDTO>> getAllPatients() {
@@ -213,6 +217,9 @@ public class PatientController {
 		pa.setPenaltyPoints(new Integer(0));
 		patientService.save(pa);
 		
+		emailService.confirmationEmailUserRegistration(pa);
+		
 		return new ResponseEntity<>(new UserDTO(pa), HttpStatus.CREATED);
 	}
+
 }

@@ -1,21 +1,18 @@
 <template>
-    <h1>{{ msg }}</h1>
+<div class="container">
+</div>
 </template>
 
 <script>
+import {client} from '@/client/axiosClient';
+import moment from "moment";
 
 export default {
     name: "NewAppointmentPage",
     data() {
-        return {
-            msg: "New Appointment Form"
-        };
+        return {};
     },
 
-    methods: {},
-
-    mounted() {
-    },
 };
 </script>
 

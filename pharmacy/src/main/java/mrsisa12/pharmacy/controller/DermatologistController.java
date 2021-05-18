@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.DermatologistDTO;
 import mrsisa12.pharmacy.dto.UserDTO;
-import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Dermatologist;
 import mrsisa12.pharmacy.model.enums.UserStatus;
 import mrsisa12.pharmacy.service.DermatologistService;
@@ -33,6 +33,9 @@ public class DermatologistController {
 	
 	@Autowired
 	private RoleService roleService;
+	
+	@Autowired
+	EmailService emailService;
 	
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<UserDTO> saveSystemAdmin(@RequestBody UserDTO dermatologistDTO)
@@ -52,6 +55,8 @@ public class DermatologistController {
 		d.setDeleted(false);
 		
 		dermatologistService.save(d);
+		emailService.confirmationEmailUserRegistration(d);
+		
 		return new ResponseEntity<>(new UserDTO(d), HttpStatus.CREATED);
 	}
 

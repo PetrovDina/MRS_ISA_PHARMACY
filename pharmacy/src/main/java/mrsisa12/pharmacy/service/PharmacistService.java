@@ -31,5 +31,9 @@ public class PharmacistService {
 	public void deletePharmacist(Pharmacist pharmacist) {
 		pharmacistRepository.delete(pharmacist);
 	}
+	
+	public Pharmacist findByUsername(String username) {
+		return pharmacistRepository.findByUsername(username);
+	}
 
 }

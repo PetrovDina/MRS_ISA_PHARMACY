@@ -1,12 +1,13 @@
 <template>
     <div id="main-container" class="main-container">
+        <div class="container">
         <p class="titl">Reserved medication dispensal</p>
         <br>
         <br>
         <v-text-field
         v-model="query"
                 clearable
-                label="Enter reservation id"
+                label="Enter reservation code"
                 type="text"
                 outlined
                 
@@ -22,7 +23,7 @@
         max-width="374"
     >
 
-        <v-card-title>Reservation #{{reservationFixed.id}}</v-card-title>
+        <v-card-title>Reservation {{reservationFixed.code}}</v-card-title>
 
         <v-card-text>
             <div class="my-4 subtitle-1">
@@ -71,6 +72,7 @@
             </v-btn>
         </template>
         </v-snackbar>
+        </div>
     </div>
 </template>
 

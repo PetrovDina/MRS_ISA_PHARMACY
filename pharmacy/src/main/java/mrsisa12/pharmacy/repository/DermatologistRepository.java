@@ -9,4 +9,7 @@ import mrsisa12.pharmacy.model.Dermatologist;
 public interface DermatologistRepository extends JpaRepository<Dermatologist, Long>{
 
 	public Page<Dermatologist> findAll(Pageable pageable);
+
+	public Dermatologist findOneByUsername(String username);
+		
 }

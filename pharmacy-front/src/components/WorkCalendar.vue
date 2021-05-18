@@ -1,11 +1,13 @@
 <template>
-  <v-row class="fill-height">
+<div class="container">
+  <v-row class="fill-height" >
     <v-col>
       <v-sheet height="64">
         <v-toolbar
           flat
         >
           <v-btn
+            v-if="mainCalendar===true"
             outlined
             class="mr-4"
             color="grey darken-2"
@@ -14,6 +16,7 @@
             Today
           </v-btn>
           <v-btn
+            v-if="mainCalendar===true"
             fab
             text
             small
@@ -24,6 +27,7 @@
             </v-icon>
           </v-btn>
           <v-btn
+            v-if="mainCalendar===true"
             fab
             text
             small
@@ -33,7 +37,7 @@
             <v-icon small class="fa fa-chevron-right">
             </v-icon>
           </v-btn>
-          <v-toolbar-title v-if="$refs.calendar">
+          <v-toolbar-title v-if="$refs.calendar && mainCalendar===true">
             {{ $refs.calendar.title }}
           </v-toolbar-title>
           <v-spacer></v-spacer>
@@ -54,23 +58,23 @@
               </v-btn>
             </template>
             <v-list>
-              <v-list-item @click="type = 'day'">
+              <v-list-item @click="type = 'day';mainCalendar=true; yearCalendar=false">
                 <v-list-item-title>Day</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="type = 'week'">
+              <v-list-item @click="type = 'week';mainCalendar=true; yearCalendar=false">
                 <v-list-item-title>Week</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="type = 'month'">
+              <v-list-item @click="type = 'month';mainCalendar=true; yearCalendar=false">
                 <v-list-item-title>Month</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="type = 'year'">
+              <v-list-item @click="mainCalendar=false; yearCalendar=true">
                 <v-list-item-title>Year</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="600">
+      <v-sheet height="600" v-if="mainCalendar===true">
         <v-calendar
           ref="calendar"
           v-model="focus"
@@ -132,14 +136,22 @@
           </v-card>
         </v-menu>
       </v-sheet>
+      <v-sheet height="600" v-if="yearCalendar===true">
+        <Calendar render-style="background"></Calendar>
+      </v-sheet>
     </v-col>
   </v-row>
+</div>
 </template>
 
 <script>
 import {client} from '@/client/axiosClient';
+import Calendar from '../components/YearCalendar.vue';
   export default {
     name: "WorkCalendar",
+    components: {
+        Calendar
+    },
     data: () => ({
       focus: '',
       type: 'month',
@@ -153,7 +165,9 @@ import {client} from '@/client/axiosClient';
       selectedElement: null,
       selectedOpen: false,
       events: [],
-      appointments: []
+      appointments: [],
+      mainCalendar: true,
+      yearCalendar: false,
     }),
     mounted () {
       this.$refs.calendar.checkChange()
@@ -205,7 +219,7 @@ import {client} from '@/client/axiosClient';
                   this.appointments = response.data;
                   for(var appointment of response.data) {
                       var avail = false;
-                      if(appointment.status === 'RESERVED' && (new Date(appointment.timePeriod.startDate) >= new Date()) === true){
+                      if(appointment.status === 'RESERVED' && (new Date(appointment.timePeriod.startDate) == new Date()) === true){
                         avail = true;
                       } 
                       var patientFullName = appointment.patient.firstName + " " + appointment.patient.lastName;

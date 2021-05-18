@@ -53,7 +53,13 @@ export default {
                 data : offerDTO
             }).then((response) => {
                 // Ako prodje uspesno onda skini sa liste ordera za koju nije dao ponudu
-                alert("Offer successfuly sent to pharmacy.");
+
+                this.$toasted.show("Offer successfuly sent to pharmacy.", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+
                 for(let i = 0; i < this.orders.length; i++)
                 {
                     if(this.orders[i].id == order.id)
@@ -63,7 +69,13 @@ export default {
                     }
                 }
             }).catch((response) => {
-                alert("Not enough resources to make offer for selected order."); 
+
+                this.$toasted.show("Not enough resources to make offer for selected order.", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                
             });
         }
     },

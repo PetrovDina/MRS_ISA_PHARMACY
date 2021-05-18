@@ -65,7 +65,13 @@ export default {
                 data : offerDTO
             }).then((response) => {
                 // Ako prodje uspesno izmeni i front
-                alert("Offer successfuly changed.");
+
+                this.$toasted.show("Offer successfuly changed.", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+
                 for(let i = 0; i < this.offers.length; i++)
                 {
                     if(this.offers[i].order.id == order.id)
@@ -76,7 +82,13 @@ export default {
                     }
                 }
             }).catch((response) => {
-                alert("Not enough resources to change offer for selected order."); 
+
+                this.$toasted.show("Not enough resources to change offer for selected order.", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                
             });
         },
 
