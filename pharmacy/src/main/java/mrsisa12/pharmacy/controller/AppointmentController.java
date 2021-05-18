@@ -1,6 +1,8 @@
 package mrsisa12.pharmacy.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,15 +26,21 @@ import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.model.Dermatologist;
 import mrsisa12.pharmacy.model.Employee;
+import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Patient;
+import mrsisa12.pharmacy.model.Pharmacist;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.model.enums.AppointmentType;
 import mrsisa12.pharmacy.service.AppointmentService;
+import mrsisa12.pharmacy.service.DermatologistService;
 import mrsisa12.pharmacy.service.EmployeeService;
+import mrsisa12.pharmacy.service.EmploymentService;
 import mrsisa12.pharmacy.service.PatientService;
+import mrsisa12.pharmacy.service.PharmacistService;
 import mrsisa12.pharmacy.service.PharmacyService;
 
 @RestController
@@ -53,6 +61,9 @@ public class AppointmentController {
 	
 	@Autowired
 	private EmailService emailService;
+		
+	@Autowired
+	private EmploymentService employmentService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
@@ -361,12 +372,11 @@ public class AppointmentController {
 	@GetMapping(value = "/upcomingAppointmentsForPatient")
 	public ResponseEntity<List<AppointmentDTO>> getUpcomingAppointmentsForEmployee(@RequestParam("patientUsername") String patientUsername, @RequestParam String employeeUsername) {	
 		Patient patient = patientService.findByUsername(patientUsername);
-		Employee emp = employeeService.findOneByUsername(employeeUsername);
-		List<Appointment> appointments = appointmentService.findAll();
+		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
 		
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
-		for (Appointment appointment : appointments) {
-			if(appointment.getEmployee().getId().equals(emp.getId()) && appointment.getPatient().getId().equals(patient.getId()) && appointment.getStatus() == AppointmentStatus.RESERVED) {
+		for (Appointment appointment : emp.getAppointments()) {
+			if(appointment.getStatus() == AppointmentStatus.RESERVED && appointment.getPatient().getId().equals(patient.getId()) && !appointment.isDeleted() ) {
 				appointmentsDTO.add(new AppointmentDTO(appointment));
 			}
 		}
@@ -437,7 +447,7 @@ public class AppointmentController {
 			boolean beforeMax = appointment.getTimePeriod().getEndDate().isBefore(LocalDate.parse(max));
 			boolean equalMax = appointment.getTimePeriod().getEndDate().isEqual(LocalDate.parse(max));
 			if(appointment.getEmployee().getId().equals(emp.getId()) && appointment.getStatus() != AppointmentStatus.AVAILABLE
-					&& (afterMin || equalMin) && (beforeMax || equalMax)) {
+					&& (afterMin || equalMin) && (beforeMax || equalMax) && !appointment.isDeleted()) {
 				appointmentsDTO.add(new AppointmentDTO(appointment));
 			}
 		}
@@ -472,4 +482,175 @@ public class AppointmentController {
 		
 		return new ResponseEntity<>( HttpStatus.OK);
 	}
+		
+	@GetMapping(value = "/getAvailableDermAppointments")
+	public ResponseEntity<List<AppointmentDTO>> getAvailableDermAppointments(@RequestParam String employeeUsername,@RequestParam String pharmacyId){
+		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
+		
+		List<AppointmentDTO> avail = new ArrayList<AppointmentDTO>();
+		for (Appointment appointment : emp.getAppointments()) {
+			if(appointment.getPharmacy().getId()==Long.parseLong(pharmacyId) && appointment.getStatus()==AppointmentStatus.AVAILABLE && !appointment.isDeleted()) {
+				avail.add(new AppointmentDTO(appointment));
+			}
+		}
+		return new ResponseEntity<>(avail, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/createNewAppointmentByEmployee")
+	public ResponseEntity<Boolean> createNewAppointmentByEmployee(@RequestParam String employeeUsername, @RequestParam String patientUsername,
+			@RequestParam String pharmacyId, @RequestParam String startDate, @RequestParam String startTime,@RequestParam String userType){
+		
+		Appointment appointment = new Appointment();
+		LocalDate startDate2 = LocalDate.parse(startDate);
+		LocalDate endDate2 = LocalDate.parse(startDate);
+		LocalTime startTime2 = LocalTime.parse(startTime);
+		LocalTime endTime2 = LocalTime.parse(startTime).plusHours(1);
+		TimePeriod tp = new TimePeriod(startDate2, startTime2, endDate2, endTime2);
+		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
+		Patient patient = patientService.findByUsername(patientUsername);
+		Pharmacy pharmacy = pharmacyService.findOne(Long.parseLong(pharmacyId));
+		Employment employment = employmentService.findOneByEmployeeIdAndPharmacyId(emp.getId(), Long.parseLong(pharmacyId));
+		
+		boolean free = true; //0 = free, 1 = employee booked, 2 = patient booked, 3 = not in work hours
+		if (!employment.getWorkTime().getStartTime().isBefore(startTime2) || !employment.getWorkTime().getEndTime().isAfter(endTime2)) {
+			free = false; // ne upada u radno vrijeme
+		}
+		
+		// Ovdje se mora provjeravati i datum i vrijeme za zaposlenog
+		for (Appointment appo : emp.getAppointments()) {
+			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+			if (!(eWorkTSDateTime.isAfter(endDate2.atTime(endTime2))
+					&& eWorkTSDateTime.isAfter(startDate2.atTime(startTime2)))
+					&& !(eWorkTEDateTime.isBefore(endDate2.atTime(endTime2))
+							&& eWorkTEDateTime.isBefore(startDate2.atTime(startTime2)))) {
+				if(!(userType.equals("DERMATOLOGIST") && appo.getStatus()==AppointmentStatus.AVAILABLE)) {
+					free = false;  // preklapanje sa postojecim terminom
+					break;
+				}
+			}
+		}
+		if(free) {
+			appointment.setEmployee(emp);
+			appointment.setPatient(patient);
+			appointment.setPharmacy(pharmacy);
+			appointment.setTimePeriod(tp);
+			appointment.setDeleted(false);
+			appointment.setStatus(AppointmentStatus.RESERVED);
+			appointment.setPrice(pharmacy.getAppointmentPriceCatalog().getExaminationPrice());			
+			
+			if(userType.equals("DERMATOLOGIST")) {
+				appointment.setType(AppointmentType.DERMATOLOGIST_EXAMINATION);
+			}
+			if(userType.equals("PHARMACIST")) {
+				appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
+			}
+			
+			appointment = appointmentService.save(appointment);
+			
+			String emailBody = "This email is confirmation that "
+			+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() 
+			+ " has successfully booked an appointment with you at "
+			+ appointment.getTimePeriod().getStartDate() + " " 
+			+ appointment.getTimePeriod().getStartTime();
+			
+			EmailContent email = new EmailContent("Appointment booked", emailBody);
+			email.addRecipient(appointment.getPatient().getEmail());
+	        emailService.sendEmail(email);
+			
+			return new ResponseEntity<>(true, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(false, HttpStatus.OK);
+		}
+	}
+	
+	@GetMapping(value = "/checkAvailableAppointmentByEmployee")
+	public ResponseEntity<String> checkAvailableAppointmentByEmployee(@RequestParam String employeeUsername, @RequestParam String patientUsername,
+			@RequestParam String pharmacyId, @RequestParam("startDate") String startDate, @RequestParam String startTime, @RequestParam String userType){
+		
+		LocalDate startDate2 = LocalDate.parse(startDate);
+		LocalDate endDate2 = LocalDate.parse(startDate);
+		LocalTime startTime2 = LocalTime.parse(startTime);
+		LocalTime endTime2 = LocalTime.parse(startTime).plusHours(1);
+		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
+		Employment employment = employmentService.findOneByEmployeeIdAndPharmacyId(emp.getId(), Long.parseLong(pharmacyId));
+		List<Appointment> patientAppointments = appointmentService.findAllByPatientUsername(patientUsername);
+		
+		String free = "Free";
+		if (!employment.getWorkTime().getStartTime().isBefore(startTime2) || !employment.getWorkTime().getEndTime().isAfter(endTime2)) {
+			free = "Chosen time not in work hours."; // ne upada u radno vrijeme
+		}
+		
+		// Ovdje se mora provjeravati i datum i vrijeme za zaposlenog
+		for (Appointment appo : emp.getAppointments()) {
+			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+			if (!(eWorkTSDateTime.isAfter(endDate2.atTime(endTime2))
+					&& eWorkTSDateTime.isAfter(startDate2.atTime(startTime2)))
+					&& !(eWorkTEDateTime.isBefore(endDate2.atTime(endTime2))
+							&& eWorkTEDateTime.isBefore(startDate2.atTime(startTime2)))) {
+				if(!(userType.equals("DERMATOLOGIST") && appo.getStatus()==AppointmentStatus.AVAILABLE)) {
+					free = "You already have an appointment then.";  // preklapanje sa postojecim terminom
+					break;
+				}
+			}
+		}
+		
+		// za pacijenta
+		for (Appointment appo : patientAppointments) {
+			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+			if (!(eWorkTSDateTime.isAfter(endDate2.atTime(endTime2))
+					&& eWorkTSDateTime.isAfter(startDate2.atTime(startTime2)))
+					&& !(eWorkTEDateTime.isBefore(endDate2.atTime(endTime2))
+							&& eWorkTEDateTime.isBefore(startDate2.atTime(startTime2)))) {
+				free = "Patient already has an appointment then."; // preklapanje sa postojecim terminom
+				break;
+			}
+		}
+		
+		return new ResponseEntity<>(free, HttpStatus.OK);
+		
+	}
+	
+	@GetMapping(value = "/bookAvailableAppointment")
+	public ResponseEntity<String> bookAvailableAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId){
+		Appointment appointment = appointmentService.findOne(appointmentId);
+		List<Appointment> patientAppointments = appointmentService.findAllByPatientUsername(patientUsername);
+		
+		String free = "Free";
+		if(appointment.getStatus()!= AppointmentStatus.AVAILABLE || appointment.isDeleted()) {
+			free = "Appointment is unavailable.";
+		}
+		
+		// za pacijenta		
+		for (Appointment appo : patientAppointments) {
+			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+			if (!(eWorkTSDateTime.isAfter(appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime()))
+					&& eWorkTSDateTime.isAfter(appointment.getTimePeriod().getStartDate().atTime(appointment.getTimePeriod().getStartTime())))
+					&& !(eWorkTEDateTime.isBefore(appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime()))
+							&& eWorkTEDateTime.isBefore(appointment.getTimePeriod().getStartDate().atTime(appointment.getTimePeriod().getStartTime())))) {
+				free = "Patient already has an appointment then."; // preklapanje sa postojecim terminom
+				break;
+			}
+		}
+		
+		if(free == "Free") {
+			appointment.setPatient(patientService.findByUsername(patientUsername));
+			appointment.setStatus(AppointmentStatus.RESERVED);
+			appointment = appointmentService.save(appointment);
+			String emailBody = "This email is confirmation that "
+			+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() 
+			+ " has successfully booked an appointment with you at "
+			+ appointment.getTimePeriod().getStartDate() + " " 
+			+ appointment.getTimePeriod().getStartTime();
+			
+			EmailContent email = new EmailContent("Appointment booked", emailBody);
+			email.addRecipient(appointment.getPatient().getEmail());
+	        emailService.sendEmail(email);
+		}
+		return new ResponseEntity<>(free, HttpStatus.OK);
+	}
+	
 }

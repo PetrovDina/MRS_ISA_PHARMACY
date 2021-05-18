@@ -1,4 +1,5 @@
 <template>
+<div class="container">
     <div id="patientsDiv">
         <p class="titl">Patients with upcoming appointments</p>
         <br>
@@ -68,7 +69,6 @@
         <v-row justify="center">
             <v-dialog
             v-model="dialog"
-            persistent
             max-width="600px"
             >
             
@@ -98,13 +98,14 @@
                         <v-btn
                         plain 
                         @click="startAppointment(item)"
-                        >
+                        v-if="item.available === true">
                         Start Appointment
                         </v-btn>
 
                         <v-btn plain
                         color="error"
-                        @click="didntShowUp(item)">
+                        @click="didntShowUp(item)"
+                        v-if="item.available === true">
                         Didnt show up
                         </v-btn>
                         </v-col>
@@ -129,6 +130,7 @@
         </v-row>
 
     </div>    
+</div>
 </template>
 
 <script>
@@ -165,7 +167,8 @@ export default {
             url: "appointments/upcomingPatientsForEmployee",
             params: { username : localStorage.getItem('USERNAME') },
             method: "GET",
-            }).then((response) => (this.patients = response.data));
+            }).then((response) => (
+                this.patients = response.data));
         },
 
         toDateTime: function(d, t1, t2){
@@ -187,6 +190,7 @@ export default {
             })
             .then((response) => {
                 for(var appointment of response.data){
+                    appointment.available = (new Date(appointment.timePeriod.startDate) == new Date()) ;
                     appointment.fixedDate = this.toDateTime(appointment.timePeriod.startDate, appointment.timePeriod.startTime, appointment.timePeriod.endTime);
                     this.allAppointments.push(appointment);
                 }

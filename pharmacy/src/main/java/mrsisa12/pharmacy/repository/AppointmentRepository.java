@@ -47,4 +47,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 	
 	@Query("select app from Appointment app join fetch app.patient e where app.id =?1")
 	public Appointment findOneWithPatient(Long id);
+	
+	@Query("select app from Appointment app where app.patient.username = :username")
+	public List<Appointment> findAllByPatientUsername(@Param("username")String username);
 }

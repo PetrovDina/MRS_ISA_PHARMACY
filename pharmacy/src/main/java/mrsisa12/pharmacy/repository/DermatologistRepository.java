@@ -11,4 +11,5 @@ public interface DermatologistRepository extends JpaRepository<Dermatologist, Lo
 	public Page<Dermatologist> findAll(Pageable pageable);
 
 	public Dermatologist findOneByUsername(String username);
+		
 }

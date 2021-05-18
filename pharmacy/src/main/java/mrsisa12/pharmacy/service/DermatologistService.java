@@ -28,5 +28,5 @@ public class DermatologistService {
 	{
 		return dermatologistRepository.findOneByUsername(username);
 	}
-	
+		
 }

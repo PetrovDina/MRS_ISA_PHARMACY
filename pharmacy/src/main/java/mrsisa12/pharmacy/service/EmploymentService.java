@@ -82,4 +82,8 @@ public class EmploymentService {
 	public List<Employment> findAllPharmacistEmployments() {
 		return employmentRepository.findAllPharmacistEmployments();
 	}
+	
+	public Employment findOneByEmployeeIdAndPharmacyId(Long employeeId, Long pharmacyId) {
+		return employmentRepository.findOneByEmployeeIdAndPharmacyId(employeeId, pharmacyId);
+	}
 }
