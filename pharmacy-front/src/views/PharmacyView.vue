@@ -3,11 +3,13 @@
         <v-card class="ma-5">
             <v-card-title>
                 <v-spacer></v-spacer>
-                <div >
+                <div>
                     <h1>{{pharmacyName}}</h1>
-                    <h1>{{address}}, {{city}} {{zipCode}}</h1>
+                    <h1>{{address}} {{streetNum}}, {{city}}</h1>
                 </div>
-                <v-spacer></v-spacer>
+                <v-spacer>
+                    <button style="float:right" @click="editPharmacyData()"><i class="fa fa-edit fa-lg"></i></button>
+                </v-spacer>
             </v-card-title>
         </v-card>
         <Button v-if="checkRoleTEST('PATIENT')"
@@ -59,6 +61,13 @@
                 </OrdersTable>
             </Tab>
         </TabNav>
+        <ModalWindowEditPharmacyData
+        @modal-closed = "modalEditPharmacyData = false"
+        @pharamcy-data-changed = "saveEditedPharmacyData"
+        :pharmacy = "pharmacy"
+        :modal_show = "modalEditPharmacyData"
+        >
+        </ModalWindowEditPharmacyData>
     </div>
     
 </template>
@@ -72,41 +81,35 @@ import TabNav from '../components/TabNav';
 import Tab from '../components/Tab';
 import PharmacistsTable from '../components/PharmacistsTable.vue';
 import OrdersTable from '../components/OrdersTable';
+import ModalWindowEditPharmacyData from '../components/ModalWindowEditPharmacyData.vue'
 
 export default {
     name: "PharmacyView",
-    components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable, OrdersTable},
+    components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable, OrdersTable, ModalWindowEditPharmacyData},
     data() {
         return {
             selected: "Dermatologists",
             subscribed : false,
-            showDermos: false,
-            showMedication: false,
             pharmacy : null,
             pharmacyId: null,
             pharmacyName: '',
             address: '',
+            streetNum: '',
             city: '',
             zipCode: '',
-            pharmacyItems : [],
             dermatologistsToSend: [],
             pharmacistsToSend: [],
             medicationToSend: [],
             ordersToSend: [],
             // lista svih slobodnih termina treba da se doda
-            rating: 0.0
+            rating: 0.0,
+            modalEditPharmacyData : false,
         };
     },
 
     methods: {
         checkRoleTEST : function(userRole){
             return this.$store.getters.getLoggedUserRole === userRole;
-        },
-        toggleDermos : function(){
-            this.showDermos = !this.showDermos;
-        },
-        toggleMedication : function(){
-            this.showMedication = !this.showMedication;
         },
         setSelected(tab) {
             this.selected = tab;
@@ -281,6 +284,18 @@ export default {
                         med.quantity += orderItem.quantity;
                 });
             });
+        },
+        editPharmacyData : function(){
+            console.log(this.pharmacy);
+            this.modalEditPharmacyData = true;
+        },
+        saveEditedPharmacyData : function(pharmacy){
+            console.log(pharmacy);
+            //  client({
+            //     url: "pharmacy/" + this.pharmacyId,
+            //     method: "PUT",
+            //     data: pharmacy
+            // }).then((response) => {});
         }
     },
 
@@ -310,6 +325,7 @@ export default {
                 }
                 this.pharmacyName = this.pharmacy.name;
                 this.address = this.pharmacy.location.street;
+                this.streetNum = this.pharmacy.location.streetNum;
                 this.city = this.pharmacy.location.city;
                 this.zipCode = this.pharmacy.location.zipcode;
             }).catch((response) => alert("pharmacyId je los :("));
@@ -318,8 +334,7 @@ export default {
                 url : "pharmacyStorageItem/fromPharmacy/" + this.pharmacyId,
                 method : "GET",
             }).then((response) => {
-                    this.pharmacyItems = response.data;
-                    for(const pharmacy_item of this.pharmacyItems){
+                    for(const pharmacy_item of response.data){
                         let current_price = 0;
                         for(const iter of pharmacy_item.itemPrices){
                             if(iter.current === true){
