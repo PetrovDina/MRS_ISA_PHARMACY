@@ -4,8 +4,8 @@
             <v-card-title>
                 <v-spacer></v-spacer>
                 <div>
-                    <h1>{{pharmacyName}}</h1>
-                    <h1>{{address}} {{streetNum}}, {{city}}</h1>
+                    <h1>{{pharmacy.name}}</h1>
+                    <h1>{{pharmacy.location.street}} {{pharmacy.location.streetNum}}, {{pharmacy.location.city}}</h1>
                 </div>
                 <v-spacer>
                     <button style="float:right" @click="editPharmacyData()"><i class="fa fa-edit fa-lg"></i></button>
@@ -90,13 +90,10 @@ export default {
         return {
             selected: "Dermatologists",
             subscribed : false,
-            pharmacy : null,
+            pharmacy : { 
+                location: {} // morao da dodam zbog rendera
+            },
             pharmacyId: null,
-            pharmacyName: '',
-            address: '',
-            streetNum: '',
-            city: '',
-            zipCode: '',
             dermatologistsToSend: [],
             pharmacistsToSend: [],
             medicationToSend: [],
@@ -286,16 +283,65 @@ export default {
             });
         },
         editPharmacyData : function(){
-            console.log(this.pharmacy);
             this.modalEditPharmacyData = true;
         },
+        isLocationChanged : function(location){
+            if(location.city != this.pharmacy.location.city) return true;
+            if(location.street != this.pharmacy.location.street) return true;
+            if(location.streetNum != this.pharmacy.location.streetNum) return true;
+            return false;
+        },
+        saveWithLocationLongAndLat : function(pharmacy){
+            const url =
+                "https://nominatim.openstreetmap.org/search/" +
+                pharmacy.location.city +
+                ", " +
+                pharmacy.location.street +
+                " " +
+                pharmacy.location.streetNum;
+
+            this.axios.get(
+                url, {
+                params: {
+                    format: "json",
+                    limit: 1, 
+                    "accept-language": "en",
+                },
+            }).then((response) => {
+                if (response.data && response.data.lenght != 0) {
+                    pharmacy.location['longitude'] = response.data[0].lon;
+                    pharmacy.location['latitude'] = response.data[0].lat;
+                    pharmacy.location['zipcode'] = 21000;
+                    client({
+                        url: "pharmacy",
+                        method: "PUT",
+                        data: pharmacy
+                    }).then((response) => {
+                        this.pharmacy.name = response.data.name;
+                        this.pharmacy.location = response.data.location;
+                        this.pharmacy.appointmentPriceCatalog = response.data.appointmentPriceCatalog;
+                    });
+                }
+            }).catch(() => {
+                alert('Could not find coordinates based on given info.', '');
+            });
+        },
         saveEditedPharmacyData : function(pharmacy){
-            console.log(pharmacy);
-            //  client({
-            //     url: "pharmacy/" + this.pharmacyId,
-            //     method: "PUT",
-            //     data: pharmacy
-            // }).then((response) => {});
+            if(this.isLocationChanged(pharmacy.location))
+                this.saveWithLocationLongAndLat(pharmacy);
+            else {
+                pharmacy.location['longitude'] = this.pharmacy.location.longitude;
+                pharmacy.location['latitude'] = this.pharmacy.location.latitude;
+                client({
+                    url: "pharmacy",
+                    method: "PUT",
+                    data: pharmacy
+                }).then((response) => {
+                    this.pharmacy.name = response.data.name;
+                    this.pharmacy.location = response.data.location;
+                    this.pharmacy.appointmentPriceCatalog = response.data.appointmentPriceCatalog;
+                });
+            }
         }
     },
 
@@ -314,8 +360,7 @@ export default {
             }).then((response) => {
                 this.pharmacy = response.data
                 // treba sada da se razvrstaju dermatolozi od farmaceuta
-                let employment = null;
-                for(employment of this.pharmacy.employments){
+                for(const employment of this.pharmacy.employments){
                     employment.employee['workTime'] = employment.workTime;
                     employment.employee['employmentId'] = employment.id;
                     if(employment.contractType === 'DERMATOLOGIST_CONTRACT')
@@ -323,11 +368,6 @@ export default {
                     else
                         this.pharmacistsToSend = [...this.pharmacistsToSend, employment.employee];
                 }
-                this.pharmacyName = this.pharmacy.name;
-                this.address = this.pharmacy.location.street;
-                this.streetNum = this.pharmacy.location.streetNum;
-                this.city = this.pharmacy.location.city;
-                this.zipCode = this.pharmacy.location.zipcode;
             }).catch((response) => alert("pharmacyId je los :("));
                 // dobavljamo sve lijekove iz apoteke
             client({

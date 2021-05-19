@@ -3,23 +3,34 @@
         <div class="modal-content">
             <Button id="close_btn" @action-performed="closeWindow" class="close" text="X" color="white"></Button>
             <div>
-                <h2>Edit pharmacy data - {{pharmacy.name}}</h2>
+                <h2>Edit pharmacy data </h2>
             </div>
+            <hr class="solid">
             <div class="container">
                 <div class="row">
-                    <div class="col-3">
-                    </div>
-                    <div class="col-6">
+                    <div class="col-4">
+                        <span>Name</span>
+                        <hr class="solid">
                         <label class="label" for="name">Pharmacy name:</label>
                         <input type="text" id="name" class="form-control" :value="pharmacy.name">
-                        <label class="label" for="city">City</label>
+                    </div>
+                    <div class="col-4">
+                        <span>Address</span>
+                        <hr class="solid">
+                        <label class="label" for="city">City:</label>
                         <input type="text" id="city" class="form-control" :value="pharmacy.location.city">
-                        <label class="label" for="street">Street</label>
+                        <label class="label" for="street">Street:</label>
                         <input type="text" id="street" class="form-control" :value="pharmacy.location.street">
-                        <label class="label" for="streetNum">Street number</label>
+                        <label class="label" for="streetNum">Street number:</label>
                         <input type="text" id="streetNum" class="form-control" :value="pharmacy.location.streetNum">
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
+                        <span>Price cataloge</span>
+                        <hr class="solid">
+                        <label class="label" for="examinationPrice">Examination price:</label>
+                        <input type="text" id="examinationPrice" class="form-control" :value="pharmacy.appointmentPriceCatalog.examinationPrice">
+                        <label class="label" for="consultationPrice">Consultation price:</label>
+                        <input type="text" id="consultationPrice" class="form-control" :value="pharmacy.appointmentPriceCatalog.consultationPrice">
                     </div>
                 </div>
             </div>
@@ -51,63 +62,67 @@ export default {
         closeWindow : function(){
             this.$emit('modal-closed');
         },
-        saveChangedData : function(){
-            if(document.getElementById('name') === undefined || document.getElementById('city') === undefined
-             || document.getElementById('street') === undefined || document.getElementById('streetNum') === undefined){
+        checkFiledsUndefined : function(){
+            if(document.getElementById('name') == undefined) return true; 
+            if(document.getElementById('city') == undefined) return true; 
+            if(document.getElementById('street') == undefined ) return true; 
+            if(document.getElementById('streetNum') == undefined) return true; 
+            if(document.getElementById('examinationPrice') == undefined ) return true; 
+            if(document.getElementById('consultationPrice') == undefined) return true;
+            return false;
+        },
+        areFiledsUnchanged : function(){
+            if(document.getElementById('name').value != this.pharmacy.name) return false;
+            if(document.getElementById('city').value != this.pharmacy.location.city) return false; 
+            if(document.getElementById('street').value != this.pharmacy.location.street ) return false; 
+            if(document.getElementById('streetNum').value != this.pharmacy.location.streetNum) return false; 
+            if(parseInt(document.getElementById('examinationPrice').value) != this.pharmacy.appointmentPriceCatalog.examinationPrice) return false; 
+            if(parseInt(document.getElementById('consultationPrice').value) != this.pharmacy.appointmentPriceCatalog.consultationPrice) return false;
+            return true;
+        },
+        checkEmptyFiled : function(field, msg){
+            if(document.getElementById(field).value == ''){
+                this.$toasted.show(msg, {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
                 return true;
             }
-            else {
-                if(document.getElementById('name').value == ''){
-                    this.$toasted.show("Please insert pharmacy name!", {
-                        theme: "toasted-primary",
-                        position: "top-center",
-                        duration: 2000,
-                    });
-                    return true;
-                }
-                if(document.getElementById('city').value == ''){
-                    this.$toasted.show("Please insert city!", {
-                        theme: "toasted-primary",
-                        position: "top-center",
-                        duration: 2000,
-                    });
-                    return true;
-                }
-                if(document.getElementById('street').value == ''){
-                    this.$toasted.show("Please insert street!", {
-                        theme: "toasted-primary",
-                        position: "top-center",
-                        duration: 2000,
-                    });
-                    return true;
-                }
-                if(document.getElementById('streetNum').value == ''){
-                    this.$toasted.show("Please insert street number!", {
-                        theme: "toasted-primary",
-                        position: "top-center",
-                        duration: 2000,
-                    });
-                    return true;
-                }
-            }
-            if(document.getElementById('name').value == this.pharmacy.name && document.getElementById('city').value == this.pharmacy.location.city
-             && document.getElementById('street').value == this.pharmacy.location.street && document.getElementById('streetNum').value == this.pharmacy.location.streetNum){
+            return false;
+        },
+        saveChangedData : function(){
+            if(this.areFiledsUnchanged()){
                 this.$toasted.show("You did not change any field!", {
-                        theme: "toasted-primary",
-                        position: "top-center",
-                        duration: 2000,
-                    });
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                return;
             }
-            else {
-                this.$emit('pharamcy-data-changed', {
-                    name: document.getElementById('name').value,
-                    location : {
-                        city: document.getElementById('city').value,
-                        street: document.getElementById('street').value,
-                        streetNum: document.getElementById('streetNum').value,
-                    }
-                })
-                this.closeWindow();
+            else
+                if(!this.checkFiledsUndefined()){
+                    if(this.checkEmptyFiled('name', "Please insert pharmacy name!")) return;
+                    if(this.checkEmptyFiled('city', "Please insert city!")) return; 
+                    if(this.checkEmptyFiled('street', "Please insert street!")) return ; 
+                    if(this.checkEmptyFiled('streetNum', "Please insert street number!")) return; 
+                    if(this.checkEmptyFiled('examinationPrice', "Please insert examination price!")) return; 
+                    if(this.checkEmptyFiled('consultationPrice', "Please insert consultation price!")) return;
+                    // saljemo podatke
+                    this.$emit('pharamcy-data-changed', {
+                        id : this.pharmacy.id,
+                        name: document.getElementById('name').value,
+                        location : {
+                            city: document.getElementById('city').value,
+                            street: document.getElementById('street').value,
+                            streetNum: document.getElementById('streetNum').value,
+                        },
+                        appointmentPriceCatalog: {
+                            examinationPrice : document.getElementById('examinationPrice').value,
+                            consultationPrice : document.getElementById('consultationPrice').value
+                        }
+                    })
+                    this.closeWindow();
             }
         }
     }
