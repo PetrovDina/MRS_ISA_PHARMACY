@@ -121,8 +121,7 @@
                                         id="exampleModalLongTitle"
                                         style="text-align: justify"
                                     >
-                                        Are you sure you want to cancel the
-                                        reservation?
+                                        Confirm cancellation
                                     </h5>
                                     <button
                                         type="button"
@@ -136,13 +135,10 @@
                                 <div class="modal-body">
 
                                     <p style="text-align: justify">
-                                        You will receive one (1) penalty point
-                                        for cancelling a reservation.
+                                        Are you sure you want to cancel the
+                                        reservation?
                                     </p>
-                                    <p style="text-align: justify">
-                                        For more information about our reward
-                                        and penalty system, visit your profile.
-                                    </p>
+
                                 </div>
                                 <div class="modal-footer">
                                     <button

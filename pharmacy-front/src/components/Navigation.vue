@@ -39,6 +39,7 @@
         <!--patient-->
         <div v-if="isUserType('PATIENT')">
             <a @click="patientRedirect()" class="patientNav">Options</a>
+            <a @click="patientProfileRedirect()" class="patientNav">My profile</a>
 
         </div>
 
@@ -347,6 +348,19 @@ export default {
         patientRedirect: function(){
             this.$router
                 .push({ name: "PatientHomePage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+        
+
+        patientProfileRedirect: function(){
+            this.$router
+                .push({ name: "PatientProfile" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {

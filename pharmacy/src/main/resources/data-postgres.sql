@@ -96,6 +96,8 @@ insert into system_user (username, password, email, firstname, lastname, locatio
 insert into supplier (id) values (13);
 INSERT INTO user_role (user_id, role_id) VALUES (13, 7); --  ROLE_SUPPLIER
 
+
+
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('milojko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milojko@email.com', 'Milojko', 'Pantic', 1, 'MALE', 'ACTIVATED', 'False');
 insert into employees (id, rating ) values (14, 1.78);
 insert into pharmacist (id) values (14);
@@ -103,6 +105,8 @@ insert into pharmacist (id) values (14);
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('jelisaveta', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Jelisaveta', 'Salvetic', 1, 'MALE', 'ACTIVATED', 'False');
 insert into employees (id, rating ) values (15, 3.24);
 insert into pharmacist (id) values (15);
+
+
 
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (4, '{ "startDate": [2021, 4, 3], "startTime": [7, 0, 0], "endDate": [2021, 4, 3], "endTime": [12, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
 insert into employment (employee_id, workTime, contractType, pharmacy_id, deleted) values (5, '{ "startDate": [2021, 4, 3], "startTime": [14, 0, 0], "endDate": [2021, 4, 3], "endTime": [19, 0, 0]}', 'DERMATOLOGIST_CONTRACT', 1, 'False');
@@ -128,6 +132,9 @@ insert into supplier (id) values (16);
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('mojadmin', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'baskalo@email.com', 'Baki', 'Baskalo', 1, 'MALE', 'ACTIVATED', 'False');
 insert into pharmacyadmin (id, pharmacy_id) values (17, 1);
 
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('andjelko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'andjelko@email.com', 'Andjelko', 'Bojanic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into patient (id, penaltypoints) values (18, 3); 
+
 INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
 INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT
 INSERT INTO user_role (user_id, role_id) VALUES (3, 6); --  ROLE_PHARMACY_ADMIN
@@ -137,12 +144,13 @@ INSERT INTO user_role (user_id, role_id) VALUES (6, 4); --  ROLE_DERMATOLOGIST
 INSERT INTO user_role (user_id, role_id) VALUES (7, 5); --  ROLE_PHARMACIST
 INSERT INTO user_role (user_id, role_id) VALUES (8, 5); --  ROLE_PHARMACIST
 INSERT INTO user_role (user_id, role_id) VALUES (9, 4); --  ROLE_DERMATOLOGIST
-INSERT INTO user_role (user_id, role_id) VALUES (10, 4); --  ROLE_PATIENT
+INSERT INTO user_role (user_id, role_id) VALUES (10, 4); --  ROLE_DERMATOLOGIST
 INSERT INTO user_role (user_id, role_id) VALUES (11, 3); --  ROLE_PATIENT
 INSERT INTO user_role (user_id, role_id) VALUES (14, 5); --  ROLE_PHARMACIST
 INSERT INTO user_role (user_id, role_id) VALUES (15, 5); --  ROLE_PHARMACIST
 INSERT INTO user_role (user_id, role_id) VALUES (16, 7); --  ROLE_SUPPLIER
 INSERT INTO user_role (user_id, role_id) VALUES (17, 6); --  ROLE_SUPPLIER
+INSERT INTO user_role (user_id, role_id) VALUES (18, 3); --  ROLE_PATIENT
 
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 1, 1, 3, '1.25.2021.', 'COMPLETED', 'rsrvtion01'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 2, 2, 10, '5.21.2021.', 'CREATED', 'rsrvtion02'); --za sad americki format dok ne skontamo kako drugacije

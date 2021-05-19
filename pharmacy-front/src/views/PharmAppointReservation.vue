@@ -349,7 +349,19 @@ export default {
         }
     },
 
-    mounted() {},
+    mounted() {
+        //check if user is barred
+        client({
+            url: "patient/" + localStorage.getItem("USERNAME"),
+            method: "GET",
+        }).then((response) => {
+            console.log(response.data.penaltyPoints >= 3);
+            if (response.data.penaltyPoints >= 3) {
+                this.$router.push({ name: "PenaledScreen" });
+                return;
+            }
+        });
+    },
 };
 </script>
 

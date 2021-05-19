@@ -107,14 +107,13 @@
             >
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
-                         <div class="modal-header">
-                            Successfully reserved!
-
-                            </div>
+                        <div class="modal-header">Successfully reserved!</div>
                         <div class="modal-body">
-                            <p style="text-align:justify"> You can see all your reserved medications on your profile.</p> 
-
-                            </div>
+                            <p style="text-align: justify">
+                                You can see all your reserved medications on
+                                your profile.
+                            </p>
+                        </div>
                         <div class="modal-footer">
                             <button
                                 type="button"
@@ -220,6 +219,7 @@ export default {
         goBack() {
             this.$router.push({ name: "Home" });
         },
+
     },
 
     mounted() {
@@ -229,6 +229,17 @@ export default {
             this.$router.push({ name: "Home" });
             return;
         }
+
+        //check if user is barred
+        client({
+            url: "patient/" + localStorage.getItem("USERNAME"),
+            method: "GET",
+        }).then((response) => {
+            if (response.data.penaltyPoints >= 3) {
+                this.$router.push({ name: "PenaledScreen" });
+                return;
+            }
+        });
 
         client({
             url: "pharmacyStorageItem/allByMedicationAndQuantity",

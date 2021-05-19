@@ -19,6 +19,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>{
 	
 	@Query("select res from Reservation res where res.patient.username = ?1")
 	public List<Reservation> findAllByPatient(String patientUserName);
+
+	@Query("select res from Reservation res where res.status = 'CREATED'")
+	public List<Reservation> findAllCreated();
+	
 	
 //	public List<Reservation> findAllByName(String name);
 //	

@@ -99,7 +99,7 @@
                                             appointment.timePeriod.startDate
                                         )
                                     "
-                                    text="Cancel derm appointment"
+                                    text="Cancel dermatologist appointment"
                                     class="book-button"
                                     @action-performed="cancelDerm(appointment)"
                                 >
@@ -213,7 +213,7 @@
                                             appointment.timePeriod.startDate
                                         )
                                     "
-                                    text="Cancel derm appointment"
+                                    text="Cancel pharmacist appointment"
                                     class="book-button"
                                     @action-performed="cancelPharm(appointment)"
                                 >
