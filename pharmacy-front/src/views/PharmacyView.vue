@@ -5,7 +5,7 @@
                 <v-spacer></v-spacer>
                 <div>
                     <h1>{{pharmacy.name}}</h1>
-                    <h1>{{pharmacy.location.street}} {{pharmacy.location.streetNum}}, {{pharmacy.location.city}}</h1>
+                    <h1 id="mapPointer" @click="setUpMap()" >{{pharmacy.location.street}} {{pharmacy.location.streetNum}}, {{pharmacy.location.city}}</h1>
                 </div>
                 <v-spacer>
                     <button style="float:right" @click="editPharmacyData()"><i class="fa fa-edit fa-lg"></i></button>
@@ -68,6 +68,12 @@
         :modal_show = "modalEditPharmacyData"
         >
         </ModalWindowEditPharmacyData>
+        <ModalWindowMap
+        @modal-closed = "modalMap = false"
+        :pharmacy = "pharmacy"
+        :modal_show = "modalMap"
+        >
+        </ModalWindowMap>
     </div>
     
 </template>
@@ -82,10 +88,11 @@ import Tab from '../components/Tab';
 import PharmacistsTable from '../components/PharmacistsTable.vue';
 import OrdersTable from '../components/OrdersTable';
 import ModalWindowEditPharmacyData from '../components/ModalWindowEditPharmacyData.vue'
+import ModalWindowMap from "../components/ModalWindowMap.vue"
 
 export default {
     name: "PharmacyView",
-    components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable, OrdersTable, ModalWindowEditPharmacyData},
+    components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable, OrdersTable, ModalWindowEditPharmacyData, ModalWindowMap},
     data() {
         return {
             selected: "Dermatologists",
@@ -101,6 +108,8 @@ export default {
             // lista svih slobodnih termina treba da se doda
             rating: 0.0,
             modalEditPharmacyData : false,
+            coordinates : [],
+            modalMap : false,
         };
     },
 
@@ -342,7 +351,10 @@ export default {
                     this.pharmacy.appointmentPriceCatalog = response.data.appointmentPriceCatalog;
                 });
             }
-        }
+        },
+        setUpMap: function() {
+             this.modalMap = true;   
+        },
     },
 
     mounted() {
@@ -419,5 +431,9 @@ export default {
     float : right;
     margin : 10px;
     color :white;
+}
+
+#mapPointer {
+    cursor: pointer;
 }
 </style>
