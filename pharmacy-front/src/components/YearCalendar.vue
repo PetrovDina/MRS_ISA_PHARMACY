@@ -398,7 +398,9 @@ export default {
 
         showDetails: function(appointment){
             var avail = false;
-            if(appointment.status === 'RESERVED' && (new Date(appointment.timePeriod.startDate) == new Date()) === true){
+            var parts1 = appointment.timePeriod.startDate.split('-');
+            var mon1 = parts1[1]-1;
+            if(appointment.status === 'RESERVED' && ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
                 avail = true;
             } 
             this.selectedAppointment = appointment;

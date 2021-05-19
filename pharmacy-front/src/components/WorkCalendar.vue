@@ -114,13 +114,13 @@
             </v-card-text>
             <v-card-actions>
               <v-btn  text
-                color="secondary"
+                color="green"
               @click="startAppointment(selectedEvent)"
               v-if="selectedEvent.available === true">
                 Start Appointment
               </v-btn>
               <v-btn  text
-                color="secondary"
+                color="error"
               @click="didntShowUp(selectedEvent)"
               v-if="selectedEvent.available === true">
                 Didn't show up
@@ -146,6 +146,7 @@
 
 <script>
 import {client} from '@/client/axiosClient';
+import moment from "moment";
 import Calendar from '../components/YearCalendar.vue';
   export default {
     name: "WorkCalendar",
@@ -219,7 +220,9 @@ import Calendar from '../components/YearCalendar.vue';
                   this.appointments = response.data;
                   for(var appointment of response.data) {
                       var avail = false;
-                      if(appointment.status === 'RESERVED' && (new Date(appointment.timePeriod.startDate) == new Date()) === true){
+                      var parts1 = appointment.timePeriod.startDate.split('-');
+                      var mon1 = parts1[1]-1;
+                      if(appointment.status === 'RESERVED' && ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
                         avail = true;
                       } 
                       var patientFullName = appointment.patient.firstName + " " + appointment.patient.lastName;
