@@ -35,9 +35,8 @@ public class Location {
 		
 	}
 
-	public Location(Long id, double latitude, double longitude, String street, String city, String zipcode, int streetNum) {
+	public Location(double latitude, double longitude, String street, String city, String zipcode, int streetNum) {
 		super();
-		this.id = id;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.street = street;

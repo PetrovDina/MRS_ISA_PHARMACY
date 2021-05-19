@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mrsisa12.pharmacy.dto.LocationDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyWithEmploymentsDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PlainPharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.AppointmentPriceCatalog;
+import mrsisa12.pharmacy.model.Location;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
@@ -31,6 +33,7 @@ import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
+import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.ReservationService;
@@ -50,6 +53,9 @@ public class PharmacyController {
 	
 	@Autowired
 	private AppointmentService appointmentService;
+	
+	@Autowired
+	private LocationService locationService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
@@ -120,7 +126,7 @@ public class PharmacyController {
 		Pharmacy pharmacy = new Pharmacy();
 
 		pharmacy.setName(pharmacyDTO.getName());
-		pharmacy.setLocation(pharmacyDTO.getLocation());
+		//pharmacy.setLocation(pharmacyDTO.getLocation());
 		// prilikom kreiranja postavljamo cijenovnik
 		AppointmentPriceCatalog appointmentPriceCatalog = new AppointmentPriceCatalog(
 				pharmacyDTO.getAppointmentPriceCatalog().getExaminationPrice(),
@@ -141,7 +147,19 @@ public class PharmacyController {
 		}
 
 		pharmacy.setName(pharmacyDTO.getName());
-		pharmacy.setLocation(pharmacyDTO.getLocation());
+		// provjeri da li ta lokacija postoji
+		Location location = locationService.findOneByLatAndLong(pharmacyDTO.getLocation().getLatitude(), pharmacyDTO.getLocation().getLongitude());
+		if(location == null) {
+			LocationDTO locationDTO = pharmacyDTO.getLocation();
+			// kreiramo novu
+			location = new Location(locationDTO.getLatitude(), locationDTO.getLongitude(), locationDTO.getStreet(), 
+					locationDTO.getCity(), locationDTO.getZipcode(), locationDTO.getStreetNum());
+			location = locationService.save(location);
+		}
+		pharmacy.setLocation(location);
+		
+		// katalog cijena
+		pharmacy.setAppointmentPriceCatalog(pharmacyDTO.getAppointmentPriceCatalog());
 		
 		pharmacy = pharmacyService.save(pharmacy);
 		return new ResponseEntity<>(new PharmacyDTO(pharmacy), HttpStatus.CREATED);

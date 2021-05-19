@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import mrsisa12.pharmacy.model.Location;
 
@@ -24,5 +25,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 	public List<Location> findAllByCity(String city);
 	
 	public List<Location> findByCityAllIgnoringCase(String city);
+
+	@Query("select loc from Location loc where loc.latitude =?1 and loc.longitude =?2")
+	public Location findOneByLatAndLong(double latitude, double longitude);
 		
 }

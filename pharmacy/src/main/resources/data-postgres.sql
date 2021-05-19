@@ -13,10 +13,10 @@ insert into alternative_medications (medication_id, alternative_id) values (1, 3
 insert into alternative_medications (medication_id, alternative_id) values (2, 5);
 insert into alternative_medications (medication_id, alternative_id) values (2, 3);
 
-insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Narodnog fronta','Novi Sad', '21000', 5);
-insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Bulevar Oslobođenja','Novi Sad', '21000', 88);
-insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Jevrejska','Novi Sad', '21000', 21);
-insert into location (latitude, longitude, street, city, zipcode, streetNum) values (30.30,20.20, 'Ljube Nesice','Zajecar', '19000', 21);
+insert into location (latitude, longitude, street, city, zipcode, streetNum) values (45.2413873, 19.8435649, 'Bulevar Oslobođenja','Novi Sad', '21000', 135);
+insert into location (latitude, longitude, street, city, zipcode, streetNum) values (45.2485425, 19.8384505, 'Bulevar Oslobođenja','Novi Sad', '21000', 88);
+insert into location (latitude, longitude, street, city, zipcode, streetNum) values (45.2525228, 19.8389281, 'Jevrejska','Novi Sad', '21000', 21);
+insert into location (latitude, longitude, street, city, zipcode, streetNum) values (44.75482475, 20.567192906210508, 'Nemanjina','Beograd', '11130', 10);
 
 insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Apoteka Jankovic', 2.5, 1, '{ "examinationPrice": 2000.0, "consultationPrice": 1000.0 }'); --id 1
 insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Benu', 4.5, 2, '{ "examinationPrice": 2200.0, "consultationPrice": 1400.0 }'); --id 2

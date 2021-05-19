@@ -43,5 +43,9 @@ public class LocationService {
 	public List<Location> findByCityAllIgnoringCase(String city) {
 		return locationRepository.findByCityAllIgnoringCase(city);
 	}
+
+	public Location findOneByLatAndLong(double latitude, double longitude) {
+		return locationRepository.findOneByLatAndLong(latitude, longitude);
+	}
 	
 }

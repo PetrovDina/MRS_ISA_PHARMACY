@@ -1,7 +1,7 @@
 package mrsisa12.pharmacy.dto.pharmacy;
 
+import mrsisa12.pharmacy.dto.LocationDTO;
 import mrsisa12.pharmacy.model.AppointmentPriceCatalog;
-import mrsisa12.pharmacy.model.Location;
 import mrsisa12.pharmacy.model.Pharmacy;
 
 public class PharmacyDTO {
@@ -9,13 +9,13 @@ public class PharmacyDTO {
 	private Long id;
 	private String name;
 	private double rating;
-	private Location location;
+	private LocationDTO location;
 	private AppointmentPriceCatalog appointmentPriceCatalog;
 
 	public PharmacyDTO() {
 	}
 
-	public PharmacyDTO(Long id, String name, double rating, Location location,
+	public PharmacyDTO(Long id, String name, double rating, LocationDTO location,
 			AppointmentPriceCatalog appointmentPriceCatalog) {
 		this();
 		this.id = id;
@@ -26,7 +26,7 @@ public class PharmacyDTO {
 	}
 
 	public PharmacyDTO(Pharmacy pharmacy) {
-		this(pharmacy.getId(), pharmacy.getName(), pharmacy.getRating(), pharmacy.getLocation(),
+		this(pharmacy.getId(), pharmacy.getName(), pharmacy.getRating(), new LocationDTO(pharmacy.getLocation()),
 				pharmacy.getAppointmentPriceCatalog());
 	}
 
@@ -46,11 +46,11 @@ public class PharmacyDTO {
 		this.name = name;
 	}
 
-	public Location getLocation() {
+	public LocationDTO getLocation() {
 		return location;
 	}
 
-	public void setLocation(Location location) {
+	public void setLocation(LocationDTO location) {
 		this.location = location;
 	}
 
