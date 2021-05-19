@@ -140,7 +140,7 @@ public class PharmacyStorageItemController {
 		LocalTime localTimeNow = LocalTime.now();
 		TimePeriod timePeriod = new TimePeriod(localDateNow, localTimeNow, null, null);
 		// potrebno je kreirati novu cijenu
-		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, timePeriod);
+		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, false, timePeriod);
 		PharmacyStorageItem pharmacyStorageItem = new PharmacyStorageItem();
 		// postavljamo pharmacyStorageItem itemPrice-u
 		itemPrice.setPharmacyStorageItem(pharmacyStorageItem);
@@ -185,7 +185,7 @@ public class PharmacyStorageItemController {
 		// kreiramo trenutni datum i vrijeme za datum i vrijeme kreiranja, datum i vrijeme isteka je null
 		TimePeriod timePeriod = new TimePeriod(localDateNow, localTimeNow, null, null);
 		// pravim novi ItemPrice koji ce biti trenutna cijena
-		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, timePeriod);
+		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, false, timePeriod);
 		// dodajemo itemPrice-u referencu na pharmacyStorageItem
 		itemPrice.setPharmacyStorageItem(pharmacyStorageItem);
 		// cuvamo itemPrice

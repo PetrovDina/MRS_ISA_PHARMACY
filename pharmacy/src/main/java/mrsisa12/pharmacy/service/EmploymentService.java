@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.TimePeriod;

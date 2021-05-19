@@ -1,28 +1,29 @@
 package mrsisa12.pharmacy.dto;
 
 import mrsisa12.pharmacy.model.ItemPrice;
-import mrsisa12.pharmacy.model.TimePeriod;
 
 public class ItemPriceDTO {
 
 	private Long id;
 	private double price;
 	private boolean current;
+	private boolean promotion;
 	private TimePeriodDTO timePeriod;
 
 	public ItemPriceDTO() {
 	}
 
-	public ItemPriceDTO(Long id, double price, boolean current, TimePeriodDTO timePeriod) {
+	public ItemPriceDTO(Long id, double price, boolean current, boolean promotion, TimePeriodDTO timePeriod) {
 		this();
 		this.id = id;
 		this.price = price;
 		this.current = current;
+		this.promotion = promotion;
 		this.timePeriod = timePeriod;
 	}
 
 	public ItemPriceDTO(ItemPrice itemPrice) {
-		this(itemPrice.getId(), itemPrice.getPrice(), itemPrice.isCurrent(), new TimePeriodDTO(itemPrice.getTimePeriod()));
+		this(itemPrice.getId(), itemPrice.getPrice(), itemPrice.isCurrent(), itemPrice.isPromotion(), new TimePeriodDTO(itemPrice.getTimePeriod()));
 	}
 
 	public Long getId() {
@@ -49,11 +50,19 @@ public class ItemPriceDTO {
 		this.current = current;
 	}
 
-	public TimePeriodDTO getTimePeriodDTO() {
+	public boolean isPromotion() {
+		return promotion;
+	}
+
+	public void setPromotion(boolean promotion) {
+		this.promotion = promotion;
+	}
+
+	public TimePeriodDTO getTimePeriod() {
 		return timePeriod;
 	}
 
-	public void setTimePeriodDTO(TimePeriodDTO timePeriod) {
+	public void setTimePeriod(TimePeriodDTO timePeriod) {
 		this.timePeriod = timePeriod;
 	}
 
