@@ -1,15 +1,19 @@
 package mrsisa12.pharmacy.service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.repository.ReservationRepository;
@@ -22,6 +26,9 @@ public class ReservationService {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private PatientService patientService;
 	
 	public Reservation findOne(Long id) {
 		return reservationRepository.findById(id).orElseGet(null);
@@ -75,16 +82,25 @@ public class ReservationService {
         }
         return false;
     }
-	
-//	public List<Reservation> findAllByName(String name) {
-//		return reservationRepository.findAllByName(name);
-//	}
-//	
-//	public List<Pharmacy> findByNameAllIgnoringCase(String name) {
-//		return reservationRepository.findByNameAllIgnoringCase(name);
-//	}
-//	
-//	public Reservation findOneWithReservationItems(Long reservationId) {
-//		return reservationRepository.findOneWithReservationItems(reservationId);
-//	}
+    
+
+	@EventListener(ApplicationReadyEvent.class)
+	public void penaliseUncompletedReservations() {
+		List<Reservation> reservations = reservationRepository.findAllCreated();
+		
+		for (Reservation reservation: reservations) {
+			
+			//reservation is not picked up and the due date is over => change status and give penalty point
+			if (reservation.getDueDate().before(new Date())) {
+				System.err.println(reservation.getDueDate());
+				Patient patient = reservation.getPatient();
+				reservation.setStatus(ReservationStatus.EXPIRED);
+				patient.setPenaltyPoints(patient.getPenaltyPoints() + 1);
+				
+				reservationRepository.save(reservation);
+				patientService.save(patient);
+			}
+		}
+	}
+
 }

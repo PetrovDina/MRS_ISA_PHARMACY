@@ -2,13 +2,13 @@
     <div v-if="user">
         <div class="p-3 ">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3> You have {{user.penaltyPoints}} penalty points</h3>
+                <h2>Your pentalty points: {{user.penaltyPoints}}</h2>
                 <br>
             </div>
             <div>
                 <p style="text-align:justify">Users are automatically given <b>one (1) penalty point</b> for:</p>
                 <ul style="text-align:left">
-                    <li>Cancelling a medication reservation</li>
+                    <li>Neither cancelling a reservation nor picking it up by its due date</li>
                     <li>Not showing up for a scheduled dermatologist examination</li>
                     <li>Not showing up for a scheduled pharmacist consultation</li>
 
@@ -59,8 +59,10 @@ export default {
 
 <style scoped>
 
-h3{
+h2{
     margin-bottom: 20px;
+    color: rgba(129, 68, 126, 0.856);
+    font-weight: 700;
 
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div id="profileDiv">
-        <p class="titl">My profile</p>
+        <p class="titl">Manage profile</p>
         <div id="flexDiv" v-if="user">
             <div id="sideBar" class="card flex-card">
                 <div id="pictureDiv">
@@ -79,6 +79,7 @@ export default {
         };
     },
 
+
     methods: {
         setSelected(tab) {
             this.selected = tab;
@@ -101,7 +102,7 @@ export default {
 }
 
 .titl {
-    font-size: 30px;
+    font-size: 5vh;
 }
 
 .flex-card {

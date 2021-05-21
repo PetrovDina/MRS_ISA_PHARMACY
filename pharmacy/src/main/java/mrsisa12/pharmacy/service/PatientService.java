@@ -1,8 +1,11 @@
 package mrsisa12.pharmacy.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -87,6 +90,18 @@ public class PatientService {
 		this.save(patient);
 		pharmacyService.save(subscription);
 
+	}
+	
+	@EventListener(ApplicationReadyEvent.class)
+	public void resetPenals() {
+    	if (LocalDate.now().getDayOfMonth() == 1) {
+    		System.out.println("FIRST OF MONTH: RESETING PATIENT PENALTY POINTS");
+    		List<Patient> patients = this.findAll();
+    		for (Patient p : patients) {
+    			p.setPenaltyPoints(0);
+    			
+    		}
+    	}
 	}
 
 

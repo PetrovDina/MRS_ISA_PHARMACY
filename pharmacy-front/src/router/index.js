@@ -23,6 +23,8 @@ import PharmAppointReservation from '@/views/PharmAppointReservation'
 import ScheduledAppointmentsView from '@/views/ScheduledAppointmentsView'
 import DermAppointHistory from '@/views/DermAppointHistory'
 import PharmAppointHistory from '@/views/PharmAppointHistory'
+import PenaledScreen from '@/views/PenaledScreen'
+
 
 import PharmacyRegistration from '@/views/PharmacyRegistration'
 import UserRegistrationPage from '@/views/UserRegistrationPage'
@@ -47,8 +49,22 @@ import MedicationReservationView from '@/views/MedicationReservationView'
 import * as CheckUser from '../router/CheckUser.js'
 
 Vue.use(Router)
+import { client } from "@/client/axiosClient";
+
 
 export default new Router({
+
+    methods: {
+        patientPenaled() {
+            client({
+                url: "patient/" + localStorage.getItem("USERNAME"),
+                method: "GET",
+            }).then((response) => {
+                //console.log(response.data.penaltyPoints >= 3);
+                return response.data.penaltyPoints >= 3;
+            });
+        }
+    },
     routes: [
 
         {
@@ -67,14 +83,14 @@ export default new Router({
             path: '/pharmacy',
             name: 'PharmacyView',
             component: PharmacyView,
-            beforeEnter: function(to, from, next){
-              let user = CheckUser.getLoggedUserData();
-              if(user.userType == 'PHARMACY_ADMIN' || user.userType == "SYSTEM_ADMIN"){
-                next();
-              }
-              else{
-                ({path: '/'});
-              }
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == 'PHARMACY_ADMIN' || user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
             }
         },
 
@@ -88,247 +104,247 @@ export default new Router({
             path: '/calendar-page',
             name: 'CalendarPage',
             component: CalendarPage,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
-                  next();
+                if (user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/',
             name: 'DermatologistPage',
             component: DermatologistPage,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'DERMATOLOGIST'){
-                  next();
+                if (user.userType == 'DERMATOLOGIST') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/new-appointment-page',
             name: 'NewAppointmentPage',
             component: NewAppointmentPage,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
-                  next();
+                if (user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/request-absence-page',
             name: 'RequestAbsencePage',
             component: RequestAbsencePage,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
-                  next();
+                if (user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/search-patients-page',
             name: 'SearchPatientsPage',
             component: SearchPatientsPage,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
-                  next();
+                if (user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/derm-home',
             name: 'DermatologistHomePage',
             component: DermatologistHomePage,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'DERMATOLOGIST'){
-                  next();
+                if (user.userType == 'DERMATOLOGIST') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/patientHomePage',
             name: 'PatientHomePage',
             component: PatientHomePage,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PATIENT'){
-                  next();
+                if (user.userType == 'PATIENT') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/patientProfile',
             name: 'PatientProfile',
             component: PatientProfile,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PATIENT'){
-                  next();
+                if (user.userType == 'PATIENT') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/userRegistrationPage',
             name: 'UserRegistrationPage',
             component: UserRegistrationPage,
-            beforeEnter: function(to, from, next){
-                if(CheckUser.isUserLoggedIn()){
-                  ({path: '/'}).catch(()=>{});
-                }else{
-                  next();
+            beforeEnter: function (to, from, next) {
+                if (CheckUser.isUserLoggedIn()) {
+                    ({ path: '/' }).catch(() => { });
+                } else {
+                    next();
                 }
-              }    
+            }
         },
 
         {
             path: '/pharmacyAdminRegistrationPage',
             name: 'PharmacyAdminRegistrationPage',
-            component: PharmacyAdminRegistrationPage    
+            component: PharmacyAdminRegistrationPage
         },
 
         {
-          path: '/systemAdminRegistrationPage',
-          name: 'SystemAdminRegistrationPage',
-          component: SystemAdminRegistrationPage    
+            path: '/systemAdminRegistrationPage',
+            name: 'SystemAdminRegistrationPage',
+            component: SystemAdminRegistrationPage
         },
 
         {
-          path: '/supplierRegistrationPage',
-          name: 'SupplierRegistrationPage',
-          component: SupplierRegistrationPage    
+            path: '/supplierRegistrationPage',
+            name: 'SupplierRegistrationPage',
+            component: SupplierRegistrationPage
         },
 
         {
-          path: '/dermatologistRegistrationPage',
-          name: 'DermatologistRegistrationPage',
-          component: DermatologistRegistrationPage    
+            path: '/dermatologistRegistrationPage',
+            name: 'DermatologistRegistrationPage',
+            component: DermatologistRegistrationPage
         },
-        
+
         {
             path: '/medicationRegistrationPage',
             name: 'MedicationRegistrationPage',
-            component: MedicationRegistrationPage    
+            component: MedicationRegistrationPage
         },
 
         {
-          path: '/supplierMedicationReserves',
-          name: 'SupplierMedicationReserves',
-          component: SupplierMedicationReserves    
+            path: '/supplierMedicationReserves',
+            name: 'SupplierMedicationReserves',
+            component: SupplierMedicationReserves
         },
 
         {
-          path: '/supplierOrdersPage',
-          name: 'SupplierOrdersPage',
-          component: SupplierOrdersPage    
+            path: '/supplierOrdersPage',
+            name: 'SupplierOrdersPage',
+            component: SupplierOrdersPage
         },
 
         {
-          path: '/supplierOrdersOffersPage',
-          name: 'SupplierOrdersOffersPage',
-          component: SupplierOrdersOffersPage    
+            path: '/supplierOrdersOffersPage',
+            name: 'SupplierOrdersOffersPage',
+            component: SupplierOrdersOffersPage
         },
 
         {
-          path: '/pharmacyComplaintPage',
-          name: 'PharmacyComplaintPage',
-          component: PharmacyComplaintPage
+            path: '/pharmacyComplaintPage',
+            name: 'PharmacyComplaintPage',
+            component: PharmacyComplaintPage
         },
 
         {
-          path: '/employeeComplaintPage',
-          name: 'EmployeeComplaintPage',
-          component: EmployeeComplaintPage
+            path: '/employeeComplaintPage',
+            name: 'EmployeeComplaintPage',
+            component: EmployeeComplaintPage
         },
 
         {
-          path: '/adminPharmacyComplaintPage',
-          name: 'AdminPharmacyComplaintPage',
-          component: AdminPharmacyComplaintPage
+            path: '/adminPharmacyComplaintPage',
+            name: 'AdminPharmacyComplaintPage',
+            component: AdminPharmacyComplaintPage
         },
 
         {
-          path: '/adminEmployeeComplaintPage',
-          name: 'AdminEmployeeComplaintPage',
-          component: AdminEmployeeComplaintPage
+            path: '/adminEmployeeComplaintPage',
+            name: 'AdminEmployeeComplaintPage',
+            component: AdminEmployeeComplaintPage
         },
 
         {
-          path: '/complaintPharmacyUserPage',
-          name: 'ComplaintPharmacyUserPage',
-          component: ComplaintPharmacyUserPage
+            path: '/complaintPharmacyUserPage',
+            name: 'ComplaintPharmacyUserPage',
+            component: ComplaintPharmacyUserPage
         },
 
         {
-          path: '/complaintEmployeeUserPage',
-          name: 'ComplaintEmployeeUserPage',
-          component: ComplaintEmployeeUserPage
+            path: '/complaintEmployeeUserPage',
+            name: 'ComplaintEmployeeUserPage',
+            component: ComplaintEmployeeUserPage
         },
 
         {
             path: '/pharmacist-home-page',
             name: 'PharmacistHomePage',
             component: PharmacistHomePage,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST'){
-                  next();
+                if (user.userType == 'PHARMACIST') {
+                    next();
                 }
-                else{
-                    ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/dispense-medication-page',
             name: 'DispenseMedicationPage',
             component: DispenseMedicationPage,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PHARMACIST'){
-                  next();
+                if (user.userType == 'PHARMACIST') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
@@ -336,15 +352,21 @@ export default new Router({
             name: 'MedicationReservationView',
             props: true,
             component: MedicationReservationView,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
+                let self = this;
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PATIENT'){
-                  next();
+                if (user.userType == 'PATIENT') {
+                    //todo check if patient is penaled
+                    next();
+
+
+
+
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
@@ -352,119 +374,141 @@ export default new Router({
             name: 'PatientsReservations',
             props: true,
             component: PatientsReservations,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PATIENT'){
-                  next();
+                if (user.userType == 'PATIENT') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/dermatologistReservation',
             name: 'DermAppointReservation',
             component: DermAppointReservation,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PATIENT'){
-                  next();
+                if (user.userType == 'PATIENT') {
+
+                    next();
+
+
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/pharmacistReservation',
             name: 'PharmAppointReservation',
             component: PharmAppointReservation,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PATIENT'){
-                  next();
+                if (user.userType == 'PATIENT') {
+
+                    next();
+
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
+
+        {
+        path: '/penaled',
+        name: 'PenaledScreen',
+        component: PenaledScreen,
+        beforeEnter: function (to, from, next) {
+            let user = CheckUser.getLoggedUserData();
+            if (user.userType == 'PATIENT') {
+
+                next();
+
+            }
+            else {
+                ({ path: '/' });
+            }
+        }
+    },
 
         {
             path: '/scheduledAppointments',
             name: 'ScheduledAppointmentsView',
             component: ScheduledAppointmentsView,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PATIENT'){
-                  next();
+                if (user.userType == 'PATIENT') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
             path: '/dermAppointHistory',
             name: 'DermAppointHistory',
             component: DermAppointHistory,
-            beforeEnter: function(to, from, next){
+            beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if(user.userType == 'PATIENT'){
-                  next();
+                if (user.userType == 'PATIENT') {
+                    next();
                 }
-                else{
-                  ({path: '/'});
+                else {
+                    ({ path: '/' });
                 }
-              }
+            }
         },
 
         {
-        path: '/pharmAppointHistory',
-        name: 'PharmAppointHistory',
-        component: PharmAppointHistory,
-        beforeEnter: function(to, from, next){
-            let user = CheckUser.getLoggedUserData();
-            if(user.userType == 'PATIENT'){
-              next();
+            path: '/pharmAppointHistory',
+            name: 'PharmAppointHistory',
+            component: PharmAppointHistory,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == 'PATIENT') {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
             }
-            else{
-              ({path: '/'});
-            }
-          }
-    },
+        },
 
         {
             path: '/LoginPage',
             name: 'LoginPage',
             component: LoginPage,
-            beforeEnter: function(to, from, next){
-                if(CheckUser.isUserLoggedIn()){
-                  ({path: '/'}).catch(()=>{});
-                }else{
-                  next();
+            beforeEnter: function (to, from, next) {
+                if (CheckUser.isUserLoggedIn()) {
+                    ({ path: '/' }).catch(() => { });
+                } else {
+                    next();
                 }
-              }
+            }
 
         },
 
         {
-          path: '/appointmentInProgress',
-          name: 'AppointmentInProgress',
-          component: AppointmentInProgress,
-          beforeEnter: function(to, from, next){
-            let user = CheckUser.getLoggedUserData();
-            if(user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST'){
-              next();
+            path: '/appointmentInProgress',
+            name: 'AppointmentInProgress',
+            component: AppointmentInProgress,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST') {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
             }
-            else{
-              ({path: '/'});
-            }
-          }
         },
 
     ]
