@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,7 @@ public class ComplaintEmployeeController {
 	@Autowired
 	EmailService emailService;
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<ComplaintEmployeeDTO> savePharmacyComplaint(@RequestBody ComplaintEmployeeDTO complaintDTO)
 	{	
@@ -68,6 +70,7 @@ public class ComplaintEmployeeController {
 		return new ResponseEntity<>(ret, HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@GetMapping(value = "/all/forResponse")
 	public ResponseEntity<List<ComplaintAdminEmployeeDTO>> getEmployeeComplaintForResponse()
 	{
@@ -85,6 +88,7 @@ public class ComplaintEmployeeController {
 		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@PutMapping(value = "/update", consumes = "application/json")
 	public ResponseEntity<ComplaintEmployeeDTO> updateComplaint(@RequestBody ComplaintEmployeeDTO complaintDTO) 
 	{
@@ -103,6 +107,7 @@ public class ComplaintEmployeeController {
 		return new ResponseEntity<>(new ComplaintEmployeeDTO(complaintEmployee), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@GetMapping(value = "/all/{username}")
 	public ResponseEntity<List<ComplaintAdminEmployeeResponseDTO>> getEmployeeComplaintResponsed(@PathVariable String username)
 	{
@@ -124,6 +129,7 @@ public class ComplaintEmployeeController {
 		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/NotResponsed/{username}")
 	public ResponseEntity<List<ComplaintUserEmployeeDTO>> getEmployeeComplaintUserNotResponsed(@PathVariable String username)
 	{
@@ -146,6 +152,7 @@ public class ComplaintEmployeeController {
 		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/Responsed/{username}")
 	public ResponseEntity<List<ComplaintUserEmployeeResponseDTO>> getEmployeeComplaintUserResponsed(@PathVariable String username)
 	{

@@ -98,7 +98,17 @@ export default new Router({
         {
             path: '/pharmacyRegistration',
             name: 'PharmacyRegistration',
-            component: PharmacyRegistration
+            component: PharmacyRegistration,
+
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
@@ -237,85 +247,225 @@ export default new Router({
         {
             path: '/pharmacyAdminRegistrationPage',
             name: 'PharmacyAdminRegistrationPage',
-            component: PharmacyAdminRegistrationPage
+            component: PharmacyAdminRegistrationPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/systemAdminRegistrationPage',
             name: 'SystemAdminRegistrationPage',
-            component: SystemAdminRegistrationPage
+            component: SystemAdminRegistrationPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/supplierRegistrationPage',
             name: 'SupplierRegistrationPage',
-            component: SupplierRegistrationPage
+            component: SupplierRegistrationPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/dermatologistRegistrationPage',
             name: 'DermatologistRegistrationPage',
-            component: DermatologistRegistrationPage
+            component: DermatologistRegistrationPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/medicationRegistrationPage',
             name: 'MedicationRegistrationPage',
-            component: MedicationRegistrationPage
+            component: MedicationRegistrationPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/supplierMedicationReserves',
             name: 'SupplierMedicationReserves',
-            component: SupplierMedicationReserves
+            component: SupplierMedicationReserves,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SUPPLIER") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/supplierOrdersPage',
             name: 'SupplierOrdersPage',
-            component: SupplierOrdersPage
+            component: SupplierOrdersPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SUPPLIER") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/supplierOrdersOffersPage',
             name: 'SupplierOrdersOffersPage',
-            component: SupplierOrdersOffersPage
+            component: SupplierOrdersOffersPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SUPPLIER") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/pharmacyComplaintPage',
             name: 'PharmacyComplaintPage',
-            component: PharmacyComplaintPage
+            component: PharmacyComplaintPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "PATIENT") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/employeeComplaintPage',
             name: 'EmployeeComplaintPage',
-            component: EmployeeComplaintPage
+            component: EmployeeComplaintPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "PATIENT") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/adminPharmacyComplaintPage',
             name: 'AdminPharmacyComplaintPage',
-            component: AdminPharmacyComplaintPage
+            component: AdminPharmacyComplaintPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/adminEmployeeComplaintPage',
             name: 'AdminEmployeeComplaintPage',
-            component: AdminEmployeeComplaintPage
+            component: AdminEmployeeComplaintPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/complaintPharmacyUserPage',
             name: 'ComplaintPharmacyUserPage',
-            component: ComplaintPharmacyUserPage
+            component: ComplaintPharmacyUserPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "PATIENT") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {
             path: '/complaintEmployeeUserPage',
             name: 'ComplaintEmployeeUserPage',
-            component: ComplaintEmployeeUserPage
+            component: ComplaintEmployeeUserPage,
+            
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == "PATIENT") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
         {

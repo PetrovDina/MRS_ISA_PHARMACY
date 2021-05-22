@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,7 @@ public class ComplaintPharmacyController {
 	@Autowired
 	EmailService emailService;
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<ComplaintPharmacyDTO> savePharmacyComplaint(@RequestBody ComplaintPharmacyDTO complaintDTO)
 	{	
@@ -68,6 +70,7 @@ public class ComplaintPharmacyController {
 		return new ResponseEntity<>(ret, HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@GetMapping(value = "/all/forResponse")
 	public ResponseEntity<List<ComplaintAdminPharmacyDTO>> getPharmacyComplaintForResponse()
 	{
@@ -85,6 +88,7 @@ public class ComplaintPharmacyController {
 		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@PutMapping(value = "/update", consumes = "application/json")
 	public ResponseEntity<ComplaintPharmacyDTO> updateComplaint(@RequestBody ComplaintPharmacyDTO complaintDTO) 
 	{
@@ -103,6 +107,7 @@ public class ComplaintPharmacyController {
 		return new ResponseEntity<>(new ComplaintPharmacyDTO(complaintPharmacy), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@GetMapping(value = "/all/{username}")
 	public ResponseEntity<List<ComplaintAdminPharmacyResponseDTO>> getPharmacyComplaintResponsed(@PathVariable String username)
 	{
@@ -124,6 +129,7 @@ public class ComplaintPharmacyController {
 		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/NotResponsed/{username}")
 	public ResponseEntity<List<ComplaintUserPharmacyDTO>> getPharmacyComplaintUserNotResponsed(@PathVariable String username)
 	{
@@ -146,6 +152,7 @@ public class ComplaintPharmacyController {
 		return new ResponseEntity<>(complaintDTOs, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/Responsed/{username}")
 	public ResponseEntity<List<ComplaintUserPharmacyResponseDTO>> getPharmacyComplaintUserResponsed(@PathVariable String username)
 	{

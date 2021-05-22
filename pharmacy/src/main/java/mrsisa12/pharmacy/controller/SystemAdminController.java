@@ -3,6 +3,7 @@ package mrsisa12.pharmacy.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,7 @@ public class SystemAdminController {
 	@Autowired
 	EmailService emailService;
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<UserDTO> saveSystemAdmin(@RequestBody UserDTO systemAdminDTO)
 	{

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,8 +86,9 @@ public class MedicationController {
 		return new ResponseEntity<>(medicationsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@PostMapping(value = "/create", consumes = "application/json")
-	public ResponseEntity<MedicationCreationDTO> savePharmacyAdmin(@RequestBody MedicationCreationDTO medicationDTO)
+	public ResponseEntity<MedicationCreationDTO> saveMedication(@RequestBody MedicationCreationDTO medicationDTO)
 	{
 		Medication medication = new Medication();
 		medication.setName(medicationDTO.getName());
