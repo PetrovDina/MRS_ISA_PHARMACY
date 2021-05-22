@@ -179,7 +179,7 @@ export default {
             }
             for(const orderItemId in this.orderItems){
                 if(parseInt(this.orderItems[orderItemId].quantity) === 0){
-                    this.$toasted.show('Medication'+ this.orderItems[orderItemId].medication.name +' has quantity 0', {
+                    this.$toasted.show('Medication '+ this.orderItems[orderItemId].medication.name +' has quantity 0', {
                         theme: "toasted-primary",
                         position: "top-center",
                         duration: 2000,

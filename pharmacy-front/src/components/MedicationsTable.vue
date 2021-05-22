@@ -9,7 +9,8 @@
                     <th scope="col">Prescription</th>
                     <th scope="col">Form</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Price</th>
+                    <th scope="col" >Price</th>
+                    <th scope="col" ></th>
                     <td>
                         <button @click="openModalWindow">
                                 <i class="fa fa-plus-circle fa-2x"></i>
@@ -27,26 +28,49 @@
                     <td>{{med.form}}</td>
                     <td>{{med.quantity}}</td>
                     <td>
-                        <div v-show = "med.price_edit === false">
-                            <label @click = "med.price_edit = true">{{med.price}}</label>
-                        </div>
+                        <span v-show = "med.price.price_edit === false">
+                            <label @click = "med.price.price_edit = true">{{med.price.priceValue}} RSD</label>
+                        </span>
                         <input style="text-align:center"
-                            size="1"
-                            v-show = "med.price_edit == true"
-                            v-model = "med.price" 
-                            v-on:blur= "med.price_edit=false;" 
-                            @keyup.enter = "med.price_edit=false; updateMedicationPrice(med, med.price)">
+                            size="2"
+                            v-show = "med.price.price_edit == true"
+                            v-model = "med.price.priceValue" 
+                            v-on:blur= "med.price.price_edit=false;" 
+                            @keyup.enter = "med.price.price_edit=false; updateMedicationPrice(med, med.price.priceValue)">
+                    </td>
+                    <td style="text-align:center">
+                        <span v-if="!med.price.hasPromo"> Regular </span>
+                        <span v-if="med.price.hasPromo"> -{{med.price.percentage}}%
+                            <span class="fa-stack fa-sm">
+                                <i class="fa fa-certificate fa-stack-2x"></i>
+                                <i class="fa fa-tag fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </span>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <Button
+            @action-performed = "openPromotionWindow"
+            class="btn" 
+            text="Make promotion" 
+            bgd_color="rgba(15, 95, 72, 0.85)" 
+            :style="{color : 'rgba(255,255,255, 0.9)', padding: '5px 5px', float:'left'}">
+        </Button>
         <!-- The Modal -->
         <ModalWindowAddMed 
             @add-medication="addMedicationIntoPharmacyStorage" 
             @modal-closed = "closeModalWindow" 
             :modal_show = "modal_window_show"
-            :medications = "medicationsForAdd" >
+            :medications = "medicationsForAdd">
         </ModalWindowAddMed>
+        <ModalWindowMakePromotion
+        @modal-closed = "modal_window_make_promotion = false"
+        @promotion-sent = "addPromotion"
+        :medications = "medicationsForPromotion"
+        :modal_show = "modal_window_make_promotion"
+        >
+        </ModalWindowMakePromotion>
     </div>
 </template>
 
@@ -54,11 +78,11 @@
 import { client } from "@/client/axiosClient";
 import Button from './Button.vue';
 import ModalWindowAddMed from './ModalWindowAddMed.vue';
-
+import ModalWindowMakePromotion from "./ModalWindowMakePromotion.vue";
 
 export default {
     name: "MedicationsTable",
-    components: {Button, ModalWindowAddMed},
+    components: {Button, ModalWindowAddMed, ModalWindowMakePromotion},
     props: {
         medications: {
             type : Array,
@@ -71,7 +95,9 @@ export default {
     data() {
         return {
             modal_window_show : false,
+            modal_window_make_promotion : false,
             medicationsForAdd : [],
+            medicationsForPromotion : [],
         };
     },
     methods: {
@@ -89,6 +115,43 @@ export default {
                     });
                 else
                     this.modal_window_show = true;
+            });
+        },
+        openPromotionWindow : function(){
+            client({
+                url: "/pharmacyStorageItem/fromPharmacyToPromote/" + this.pharmacyId,
+                method: "GET",
+            }).then((response) => {
+                this.medicationsForPromotion = [];
+                let current_price = 0;
+                for (const psiId in response.data) {
+                    const pharmacyStorageItem = response.data[psiId];
+                    for (const itemPriceId in pharmacyStorageItem.itemPrices) {
+                        const itemPrice = pharmacyStorageItem.itemPrices[itemPriceId];
+                        if(itemPrice.current === true){
+                            current_price = itemPrice.price;
+                            break;
+                        } 
+                    }
+                    let medication = {
+                            id : pharmacyStorageItem.id,
+                            name: pharmacyStorageItem.medication.name,
+                            manufacturer: pharmacyStorageItem.medication.manufacturer,
+                            prescriptionReq: pharmacyStorageItem.medication.prescriptionReq,
+                            form: pharmacyStorageItem.medication.form,
+                            price : current_price,
+                            price_edit : false,
+                        };
+                    this.medicationsForPromotion.push(medication);
+                }
+                if(response.data.length == 0)
+                    this.$toasted.show("There are no medications to promote from pharmacy storage!", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                else
+                    this.modal_window_make_promotion = true;
             });
         },
         closeModalWindow(){
@@ -112,6 +175,9 @@ export default {
         updateMedicationPrice: function(med, item){
             this.$emit('update-medication', med, item);
         },
+        addPromotion : function(promotion){
+            this.$emit("promotion-created", promotion);
+        }
     },
 };
 </script>
