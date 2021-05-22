@@ -17,6 +17,7 @@
                     :options="medicationSortOptions"
                     searchType="medications"
                     @search-performed="medicationSearchPerformed"
+                    @sort-performed="medicationSortPerformed"
                 />
 
                 <MedicationsView
@@ -178,10 +179,54 @@ export default {
             this.pharmacySearchResults = temp;
         },
 
-        medicationSearchPerformed(text) {
+        medicationSortPerformed(sortCriterium) {
+            let self = this;
+            if (sortCriterium === "-") 
+                return;
+
+            else if (sortCriterium === "name") {
+                this.medicationSearchResults = this.medicationSearchResults.sort(function (
+                    a,
+                    b
+                ) {
+                    return a.name > b.name ? 1 : -1;
+                });
+            }
+
+            else if (sortCriterium === "manufacturer") {
+                this.medicationSearchResults = this.medicationSearchResults.sort(function (
+                    a,
+                    b
+                ) {
+                    return a.manufacturer > b.manufacturer ? 1 : -1;
+                });
+            }
+
+            else if (sortCriterium === "prescription") {
+                this.medicationSearchResults = this.medicationSearchResults.sort(function (
+                    a,
+                    b
+                ) {
+                    return - a.prescriptionReq + b.prescriptionReq
+                });
+            }
+
+            else if (sortCriterium === "form") {
+                this.medicationSearchResults = this.medicationSearchResults.sort(function (
+                    a,
+                    b
+                ) {
+                    return a.form > b.form ? 1 : -1;
+                });
+            }
+
+        },
+
+        medicationSearchPerformed(text, form, prescriptionReq) {
             this.searchQuery = text;
             let self = this;
-            this.medicationSearchResults = this.medications.filter(function (
+
+            let temp = this.medications.filter(function (
                 medication
             ) {
                 return (
@@ -196,6 +241,26 @@ export default {
                         .includes(self.searchQuery.toLowerCase())
                 );
             });
+
+            //now we filter the results
+
+            temp = temp.filter(function (
+                medication
+            ) {
+                let bool = true;
+                if(prescriptionReq != null)
+                {
+                    bool = medication.prescriptionReq == prescriptionReq;
+                }
+                if(form != '')
+                {
+                    bool = bool && medication.form.toLowerCase().includes(form.toLowerCase());
+                }
+
+                return bool;
+            });
+
+            this.medicationSearchResults = temp;
         },
     },
 

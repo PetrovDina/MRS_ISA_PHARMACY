@@ -20,7 +20,7 @@
         <!-- filter bar  -->
         <div id="filterDiv">
             <PharmaciesFilterBar ref="filterBar" v-if="isSearchOf('pharmacies')" ></PharmaciesFilterBar>
-            <!-- ovde ce ici filter bar za lekove -->
+            <MedicationFilterBar ref="filterBar" v-if="isSearchOf('medications')" ></MedicationFilterBar>
         </div>
 
         <!-- sort bar -->
@@ -38,13 +38,14 @@
 
 <script>
 import PharmaciesFilterBar from "../components/PharmaciesFilterBar";
+import MedicationFilterBar from "../components/MedicationFilterBar";
 
 export default {
     name: "SearchBar",
 
     components:{
         PharmaciesFilterBar,
-
+        MedicationFilterBar
     },
 
     data() {
@@ -59,7 +60,16 @@ export default {
     },
     methods: {
         onClick: function () {
-            this.$emit("search-performed", this.text, this.$refs.filterBar.$data.city, this.$refs.filterBar.$data.minRating, this.$refs.filterBar.$data.maxRating);
+            if(this.isSearchOf('pharmacies'))
+                this.$emit("search-performed", this.text, this.$refs.filterBar.$data.city, this.$refs.filterBar.$data.minRating, this.$refs.filterBar.$data.maxRating);
+            else
+            {
+                this.$emit("search-performed", 
+                        this.text, 
+                        this.$refs.filterBar.$data.form, 
+                        this.$refs.filterBar.$data.prescriptionReq);
+            }
+                
         },
 
         sortSelected(event){
