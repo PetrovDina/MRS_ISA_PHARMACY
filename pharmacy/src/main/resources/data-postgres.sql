@@ -24,25 +24,25 @@ insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values
 insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Lilly', 3.8, 3, '{ "examinationPrice": 2500.0, "consultationPrice": 1600.0 }'); --id 4
 
 -- promocije
-insert into promotion (dueDate, deleted) values ('2021-05-21', 'False');
-insert into promotion (dueDate, deleted) values ('2021-05-23', 'False');
+insert into promotion (dueDate, deleted) values ('2021-05-25', 'False');
+insert into promotion (dueDate, deleted) values ('2021-05-27', 'False');
 
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (3, 2, 1, null, 'False'); /* tri brufena */
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (5, 3, 1, null, 'False'); /* pet paracetamola */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (3, 2, 1, 1, 'False'); /* tri brufena */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (5, 3, 1, 2, 'False'); /* pet paracetamola */
 insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (10, 5, 1, null, 'False'); /* deset panklava */
 insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (5, 1, 1, null, 'False'); /* pet PROBIOTIKA */
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (5, 2, 2, 1, 'False'); /* pet brufena */
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (11, 4, 2, 2, 'False'); /* jedanaest panadola */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (5, 2, 2, null, 'False'); /* pet brufena */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (11, 4, 2, null, 'False'); /* jedanaest panadola */
 
-insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (430, true, false,'{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": null, "endTime": null }', 1);
-insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (200, true, false, '{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": null, "endTime": null }', 2);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (430, false, false,'{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": [2021, 4, 5], "endTime": [23, 28, 14]}', 1);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (200, false, false, '{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": [2021, 5, 22], "endTime": [17, 38, 0]}', 2);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (550, true, false, '{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": null, "endTime": null }', 3);
-insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (250, false, false, '{ "startDate": [2021, 4, 2], "startTime": [23, 28, 14], "endDate": [2021, 4, 5], "endTime": [23, 28, 14]}', 1);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (250, false, false, '{ "startDate": [2021, 4, 5], "startTime": [23, 28, 14], "endDate": [2021, 5, 22], "endTime": [17, 38, 0]}', 1);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (350, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": null, "endTime": null}', 4);
-insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (410, false, false, '{ "startDate": [2021, 4, 2], "startTime": [23, 28, 14], "endDate": null, "endTime": null}', 5);
-insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (370, false, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": null, "endTime": null}', 6);
-insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (250, true, true, '{ "startDate": [2021, 5, 19], "startTime": [0, 0, 0], "endDate": [2021, 5, 21], "endTime": [0, 0, 0]}', 5);
-insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (210, true, true, '{ "startDate": [2021, 5, 19], "startTime": [0, 0, 0], "endDate": [2021, 5, 23], "endTime": [0, 0, 0]}', 6);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (410, true, false, '{ "startDate": [2021, 4, 2], "startTime": [23, 28, 14], "endDate": [2021, 5, 19], "endTime": [0, 0, 0]}', 5);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (370, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": [2021, 5, 19], "endTime": [0, 0, 0]}', 6);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (225, true, true, '{ "startDate": [2021, 5, 22], "startTime": [17, 38, 0], "endDate": [2021, 5, 25], "endTime": [18, 0, 0]}', 1);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (166, true, true, '{ "startDate": [2021, 5, 22], "startTime": [17, 38, 0], "endDate": [2021, 5, 27], "endTime": [18, 0, 0]}', 2);
 
  -- TREBA DA SE UBACE ROLE I BLA BLA NADALJE
 INSERT INTO role (name) VALUES ('ROLE_GUEST');

@@ -22,11 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.PromotionDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemWithItemPricesDTO;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.ItemPrice;
+import mrsisa12.pharmacy.model.Patient;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Promotion;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.service.ItemPriceService;
+import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.PharmacyStorageItemService;
 import mrsisa12.pharmacy.service.PromotionService;
 
@@ -42,6 +46,12 @@ public class PromotionController {
 	
 	@Autowired
 	private ItemPriceService itemPriceService;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private PharmacyService pharmacyService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PromotionDTO>> getAllPromotions() {
@@ -97,13 +107,17 @@ public class PromotionController {
 		Promotion promotion = new Promotion();
 		
 		LocalDate localDateNow = LocalDate.now();
-		LocalTime localTime = LocalTime.parse("00:00:00");
+		LocalTime localTime = LocalTime.now();
 		
+		Pharmacy pharmacy = null;
 		promotion.setDueDate(LocalDate.parse(promotionDTO.getDueDate()));
 		
 		for (PharmacyStorageItemWithItemPricesDTO psi : promotionDTO.getPromotionItems()) {
 			// ovdje onu sto je true postavljam na false
 			PharmacyStorageItem psiFromBase = pharmacyStorageItemService.findOneWithItemPrices(psi.getId());
+			// apoteka mi treba da posaljem mailove zainteresovanim stranama
+			if(pharmacy == null)
+				pharmacy = pharmacyService.findOneWithSubscribedPatients(psiFromBase.getPharmacy().getId());
 			for (ItemPrice ip : psiFromBase.getItemPrices()) {
 				if (ip.isCurrent()) {
 					ip.setCurrent(false);
@@ -139,6 +153,11 @@ public class PromotionController {
 		for (PharmacyStorageItem pharmacyStorageItem : promotion.getPharmacyStorageItems()) {
 			PharmacyStorageItem psiWithItemPrices = pharmacyStorageItemService.findOneWithItemPrices(pharmacyStorageItem.getId());
 			pharmacyStorageItem.setItemPrices(psiWithItemPrices.getItemPrices());
+		}
+		
+		// saljemo mailove svim zainteresovanim stranama
+		for (Patient patient : pharmacy.getSubscribedPatients()) {
+			emailService.sendDiscountMailToPatient(patient, promotion);
 		}
 		
 		return new ResponseEntity<>(new PromotionDTO(promotion), HttpStatus.CREATED);

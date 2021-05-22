@@ -73,9 +73,8 @@ public class PharmacyService {
 		return false;
 	}
 
-	public Pharmacy findOneWithSubscribedPatients(Long subscriptionId) {
-		// TODO Auto-generated method stub
-		return pharmacyRepository.findOneWithSubscribedPatients(subscriptionId);
+	public Pharmacy findOneWithSubscribedPatients(Long id) {
+		return pharmacyRepository.findOneWithSubscribedPatients(id);
 	}
 
 }
