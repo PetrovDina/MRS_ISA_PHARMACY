@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ public class SupplierStorageItemController {
 	@Autowired
 	private MedicationService medicationService;
 	
+	@PreAuthorize("hasRole('SUPPLIER')")
 	@GetMapping(value = "/fromSupplier/{username}")
 	public ResponseEntity<List<SupplierStorageItemDTO>> getSupplierStorageItemsFromSupplierBySupplierId(@PathVariable String username) 
 	{
@@ -56,6 +58,7 @@ public class SupplierStorageItemController {
 		return new ResponseEntity<>(supplierStorageItemDTOs, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('SUPPLIER')")
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<SupplierStorageItemDTO> createSupplierStorageItem(
 			@RequestBody SupplierStorageItemDTO supplierStorageItemDTO) {
@@ -79,6 +82,7 @@ public class SupplierStorageItemController {
 				HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasRole('SUPPLIER')")
 	@PutMapping(value = "/update", consumes = "application/json")
 	public ResponseEntity<SupplierStorageItemDTO> updateSupplierStorageItem(
 			@RequestBody SupplierStorageItemDTO supplierStorageItemDTO) {
@@ -95,6 +99,7 @@ public class SupplierStorageItemController {
 		return new ResponseEntity<>(new SupplierStorageItemDTO(suppleirStorageItem), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('SUPPLIER')")
 	@DeleteMapping(value = "/delete/{id}")
 	public ResponseEntity<Void> deleteSupplierStorageItem(@PathVariable Long id) {
 

@@ -179,7 +179,14 @@ export default {
                 url: "med/create",
                 method: "POST",
 				data: registration
-            }).then((response) => {alert("Registracija leka uspesno izvrsena."); this.homeRedirect(); }).
+            }).then((response) => {
+                this.$toasted.show("Medication succsesfully registred.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 3000,
+                    });
+                 this.homeRedirect(); 
+                }).
 			catch((response) => (console.log(response)));
         },
 

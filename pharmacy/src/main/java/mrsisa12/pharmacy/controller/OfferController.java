@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,7 @@ public class OfferController {
 	@Autowired
 	private EmailService emailService;
 
+	@PreAuthorize("hasRole('SUPPLIER')")
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<OfferDTO> saveOffer(@RequestBody OfferDTO offerDTO) {
 		Offer offer = new Offer();
@@ -97,6 +99,7 @@ public class OfferController {
 		return new ResponseEntity<>(new OfferDTO(offer), HttpStatus.CREATED);
 	}
 
+	@PreAuthorize("hasRole('SUPPLIER')")
 	@PutMapping(value = "/update", consumes = "application/json")
 	public ResponseEntity<OfferDTO> updateOffer(@RequestBody OfferDTO offerDTO) {
 		Offer offer = offerService.findOne(offerDTO.getId());
@@ -121,6 +124,7 @@ public class OfferController {
 		return new ResponseEntity<>(new OfferDTO(offer), HttpStatus.OK);
 	}
 
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
 	@PostMapping(value = "/accept", consumes = "application/json")
 	public ResponseEntity<OfferDTO> acceptOffer(@RequestBody OfferDTO offerDTO) {
 		
@@ -178,6 +182,7 @@ public class OfferController {
 		return false;
 	}
 
+	@PreAuthorize("hasRole('SUPPLIER')")
 	@GetMapping(value = "/allFromSupplier/{username}")
 	public ResponseEntity<List<OfferWithOrderWithOrderItemsDTO>> getAllFromSupplier(@PathVariable String username) {
 		Supplier supplier = supplierService.findOne(username);

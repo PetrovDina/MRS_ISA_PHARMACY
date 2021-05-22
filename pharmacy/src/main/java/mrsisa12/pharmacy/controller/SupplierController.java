@@ -3,6 +3,7 @@ package mrsisa12.pharmacy.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class SupplierController {
 	@Autowired
 	EmailService emailService;
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<UserDTO> saveSupplier(@RequestBody UserDTO supplierDTO)
 	{
@@ -55,6 +57,7 @@ public class SupplierController {
 		return new ResponseEntity<>(new UserDTO(su), HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasRole('SUPPLIER')")
 	@GetMapping(value = "/getId/{username}", consumes = "application/json")
 	public ResponseEntity<Long> getSupplierId(@PathVariable String username)
 	{
