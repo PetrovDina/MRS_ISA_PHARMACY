@@ -45,7 +45,8 @@
                 <MedicationsTable 
                     @update-medication="updateMedicationPrice" 
                     @add-med-into-pharmacy="addMedicationToDB" 
-                    @record-deleted="deleteRecordFromDB" 
+                    @record-deleted="deleteRecordFromDB"
+                    @promotion-created = "addPromotion"
                     :medications = "medicationToSend"
                     :pharmacyId = "pharmacyId">
                 </MedicationsTable>
@@ -89,6 +90,7 @@ import PharmacistsTable from '../components/PharmacistsTable.vue';
 import OrdersTable from '../components/OrdersTable';
 import ModalWindowEditPharmacyData from '../components/ModalWindowEditPharmacyData.vue'
 import ModalWindowMap from "../components/ModalWindowMap.vue"
+import moment from 'moment';
 
 export default {
     name: "PharmacyView",
@@ -165,8 +167,12 @@ export default {
                     form: med.form,
                     quantity : 0,
                     medicationId : med.id,
-                    price : medicationPrice,
-                    price_edit : false
+                    price : {
+                        priceValue: medicationPrice,
+                        hasPromo : false,
+                        percentage : 0,
+                        price_edit : false
+                    },
                 }]
             }).catch((response) => (console.log(response)));
         },
@@ -182,6 +188,13 @@ export default {
                             price: priceToUpdate
                         }
                     ]
+                }
+            })
+            .then((response) => {
+                const pharmacyStorageItem = response.data
+                for (const medicationId in this.medicationToSend) {
+                    if(pharmacyStorageItem.id === this.medicationToSend[medicationId].id)
+                        this.medicationToSend[medicationId].price = this.calculatePrice(pharmacyStorageItem);
                 }
             })
             .catch((response) => (console.log(response)));
@@ -276,9 +289,13 @@ export default {
                         prescriptionReq: medication.prescriptionReq,
                         form: medication.form,
                         quantity : 0,
-                        price : medication["price"],
+                        price : {
+                            priceValue: medication["price"],
+                            hasPromo : false,
+                            percentage : 0,
+                            price_edit : false
+                        },
                         medicationId: medication.id,
-                        price_edit : false,
                     }]
                 });
             }
@@ -355,6 +372,56 @@ export default {
         setUpMap: function() {
              this.modalMap = true;   
         },
+        addPromotion : function(promotion){
+            for(const promotionItem in promotion.promotionItems){
+                promotion.promotionItems[promotionItem]['itemPrices'] = [{
+                    price : promotion.promotionItems[promotionItem].price
+                }]
+            }
+            client({
+                url: "promotion",
+                method: "POST",
+                data : promotion
+            }).then((response) => {
+                for (const promotionItemId in response.data.promotionItems) {
+                    const promotionItem = response.data.promotionItems[promotionItemId];
+                    for (const medicationId in this.medicationToSend) {
+                        if(promotionItem.id === this.medicationToSend[medicationId].id)
+                            this.medicationToSend[medicationId].price = this.calculatePrice(promotionItem);
+                    }
+                }
+            });
+        },
+        calculatePrice : function(pharmacy_item){
+            let current_price = {
+                priceValue: 0,
+                hasPromo : false,
+                percentage : 0,
+                price_edit : false
+            };
+            for(const iter of pharmacy_item.itemPrices){
+                if(iter.promotion === true && iter.current === true){
+                    current_price.priceValue = iter.price;
+                    current_price.hasPromo = true;
+                    for(const iter2 of pharmacy_item.itemPrices){
+                        let promoPriceStartDate = moment().format(iter.timePeriod.startDate, 'YYYY-MM-DD')
+                        let oldPriceEndDate = moment().format(iter2.timePeriod.endDate, 'YYYY-MM-DD')
+                        let promoPriceStartTime = moment().format(iter.timePeriod.startTime, 'HH:mm:ss');
+                        let oldPriceEndTime = moment().format(iter2.timePeriod.endTime, 'HH:mm:ss');
+                        if(promoPriceStartDate == oldPriceEndDate && promoPriceStartTime == oldPriceEndTime)
+                            current_price.percentage = Math.round((1 - (current_price.priceValue / iter2.price)) * 100);
+                    }
+                    break;
+                }
+                else {
+                    if(iter.current === true){
+                        current_price.priceValue = iter.price;
+                        break;
+                    }
+                }
+            }
+            return current_price;
+        }
     },
 
     mounted() {
@@ -386,28 +453,23 @@ export default {
                 url : "pharmacyStorageItem/fromPharmacy/" + this.pharmacyId,
                 method : "GET",
             }).then((response) => {
-                    for(const pharmacy_item of response.data){
-                        let current_price = 0;
-                        for(const iter of pharmacy_item.itemPrices){
-                            if(iter.current === true){
-                                current_price = iter.price;
-                                break;
-                            }
-                        }
-                        let medication = {
-                                id: pharmacy_item.id,
-                                name: pharmacy_item.medication.name,
-                                manufacturer: pharmacy_item.medication.manufacturer,
-                                prescriptionReq: pharmacy_item.medication.prescriptionReq,
-                                form: pharmacy_item.medication.form,
-                                quantity : pharmacy_item.quantity,
-                                price : current_price,
-                                medicationId: pharmacy_item.medication.id,
-                                price_edit : false,
-                            };
-                        this.medicationToSend = [...this.medicationToSend, medication]
-                    }
-            }).catch((response) => alert("pharmacyId je null"));
+                let current_price = {};
+                for(const pharmacy_item of response.data){
+                    current_price = this.calculatePrice(pharmacy_item);
+                    let medication = {
+                            id: pharmacy_item.id,
+                            name: pharmacy_item.medication.name,
+                            manufacturer: pharmacy_item.medication.manufacturer,
+                            prescriptionReq: pharmacy_item.medication.prescriptionReq,
+                            form: pharmacy_item.medication.form,
+                            quantity : pharmacy_item.quantity,
+                            price : current_price,
+                            medicationId: pharmacy_item.medication.id,
+                            price_edit : false,
+                        };
+                    this.medicationToSend = [...this.medicationToSend, medication];
+                }
+            }).catch((response) => console.log(response));
 
             client({
                 url : "order/allFrom/" + this.pharmacyId + "/withOffers",

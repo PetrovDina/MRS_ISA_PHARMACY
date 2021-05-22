@@ -25,7 +25,7 @@
                         <input type="text" id="streetNum" class="form-control" :value="pharmacy.location.streetNum">
                     </div>
                     <div class="col-4">
-                        <span>Price cataloge</span>
+                        <span>Price catalogue</span>
                         <hr class="solid">
                         <label class="label" for="examinationPrice">Examination price:</label>
                         <input type="text" id="examinationPrice" class="form-control" :value="pharmacy.appointmentPriceCatalog.examinationPrice">

@@ -40,6 +40,6 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, Long> {
 	public Pharmacy findOneWithPharmacyAdmins(Long id);
 
 	@Query("select s from Pharmacy s left join fetch s.subscribedPatients e where s.id =?1")
-	public Pharmacy findOneWithSubscribedPatients(Long subscriptionId);
+	public Pharmacy findOneWithSubscribedPatients(Long id);
 
 }

@@ -30,6 +30,9 @@ public class ItemPrice {
 
 	@Column(name = "current", nullable = false)
 	private boolean current;
+	
+	@Column(name = "promotion", nullable = false)
+	private boolean promotion;
 
 	@Type(type = "jsonb")
 	@Column(columnDefinition = "jsonb", name = "timePeriod")
@@ -43,10 +46,11 @@ public class ItemPrice {
 
 	}
 
-	public ItemPrice(double price, boolean current, TimePeriod timePeriod) {
+	public ItemPrice(double price, boolean current, boolean promotion, TimePeriod timePeriod) {
 		super();
 		this.price = price;
 		this.current = current;
+		this.promotion = promotion;
 		this.timePeriod = timePeriod;
 	}
 
@@ -90,4 +94,11 @@ public class ItemPrice {
 		this.pharmacyStorageItem = pharmacyStorageItem;
 	}
 
+	public boolean isPromotion() {
+		return promotion;
+	}
+
+	public void setPromotion(boolean promotion) {
+		this.promotion = promotion;
+	}
 }

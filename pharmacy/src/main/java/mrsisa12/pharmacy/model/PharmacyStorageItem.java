@@ -39,6 +39,9 @@ public class PharmacyStorageItem {
 	@JoinColumn(name = "PHARMACY_ID", referencedColumnName = "ID")
 	private Pharmacy pharmacy;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Promotion promotion;
+	
 	@Column(name = "deleted")
 	private boolean deleted;
 
@@ -119,4 +122,11 @@ public class PharmacyStorageItem {
 		this.deleted = deleted;
 	}
 
+	public Promotion getPromotion() {
+		return promotion;
+	}
+
+	public void setPromotion(Promotion promotion) {
+		this.promotion = promotion;
+	}
 }

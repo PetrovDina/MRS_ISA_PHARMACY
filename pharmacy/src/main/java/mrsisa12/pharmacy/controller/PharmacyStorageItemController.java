@@ -1,10 +1,8 @@
 package mrsisa12.pharmacy.controller;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.MedicationDTO;
 import mrsisa12.pharmacy.dto.PharmacyWithMedicationPriceDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
@@ -125,6 +122,35 @@ public class PharmacyStorageItemController {
 
 		return new ResponseEntity<>(pharmacyStorageItemDTOs, HttpStatus.OK);
 	}
+	
+	@GetMapping(value = "/fromPharmacyToPromote/{id}")
+	public ResponseEntity<List<PharmacyStorageItemWithItemPricesDTO>> getAllMedicationsToPromote(@PathVariable Long id) {
+
+		List<Medication> medications = medicationService.findAll();
+
+		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(id);
+		// convert medications to DTOs
+		List<PharmacyStorageItemWithItemPricesDTO> medicationsDTO = new ArrayList<PharmacyStorageItemWithItemPricesDTO>();
+		boolean found = false;
+		for (PharmacyStorageItem psi : pharmacy.getPharmacyStorageItems()) {
+			found = false;
+			PharmacyStorageItem psiWithItemPrices = pharmacyStorageItemService.findOneWithItemPrices(psi.getId());
+			for (Medication medication : medications) {
+				if(psiWithItemPrices.getMedication().getId() == medication.getId()) {
+					for (ItemPrice itemPrice : psiWithItemPrices.getItemPrices()) {
+						if(itemPrice.isCurrent() && itemPrice.isPromotion()) {
+							found = true;
+							break;
+						}
+					}
+				}
+			}
+			if(!found)
+				medicationsDTO.add(new PharmacyStorageItemWithItemPricesDTO(psiWithItemPrices));
+		}
+
+		return new ResponseEntity<>(medicationsDTO, HttpStatus.OK);
+	}
 
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<PharmacyStorageItemDTO> createPharmacyStorageItem(
@@ -140,7 +166,7 @@ public class PharmacyStorageItemController {
 		LocalTime localTimeNow = LocalTime.now();
 		TimePeriod timePeriod = new TimePeriod(localDateNow, localTimeNow, null, null);
 		// potrebno je kreirati novu cijenu
-		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, timePeriod);
+		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, false, timePeriod);
 		PharmacyStorageItem pharmacyStorageItem = new PharmacyStorageItem();
 		// postavljamo pharmacyStorageItem itemPrice-u
 		itemPrice.setPharmacyStorageItem(pharmacyStorageItem);
@@ -177,6 +203,7 @@ public class PharmacyStorageItemController {
 		for (ItemPrice ip : pharmacyStorageItem.getItemPrices()) {
 			if (ip.isCurrent()) {
 				ip.setCurrent(false);
+				ip.setPromotion(false);
 				ip.getTimePeriod().setEndDate(localDateNow);
 				ip.getTimePeriod().setEndTime(localTimeNow);
 				itemPriceService.save(ip);
@@ -185,7 +212,7 @@ public class PharmacyStorageItemController {
 		// kreiramo trenutni datum i vrijeme za datum i vrijeme kreiranja, datum i vrijeme isteka je null
 		TimePeriod timePeriod = new TimePeriod(localDateNow, localTimeNow, null, null);
 		// pravim novi ItemPrice koji ce biti trenutna cijena
-		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, timePeriod);
+		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, false, timePeriod);
 		// dodajemo itemPrice-u referencu na pharmacyStorageItem
 		itemPrice.setPharmacyStorageItem(pharmacyStorageItem);
 		// cuvamo itemPrice
