@@ -49,7 +49,15 @@ public class SystemAdminController {
 		sa.setRoles(roleService.findByName("ROLE_SYSTEM_ADMIN"));
 		sa.setDeleted(false);
 		
-		systemAdminService.save(sa);
+		try 
+		{
+			systemAdminService.save(sa);
+		} 
+		catch (Exception e) 
+		{
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
+		
 		emailService.confirmationEmailUserRegistration(sa);
 		
 		return new ResponseEntity<>(new UserDTO(sa), HttpStatus.CREATED);

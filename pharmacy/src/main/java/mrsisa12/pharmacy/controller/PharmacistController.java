@@ -56,7 +56,15 @@ public class PharmacistController {
 		phar.setRating(0.0);
 		phar.setDeleted(false);
 
-		pharmacistService.save(phar);
+		try 
+		{
+			pharmacistService.save(phar);
+		} 
+		catch (Exception e) 
+		{
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
+		
 		emailService.confirmationEmailUserRegistration(phar);
 		
 		return new ResponseEntity<>(new PharmacistDTO(phar), HttpStatus.CREATED);

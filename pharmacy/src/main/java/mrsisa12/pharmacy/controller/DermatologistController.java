@@ -56,7 +56,15 @@ public class DermatologistController {
 		d.setDermatologistNickname(null);
 		d.setDeleted(false);
 		
-		dermatologistService.save(d);
+		try 
+		{
+			dermatologistService.save(d);
+		} 
+		catch (Exception e) 
+		{
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
+
 		emailService.confirmationEmailUserRegistration(d);
 		
 		return new ResponseEntity<>(new UserDTO(d), HttpStatus.CREATED);

@@ -88,7 +88,15 @@ public class PharmacyAdminController
 		Pharmacy pharmacy = pharmacyService.findOne(pharmacyAdminDTO.getPharmacyId());
 		pa.setPharmacy(pharmacy);
 		
-		pharmacyAdminService.save(pa);
+		try 
+		{
+			pharmacyAdminService.save(pa);
+		} 
+		catch (Exception e) 
+		{
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
+	
 		emailService.confirmationEmailUserRegistration(pa);
 		
 		return new ResponseEntity<>(new PharmacyAdminDTO(pa), HttpStatus.CREATED);

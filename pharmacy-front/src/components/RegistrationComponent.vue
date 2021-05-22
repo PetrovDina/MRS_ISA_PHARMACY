@@ -160,7 +160,13 @@ export default {
                     });
 					this.$emit('registered', response.data); // vracamo objekat koji je registrovan
 				}
-			}).catch((response) => (console.log(response)));
+			}).catch((response) => {
+				this.$toasted.show("Username is taken. Try another.", {
+					theme: "toasted-primary",
+					position: "top-center",
+					duration: 5000,
+				});
+			});
         },
 		checkPassword: function() {
 			var inputPasswordRepeat = document.getElementById('passwordRepeat');

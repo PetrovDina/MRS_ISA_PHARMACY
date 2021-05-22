@@ -51,7 +51,15 @@ public class SupplierController {
 		su.setRoles(roleService.findByName("ROLE_SUPPLIER"));
 		su.setDeleted(false);
 		
-		supplierService.save(su);
+		try 
+		{
+			supplierService.save(su);
+		} 
+		catch (Exception e) 
+		{
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
+		
 		emailService.confirmationEmailUserRegistration(su);
 		
 		return new ResponseEntity<>(new UserDTO(su), HttpStatus.CREATED);
