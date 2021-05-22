@@ -24,6 +24,7 @@ import ScheduledAppointmentsView from '@/views/ScheduledAppointmentsView'
 import DermAppointHistory from '@/views/DermAppointHistory'
 import PharmAppointHistory from '@/views/PharmAppointHistory'
 import PenaledScreen from '@/views/PenaledScreen'
+import PatientsAllPrescriptionsView from '@/views/PatientsAllPrescriptionsView'
 
 
 import PharmacyRegistration from '@/views/PharmacyRegistration'
@@ -421,21 +422,38 @@ export default new Router({
         },
 
         {
-        path: '/penaled',
-        name: 'PenaledScreen',
-        component: PenaledScreen,
-        beforeEnter: function (to, from, next) {
-            let user = CheckUser.getLoggedUserData();
-            if (user.userType == 'PATIENT') {
+            path: '/penaled',
+            name: 'PenaledScreen',
+            component: PenaledScreen,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == 'PATIENT') {
 
-                next();
+                    next();
 
+                }
+                else {
+                    ({ path: '/' });
+                }
             }
-            else {
-                ({ path: '/' });
+        },
+
+        {
+            path: '/patientsPrescriptions',
+            name: 'PatientsAllPrescriptionsView',
+            component: PatientsAllPrescriptionsView,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == 'PATIENT') {
+
+                    next();
+
+                }
+                else {
+                    ({ path: '/' });
+                }
             }
-        }
-    },
+        },
 
         {
             path: '/scheduledAppointments',

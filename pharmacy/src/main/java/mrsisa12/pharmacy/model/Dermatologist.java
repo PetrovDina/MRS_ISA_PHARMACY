@@ -26,6 +26,9 @@ public class Dermatologist extends Employee {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "employee")
 	private List<Employment> employments;
 	
+	//@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "dermatologist")
+	//private List<DermatologistRating> ratings;
+	
 	public Dermatologist() {}
 
 	public Dermatologist(Long id, String username, String password, String email, String firstName, String lastName,
@@ -33,6 +36,8 @@ public class Dermatologist extends Employee {
 		super(id, username, password, email, firstName, lastName, location, gender, activeStatus, userRoles, deleted, rating);
 		this.dermatologistNickname = dermatologistNickname;
 	}
+
+	
 
 	public String getDermatologistNickname() {
 		return dermatologistNickname;

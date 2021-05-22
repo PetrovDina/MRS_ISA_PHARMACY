@@ -18,4 +18,14 @@ public interface EPrescriptionRepository  extends JpaRepository<EPrescription, L
 	@Query("select res from EPrescription res where res.patient.username = ?1")
 	public List<EPrescription> findAllByPatient(String patientUserName);
 	
+	@Query("select distinct res from EPrescription res join fetch res.prescriptionItems pi where res.patient.username = ?1")
+	public List<EPrescription> findAllByPatientWithPrescriptionItems(String patientUserName);
+
+	@Query("select distinct res from EPrescription res join fetch res.prescriptionItems pi where res.status = 'COMPLETED' and res.patient.username = ?1")
+
+	public List<EPrescription> findAllFilledByPatientWithPrescriptionItems(String patientUsername);
+	
+	@Query("select distinct res from EPrescription res join fetch res.prescriptionItems pi where res.status = 'CREATED' and res.patient.username = ?1")
+	public List<EPrescription> findAllNewByPatientWithPrescriptionItems(String patientUsername);
+
 }

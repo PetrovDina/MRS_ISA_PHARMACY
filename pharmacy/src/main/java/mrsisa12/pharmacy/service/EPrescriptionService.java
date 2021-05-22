@@ -36,4 +36,12 @@ public class EPrescriptionService {
 		return ePrescriptionRepository.findAllByPatient(patientUsername);
 	}
 	
+	public List<EPrescription> findAllNewByPatientWithPrescriptionItems(String patientUsername) {
+		return ePrescriptionRepository.findAllNewByPatientWithPrescriptionItems(patientUsername);
+	}
+	
+	public List<EPrescription> findAllFilledByPatientWithPrescriptionItems(String patientUsername) {
+		return ePrescriptionRepository.findAllFilledByPatientWithPrescriptionItems(patientUsername);
+	}
+	
 }

@@ -58,7 +58,7 @@ insert into system_user (username, password, email, firstname, lastname, locatio
 insert into pharmacyadmin (id, pharmacy_id) values (3, 1);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('milica', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milicam@email.com', 'Milica', 'Milic', 1, 'FEMALE', 'ACTIVATED', 'False');
-insert into employees (id, rating ) values (4, 2.2);
+insert into employees (id, rating ) values (4, 4.0);
 insert into dermatologist (id, dermatologistNickname) values (4, 'mica');
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('vanja', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'vanjav@email.com', 'Vanja', 'Vanjic', 1, 'FEMALE', 'ACTIVATED', 'False');
@@ -247,3 +247,7 @@ insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescri
 insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (4, 4, 20, 1);
 insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (1, 3, 6, 2);
 insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (2, 4, 10, 2);
+
+--employee ratings
+insert into rating (type, date, rating, employee_id, patient_id) values ('employee_rating', '2021-01-20', 3.0, 4, 2 );
+insert into rating (type, date, rating, employee_id, patient_id) values ('employee_rating', '2021-02-12', 5.0, 4, 11 );

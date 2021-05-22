@@ -1,6 +1,8 @@
 package mrsisa12.pharmacy.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.dto.EPrescriptionDTO;
+import mrsisa12.pharmacy.dto.EPrescriptionWithItemsDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.EPrescription;
 import mrsisa12.pharmacy.model.enums.EPrescriptionStatus;
@@ -50,5 +54,35 @@ public class EPrescriptionController {
 		
 		return new ResponseEntity<>( new EPrescriptionDTO(ePrescription) ,HttpStatus.CREATED);
 	}
+	
+	@GetMapping(value = "/newPrescriptionsByPatient")
+	public ResponseEntity<List<EPrescriptionWithItemsDTO>> getAllNewByPatient(@RequestParam String patientUsername) {
 
+		List<EPrescription> prescriptions = ePrescriptionService.findAllNewByPatientWithPrescriptionItems(patientUsername);
+		
+		// convert to DTOs
+		List<EPrescriptionWithItemsDTO> prescriptionsDTO = new ArrayList<>();
+		for (EPrescription prescription : prescriptions) {
+			
+			prescriptionsDTO.add(new EPrescriptionWithItemsDTO(prescription));
+		}
+
+		return new ResponseEntity<>(prescriptionsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/filledPrescriptionsByPatient")
+	public ResponseEntity<List<EPrescriptionWithItemsDTO>> getAllFilledByPatient(@RequestParam String patientUsername) {
+
+		List<EPrescription> prescriptions = ePrescriptionService.findAllFilledByPatientWithPrescriptionItems(patientUsername);
+		
+
+		// convert to DTOs
+		List<EPrescriptionWithItemsDTO> prescriptionsDTO = new ArrayList<>();
+		for (EPrescription prescription : prescriptions) {
+			
+			prescriptionsDTO.add(new EPrescriptionWithItemsDTO(prescription));
+		}
+
+		return new ResponseEntity<>(prescriptionsDTO, HttpStatus.OK);
+	}
 }

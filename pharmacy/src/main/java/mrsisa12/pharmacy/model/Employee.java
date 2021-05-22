@@ -33,6 +33,9 @@ public abstract class Employee extends User {
 	private double rating;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "employee")
+	private List<EmployeeRating> ratingsList;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "employee")
 	private List<Appointment> appointments;
 
 	public Employee() {}
@@ -41,6 +44,18 @@ public abstract class Employee extends User {
 			Location location, Gender gender, UserStatus activeStatus, List<UserRole> userRoles, boolean deleted, double rating) {
 		super(id, username, password, email, firstName, lastName, location, gender, activeStatus, userRoles, deleted);
 		this.rating = rating;
+	}
+	
+	
+	
+	
+
+	public List<EmployeeRating> getRatingsList() {
+		return ratingsList;
+	}
+
+	public void setRatingsList(List<EmployeeRating> ratingsList) {
+		this.ratingsList = ratingsList;
 	}
 
 	public double getRating() {
