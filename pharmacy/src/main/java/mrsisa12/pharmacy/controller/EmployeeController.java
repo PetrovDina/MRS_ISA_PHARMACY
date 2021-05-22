@@ -90,6 +90,7 @@ public class EmployeeController {
 		else {
 			//update existing rating obj
 			rating.setRating(ratedValue);
+			rating.setDate(new Date());
 			employeeRatingService.save(rating);		
 		}
 		
@@ -111,6 +112,22 @@ public class EmployeeController {
 		employeeService.save(employee);
 
 		return new ResponseEntity<Double>(newRating, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/getRating")
+	public ResponseEntity<Double> getRating(
+			@RequestParam String patientUsername, @RequestParam Long employeeId) {
+
+
+		EmployeeRating rating = employeeRatingService.findOneByPatientAndEmployee(patientUsername, employeeId);
+		
+		if (rating == null) {
+			return new ResponseEntity<Double>(0.0, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<Double>(rating.getRating(), HttpStatus.OK);	
+		}
+
 	}
 	
 }
