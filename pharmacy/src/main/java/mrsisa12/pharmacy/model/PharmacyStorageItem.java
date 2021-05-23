@@ -44,6 +44,9 @@ public class PharmacyStorageItem {
 	
 	@Column(name = "deleted")
 	private boolean deleted;
+	
+	@Column(name = "counter")
+	private int counter;
 
 	public PharmacyStorageItem() {
 	}
@@ -54,6 +57,7 @@ public class PharmacyStorageItem {
 		this.medication = medication;
 		this.quantity = quantity;
 		this.pharmacy = pharmacy;
+		this.counter = 0;
 	}
 
 	public Medication getMedication() {
@@ -122,6 +126,7 @@ public class PharmacyStorageItem {
 		this.deleted = deleted;
 	}
 
+
 	public Promotion getPromotion() {
 		return promotion;
 	}
@@ -129,4 +134,17 @@ public class PharmacyStorageItem {
 	public void setPromotion(Promotion promotion) {
 		this.promotion = promotion;
 	}
+
+	public int getCounter() {
+		return counter;
+	}
+
+	public void setCounter(int counter) {
+		this.counter = counter;
+	}
+	
+	public void incrementCounter() {
+		this.counter++;
+	}
+
 }

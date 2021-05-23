@@ -29,7 +29,7 @@
             </v-col>
         </v-row>
         <v-row justify="center"> 
-        <v-btn class="finishButton btn btn-primary" color=" green " @click="searchQuery()" >Search</v-btn>
+        <v-btn class="finishButton btn btn-primary" color=" green lighten-2" @click="searchQuery()" >Search</v-btn>
         <v-btn class="cancelButton btn btn-secondary" color=" grey lighten-1 "  @click="resetList()" >Reset</v-btn>
         </v-row>
         <br>
@@ -69,7 +69,7 @@
         <v-row justify="center">
             <v-dialog
             v-model="dialog"
-            max-width="600px"
+            max-width="700px"
             >
             
             <v-card>
@@ -89,8 +89,19 @@
                     >
                     <v-list-item-content>
                         <v-row>
-                        <v-list-item-title v-text="item.fixedDate"></v-list-item-title>
-                        <v-list-item-title v-text="item.pharmacy.name"></v-list-item-title>
+                            <v-col
+                          cols="12"
+                          sm="6"
+                          md="6"
+                          ><v-list-item-title >Start date: {{item.fixedDate}}</v-list-item-title>
+                            </v-col>
+                            <v-col
+                          cols="12"
+                          sm="6"
+                          md="6"
+                          >
+                        <v-list-item-title >Pharmacy: {{item.pharmacy.name}}</v-list-item-title>
+                            </v-col>
                         </v-row>
                         <v-col
                         cols="12"

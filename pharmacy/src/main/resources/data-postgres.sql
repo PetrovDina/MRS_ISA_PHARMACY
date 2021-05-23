@@ -27,12 +27,12 @@ insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values
 insert into promotion (dueDate, deleted) values ('2021-05-25', 'False');
 insert into promotion (dueDate, deleted) values ('2021-05-27', 'False');
 
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (3, 2, 1, 1, 'False'); /* tri brufena */
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (5, 3, 1, 2, 'False'); /* pet paracetamola */
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (10, 5, 1, null, 'False'); /* deset panklava */
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (5, 1, 1, null, 'False'); /* pet PROBIOTIKA */
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (5, 2, 2, null, 'False'); /* pet brufena */
-insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted) values (11, 4, 2, null, 'False'); /* jedanaest panadola */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (3, 2, 1, 1, 'False', 0); /* tri brufena */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (5, 3, 1, 2, 'False', 0); /* pet paracetamola */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (10, 5, 1, null, 'False', 0); /* deset panklava */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (5, 1, 1, null, 'False', 0); /* pet PROBIOTIKA */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (5, 2, 2, null, 'False', 0); /* pet brufena */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (11, 4, 2, null, 'False', 0); /* jedanaest panadola */
 
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (430, false, false,'{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": [2021, 4, 5], "endTime": [23, 28, 14]}', 1);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (200, false, false, '{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": [2021, 5, 22], "endTime": [17, 38, 0]}', 2);
@@ -178,7 +178,7 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 5], "startTime": [12, 0, 0], "endDate": [2021, 7, 5], "endTime": [13, 30, 0]}', 4, 2000, 1, 'False', 2);
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 28], "startTime": [11, 0, 0], "endDate": [2021, 7, 28], "endTime": [12, 0, 0]}', 4, 2000, 1, 'False', 11);
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 23], "startTime": [12, 0, 0], "endDate": [2021, 7, 23], "endTime": [13, 30, 0]}', 4, 2000, 1, 'False', 2);
-insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 5, 19], "startTime": [10, 0, 0], "endDate": [2021, 5, 19], "endTime": [11, 0, 0]}', 4, 2000, 1, 'False', 11);
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 5, 26], "startTime": [11, 0, 0], "endDate": [2021, 5, 26], "endTime": [12, 0, 0]}', 4, 2000, 1, 'False', 11);
 
 
 -- alergije
@@ -256,3 +256,8 @@ insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescri
 --employee ratings
 insert into rating (type, date, rating, employee_id, patient_id) values ('employee_rating', '2021-01-20', 3.0, 4, 2 );
 insert into rating (type, date, rating, employee_id, patient_id) values ('employee_rating', '2021-02-12', 5.0, 4, 11 );
+
+insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('REQUESTED', 'VACATION', '{ "startDate":  [2021, 8, 1], "startTime": [0, 0, 0], "endDate": [2021, 8, 8], "endTime": [0, 0, 0]}', 4, 1);
+insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('REQUESTED', 'VACATION', '{ "startDate":  [2021, 12, 25], "startTime": [0, 0, 0], "endDate": [2022, 1, 15], "endTime": [0, 0, 0]}', 4, 1);
+insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('DENIED', 'ABSENCE', '{ "startDate":  [2021, 5, 5], "startTime": [0, 0, 0], "endDate": [2021, 5, 10], "endTime": [0, 0, 0]}', 4, 1);
+

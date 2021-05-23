@@ -180,6 +180,7 @@ public class PharmacyStorageItemController {
 		pharmacyStorageItem.setDeleted(false);
 		// dodajemo apotkue novom pharmacyStorageItem-u
 		pharmacyStorageItem.setPharmacy(pharmacy);
+		pharmacyStorageItem.setCounter(0);
 		pharmacyStorageItemService.save(pharmacyStorageItem);
 		return new ResponseEntity<>(
 				new PharmacyStorageItemDTO(pharmacyStorageItemService.findOne(pharmacyStorageItem.getId())),
@@ -267,6 +268,8 @@ public class PharmacyStorageItemController {
 		int quantity = pharmacyStorageItem.getQuantity();
 		if(quantity == 0) {
 			Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));
+			pharmacyStorageItem.incrementCounter();
+			pharmacyStorageItemService.save(pharmacyStorageItem);
 			
 			String emailBody = "This email is an alert that the quantity of medication " + pharmacyStorageItem.getMedication().getName() + " in storage item #" + pharmacyStorageItem.getId() + " has become 0.";
 			EmailContent email = new EmailContent("Storage item low quantity alert", emailBody);

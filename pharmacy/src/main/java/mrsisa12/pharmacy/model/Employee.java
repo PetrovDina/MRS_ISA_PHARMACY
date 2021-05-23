@@ -37,6 +37,9 @@ public abstract class Employee extends User {
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "employee")
 	private List<Appointment> appointments;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "employee")
+	private List<Absence> absences;	
 
 	public Employee() {}
 
@@ -81,6 +84,24 @@ public abstract class Employee extends User {
 			this.appointments = new ArrayList<>();
 		if (!this.appointments.contains(appointment)) {
 			this.appointments.add(appointment);
+		}
+	}
+
+	public List<Absence> getAbsences() {
+		return absences;
+	}
+
+	public void setAbsences(List<Absence> absences) {
+		this.absences = absences;
+	}
+	
+	public void addAbsence(Absence absence) {
+		if (absence == null)
+			return;
+		if (this.absences == null)
+			this.absences = new ArrayList<>();
+		if (!this.absences.contains(absence)) {
+			this.absences.add(absence);
 		}
 	}
 	

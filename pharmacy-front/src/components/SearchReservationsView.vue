@@ -12,7 +12,7 @@
                 outlined
                 
         ></v-text-field>
-        <v-btn class="finishButton btn btn-primary" color=" green " @click="searchQuery()" >Search</v-btn>
+        <v-btn class="finishButton btn btn-primary" color=" green lighten-2" @click="searchQuery()" >Search</v-btn>
         <v-btn class="cancelButton btn btn-secondary" color=" grey lighten-1 "  @click="resetList()" >Reset</v-btn>
         <br>
         <br>

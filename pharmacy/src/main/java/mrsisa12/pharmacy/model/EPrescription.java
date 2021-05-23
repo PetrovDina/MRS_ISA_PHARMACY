@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -26,7 +27,8 @@ public class EPrescription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
-	@OneToOne
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "patient_id", referencedColumnName = "id")
 	private Patient patient;
 	
 	@Column(name = "prescribedDate", nullable = false)
@@ -41,6 +43,10 @@ public class EPrescription {
 		
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ePrescription")
 	private List<PrescriptionItem> prescriptionItems;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "pharmacy_id", referencedColumnName = "id", nullable = true)
+	private Pharmacy pharmacy;
 	
 	public EPrescription() {
 		super();
@@ -150,5 +156,14 @@ public class EPrescription {
 	}
 
 
+	public Pharmacy getPharmacy() {
+		return pharmacy;
+	}
+
+
+	public void setPharmacy(Pharmacy pharmacy) {
+		this.pharmacy = pharmacy;
+	}
+	
 	
 }

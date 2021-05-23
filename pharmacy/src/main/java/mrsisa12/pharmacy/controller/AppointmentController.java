@@ -25,6 +25,7 @@ import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
+import mrsisa12.pharmacy.model.Absence;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Dermatologist;
 import mrsisa12.pharmacy.model.Employee;
@@ -33,8 +34,10 @@ import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacist;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
+import mrsisa12.pharmacy.model.enums.AbsenceStatus;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.model.enums.AppointmentType;
+import mrsisa12.pharmacy.service.AbsenceService;
 import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.DermatologistService;
 import mrsisa12.pharmacy.service.EmployeeService;
@@ -64,6 +67,10 @@ public class AppointmentController {
 		
 	@Autowired
 	private EmploymentService employmentService;
+	
+	@Autowired
+	private AbsenceService absenceService;
+	
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
@@ -510,8 +517,9 @@ public class AppointmentController {
 		Patient patient = patientService.findByUsername(patientUsername);
 		Pharmacy pharmacy = pharmacyService.findOne(Long.parseLong(pharmacyId));
 		Employment employment = employmentService.findOneByEmployeeIdAndPharmacyId(emp.getId(), Long.parseLong(pharmacyId));
+		List<Absence> absences = absenceService.findAllByEmployeeId(emp.getId());
 		
-		boolean free = true; //0 = free, 1 = employee booked, 2 = patient booked, 3 = not in work hours
+		boolean free = true; 
 		if (!employment.getWorkTime().getStartTime().isBefore(startTime2) || !employment.getWorkTime().getEndTime().isAfter(endTime2)) {
 			free = false; // ne upada u radno vrijeme
 		}
@@ -527,6 +535,19 @@ public class AppointmentController {
 				if(!(userType.equals("DERMATOLOGIST") && appo.getStatus()==AppointmentStatus.AVAILABLE)) {
 					free = false;  // preklapanje sa postojecim terminom
 					break;
+				}
+			}
+		}
+		for (Absence absence : absences) {
+			if(absence.getStatus()!= AbsenceStatus.DENIED) {
+				LocalDateTime eWorkTSDateTime = absence.getTimePeriod().getStartDate().atTime(absence.getTimePeriod().getStartTime());
+				LocalDateTime eWorkTEDateTime = absence.getTimePeriod().getEndDate().atTime(absence.getTimePeriod().getEndTime());
+				if (!(eWorkTSDateTime.isAfter(endDate2.atTime(LocalTime.parse("00:00:00")))
+						&& eWorkTSDateTime.isAfter(startDate2.atTime(LocalTime.parse("00:00:00"))))
+						&& !(eWorkTEDateTime.isBefore(endDate2.atTime(LocalTime.parse("00:00:00")))
+								&& eWorkTEDateTime.isBefore(startDate2.atTime(LocalTime.parse("00:00:00"))))) {
+						free = false;  // preklapanje sa postojecim odsustvom
+						break;				
 				}
 			}
 		}
@@ -575,6 +596,7 @@ public class AppointmentController {
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
 		Employment employment = employmentService.findOneByEmployeeIdAndPharmacyId(emp.getId(), Long.parseLong(pharmacyId));
 		List<Appointment> patientAppointments = appointmentService.findAllByPatientUsername(patientUsername);
+		List<Absence> absences = absenceService.findAllByEmployeeId(emp.getId());
 		
 		String free = "Free";
 		if (!employment.getWorkTime().getStartTime().isBefore(startTime2) || !employment.getWorkTime().getEndTime().isAfter(endTime2)) {
@@ -592,6 +614,19 @@ public class AppointmentController {
 				if(!(userType.equals("DERMATOLOGIST") && appo.getStatus()==AppointmentStatus.AVAILABLE)) {
 					free = "You already have an appointment then.";  // preklapanje sa postojecim terminom
 					break;
+				}
+			}
+		}
+		for (Absence absence : absences) {
+			if(absence.getStatus()!= AbsenceStatus.DENIED) {
+				LocalDateTime eWorkTSDateTime = absence.getTimePeriod().getStartDate().atTime(absence.getTimePeriod().getStartTime());
+				LocalDateTime eWorkTEDateTime = absence.getTimePeriod().getEndDate().atTime(absence.getTimePeriod().getEndTime());
+				if (!(eWorkTSDateTime.isAfter(endDate2.atTime(LocalTime.parse("00:00:00")))
+						&& eWorkTSDateTime.isAfter(startDate2.atTime(LocalTime.parse("00:00:00"))))
+						&& !(eWorkTEDateTime.isBefore(endDate2.atTime(LocalTime.parse("00:00:00")))
+								&& eWorkTEDateTime.isBefore(startDate2.atTime(LocalTime.parse("00:00:00"))))) {
+						free = "You will be absent then.";  // preklapanje sa postojecim odsustvom
+						break;				
 				}
 			}
 		}

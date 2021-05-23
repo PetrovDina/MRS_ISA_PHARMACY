@@ -68,6 +68,8 @@ public class PrescriptionItemController {
 		
 		if(pharmacyStorageItem.getQuantity() == 0) {
 			Pharmacy pharmacy = pharmacyService.findOneWithPharmacyAdmins(Long.parseLong(pharmacyId));
+			pharmacyStorageItem.incrementCounter();
+			pharmacyStorageItemService.save(pharmacyStorageItem);
 			
 			String emailBody = "This email is an alert that the quantity of medication " + pharmacyStorageItem.getMedication().getName() + " in storage item #" + pharmacyStorageItem.getId() + " has become 0.";
 			EmailContent email = new EmailContent("Storage item low quantity alert", emailBody);

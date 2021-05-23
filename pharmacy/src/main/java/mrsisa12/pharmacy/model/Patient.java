@@ -39,6 +39,9 @@ public class Patient extends User {
             inverseJoinColumns = @JoinColumn(name = "pharmacy_id", referencedColumnName = "id"))
     private List<Pharmacy> subscriptions;
 	
+	@OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<EPrescription> ePrescriptions;
+	
 	public Patient() { }
 
 	public Patient(Long id, String username, String password, String email, String firstName, String lastName,
@@ -91,4 +94,14 @@ public class Patient extends User {
 	}
 	return false;
 	}
+
+	public List<EPrescription> getEPrescriptions() {
+		return ePrescriptions;
+	}
+
+	public void setEPrescriptions(List<EPrescription> ePrescriptions) {
+		this.ePrescriptions = ePrescriptions;
+	}
+	
+	
 }
