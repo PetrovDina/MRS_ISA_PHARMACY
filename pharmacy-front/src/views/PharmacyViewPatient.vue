@@ -1,6 +1,28 @@
 <template>
     <div>
-        <h1>Apoteka</h1>
+        <v-card class="ma-5">
+            <v-card-title>
+                <v-spacer></v-spacer>
+                <div>
+                    <h1>{{pharmacy.name}}</h1>
+                    <h1 id="mapPointer" @click="setUpMap()" >{{pharmacy.location.street}} {{pharmacy.location.streetNum}}, {{pharmacy.location.city}}</h1>
+                    <star-rating
+                        data-toggle="tooltip" 
+                        data-placement="top" 
+                        :title="pharmacy.rating"
+                        active-color="rgba(155, 82, 151, 0.527)"
+                        :inline="true"
+                        :star-size="50"
+                        :read-only="true"
+                        :show-rating="false"
+                        :rating="pharmacy.rating"
+                        :increment="0.1"
+                    ></star-rating>
+                </div>
+                <v-spacer>
+                </v-spacer>
+            </v-card-title>
+        </v-card>
         <div v-if="isPatient() == true">
             <Button 
                 @action-performed="subscribedToggle" 
@@ -10,6 +32,10 @@
                 :bgd_color="!subscribed ? 'rgba(15, 95, 72, 0.95)' : 'rgba(155, 82, 151, 0.527)'">
             </Button>
         </div>
+        <MapContainer
+            :coordinates = "[pharmacy.location.longitude, pharmacy.location.latitude]"
+        >
+        </MapContainer>
     </div>
     
 </template>
@@ -18,13 +44,14 @@
 
 import Button from '../components/Button';
 import { client } from "@/client/axiosClient";
+import StarRating from 'vue-star-rating';
+import MapContainer from '../components/MapContainer';
 
 export default {
     name: "PharmacyViewPatient",
-    components: { Button },
+    components: { Button, StarRating, MapContainer},
 
     props: {
-
         pharmacyIdProp: {
             type: Number,
             required: false,
@@ -39,7 +66,9 @@ export default {
         return {
             pharmacyId : -1,
             subscribed : false,
-
+            pharmacy : { 
+                location: {} // morao da dodam zbog rendera
+            },
         };
     },
 
@@ -102,8 +131,12 @@ export default {
                 this.subscribed = response.data;
             });
         }
-        
-
+        client({
+                url: "pharmacy/" + this.pharmacyId,
+                method: "GET",
+            }).then((response) => {
+                this.pharmacy = response.data
+            });
     },
 };
 </script>

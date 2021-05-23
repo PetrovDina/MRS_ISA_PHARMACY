@@ -12,8 +12,8 @@
                         <th scope="col">First name</th>
                         <th scope="col">Last name</th>
                         <th scope="col">Gender</th>
-                        <th scope="col">Work time</th>
                         <th scope="col">Rating</th>
+                        <th scope="col">Work time</th>
                     </tr>
                 </thead>
 
@@ -25,8 +25,21 @@
                         <td>{{phar.firstName}}</td>
                         <td>{{phar.lastName}}</td>
                         <td><i v-bind:class="phar.gender != 'MALE' ? 'fa fa-venus': 'fa fa-mars'"></i></td> 
+                        <td>
+                            <star-rating
+                                data-toggle="tooltip" 
+                                data-placement="top" 
+                                :title="phar.rating"
+                                active-color="rgba(155, 82, 151, 0.527)"
+                                :inline="true"
+                                :star-size="25"
+                                :read-only="true"
+                                :show-rating="false"
+                                :rating="phar.rating"
+                                :increment="0.1"
+                            ></star-rating>
+                        </td>
                         <td>{{phar.workTime.startTime}} - {{phar.workTime.endTime}}</td>
-                        <td>{{phar.rating}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -59,10 +72,11 @@
 import { client } from "@/client/axiosClient";
 import Button from './Button.vue';
 import ModalWindowHirePharmacist from './ModalWindowHirePharmacist.vue';
+import StarRating from 'vue-star-rating';
 
 export default {
     name: "PharmacistsTable",
-    components: { Button, ModalWindowHirePharmacist },
+    components: { Button, ModalWindowHirePharmacist, StarRating},
     props: {
         pharmacists : {
             type : Array,

@@ -25,8 +25,21 @@
                         <td>{{der.email}}</td>
                         <td>{{der.firstName}}</td>
                         <td>{{der.lastName}}</td>
-                        <td><i v-bind:class="der.gender != 'MALE' ? 'fa fa-venus': 'fa fa-mars'"></i></td> 
-                        <td>{{der.rating}}</td>
+                        <td><i v-bind:class="der.gender != 'MALE' ? 'fa fa-venus': 'fa fa-mars'"></i></td>
+                        <td>
+                            <star-rating
+                                data-toggle="tooltip" 
+                                data-placement="top" 
+                                :title="der.rating"
+                                active-color="rgba(155, 82, 151, 0.527)"
+                                :inline="true"
+                                :star-size="25"
+                                :read-only="true"
+                                :show-rating="false"
+                                :rating="der.rating"
+                                :increment="0.1"
+                            ></star-rating>
+                        </td>
                         <td>{{der.workTime.startTime}} - {{der.workTime.endTime}}</td>
                         <td><Button @action-performed="clickedId(der.id)" class="btn" text="New" bgd_color="rgba(15, 95, 72, 0.85)" :style="{color : 'rgba(255,255,255, 0.9)'}"></Button></td>
                     </tr>
@@ -65,8 +78,10 @@
 <script>
 import { client } from "@/client/axiosClient";
 import Button from './Button.vue';
-import ModalWindowAddAppointment from './ModalViewAddAppointment'
-import ModalWindowHireDermatologist from './ModalWindowHireDermatologist.vue'
+import ModalWindowAddAppointment from './ModalViewAddAppointment';
+import ModalWindowHireDermatologist from './ModalWindowHireDermatologist.vue';
+import StarRating from 'vue-star-rating';
+
 // import Vue from 'vue'
 
 // // This variable will hold the reference to
@@ -121,7 +136,7 @@ import ModalWindowHireDermatologist from './ModalWindowHireDermatologist.vue'
 
 export default {
     name: "Dermatologists",
-    components: { Button, ModalWindowAddAppointment, ModalWindowHireDermatologist},
+    components: { Button, ModalWindowAddAppointment, ModalWindowHireDermatologist, StarRating},
     props: {
         dermatologists : {
             type : Array,

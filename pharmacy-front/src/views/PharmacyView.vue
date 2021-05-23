@@ -6,6 +6,18 @@
                 <div>
                     <h1>{{pharmacy.name}}</h1>
                     <h1 id="mapPointer" @click="setUpMap()" >{{pharmacy.location.street}} {{pharmacy.location.streetNum}}, {{pharmacy.location.city}}</h1>
+                    <star-rating
+                        data-toggle="tooltip" 
+                        data-placement="top" 
+                        :title="pharmacy.rating"
+                        active-color="rgba(155, 82, 151, 0.527)"
+                        :inline="true"
+                        :star-size="50"
+                        :read-only="true"
+                        :show-rating="false"
+                        :rating="pharmacy.rating"
+                        :increment="0.1"
+                    ></star-rating>
                 </div>
                 <v-spacer>
                     <button style="float:right" @click="editPharmacyData()"><i class="fa fa-edit fa-lg"></i></button>
@@ -91,10 +103,11 @@ import OrdersTable from '../components/OrdersTable';
 import ModalWindowEditPharmacyData from '../components/ModalWindowEditPharmacyData.vue'
 import ModalWindowMap from "../components/ModalWindowMap.vue"
 import moment from 'moment';
+import StarRating from 'vue-star-rating';
 
 export default {
     name: "PharmacyView",
-    components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable, OrdersTable, ModalWindowEditPharmacyData, ModalWindowMap},
+    components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable, OrdersTable, ModalWindowEditPharmacyData, ModalWindowMap, StarRating},
     data() {
         return {
             selected: "Dermatologists",
