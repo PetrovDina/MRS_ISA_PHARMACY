@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '@/views/Home'
 import TestComponent from '@/components/TestComponent'
 import PharmacyView from '@/views/PharmacyView'
+import PharmacyViewPatient from '@/views/PharmacyViewPatient'
 
 import CalendarPage from '@/views/CalendarPage'
 import DermatologistPage from '@/views/DermatologistPage'
@@ -87,6 +88,22 @@ export default new Router({
             beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
                 if (user.userType == 'PHARMACY_ADMIN' || user.userType == "SYSTEM_ADMIN") {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
+        },
+
+        {
+            path: '/pharmacyViewPatient',
+            name: 'PharmacyViewPatient',
+            component: PharmacyViewPatient,
+            props: true,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (true) {
                     next();
                 }
                 else {

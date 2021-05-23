@@ -3,6 +3,7 @@ package mrsisa12.pharmacy.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.mapping.Subclass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -176,6 +177,21 @@ public class PatientController {
 		}
 		
 		return new ResponseEntity<List<PharmacyDTO>>(subscriptions, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/isSubscribed")
+	public ResponseEntity<Boolean> isSubscribed(@RequestParam("patientUsername") String patientUsername,
+			@RequestParam("pharmacyId") Long pharmacyId) {
+
+		Patient patient = patientService.findByUsernameWithSubscriptions(patientUsername);
+		
+		for (Pharmacy subscription : patient.getSubscriptions()) {
+			if(subscription.getId() == pharmacyId) {
+				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+			}	
+		}
+		
+		return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 	}
 	
 	@PutMapping(consumes = "application/json")

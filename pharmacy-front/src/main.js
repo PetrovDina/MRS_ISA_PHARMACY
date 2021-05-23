@@ -34,7 +34,8 @@ const store = new Vuex.Store({
 
     state: {
         loggedUserRole: "GUEST",
-        loggedUsername: ""
+        loggedUsername: "",
+        lastPharmacyPatientView: -1
     },
 
     mutations: {
@@ -44,6 +45,10 @@ const store = new Vuex.Store({
 
         changeLoggedUsername(state, newUsername) { //poziva se kao store.commit('changeLoggedUserRole', 'DERMATOLOGIST')
             state.loggedUsername = newUsername;
+        },
+
+        changeLastPharmacyPatientView(state, newPharmacyId) { 
+            state.lastPharmacyPatientView = newPharmacyId;
         }
 
     },
@@ -56,6 +61,11 @@ const store = new Vuex.Store({
 
         getLoggedUsername: state => {
             return state.loggedUsername
+
+        },
+
+        getLastPharmacyPatientView: state => {
+            return state.lastPharmacyPatientView
 
         }
     }

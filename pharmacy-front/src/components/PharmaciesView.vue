@@ -6,6 +6,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Address</th>
                     <th scope="col">Rating</th>
+                    <th scope="col">See more</th>
                 </tr>
             </thead>
 
@@ -14,6 +15,7 @@
                     <td>{{ph.name }}</td>
                     <td>{{ph.location.street}} {{ph.location.streetNum}}, {{ph.location.zipcode}} {{ph.location.city}}</td> 
                     <td>{{ph.rating}}/5</td>
+                    <td><button @click="redirectPharmacyView(ph.id)"><i class="fa fa-ellipsis-h fa-2x"></i></button></td>
                 </tr>
             </tbody>
         </table>
@@ -51,6 +53,16 @@ export default {
                     }
                 });
         },
+
+        redirectPharmacyView: function(pharmacyId){
+            this.$router
+                .push({ 
+                    name: "PharmacyViewPatient",
+                    params: {
+                        pharmacyIdProp: pharmacyId
+                    }
+                });
+        }
     },
 };
 </script>
