@@ -70,16 +70,16 @@ export default {
     components : { VueFusionCharts, FusionCharts, Charts, Button, LoginPage},
     data(){
         return {
-            selectedQuarter : "--",
-            quarters : ["--", "Q1", "Q2", "Q3", "Q4"],
-            selectedYear : "----",
-            years : ["----", "2021", "2020"],
+            selectedQuarter : "-select-quarter-",
+            quarters : ["-select-quarter-", "Q1", "Q2", "Q3", "Q4"],
+            selectedYear : "-select-year-",
+            years : ["-select-year-", "2021", "2020"],
             wholeYear : false,
-            selectedMonth : "----------",
-            months : ["----------", "January", "February", "March", "April", "May", "June",
+            selectedMonth : "-select-month-",
+            months : ["-select-month-", "January", "February", "March", "April", "May", "June",
                         "July", "August", "September", "October", "November", "December"],
-            selectedGraphic : "-----------------------",
-            graphics : ["-----------------------", "Concluded appointments", "Medication consumption", "Pharmacy revenue"],
+            selectedGraphic : "-----select-graphic-----",
+            graphics : ["-----select-graphic-----", "Concluded appointments", "Medication consumption", "Pharmacy revenue"],
             pharmacyId : -1,
             dataSource2 : {
                 chart: {
@@ -184,7 +184,74 @@ export default {
                 });
         },
         reportMedicationConsumpsion : function(){
-            
+            if(this.selectedQuarter != this.quarters[0])
+                client({
+                        url: "reservation/reportMedicationConsumptionQuarter",
+                        method: "GET",
+                        params: {
+                            quarter: this.selectedQuarter,
+                            year: this.selectedYear,
+                            pharmacyId : this.pharmacyId
+                        },
+                    }).then((response) => {
+                        this.dataSource2.data = [];
+                        console.log(response.data.data);
+                        for (const label in response.data.data) {
+                            const value = response.data.data[label];
+                            this.dataSource2.data.push({
+                                'label' : label,
+                                'value' : value
+                                });
+                        }
+                        this.sortByMonth(this.dataSource2.data);
+                        this.dataSource2.chart.xAxisName = "Months";
+                        this.dataSource2.chart.caption = this.selectedGraphic + " - " + this.selectedQuarter;
+                        this.defaultYear();
+                    });
+            else if(this.selectedMonth != this.months[0])
+                client({
+                    url: "reservation/reportMedicationConsumptionMonth",
+                    method: "GET",
+                    params: {
+                        period: this.selectedMonth,
+                        year: this.selectedYear,
+                        pharmacyId : this.pharmacyId
+                    },
+                }).then((response) => {
+                    this.dataSource2.data = [];
+                    for (const label in response.data.data) {
+                        const value = response.data.data[label];
+                        this.dataSource2.data.push({
+                            'label' : label,
+                            'value' : value
+                            });
+                    }
+                    this.dataSource2.chart.xAxisName = "Days";
+                    this.dataSource2.chart.caption = this.selectedGraphic + " - " + this.selectedMonth;
+                    this.defaultYear();
+                });
+            else
+                client({
+                    url: "reservation/reportMedicationConsumptionYear",
+                    method: "GET",
+                    params: {
+                        year: this.selectedYear,
+                        pharmacyId : this.pharmacyId
+                    },
+                }).then((response) => {
+                    this.dataSource2.data = [];
+                    for (const label in response.data.data) {
+                        const value = response.data.data[label];
+                        this.dataSource2.data.push({
+                            'label' : label,
+                            'value' : value
+                            });
+                    }
+                    this.sortByMonth(this.dataSource2.data)
+                    this.dataSource2.chart.xAxisName = "Months";
+                    this.dataSource2.chart.caption = this.selectedGraphic + " - " + this.selectedYear;
+                    this.defaultYear();
+                });
         },
         reportPharmacyRevenue : function(){
 
@@ -286,6 +353,7 @@ export default {
 <style scoped>
 .sort-dropdown {
     padding: 5px;
+    margin: 5px 5px;
     border: 0.5px solid rgba(128, 128, 128, 0.473);
     border-radius: 5px;
     display: inline-block;
