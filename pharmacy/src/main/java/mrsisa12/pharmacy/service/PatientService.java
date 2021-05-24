@@ -95,7 +95,7 @@ public class PatientService {
 	@EventListener(ApplicationReadyEvent.class)
 	public void resetPenals() {
     	if (LocalDate.now().getDayOfMonth() == 1) {
-    		System.out.println("FIRST OF MONTH: RESETING PATIENT PENALTY POINTS");
+    		System.out.println("--FIRST OF MONTH: RESETING PATIENT PENALTY POINTS--");
     		List<Patient> patients = this.findAll();
     		for (Patient p : patients) {
     			p.setPenaltyPoints(0);
