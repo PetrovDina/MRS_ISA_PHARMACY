@@ -15,6 +15,7 @@
 
         <!--pharmacy admin-->
         <div v-if="isUserType('PHARMACY_ADMIN')">
+            <a @click="pharmacyAdminReportRedirect()" class="registerNav">Pharmacy reports</a>
         </div>
 
         <!--system admin-->
@@ -373,6 +374,17 @@ export default {
         pharmacistHomeRedirect: function(){
             this.$router
                 .push({ name: "PharmacistHomePage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+        pharmacyAdminReportRedirect : function(){
+            this.$router
+                .push({ name: "PharmacyAdminReportView" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {
