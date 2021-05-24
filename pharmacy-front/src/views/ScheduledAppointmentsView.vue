@@ -36,10 +36,19 @@
                                                 <p class="card-text">
                                                     Dermatologist rating:
                                                     <b>
-                                                        {{
-                                                            appointment.employee
-                                                                .rating
-                                                        }}
+                                                        <star-rating
+                                                            active-color="rgba(155, 82, 151, 0.527)"
+                                                            :inline="true"
+                                                            :star-size="20"
+                                                            :read-only="true"
+                                                            :show-rating="false"
+                                                            :rating="
+                                                                appointment
+                                                                    .employee
+                                                                    .rating
+                                                            "
+                                                            :increment="0.1"
+                                                        ></star-rating>
                                                     </b>
                                                 </p>
                                                 <p class="card-text">
@@ -150,10 +159,19 @@
                                                 <p class="card-text">
                                                     Pharamacist rating:
                                                     <b>
-                                                        {{
-                                                            appointment.employee
-                                                                .rating
-                                                        }}
+                                                        <star-rating
+                                                            active-color="rgba(155, 82, 151, 0.527)"
+                                                            :inline="true"
+                                                            :star-size="20"
+                                                            :read-only="true"
+                                                            :show-rating="false"
+                                                            :rating="
+                                                                appointment
+                                                                    .employee
+                                                                    .rating
+                                                            "
+                                                            :increment="0.1"
+                                                        ></star-rating>
                                                     </b>
                                                 </p>
                                                 <p class="card-text">
@@ -221,7 +239,8 @@
                                 <div
                                     v-if="
                                         checkCancellationDate(
-                                            appointment.timePeriod.startDate)
+                                            appointment.timePeriod.startDate
+                                        )
                                     "
                                     class="cancellation-alert alert alert-dark"
                                     role="alert"
@@ -287,13 +306,14 @@ import moment from "moment";
 import Button from "@/components/Button";
 import TabNav from "../components/TabNav.vue";
 import Tab from "../components/Tab.vue";
+import StarRating from "vue-star-rating";
 
 import $ from "jquery";
 
 export default {
     name: "ScheduledAppointmentsView",
 
-    components: { Button, TabNav, Tab },
+    components: { Button, TabNav, Tab, StarRating },
 
     data() {
         return {

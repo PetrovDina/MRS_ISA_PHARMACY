@@ -50,7 +50,7 @@
                                             Dermatologist rating:
                                             <b>
                                                 {{
-                                                    appointment.employee.rating
+                                                    appointment.employee.rating 
                                                 }} </b
                                             ><star-rating
                                                 active-color="rgba(155, 82, 151, 0.527)"

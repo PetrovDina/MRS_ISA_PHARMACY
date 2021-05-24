@@ -50,9 +50,17 @@
                                         <p class="card-text">
                                             Dermatologist rating:
                                             <b>
-                                                {{
+                                                <star-rating
+                                                active-color="rgba(155, 82, 151, 0.527)"
+                                                :inline="true"
+                                                :star-size="20"
+                                                :read-only="true"
+                                                :show-rating="false"
+                                                :rating="
                                                     appointment.employee.rating
-                                                }}
+                                                "
+                                                :increment="0.1"
+                                            ></star-rating>
                                             </b>
                                         </p>
                                         <p class="card-text">
@@ -157,11 +165,12 @@ import { client } from "@/client/axiosClient";
 import moment from "moment";
 import Button from "@/components/Button";
 import $ from "jquery";
+import StarRating from "vue-star-rating";
 
 export default {
     name: "DermAppointReservation",
 
-    components: { Button },
+    components: { Button, StarRating },
 
     data() {
         return {

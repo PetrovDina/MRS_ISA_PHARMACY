@@ -1,6 +1,6 @@
 <template>
     <div id="pahrmas">
-        <table class="table" >
+        <table class="table">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -12,68 +12,86 @@
             </thead>
 
             <tbody>
-                <tr :key="phar.id" v-for="phar in pharmacists" @click="clickedOnRow(phar)" v-bind:class="{selected : selected_pharmacist.id===phar.id}">
-                    <td>{{phar.id}}</td>
-                    <td>{{phar.firstName}}</td>
-                    <td>{{phar.lastName}}</td>
-                    <td><i v-bind:class="phar.gender != 'MALE' ? 'fa fa-venus': 'fa fa-mars'"></i></td> 
-                    <td>{{phar.rating}}</td>
+                <tr
+                    :key="phar.id"
+                    v-for="phar in pharmacists"
+                    @click="clickedOnRow(phar)"
+                    v-bind:class="{
+                        selected: selected_pharmacist.id === phar.id,
+                    }"
+                >
+                    <td>{{ phar.id }}</td>
+                    <td>{{ phar.firstName }}</td>
+                    <td>{{ phar.lastName }}</td>
+                    <td>
+                        <i
+                            v-bind:class="
+                                phar.gender != 'MALE'
+                                    ? 'fa fa-venus'
+                                    : 'fa fa-mars'
+                            "
+                        ></i>
+                    </td>
+                    <td>
+                        <star-rating
+                            active-color="rgba(155, 82, 151, 0.527)"
+                            :inline="true"
+                            :star-size="20"
+                            :read-only="true"
+                            :show-rating="false"
+                            :rating="phar.rating"
+                            :increment="0.1"
+                        ></star-rating>
+                    </td>
                 </tr>
             </tbody>
         </table>
-
     </div>
 </template>
 
 <script>
-import Button from './Button.vue';
+import Button from "./Button.vue";
+import StarRating from "vue-star-rating";
 
 export default {
     name: "PharmacistsSelectionTable",
-    components: { Button },
+    components: { Button, StarRating },
     props: {
-        pharmacists : {
-            type : Array,
+        pharmacists: {
+            type: Array,
             default() {
                 return [];
-            }
+            },
         },
-        pharmacyId : {
-            type : Number,
+        pharmacyId: {
+            type: Number,
             default() {
                 return -1;
-            }
-        }
+            },
+        },
     },
     data() {
         return {
             selected_pharmacist: {},
-        }
+        };
     },
     methods: {
- 
-        clickedOnRow: function(phar){
+        clickedOnRow: function (phar) {
             this.selected_pharmacist = phar;
             this.$emit("pharmacistSelected", this.selected_pharmacist);
-
         },
-
-
-    }
-}
-
+    },
+};
 </script>
 
 <style scoped>
-#pahrmas {
-    /* margin: 10px 40px 30px 40px; */
-}
-thead { 
+
+thead {
     /* background-color: rgba(15, 95, 72, 0.219); */
-    background-color: rgba(32, 102, 75, 0.295)
+    background-color: rgba(32, 102, 75, 0.295);
 }
 
 tr.selected {
-	 background-color: rgba(155, 82, 151, 0.527);
+    background-color: rgba(155, 82, 151, 0.527);
 }
 </style>

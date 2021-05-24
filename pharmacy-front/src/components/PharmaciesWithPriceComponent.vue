@@ -9,7 +9,6 @@
                     <th scope="col">Rating</th>
                     <th scope="col">Quantity available</th>
                     <th scope="col">Price</th>
-
                 </tr>
             </thead>
 
@@ -18,22 +17,29 @@
                     :key="result.pharmacy.id"
                     v-for="result in results"
                     @click="choosePharmacy(result)"
-                    :class="[
-                            selected === result
-                            ? 'selected'
-                            : '',
-                    ]"
+                    :class="[selected === result ? 'selected' : '']"
                 >
                     <td>{{ result.pharmacy.id }}</td>
                     <td>{{ result.pharmacy.name }}</td>
                     <td>
-                        {{ result.pharmacy.location.street }} {{ result.pharmacy.location.streetNum }},
-                        {{ result.pharmacy.location.zipcode }} {{ result.pharmacy.location.city }}
+                        {{ result.pharmacy.location.street }}
+                        {{ result.pharmacy.location.streetNum }},
+                        {{ result.pharmacy.location.zipcode }}
+                        {{ result.pharmacy.location.city }}
                     </td>
-                    <td>{{ result.pharmacy.rating }}/5</td>
+                    <td>
+                        <star-rating
+                            active-color="rgba(155, 82, 151, 0.527)"
+                            :inline="true"
+                            :star-size="20"
+                            :read-only="true"
+                            :show-rating="false"
+                            :rating="result.pharmacy.rating"
+                            :increment="0.1"
+                        ></star-rating>
+                    </td>
                     <td>{{ result.availableQuantity }}</td>
                     <td>{{ result.currentPrice }},00 RSD</td>
-
                 </tr>
             </tbody>
         </table>
@@ -41,6 +47,8 @@
 </template>
 
 <script>
+import StarRating from "vue-star-rating";
+
 export default {
     name: "PharmaciesWithPriceComponent",
     props: {
@@ -50,24 +58,24 @@ export default {
         },
         canSelect: {
             default: true,
-            type: Boolean
-        }
+            type: Boolean,
+        },
     },
+    components: { StarRating },
 
     data() {
         return {
-            selected : {},
+            selected: {},
         };
     },
 
     methods: {
-        choosePharmacy(result){
-            if(this.canSelect)
-            {
+        choosePharmacy(result) {
+            if (this.canSelect) {
                 this.selected = result;
                 this.$emit("pharmacySelected", this.selected);
             }
-        }
+        },
     },
 };
 </script>

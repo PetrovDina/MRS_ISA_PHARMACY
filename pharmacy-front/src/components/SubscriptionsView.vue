@@ -18,7 +18,17 @@
 
                                         <p class="card-text">
                                             Pharamacy rating:
-                                            <b>{{ subscription.rating }}/5</b>
+                                            <star-rating
+                                                active-color="rgba(155, 82, 151, 0.527)"
+                                                :inline="true"
+                                                :star-size="20"
+                                                :read-only="true"
+                                                :show-rating="false"
+                                                :rating="
+                                                    subscription.rating
+                                                "
+                                                :increment="0.1"
+                                            ></star-rating>
                                         </p>
                                         <p class="card-text"></p>
                                     </div>
@@ -100,13 +110,14 @@
 <script>
 import { client } from "@/client/axiosClient";
 import Button from "./Button";
+import StarRating from "vue-star-rating";
 
 import $ from "jquery";
 
 export default {
     name: "SubscriptionsView",
 
-    components: { Button },
+    components: { Button, StarRating },
 
     data() {
         return {
