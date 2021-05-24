@@ -22,10 +22,9 @@ import PatientsReservations from '@/views/PatientsReservations'
 import DermAppointReservation from '@/views/DermAppointReservation'
 import PharmAppointReservation from '@/views/PharmAppointReservation'
 import ScheduledAppointmentsView from '@/views/ScheduledAppointmentsView'
-import DermAppointHistory from '@/views/DermAppointHistory'
-import PharmAppointHistory from '@/views/PharmAppointHistory'
 import PenaledScreen from '@/views/PenaledScreen'
 import PatientsAllPrescriptionsView from '@/views/PatientsAllPrescriptionsView'
+import AppointmentHistoryView from '@/views/AppointmentHistoryView'
 
 
 import PharmacyRegistration from '@/views/PharmacyRegistration'
@@ -638,9 +637,9 @@ export default new Router({
         },
 
         {
-            path: '/dermAppointHistory',
-            name: 'DermAppointHistory',
-            component: DermAppointHistory,
+            path: '/appointmentHistory',
+            name: 'AppointmentHistoryView',
+            component: AppointmentHistoryView,
             beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
                 if (user.userType == 'PATIENT') {
@@ -652,20 +651,6 @@ export default new Router({
             }
         },
 
-        {
-            path: '/pharmAppointHistory',
-            name: 'PharmAppointHistory',
-            component: PharmAppointHistory,
-            beforeEnter: function (to, from, next) {
-                let user = CheckUser.getLoggedUserData();
-                if (user.userType == 'PATIENT') {
-                    next();
-                }
-                else {
-                    ({ path: '/' });
-                }
-            }
-        },
 
         {
             path: '/LoginPage',

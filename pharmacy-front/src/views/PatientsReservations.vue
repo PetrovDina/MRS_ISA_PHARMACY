@@ -3,6 +3,7 @@
         <p class="reservations-title">
             {{ this.$store.getters.getLoggedUsername }}'s reservations
         </p>
+        <p style="font-size:20px; margin-top:30px" v-if="reservations.length == 0">You don't have any reservations.</p>
 
         <div :key="reservation.id" v-for="reservation in reservations">
             <div class="card mx-auto">
@@ -29,10 +30,6 @@
                                             {{
                                                 reservation.pharmacy.location
                                                     .streetNum
-                                            }},
-                                            {{
-                                                reservation.pharmacy.location
-                                                    .city
                                             }}
                                         </b>
                                     </p>

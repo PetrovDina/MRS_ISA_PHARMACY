@@ -73,7 +73,6 @@ export default {
         },
 
         sortSelected(event){
-            //console.log(event.target.value);
             let choice = event.target.value;
             this.$emit("sort-performed", choice);
 

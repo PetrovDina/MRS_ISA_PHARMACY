@@ -8,6 +8,8 @@
             @selected="setSelected"
         >
             <Tab :isSelected="selected === 'Dermatologist examinations'">
+                <p style="font-size:20px; margin-top:50px" v-if="dermAppointments.length == 0">You don't have any scheduled dermatologist appointments.</p>
+
                 <div id="appointmentCards">
                     <div
                         :key="appointment.id"
@@ -131,6 +133,8 @@
             </Tab>
 
             <Tab :isSelected="selected === 'Pharmacist consultations'">
+                <p style="font-size:20px; margin-top:50px" v-if="pharmAppointments.length == 0">You don't have any scheduled pharmacist appointments.</p>
+
                 <div id="appointmentCards">
                     <div
                         :key="appointment.id"
@@ -334,7 +338,7 @@ export default {
 
         cancelDerm(appointment) {
             client({
-                url: "appointments/cancel",
+                url: "appointments/cancelDerm",
                 params: { appointmentId: appointment.id },
                 method: "GET",
             }).then((response) => {
@@ -351,7 +355,7 @@ export default {
 
         cancelPharm(appointment) {
             client({
-                url: "appointments/cancel",
+                url: "appointments/cancelPharm",
                 params: { appointmentId: appointment.id },
                 method: "GET",
             }).then((response) => {

@@ -102,9 +102,7 @@ export default {
 
     methods: {
         changePassword() {
-            console.log(
-                this.oldPassword + this.newPassword1 + this.newPassword2
-            );
+
             if (!this.oldPassword || !this.newPassword1 || !this.newPassword2) {
                 let toast = this.$toasted.show("Please input all fields!", {
                     theme: "toasted-primary",

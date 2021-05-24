@@ -1,6 +1,8 @@
 <template>
     <div id="prescriptions">
-        <div id="sort-and-filter">
+         <p style="font-size:20px; margin-top:50px" v-if="prescriptions.length == 0">You don't have any new ePrescriptions.</p>
+
+        <div id="sort-and-filter" v-if="prescriptions.length != 0">
             <div id="sort">
                 <p class="sort-label">sort by</p>
 

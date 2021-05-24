@@ -23,19 +23,13 @@
                         </v-card>
                     </v-col>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/dermAppointHistory">
+                        <v-card class="oneCard" to="/appointmentHistory">
                             <v-card-title class="wordBreak"
-                                >Dermatologist appointment history</v-card-title
+                                >Appointment history</v-card-title
                             >
                         </v-card>
                     </v-col>
-                    <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/pharmAppointHistory">
-                            <v-card-title class="wordBreak"
-                                >Pharmacist appointment history</v-card-title
-                            >
-                        </v-card>
-                    </v-col>
+
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/scheduledAppointments">
                             <v-card-title class="wordBreak"
@@ -65,13 +59,7 @@
                             >
                         </v-card>
                     </v-col>
-                    <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/">
-                            <v-card-title class="wordBreak"
-                                >ePrescription history</v-card-title
-                            >
-                        </v-card>
-                    </v-col>
+
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/patientsReservations">
                             <v-card-title class="wordBreak"
@@ -118,7 +106,7 @@
                     <v-col class="staticPosition" md="3">
                         <v-card class="oneCard" to="/employeeComplaintPage">
                             <v-card-title class="wordBreak"
-                                >File a employee complaint</v-card-title
+                                >File an employee complaint</v-card-title
                             >
                         </v-card>
                     </v-col>

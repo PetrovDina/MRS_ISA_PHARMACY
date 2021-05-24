@@ -2,7 +2,8 @@
     <div id="appointments">
         <p class="appointments-title">Available dermatologist appointments</p>
 
-        <div id="sort-and-filter">
+        <p style="font-size:20px;" v-if="appointments.length == 0">Unfortunately, there aren't any available appointments at this time. Please check back soon.</p>
+        <div id="sort-and-filter" v-if="appointments.length != 0">
             <div id="sort">
                 <p class="sort-label">sort by</p>
 
@@ -253,7 +254,6 @@ export default {
             url: "patient/" + localStorage.getItem("USERNAME"),
             method: "GET",
         }).then((response) => {
-            console.log(response.data.penaltyPoints >= 3);
             if (response.data.penaltyPoints >= 3) {
                 this.$router.push({ name: "PenaledScreen" });
                 return;

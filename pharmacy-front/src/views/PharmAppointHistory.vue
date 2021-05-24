@@ -1,8 +1,8 @@
 <template>
     <div id="appointments">
-        <p class="appointments-title">Pharmacist appointment history</p>
+         <p style="font-size:20px; margin-top:50px" v-if="appointments.length == 0">You don't have any previous pharmacist appointments.</p>
 
-        <div id="sort-and-filter">
+        <div id="sort-and-filter" v-if="appointments.length != 0">
             <div id="sort">
                 <p class="sort-label">sort by</p>
 
@@ -49,6 +49,8 @@
                                         <p class="card-text">
                                             Pharmacist rating:
                                             <b>
+                                                {{appointment.employee
+                                                            .rating}}
                                                 <star-rating
                                                     active-color="rgba(155, 82, 151, 0.527)"
                                                     :inline="true"
@@ -227,7 +229,7 @@ export default {
     margin-top: 40px;
 }
 .card {
-    width: 70%;
+    width: 80%;
     margin-top: 40px;
     border: 1px solid rgba(63, 63, 63, 0.5);
 }
@@ -275,11 +277,11 @@ export default {
 }
 
 #sort-and-filter {
-    width: 85%;
+    width: 90%;
 }
 
 #appointmentCards {
-    margin-top: 80px;
+    margin-top: 50px;
 }
 </style>
 

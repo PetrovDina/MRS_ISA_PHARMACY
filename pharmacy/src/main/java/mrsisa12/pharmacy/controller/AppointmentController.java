@@ -142,13 +142,34 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/cancel")
-	public ResponseEntity<AppointmentDTO> cancelAppointment(@RequestParam Long appointmentId) {
+	@GetMapping(value = "/cancelDerm")
+	public ResponseEntity<AppointmentDTO> cancelDermAppointment(@RequestParam Long appointmentId) {
 		Appointment appointment = appointmentService.findOne(appointmentId);
 		if(appointment != null) {
 			
 			//setting appointment status to cancelled
-			appointment.setStatus(AppointmentStatus.PENALED);
+			appointment.setStatus(AppointmentStatus.CANCELLED);
+    		appointmentService.save(appointment);
+    		
+    		//creating new free appointment
+    		Appointment freeApp = new Appointment(appointment);
+    		freeApp.setStatus(AppointmentStatus.AVAILABLE);
+    		freeApp.setPatient(null);
+    		appointmentService.save(freeApp);
+    		
+            return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/cancelPharm")
+	public ResponseEntity<AppointmentDTO> cancelPharmAppointment(@RequestParam Long appointmentId) {
+		Appointment appointment = appointmentService.findOne(appointmentId);
+		if(appointment != null) {
+			
+			//setting appointment status to available again
+			appointment.setStatus(AppointmentStatus.CANCELLED);
     		appointmentService.save(appointment);
     		
             return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);

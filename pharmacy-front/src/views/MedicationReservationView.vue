@@ -209,7 +209,7 @@ export default {
                     quantity: this.chosenQuantity,
                     dueDate: this.chosenDueDate,
                 },
-            }).then((response) => console.log(response.data));
+            }).then();
 
             $("#exampleModal3").modal("show");
 

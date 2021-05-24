@@ -5,20 +5,26 @@
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Manufacturer</th>
-                    <th scope="col">Prescription</th>
                     <th scope="col">Form</th>
+                    <th scope="col">Prescription</th>
+
                     <th scope="col"></th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr :key="med.id" v-for="med in medications" @dblclick="dblClickedOnRow(med.id)" >
+                <tr
+                    :key="med.id"
+                    v-for="med in medications"
+                    @dblclick="dblClickedOnRow(med.id)"
+                >
                     <td>{{ med.name }}</td>
                     <td>{{ med.manufacturer }}</td>
+
+                    <td>{{ med.form }}</td>
                     <td>
                         {{ med.prescriptionReq ? "required" : "not required" }}
                     </td>
-                    <td>{{ med.form }}</td>
                     <td>
                         <!-- <button
                         v-if="checkRole()"
@@ -27,26 +33,32 @@
                     >
                         RESERVE
                     </button> -->
-                    <i v-if="checkRole()" @click="reserveMedication(med)" class="fa fa-2x fa-shopping-cart" aria-hidden="true"></i></td>
+                        <i
+                            v-if="checkRole() && !med.prescriptionReq"
+                            @click="reserveMedication(med)"
+                            class="fa fa-shopping-cart"
+                            aria-hidden="true"
+                        ></i>
+                    </td>
                 </tr>
             </tbody>
         </table>
-        <ModalWindowMedicationDetail 
-            @modal-closed = "closeModalWindow" 
-            :modal_show = "modalWindowShowed"
-            :medicationId = "selectedMedicationId">
+        <ModalWindowMedicationDetail
+            @modal-closed="closeModalWindow"
+            :modal_show="modalWindowShowed"
+            :medicationId="selectedMedicationId"
+        >
         </ModalWindowMedicationDetail>
     </div>
 </template>
 
 <script>
-
 import ModalWindowMedicationDetail from "../components/ModalWindowMedicationDetail";
 
 export default {
     name: "MedicationsView",
 
-    components: {ModalWindowMedicationDetail},
+    components: { ModalWindowMedicationDetail },
 
     props: ["medications"],
 
@@ -64,27 +76,24 @@ export default {
             this.$router.push({
                 name: "MedicationReservationView",
                 params: {
-                    medication: med
+                    medication: med,
                 },
             });
         },
 
-        dblClickedOnRow: function(id)
-        {
+        dblClickedOnRow: function (id) {
             this.selectedMedicationId = id;
             this.modalWindowShowed = true;
         },
 
-        closeModalWindow: function()
-        {
+        closeModalWindow: function () {
             this.modalWindowShowed = false;
         },
 
-        checkRole(){
-            return this.$store.getters.getLoggedUserRole == 'PATIENT';
-        }
+        checkRole() {
+            return this.$store.getters.getLoggedUserRole == "PATIENT";
+        },
     },
-
 };
 </script>
 
@@ -99,15 +108,18 @@ thead {
     background-color: rgba(32, 102, 75, 0.295);
 }
 
-.reserveButton{
-    background-color: rgba(155, 82, 151, 0.527); 
+.reserveButton {
+    background-color: rgba(155, 82, 151, 0.527);
     padding: 5px;
     border-radius: 5px;
-
 }
 
 table {
     cursor: pointer;
+}
+
+i{
+    font-size: 30px;
 }
 </style>
 

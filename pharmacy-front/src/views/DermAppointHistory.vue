@@ -1,8 +1,8 @@
 <template>
     <div id="appointments">
-        <p class="appointments-title">Dermatologist appointment history</p>
+         <p style="font-size:20px; margin-top:50px" v-if="appointments.length == 0">You don't have any previous dermatologist appointments.</p>
 
-        <div id="sort-and-filter">
+        <div id="sort-and-filter"  v-if="appointments.length != 0">
             <div id="sort">
                 <p class="sort-label">sort by</p>
 
@@ -332,7 +332,7 @@ export default {
     margin-top: 40px;
 }
 .card {
-    width: 70%;
+    width: 80%;
     margin-top: 40px;
     border: 1px solid rgba(63, 63, 63, 0.5);
 }
@@ -382,11 +382,13 @@ export default {
 }
 
 #sort-and-filter {
-    width: 85%;
+    width: 90%;
+    margin-bottom: 30px;
+    
 }
 
 #appointmentCards {
-    margin-top: 80px;
+    margin-top: 50px;
 }
 
 .modal-body {

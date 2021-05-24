@@ -1,5 +1,7 @@
 <template>
     <div id="prescriptions">
+        <p style="font-size:20px; margin-top:50px" v-if="prescriptions.length == 0">You don't have any filled ePrescriptions.</p>
+
         <div id="sort-and-filter" v-if="prescriptions.length != 0">
             <div id="sort">
                 <p class="sort-label">sort by</p>

@@ -173,7 +173,6 @@ export default {
             if(this.isSomeFieldEmpty(registration)) return;
             registration.alternatives = this.alternatives;
             // console.log(registration.alternatives[0]);
-            console.log(registration);
 
             client({
                 url: "med/create",
