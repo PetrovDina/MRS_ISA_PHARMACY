@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.dto.PatientDTO;
+import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Absence;
 import mrsisa12.pharmacy.model.Appointment;
-import mrsisa12.pharmacy.model.Dermatologist;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Patient;
-import mrsisa12.pharmacy.model.Pharmacist;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AbsenceStatus;
@@ -39,11 +39,9 @@ import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.model.enums.AppointmentType;
 import mrsisa12.pharmacy.service.AbsenceService;
 import mrsisa12.pharmacy.service.AppointmentService;
-import mrsisa12.pharmacy.service.DermatologistService;
 import mrsisa12.pharmacy.service.EmployeeService;
 import mrsisa12.pharmacy.service.EmploymentService;
 import mrsisa12.pharmacy.service.PatientService;
-import mrsisa12.pharmacy.service.PharmacistService;
 import mrsisa12.pharmacy.service.PharmacyService;
 
 @RestController
@@ -142,34 +140,13 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/cancelDerm")
-	public ResponseEntity<AppointmentDTO> cancelDermAppointment(@RequestParam Long appointmentId) {
+	@GetMapping(value = "/cancel")
+	public ResponseEntity<AppointmentDTO> cancelAppointment(@RequestParam Long appointmentId) {
 		Appointment appointment = appointmentService.findOne(appointmentId);
 		if(appointment != null) {
 			
 			//setting appointment status to cancelled
-			appointment.setStatus(AppointmentStatus.CANCELLED);
-    		appointmentService.save(appointment);
-    		
-    		//creating new free appointment
-    		Appointment freeApp = new Appointment(appointment);
-    		freeApp.setStatus(AppointmentStatus.AVAILABLE);
-    		freeApp.setPatient(null);
-    		appointmentService.save(freeApp);
-    		
-            return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);
-        }
-        else
-            return new ResponseEntity<>(null, HttpStatus.OK);
-	}
-	
-	@GetMapping(value = "/cancelPharm")
-	public ResponseEntity<AppointmentDTO> cancelPharmAppointment(@RequestParam Long appointmentId) {
-		Appointment appointment = appointmentService.findOne(appointmentId);
-		if(appointment != null) {
-			
-			//setting appointment status to cancelled
-			appointment.setStatus(AppointmentStatus.CANCELLED);
+			appointment.setStatus(AppointmentStatus.PENALED);
     		appointmentService.save(appointment);
     		
             return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);
@@ -707,6 +684,24 @@ public class AppointmentController {
 	        emailService.sendEmail(email);
 		}
 		return new ResponseEntity<>(free, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/reportAppointmentYear")
+	public ResponseEntity<ReportDTO> reportAppointmentYear(@RequestParam String year, @RequestParam Long pharmacyId) {
+		HashMap<String, Integer> data = appointmentService.getAllConcludedApointmentsByYear(year, pharmacyService.findOne(pharmacyId));
+		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/reportAppointmentQuarter")
+	public ResponseEntity<ReportDTO> reportAppointmentQuarter(@RequestParam String quarter, @RequestParam String year, @RequestParam Long pharmacyId) {
+		HashMap<String, Integer> data = appointmentService.getAllConcludedApointmentsByQuarter(quarter, year, pharmacyService.findOne(pharmacyId), null);
+		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/reportAppointmentMonth")
+	public ResponseEntity<ReportDTO> reportAppointmentMonth(@RequestParam String period, @RequestParam String year, @RequestParam Long pharmacyId) {
+		HashMap<String, Integer> data = appointmentService.getAllAppointmentsConcludedByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null);
+		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	
 }

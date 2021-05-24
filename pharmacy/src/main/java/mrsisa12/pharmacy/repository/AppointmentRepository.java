@@ -5,13 +5,14 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import mrsisa12.pharmacy.model.Appointment;
-import mrsisa12.pharmacy.model.PharmacyStorageItem;
+import mrsisa12.pharmacy.model.Pharmacy;
 
-public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
+public interface AppointmentRepository extends JpaRepository<Appointment, Long>, JpaSpecificationExecutor<Appointment> {
 
 	public Page<Appointment> findAll(Pageable pageable);
 
@@ -50,4 +51,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 	
 	@Query("select app from Appointment app where app.patient.username = :username")
 	public List<Appointment> findAllByPatientUsername(@Param("username")String username);
+
+	@Query("select app from Appointment app where app.status = 'CONCLUDED' and app.pharmacy =?1")
+	public List<Appointment> findAllFromPharmacy(Pharmacy pharmacy);
 }
