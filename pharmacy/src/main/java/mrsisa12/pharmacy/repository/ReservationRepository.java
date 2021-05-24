@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.Reservation;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long>{
@@ -23,6 +24,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>{
 	@Query("select res from Reservation res where res.status = 'CREATED'")
 	public List<Reservation> findAllCreated();
 	
+	@Query("select res from Reservation res where res.status = 'COMPLETED' and res.pharmacy = ?1")
+	public List<Reservation> findAllByPharmacyCompleted(Pharmacy pharmacy);
 	
 //	public List<Reservation> findAllByName(String name);
 //	

@@ -2,6 +2,7 @@ package mrsisa12.pharmacy.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.ReservationDTO;
 import mrsisa12.pharmacy.dto.ReservationPickupDTO;
+import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.EPrescription;
@@ -229,5 +231,23 @@ public class ReservationController {
             return ResponseEntity.badRequest().build();
         }
     }
+	
+	@GetMapping(value = "/reportMedicationConsumptionYear")
+	public ResponseEntity<ReportDTO> reportAppointmentYear(@RequestParam String year, @RequestParam Long pharmacyId) {
+		HashMap<String, Integer> data = reservationService.getAllMedicationConsumptedByYear(year, pharmacyService.findOne(pharmacyId));
+		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/reportMedicationConsumptionQuarter")
+	public ResponseEntity<ReportDTO> reportAppointmentQuarter(@RequestParam String quarter, @RequestParam String year, @RequestParam Long pharmacyId) {
+		HashMap<String, Integer> data = reservationService.getAllMedicationConsumptedByQuarter(quarter, year, pharmacyService.findOne(pharmacyId), null);
+		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/reportMedicationConsumptionMonth")
+	public ResponseEntity<ReportDTO> reportAppointmentMonth(@RequestParam String period, @RequestParam String year, @RequestParam Long pharmacyId) {
+		HashMap<String, Integer> data = reservationService.getAllMedicationConsumptedByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null);
+		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
+	}
 }
 
