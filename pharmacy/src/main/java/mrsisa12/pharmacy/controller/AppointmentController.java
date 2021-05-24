@@ -168,7 +168,7 @@ public class AppointmentController {
 		Appointment appointment = appointmentService.findOne(appointmentId);
 		if(appointment != null) {
 			
-			//setting appointment status to available again
+			//setting appointment status to cancelled
 			appointment.setStatus(AppointmentStatus.CANCELLED);
     		appointmentService.save(appointment);
     		
