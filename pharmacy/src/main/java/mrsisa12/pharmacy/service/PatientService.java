@@ -99,6 +99,7 @@ public class PatientService {
     		List<Patient> patients = this.findAll();
     		for (Patient p : patients) {
     			p.setPenaltyPoints(0);
+    			this.save(p);
     			
     		}
     	}

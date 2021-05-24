@@ -83,11 +83,12 @@ public class ReservationService {
         return false;
     }
     
-
+ 
 	@EventListener(ApplicationReadyEvent.class)
 	public void penaliseUncompletedReservations() {
 		List<Reservation> reservations = reservationRepository.findAllCreated();
-		
+		System.out.println("GIVING PENALS FOR UNCOMPLETED RESERVATIONS");
+
 		for (Reservation reservation: reservations) {
 			
 			//reservation is not picked up and the due date is over => change status and give penalty point
