@@ -661,6 +661,7 @@ export default new Router({
                 let user = CheckUser.getLoggedUserData();
                 if (user.userType == 'PATIENT') {
                     next();
+                    
                 }
                 else {
                     ({ path: '/' });
