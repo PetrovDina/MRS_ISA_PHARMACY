@@ -1,5 +1,5 @@
 <template>
-    <div id="prescriptions">
+    <div id="prescriptions"> 
          <p style="font-size:20px; margin-top:50px" v-if="prescriptions.length == 0">You don't have any new ePrescriptions.</p>
 
         <div id="sort-and-filter" v-if="prescriptions.length != 0">
