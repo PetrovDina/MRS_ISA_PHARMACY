@@ -41,13 +41,14 @@
                 </v-spacer>
             </v-card-title>
         </v-card>
-        <fusioncharts
+        <fusioncharts v-if="noSignificantData"
             type='column2d'
             width='90%'
             height='400'
             dataFormat='json'
-            :dataSource="dataSource2"
+            :dataSource="dataSource"
         ></fusioncharts>
+        <h3 v-if="!noSignificantData">There are no significant data of "{{this.selectedGraphic}}" to display! Try another period.</h3>
     </div>
 </template>
 
@@ -80,13 +81,14 @@ export default {
                         "July", "August", "September", "October", "November", "December"],
             selectedGraphic : "-----select-graphic-----",
             graphics : ["-----select-graphic-----", "Concluded appointments", "Medication consumption", "Pharmacy revenue"],
+            noSignificantData : false,
             pharmacyId : -1,
-            dataSource2 : {
+            dataSource : {
                 chart: {
                     caption: "Concluded examinations",
                     //"subCaption": "In MMbbl = One Million barrels",
                     xAxisName: "Days",
-                    "yAxisName": "Num. of concluded appointments",
+                    yAxisName: "Num. of concluded appointments",
                     //"numberSuffix": "K", Kao hiljade
                     "theme": "fusion"
                 },
@@ -114,6 +116,7 @@ export default {
             });
         },
         reportAppointments : function(){
+            this.dataSource.chart.yAxisName = "Num. of concluded appointments";
             if(this.selectedQuarter != this.quarters[0])
                 client({
                         url: "appointments/reportAppointmentQuarter",
@@ -124,66 +127,45 @@ export default {
                             pharmacyId : this.pharmacyId
                         },
                     }).then((response) => {
-                        this.dataSource2.data = [];
-                        console.log(response.data.data);
-                        for (const label in response.data.data) {
-                            const value = response.data.data[label];
-                            this.dataSource2.data.push({
-                                'label' : label,
-                                'value' : value
-                                });
-                        }
-                        this.sortByMonth(this.dataSource2.data);
-                        this.dataSource2.chart.xAxisName = "Months";
-                        this.dataSource2.chart.caption = "Concluded appointments - " + this.selectedQuarter;
+                        this.makeDataForGraphic(response.data.data);
+                        this.sortByMonth(this.dataSource.data);
+                        this.dataSource.chart.xAxisName = "Months";
+                        this.dataSource.chart.caption = "Concluded appointments - " + this.selectedQuarter;
                         this.defaultYear();
                     });
             else if(this.selectedMonth != this.months[0])
                 client({
-                    url: "appointments/reportAppointmentMonth",
-                    method: "GET",
-                    params: {
-                        period: this.selectedMonth,
-                        year: this.selectedYear,
-                        pharmacyId : this.pharmacyId
-                    },
-                }).then((response) => {
-                    this.dataSource2.data = [];
-                    for (const label in response.data.data) {
-                        const value = response.data.data[label];
-                        this.dataSource2.data.push({
-                            'label' : label,
-                            'value' : value
-                            });
-                    }
-                    this.dataSource2.chart.xAxisName = "Days";
-                    this.dataSource2.chart.caption = "Concluded appointments - " + this.selectedMonth;
-                    this.defaultYear();
-                });
+                        url: "appointments/reportAppointmentMonth",
+                        method: "GET",
+                        params: {
+                            period: this.selectedMonth,
+                            year: this.selectedYear,
+                            pharmacyId : this.pharmacyId
+                        },
+                    }).then((response) => {
+                        this.makeDataForGraphic(response.data.data);
+                        this.dataSource.chart.xAxisName = "Days";
+                        this.dataSource.chart.caption = "Concluded appointments - " + this.selectedMonth;
+                        this.defaultYear();
+                    });
             else
                 client({
-                    url: "appointments/reportAppointmentYear",
-                    method: "GET",
-                    params: {
-                        year: this.selectedYear,
-                        pharmacyId : this.pharmacyId
-                    },
-                }).then((response) => {
-                    this.dataSource2.data = [];
-                    for (const label in response.data.data) {
-                        const value = response.data.data[label];
-                        this.dataSource2.data.push({
-                            'label' : label,
-                            'value' : value
-                            });
-                    }
-                    this.sortByMonth(this.dataSource2.data)
-                    this.dataSource2.chart.xAxisName = "Months";
-                    this.dataSource2.chart.caption = "Concluded appointments - " + this.selectedYear;
-                    this.defaultYear();
-                });
+                        url: "appointments/reportAppointmentYear",
+                        method: "GET",
+                        params: {
+                            year: this.selectedYear,
+                            pharmacyId : this.pharmacyId
+                        },
+                    }).then((response) => {
+                        this.makeDataForGraphic(response.data.data);
+                        this.sortByMonth(this.dataSource.data)
+                        this.dataSource.chart.xAxisName = "Months";
+                        this.dataSource.chart.caption = "Concluded appointments - " + this.selectedYear;
+                        this.defaultYear();
+                    });
         },
         reportMedicationConsumpsion : function(){
+            this.dataSource.chart.yAxisName = "Num. of consumpted medication";
             if(this.selectedQuarter != this.quarters[0])
                 client({
                         url: "reservation/reportMedicationConsumptionQuarter",
@@ -194,18 +176,10 @@ export default {
                             pharmacyId : this.pharmacyId
                         },
                     }).then((response) => {
-                        this.dataSource2.data = [];
-                        console.log(response.data.data);
-                        for (const label in response.data.data) {
-                            const value = response.data.data[label];
-                            this.dataSource2.data.push({
-                                'label' : label,
-                                'value' : value
-                                });
-                        }
-                        this.sortByMonth(this.dataSource2.data);
-                        this.dataSource2.chart.xAxisName = "Months";
-                        this.dataSource2.chart.caption = this.selectedGraphic + " - " + this.selectedQuarter;
+                        this.makeDataForGraphic(response.data.data);
+                        this.sortByMonth(this.dataSource.data);
+                        this.dataSource.chart.xAxisName = "Months";
+                        this.dataSource.chart.caption = this.selectedGraphic + " - " + this.selectedQuarter;
                         this.defaultYear();
                     });
             else if(this.selectedMonth != this.months[0])
@@ -218,16 +192,9 @@ export default {
                         pharmacyId : this.pharmacyId
                     },
                 }).then((response) => {
-                    this.dataSource2.data = [];
-                    for (const label in response.data.data) {
-                        const value = response.data.data[label];
-                        this.dataSource2.data.push({
-                            'label' : label,
-                            'value' : value
-                            });
-                    }
-                    this.dataSource2.chart.xAxisName = "Days";
-                    this.dataSource2.chart.caption = this.selectedGraphic + " - " + this.selectedMonth;
+                    this.makeDataForGraphic(response.data.data);
+                    this.dataSource.chart.xAxisName = "Days";
+                    this.dataSource.chart.caption = this.selectedGraphic + " - " + this.selectedMonth;
                     this.defaultYear();
                 });
             else
@@ -239,22 +206,61 @@ export default {
                         pharmacyId : this.pharmacyId
                     },
                 }).then((response) => {
-                    this.dataSource2.data = [];
-                    for (const label in response.data.data) {
-                        const value = response.data.data[label];
-                        this.dataSource2.data.push({
-                            'label' : label,
-                            'value' : value
-                            });
-                    }
-                    this.sortByMonth(this.dataSource2.data)
-                    this.dataSource2.chart.xAxisName = "Months";
-                    this.dataSource2.chart.caption = this.selectedGraphic + " - " + this.selectedYear;
+                    this.makeDataForGraphic(response.data.data);
+                    this.sortByMonth(this.dataSource.data)
+                    this.dataSource.chart.xAxisName = "Months";
+                    this.dataSource.chart.caption = this.selectedGraphic + " - " + this.selectedYear;
                     this.defaultYear();
                 });
         },
         reportPharmacyRevenue : function(){
-
+            this.dataSource.chart.yAxisName = "RSD";
+            if(this.selectedQuarter != this.quarters[0])
+                client({
+                        url: "pharmacy/reportPharmacyRevenueQuarter",
+                        method: "GET",
+                        params: {
+                            quarter: this.selectedQuarter,
+                            year: this.selectedYear,
+                            pharmacyId : this.pharmacyId
+                        },
+                    }).then((response) => {
+                        this.makeDataForGraphic(response.data.data);
+                        this.sortByMonth(this.dataSource.data);
+                        this.dataSource.chart.xAxisName = "Months";
+                        this.dataSource.chart.caption = this.selectedGraphic + " - " + this.selectedQuarter;
+                        this.defaultYear();
+                    });
+            else if(this.selectedMonth != this.months[0])
+                client({
+                    url: "pharmacy/reportPharmacyRevenueMonth",
+                    method: "GET",
+                    params: {
+                        period: this.selectedMonth,
+                        year: this.selectedYear,
+                        pharmacyId : this.pharmacyId
+                    },
+                }).then((response) => {
+                    this.makeDataForGraphic(response.data.data);
+                    this.dataSource.chart.xAxisName = "Days";
+                    this.dataSource.chart.caption = this.selectedGraphic + " - " + this.selectedMonth;
+                    this.defaultYear();
+                });
+            else
+                client({
+                    url: "pharmacy/reportPharmacyRevenueYear",
+                    method: "GET",
+                    params: {
+                        year: this.selectedYear,
+                        pharmacyId : this.pharmacyId
+                    },
+                }).then((response) => {
+                    this.makeDataForGraphic(response.data.data);
+                    this.sortByMonth(this.dataSource.data)
+                    this.dataSource.chart.xAxisName = "Months";
+                    this.dataSource.chart.caption = this.selectedGraphic + " - " + this.selectedYear;
+                    this.defaultYear();
+                });
         },
         report : function(){
             if(this.selectedGraphic === this.graphics[0]){
@@ -302,6 +308,20 @@ export default {
                     this.reportMedicationConsumpsion();
                 else
                     this.reportPharmacyRevenue();
+            }
+        },
+        makeDataForGraphic : function(data){
+            this.dataSource.data = [];
+            this.noSignificantData = false;
+            for(const label in data) {
+                const value = data[label];
+                this.dataSource.data.push({
+                    'label' : label,
+                    'value' : value
+                    });
+                
+                if(!this.noSignificantData && value != 0)
+                    this.noSignificantData = true;
             }
         },
         defaultYear : function(){

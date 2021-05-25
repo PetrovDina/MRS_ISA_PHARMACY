@@ -25,7 +25,6 @@ import mrsisa12.pharmacy.dto.ReservationPickupDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
-import mrsisa12.pharmacy.model.EPrescription;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
-import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.Reservation;
