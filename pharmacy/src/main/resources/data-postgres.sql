@@ -38,7 +38,7 @@ insert into itemprice (price, current, promotion, timeperiod, pharmacystorageite
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (200, false, false, '{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": [2021, 5, 22], "endTime": [17, 38, 0]}', 2);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (550, true, false, '{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": null, "endTime": null }', 3);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (250, false, false, '{ "startDate": [2021, 4, 5], "startTime": [23, 28, 14], "endDate": [2021, 5, 22], "endTime": [17, 38, 0]}', 1);
-insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (350, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": null, "endTime": null}', 4);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (350, true, false, '{ "startDate": [2021, 1, 1], "startTime": [0, 28, 14], "endDate": null, "endTime": null}', 4);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (410, true, false, '{ "startDate": [2021, 4, 2], "startTime": [23, 28, 14], "endDate": [2021, 5, 19], "endTime": [0, 0, 0]}', 5);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (370, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": [2021, 5, 19], "endTime": [0, 0, 0]}', 6);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (225, true, true, '{ "startDate": [2021, 5, 22], "startTime": [17, 38, 0], "endDate": [2021, 5, 25], "endTime": [18, 0, 0]}', 1);
@@ -157,10 +157,10 @@ INSERT INTO user_role (user_id, role_id) VALUES (16, 7); --  ROLE_SUPPLIER
 INSERT INTO user_role (user_id, role_id) VALUES (17, 6); --  ROLE_SUPPLIER
 INSERT INTO user_role (user_id, role_id) VALUES (18, 3); --  ROLE_PATIENT
 
-insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 1, 1, 3, '1.25.2021.', 'COMPLETED', 'rsrvtion01'); --za sad americki format dok ne skontamo kako drugacije
-insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 2, 2, 10, '5.21.2021.', 'CREATED', 'rsrvtion02'); --za sad americki format dok ne skontamo kako drugacije
-insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 3, 1, 1, '6.13.2021.', 'CREATED', 'rsrvtion03'); --za sad americki format dok ne skontamo kako drugacije
-insert into reservation (patient_id, medication_id, pharmacy_id, quantity, duedate, status, code) values (2, 4, 1, 1, '4.28.2021.', 'CREATED', 'rsrvtion04'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 1, 1, 3, 350, '1.25.2021.', 'COMPLETED', 'rsrvtion01'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 2, 2, 10, 410, '5.21.2021.', 'CREATED', 'rsrvtion02'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 3, 1, 1, 200, '6.13.2021.', 'CREATED', 'rsrvtion03'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 4, 2, 1, 370, '4.28.2021.', 'CREATED', 'rsrvtion04'); --za sad americki format dok ne skontamo kako drugacije
 
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 26], "startTime": [8, 0, 0], "endDate": [2021, 7, 26], "endTime": [9, 0, 0]}', 4, 2000, 1, 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 8, 10], "startTime": [13, 0, 0], "endDate": [2021, 8, 10], "endTime": [14, 0, 0]}', 4, 2000, 1, 'False');
