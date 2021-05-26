@@ -53,10 +53,17 @@
             </Tab>
 
             <Tab :isSelected="selected === 'Pharmacists'">
+                <SearchBar
+                    :placeHolder="searchPharmacistsPlaceholder"
+                    :options="pharmacistsSortOptions"
+                    search-type="pharmacists"
+                    @search-performed="pharmacistsSearchPerformed"
+                    @sort-performed="pharmacistsSortPerformed"
+                />
                 <PharmacistsTable
                     @registeredPharmacist = "addPharmacistIntoList"
                     @fired-pharmacist = "removePharmacistFromList"
-                    :pharmacists = "pharmacistsToSend"
+                    :pharmacists = "pharmacistsSearchResults"
                     :pharmacyId = "pharmacyId">
                 </PharmacistsTable>
             </Tab>
@@ -162,6 +169,11 @@ export default {
             dermatologistsSortOptions : ["--select--", "Username", "Email", "First name", "Last name", "Gender", "Rating"],
             searchDermatologistsPlaceholder: "Search dermatologists...",
             dermatologistsSearchResults: [],
+
+            // search-and-filter pharmacists
+            pharmacistsSortOptions : ["--select--", "Username", "Email", "First name", "Last name", "Gender", "Rating"],
+            searchPharmacistsPlaceholder: "Search pharmacists...",
+            pharmacistsSearchResults: [],
         };
     },
 
@@ -559,9 +571,7 @@ export default {
 
             //now we filter the results based on user input rating and city
             temp = temp.filter(function (derm) {
-                return ((derm.rating
-                        >= minRating && derm.rating <= maxRating)
-                );
+                return ((derm.rating >= minRating && derm.rating <= maxRating));
             });
 
             if(temp.length === 0)
@@ -607,6 +617,78 @@ export default {
                 });
             }
         },
+        pharmacistsSearchPerformed(text, minRating, maxRating) {
+            this.searchQuery = text;
+            let self = this;
+            //first we check the text from the search bar
+            let temp = this.pharmacistsToSend.filter(function (phar) {
+                return (phar.username
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        phar.email
+                    .toString()
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        phar.firstName
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        phar.lastName
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        phar.gender
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase())
+                );
+            });
+
+            //now we filter the results based on user input rating and city
+            temp = temp.filter(function (phar) {
+                return ((phar.rating >= minRating && phar.rating <= maxRating));
+            });
+
+            if(temp.length === 0)
+                this.$toasted.show("There are no mathcing records", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+            else
+                this.pharmacistsSearchResults = temp;
+        },
+        pharmacistsSortPerformed(sortCriterium) {
+            if (sortCriterium === this.pharmacistsSortOptions[0]) 
+                return;
+            else if (sortCriterium === this.pharmacistsSortOptions[1]) {
+                this.pharmacistsSearchResults = this.pharmacistsSearchResults.sort(function (a, b) {
+                    return a.username > b.username ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.pharmacistsSortOptions[2]) {
+                this.pharmacistsSearchResults = this.pharmacistsSearchResults.sort(function (a, b) {
+                    return a.email > b.email ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.pharmacistsSortOptions[3]) {
+                this.pharmacistsSearchResults = this.pharmacistsSearchResults.sort(function (a, b) {
+                    return a.firstName > b.firstName ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.pharmacistsSortOptions[4]) {
+                this.pharmacistsSearchResults = this.pharmacistsSearchResults.sort(function (a, b) {
+                    return a.lastName > b.lastName ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.pharmacistsSortOptions[5]) {
+                this.pharmacistsSearchResults = this.pharmacistsSearchResults.sort(function (a, b) {
+                    return a.gender > b.gender ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.pharmacistsSortOptions[6]) {
+                this.pharmacistsSearchResults = this.pharmacistsSearchResults.sort(function (a, b) {
+                    return a.rating < b.rating ? 1 : -1;
+                });
+            }
+        },
     },
 
     mounted() {
@@ -633,6 +715,7 @@ export default {
                         this.pharmacistsToSend = [...this.pharmacistsToSend, employment.employee];
                 }
                 this.dermatologistsSearchResults = this.dermatologistsToSend;
+                this.pharmacistsSearchResults = this.pharmacistsToSend;
             }).catch((response) => alert("pharmacyId je los :("));
                 // dobavljamo sve lijekove iz apoteke
             client({

@@ -6,7 +6,6 @@
             <!-- v-closable="{exclude: [], handler: 'onOutOfFocus'}"> -->
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">Username</th>
                         <th scope="col">Email</th>
                         <th scope="col">First name</th>
@@ -19,7 +18,6 @@
 
                 <tbody>
                     <tr :key="phar.id" v-for="phar in pharmacists" @click="clickedOnRow(phar)" v-bind:class="{selected : selected_pharmacist.id===phar.id}">
-                        <td>{{phar.id}}</td>
                         <td>{{phar.username}}</td>
                         <td>{{phar.email}}</td>
                         <td>{{phar.firstName}}</td>
