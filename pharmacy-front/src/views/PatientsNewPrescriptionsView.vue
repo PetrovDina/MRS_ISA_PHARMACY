@@ -118,7 +118,7 @@ export default {
     margin-top: 40px;
 }
 .card {
-    width: 70%;
+    width: 80%;
     margin-top: 40px;
     border: 1px solid rgba(63, 63, 63, 0.5);
 }
@@ -161,6 +161,6 @@ export default {
 }
 
 #sort-and-filter {
-    width: 85%;
+    width: 90%;
 }
 </style>
