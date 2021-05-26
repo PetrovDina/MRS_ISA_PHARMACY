@@ -260,7 +260,7 @@ public class PharmacyController {
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/reportMedicationConsumptionMonth")
+	@GetMapping(value = "/reportPharmacyRevenueMonth")
 	public ResponseEntity<ReportDTO> reportAppointmentMonth(@RequestParam String period, @RequestParam String year, @RequestParam Long pharmacyId) {
 		HashMap<String, Integer> data = pharmacyService.getAllMedicationConsumptedByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null);
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);

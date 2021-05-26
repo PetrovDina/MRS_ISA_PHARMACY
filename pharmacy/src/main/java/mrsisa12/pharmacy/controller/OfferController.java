@@ -140,7 +140,8 @@ public class OfferController {
 			pharmacyStorageItemService.updatePharmacyStorageItemQuantity(orderItem.getMedication(), orderWithOrderItems.getPharmacy(),
 					orderItem.getQuantity());
 		}
-
+		orderWithOffers.setStatus(OrderStatus.DONE);
+		orderService.save(orderWithOffers);
 		// saljemo mail o prihvatanju
 		emailService.sendEmailToSupplier(supplier, offer.getPrice(), orderWithOrderItems, "ACCEPTED");
 		// promjena statusa ponude koja je prihvacena

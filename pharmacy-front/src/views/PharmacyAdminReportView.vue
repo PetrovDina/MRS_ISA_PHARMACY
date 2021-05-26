@@ -48,7 +48,7 @@
             dataFormat='json'
             :dataSource="dataSource"
         ></fusioncharts>
-        <h3 v-if="!noSignificantData">There are no significant data of "{{this.selectedGraphic}}" to display! Try another period.</h3>
+        <h3 v-if="!noSignificantData">There are no significant data to display! Try another period.</h3>
     </div>
 </template>
 

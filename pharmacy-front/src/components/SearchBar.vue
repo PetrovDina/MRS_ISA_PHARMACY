@@ -10,17 +10,14 @@
                 :placeholder="placeHolder"
                 v-model="text"
             />
-            <a href="#" class="search-icon inlinepls" id="iconHolder" @click="onClick">
-                <i class="fa fa-search fa-2x" id="blackIcon"></i>
-                
-            </a>
-            
+            <button class="search-icon inlinepls" @click="onClick"><i class="fa fa-search fa-2x" id="blackIcon"></i></button>
         </div>
 
         <!-- filter bar  -->
         <div id="filterDiv">
             <PharmaciesFilterBar ref="filterBar" v-if="isSearchOf('pharmacies')" ></PharmaciesFilterBar>
             <MedicationFilterBar ref="filterBar" v-if="isSearchOf('medications')" ></MedicationFilterBar>
+            <OrdersFilterBar ref="filterBar" v-if="isSearchOf('orders')" ></OrdersFilterBar>
         </div>
 
         <!-- sort bar -->
@@ -30,22 +27,21 @@
                 <option v-for="option in options" :key="option" :value="option">{{option}}</option>
             </select>
         </div>
-
-
-
     </div>
 </template>
 
 <script>
 import PharmaciesFilterBar from "../components/PharmaciesFilterBar";
 import MedicationFilterBar from "../components/MedicationFilterBar";
+import OrdersFilterBar from "../components/OrdersFilterBar";
 
 export default {
     name: "SearchBar",
 
     components:{
         PharmaciesFilterBar,
-        MedicationFilterBar
+        MedicationFilterBar,
+        OrdersFilterBar
     },
 
     data() {
@@ -62,12 +58,16 @@ export default {
         onClick: function () {
             if(this.isSearchOf('pharmacies'))
                 this.$emit("search-performed", this.text, this.$refs.filterBar.$data.city, this.$refs.filterBar.$data.minRating, this.$refs.filterBar.$data.maxRating);
-            else
+            else if(this.isSearchOf('medications'))
             {
                 this.$emit("search-performed", 
                         this.text, 
                         this.$refs.filterBar.$data.form, 
                         this.$refs.filterBar.$data.prescriptionReq);
+            }
+            else if(this.isSearchOf('orders'))
+            {
+                this.$emit("search-performed", this.text, this.$refs.filterBar.$data.status)
             }
                 
         },
@@ -75,7 +75,6 @@ export default {
         sortSelected(event){
             let choice = event.target.value;
             this.$emit("sort-performed", choice);
-
         },
 
         isSearchOf(criterium){

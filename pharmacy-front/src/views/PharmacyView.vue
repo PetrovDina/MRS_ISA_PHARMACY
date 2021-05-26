@@ -64,12 +64,19 @@
                 </MedicationsTable>
             </Tab>
             <Tab :isSelected="selected === 'Orders'">
+                <SearchBar
+                    :placeHolder="searchOrdersPlaceholder"
+                    :options="ordersSortOptions"
+                    search-type="orders"
+                    @search-performed="ordersSearchPerformed"
+                    @sort-performed="ordersSortPerformed"
+                />
                 <OrdersTable 
                     @order-updated = "orderUpdated"
                     @order-added = "addNewOrder"
                     @new-medications-added-from-order = "addMedIntoPharStorage"
                     @update-quanities-for-medications = "updateQuantities"
-                    :orders = "ordersToSend"
+                    :orders = "ordersSearchResults"
                     :medicationsInPharmacy = "medicationToSend">
                 </OrdersTable>
             </Tab>
@@ -104,10 +111,23 @@ import ModalWindowEditPharmacyData from '../components/ModalWindowEditPharmacyDa
 import ModalWindowMap from "../components/ModalWindowMap.vue"
 import moment from 'moment';
 import StarRating from 'vue-star-rating';
+import SearchBar from '../components/SearchBar'
 
 export default {
     name: "PharmacyView",
-    components: { Button, DermatologistsTable, MedicationsTable, TabNav, Tab, PharmacistsTable, OrdersTable, ModalWindowEditPharmacyData, ModalWindowMap, StarRating},
+    components: { 
+        Button, 
+        DermatologistsTable, 
+        MedicationsTable, 
+        TabNav, 
+        Tab, 
+        PharmacistsTable, 
+        OrdersTable, 
+        ModalWindowEditPharmacyData, 
+        ModalWindowMap, 
+        StarRating,
+        SearchBar
+    },
     data() {
         return {
             selected: "Dermatologists",
@@ -125,6 +145,11 @@ export default {
             modalEditPharmacyData : false,
             coordinates : [],
             modalMap : false,
+
+            // search-and-filter
+            ordersSortOptions : ["--select--", "Duedate", "Admin", "Status"],
+            searchOrdersPlaceholder: "Search orders...",
+            ordersSearchResults: [],
         };
     },
 
@@ -320,6 +345,12 @@ export default {
                         med.quantity += orderItem.quantity;
                 });
             });
+            for (const orderId in this.ordersToSend) {
+                const orderToSend = this.ordersToSend[orderId];
+                if(orderToSend.id == order.id){
+                    this.ordersToSend[orderId].orderStatus = "DONE";
+                }
+            }
         },
         editPharmacyData : function(){
             this.modalEditPharmacyData = true;
@@ -434,7 +465,55 @@ export default {
                 }
             }
             return current_price;
-        }
+        },
+        ordersSearchPerformed(text, status) {
+            this.searchQuery = text;
+            let self = this;
+
+            //first we check the text from the search bar
+            let temp = this.ordersToSend.filter(function (order) {
+                return (order.dueDate
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        order.pharmacyAdmin
+                    .toString()
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        order.orderStatus
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase())
+                );
+            });
+
+            //now we filter the results based on user input rating and city
+            temp = temp.filter(function (order) {
+                return (order.orderStatus
+                    .toLowerCase()
+                    .includes(status.toLowerCase())
+                );
+            });
+
+            this.ordersSearchResults = temp;
+        },
+        ordersSortPerformed(sortCriterium) {
+            if (sortCriterium === this.ordersSortOptions[0]) 
+                return;
+            else if (sortCriterium === this.ordersSortOptions[1]) {
+                this.ordersSearchResults = this.ordersSearchResults.sort(function (a, b) {
+                    return moment().format(b.dueDate, "YYYY-MM-DD") < moment().format(a.dueDate, "YYYY-MM-DD") ? 1 : -1;;
+                });
+            }
+            else if (sortCriterium === this.ordersSortOptions[2]) {
+                this.ordersSearchResults = this.ordersSearchResults.sort(function (a, b) {
+                    return a.pharmacyAdmin > b.pharmacyAdmin ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.ordersSortOptions[3]) {
+                this.ordersSearchResults = this.ordersSearchResults.sort(function (a, b) {
+                    return a.orderStatus > b.orderStatus ? 1 : -1;
+                });
+            }
+        },
     },
 
     mounted() {
@@ -489,6 +568,7 @@ export default {
                 method : "GET",
             }).then((response) => {
                 this.ordersToSend = response.data;
+                this.ordersSearchResults = this.ordersToSend
             }).catch((response) => alert("pharmacyId je null"));
         });                              
 
