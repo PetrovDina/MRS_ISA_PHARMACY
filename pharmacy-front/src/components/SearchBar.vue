@@ -18,6 +18,7 @@
             <PharmaciesFilterBar ref="filterBar" v-if="isSearchOf('pharmacies')" ></PharmaciesFilterBar>
             <MedicationFilterBar ref="filterBar" v-if="isSearchOf('medications')" ></MedicationFilterBar>
             <OrdersFilterBar ref="filterBar" v-if="isSearchOf('orders')" ></OrdersFilterBar>
+            <DermatologistsFilterBar ref="filterBar" v-if="isSearchOf('dermatologists')" ></DermatologistsFilterBar>
         </div>
 
         <!-- sort bar -->
@@ -34,6 +35,7 @@
 import PharmaciesFilterBar from "../components/PharmaciesFilterBar";
 import MedicationFilterBar from "../components/MedicationFilterBar";
 import OrdersFilterBar from "../components/OrdersFilterBar";
+import DermatologistsFilterBar from "../components/DermatologistsFilterBar";
 
 export default {
     name: "SearchBar",
@@ -41,7 +43,8 @@ export default {
     components:{
         PharmaciesFilterBar,
         MedicationFilterBar,
-        OrdersFilterBar
+        OrdersFilterBar,
+        DermatologistsFilterBar
     },
 
     data() {
@@ -69,6 +72,9 @@ export default {
             {
                 this.$emit("search-performed", this.text, this.$refs.filterBar.$data.status)
             }
+            else if(this.isSearchOf('dermatologists'))
+                this.$emit("search-performed", this.text, this.$refs.filterBar.$data.minRating, this.$refs.filterBar.$data.maxRating);
+            
                 
         },
 

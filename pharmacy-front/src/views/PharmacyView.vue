@@ -37,10 +37,17 @@
             @selected="setSelected"
         >
             <Tab :isSelected="selected === 'Dermatologists'">
+                <SearchBar
+                    :placeHolder="searchDermatologistsPlaceholder"
+                    :options="dermatologistsSortOptions"
+                    search-type="dermatologists"
+                    @search-performed="dermatologistsSearchPerformed"
+                    @sort-performed="dermatologistsSortPerformed"
+                />
                 <DermatologistsTable
                     @hired-dermatologist = "addDermatologistToList"
                     @fired-dermatologist = "removeDermatologistFromList"
-                    :dermatologists = "dermatologistsToSend"
+                    :dermatologists = "dermatologistsSearchResults"
                     :pharmacyId = "pharmacyId">
                 </DermatologistsTable>
             </Tab>
@@ -146,10 +153,15 @@ export default {
             coordinates : [],
             modalMap : false,
 
-            // search-and-filter
+            // search-and-filter orders
             ordersSortOptions : ["--select--", "Duedate", "Admin", "Status"],
             searchOrdersPlaceholder: "Search orders...",
             ordersSearchResults: [],
+
+            // search-and-filter dermatologists
+            dermatologistsSortOptions : ["--select--", "Username", "Email", "First name", "Last name", "Gender", "Rating"],
+            searchDermatologistsPlaceholder: "Search dermatologists...",
+            dermatologistsSearchResults: [],
         };
     },
 
@@ -493,7 +505,14 @@ export default {
                 );
             });
 
-            this.ordersSearchResults = temp;
+            if(temp.length === 0)
+                this.$toasted.show("There are no mathcing records", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+            else
+                this.ordersSearchResults = temp;
         },
         ordersSortPerformed(sortCriterium) {
             if (sortCriterium === this.ordersSortOptions[0]) 
@@ -511,6 +530,80 @@ export default {
             else if (sortCriterium === this.ordersSortOptions[3]) {
                 this.ordersSearchResults = this.ordersSearchResults.sort(function (a, b) {
                     return a.orderStatus > b.orderStatus ? 1 : -1;
+                });
+            }
+        },
+        dermatologistsSearchPerformed(text, minRating, maxRating) {
+            this.searchQuery = text;
+            let self = this;
+            //first we check the text from the search bar
+            let temp = this.dermatologistsToSend.filter(function (derm) {
+                return (derm.username
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        derm.email
+                    .toString()
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        derm.firstName
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        derm.lastName
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase()) ||
+                        derm.gender
+                    .toLowerCase()
+                    .includes(self.searchQuery.toLowerCase())
+                );
+            });
+
+            //now we filter the results based on user input rating and city
+            temp = temp.filter(function (derm) {
+                return ((derm.rating
+                        >= minRating && derm.rating <= maxRating)
+                );
+            });
+
+            if(temp.length === 0)
+                this.$toasted.show("There are no mathcing records", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+            else
+                this.dermatologistsSearchResults = temp;
+        },
+        dermatologistsSortPerformed(sortCriterium) {
+            if (sortCriterium === this.dermatologistsSortOptions[0]) 
+                return;
+            else if (sortCriterium === this.dermatologistsSortOptions[1]) {
+                this.dermatologistsSearchResults = this.dermatologistsSearchResults.sort(function (a, b) {
+                    return a.username > b.username ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.dermatologistsSortOptions[2]) {
+                this.dermatologistsSearchResults = this.dermatologistsSearchResults.sort(function (a, b) {
+                    return a.email > b.email ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.dermatologistsSortOptions[3]) {
+                this.dermatologistsSearchResults = this.dermatologistsSearchResults.sort(function (a, b) {
+                    return a.firstName > b.firstName ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.dermatologistsSortOptions[4]) {
+                this.dermatologistsSearchResults = this.dermatologistsSearchResults.sort(function (a, b) {
+                    return a.lastName > b.lastName ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.dermatologistsSortOptions[5]) {
+                this.dermatologistsSearchResults = this.dermatologistsSearchResults.sort(function (a, b) {
+                    return a.gender > b.gender ? 1 : -1;
+                });
+            }
+            else if (sortCriterium === this.dermatologistsSortOptions[6]) {
+                this.dermatologistsSearchResults = this.dermatologistsSearchResults.sort(function (a, b) {
+                    return a.rating < b.rating ? 1 : -1;
                 });
             }
         },
@@ -539,6 +632,7 @@ export default {
                     else
                         this.pharmacistsToSend = [...this.pharmacistsToSend, employment.employee];
                 }
+                this.dermatologistsSearchResults = this.dermatologistsToSend;
             }).catch((response) => alert("pharmacyId je los :("));
                 // dobavljamo sve lijekove iz apoteke
             client({
