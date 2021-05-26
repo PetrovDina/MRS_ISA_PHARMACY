@@ -18,10 +18,10 @@ insert into location (latitude, longitude, street, city, zipcode, streetNum) val
 insert into location (latitude, longitude, street, city, zipcode, streetNum) values (45.2525228, 19.8389281, 'Jevrejska','Novi Sad', '21000', 21);
 insert into location (latitude, longitude, street, city, zipcode, streetNum) values (44.75482475, 20.567192906210508, 'Nemanjina','Beograd', '11130', 10);
 
-insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Apoteka Jankovic', 2.5, 1, '{ "examinationPrice": 2000.0, "consultationPrice": 1000.0 }'); --id 1
-insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Benu', 4.5, 2, '{ "examinationPrice": 2200.0, "consultationPrice": 1400.0 }'); --id 2
-insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Srbotrade', 1.8, 4, '{ "examinationPrice": 1200.0, "consultationPrice": 800.0 }'); --id 3
-insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Lilly', 3.8, 3, '{ "examinationPrice": 2500.0, "consultationPrice": 1600.0 }'); --id 4
+insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Apoteka Jankovic', 0, 1, '{ "examinationPrice": 2000.0, "consultationPrice": 1000.0 }'); --id 1
+insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Benu', 0, 2, '{ "examinationPrice": 2200.0, "consultationPrice": 1400.0 }'); --id 2
+insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Srbotrade', 0, 4, '{ "examinationPrice": 1200.0, "consultationPrice": 800.0 }'); --id 3
+insert into pharmacy (name, rating, location_id, appointmentPriceCatalog) values ('Lilly', 0, 3, '{ "examinationPrice": 2500.0, "consultationPrice": 1600.0 }'); --id 4
 
 -- promocije
 insert into promotion (dueDate, deleted) values ('2021-05-25', 'False');
@@ -67,11 +67,11 @@ insert into employees (id, rating ) values (4, 4.0);
 insert into dermatologist (id, dermatologistNickname) values (4, 'mica');
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('vanja', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'vanjav@email.com', 'Vanja', 'Vanjic', 1, 'FEMALE', 'ACTIVATED', 'False', 'True');
-insert into employees (id, rating ) values (5, 4.4);
+insert into employees (id, rating ) values (5, 0);
 insert into dermatologist (id, dermatologistNickname) values (5, 'vanjuska');
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('pera', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'perap@email.com', 'Pera', 'Perovic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
-insert into employees (id, rating ) values (6, 3.5);
+insert into employees (id, rating ) values (6, 0);
 insert into dermatologist (id, dermatologistNickname) values (6, 'pera');
 
 
@@ -80,15 +80,15 @@ insert into employees (id, rating ) values (7, 2.5);
 insert into pharmacist (id) values (7);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('ana', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Ana', 'Tot', 1, 'FEMALE', 'ACTIVATED', 'False', 'True');
-insert into employees (id, rating ) values (8, 2.5);
+insert into employees (id, rating ) values (8, 0);
 insert into pharmacist (id) values (8);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('zarko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'zarkoz@email.com', 'Zarko', 'Zrenjanin', 1, 'MALE', 'ACTIVATED', 'False', 'True');
-insert into employees (id, rating ) values (9, 2.5);
+insert into employees (id, rating ) values (9, 0);
 insert into dermatologist (id, dermatologistNickname) values (9, 'zare');
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('marko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'markok@email.com', 'Marko', 'Kraljevic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
-insert into employees (id, rating ) values (10, 3.9);
+insert into employees (id, rating ) values (10, 0);
 insert into dermatologist (id, dermatologistNickname) values (10, 'mare');
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('mica', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'mica@email.com', 'Mica', 'Micic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
@@ -105,11 +105,11 @@ INSERT INTO user_role (user_id, role_id) VALUES (13, 7); --  ROLE_SUPPLIER
 
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('milojko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milojko@email.com', 'Milojko', 'Pantic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
-insert into employees (id, rating ) values (14, 1.78);
+insert into employees (id, rating ) values (14, 0);
 insert into pharmacist (id) values (14);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('jelisaveta', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Jelisaveta', 'Salvetic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
-insert into employees (id, rating ) values (15, 3.24);
+insert into employees (id, rating ) values (15, 0);
 insert into pharmacist (id) values (15);
 
 
