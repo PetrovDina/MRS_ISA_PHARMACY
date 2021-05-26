@@ -50,6 +50,7 @@ public class SupplierController {
 		su.setActiveStatus(UserStatus.UNVERIFIED);
 		su.setRoles(roleService.findByName("ROLE_SUPPLIER"));
 		su.setDeleted(false);
+		su.setLoggedFirstTime(false);
 		
 		try 
 		{
