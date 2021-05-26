@@ -32,7 +32,7 @@ import mrsisa12.pharmacy.model.enums.UserStatus;
 public abstract class User implements UserDetails {
 	
 	/**
-	 * 
+	 *  DODAJ POLJE ZA PRVO REGISTROVANJE I U POSTGRE PA POZIV ZA PROVERU
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -76,7 +76,27 @@ public abstract class User implements UserDetails {
 	@Column(name = "deleted", unique=false, nullable=false)
 	private boolean deleted;
 	
+	@Column(name = "loggedFirstTime", unique=false, nullable=false)
+	private boolean loggedFirstTime;
+	
 	public User() { }
+	
+	public User(Long id, String username, String password, String email, String firstName, String lastName, Location location, Gender gender,
+			UserStatus activeStatus, List<UserRole> userRoles, boolean deleted, boolean loggedFirstTime) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.location = location;
+		this.gender = gender;
+		this.activeStatus = activeStatus;
+		this.roles = userRoles;
+		this.deleted = deleted;
+		this.loggedFirstTime = loggedFirstTime;
+	}
 	
 	public User(Long id, String username, String password, String email, String firstName, String lastName, Location location, Gender gender,
 			UserStatus activeStatus, List<UserRole> userRoles, boolean deleted) {
@@ -221,5 +241,13 @@ public abstract class User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return !this.isDeleted();
+	}
+
+	public boolean isLoggedFirstTime() {
+		return loggedFirstTime;
+	}
+
+	public void setLoggedFirstTime(boolean loggedFirstTime) {
+		this.loggedFirstTime = loggedFirstTime;
 	}
 }

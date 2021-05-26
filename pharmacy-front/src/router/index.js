@@ -45,6 +45,7 @@ import AdminPharmacyComplaintPage from '@/views/AdminPharmacyComplaintPage'
 import AdminEmployeeComplaintPage from '@/views/AdminEmployeeComplaintPage'
 import ComplaintPharmacyUserPage from '@/views/ComplaintPharmacyUserPage'
 import ComplaintEmployeeUserPage from '@/views/ComplaintEmployeeUserPage'
+import LoginFirstTimePage from '@/views/LoginFirstTimePage'
 
 import MedicationReservationView from '@/views/MedicationReservationView'
 
@@ -682,6 +683,46 @@ export default new Router({
                     ({ path: '/' }).catch(() => { });
                 } else {
                     next();
+                }
+            }
+
+        },
+
+        {
+            path: '/loginFirstTimePage',
+            name: 'LoginFirstTimePage',
+            component: LoginFirstTimePage,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+
+                // Ako je neka od ovih uloga proveri dalje
+                if (user.userType == 'SYSTEM_ADMIN'  || user.userType == 'PHARMACY_ADMIN' ||
+                    user.userType == 'DERMATOLOGIST' || user.userType == 'PHARMACIST'     ||
+                    user.userType == 'SUPPLIER') {
+                    
+                    // Provera jel se logovao prvi put
+
+                    client({
+                        url: '/auth/loggedFirstTime/' + localStorage.getItem("USERNAME"),
+                        method: "GET",
+                    })
+                    .then((response) => {
+                        let loggedFirstTime = response.data;
+
+                        if(!loggedFirstTime)    // Ako se nije logovao
+                        {
+                            next();
+                        }
+                        else
+                        {
+                            ({ path: '/' });
+                        }
+                    })
+                }
+
+                // Ako je neka druga uloga vrati ga na pocetnu
+                else {
+                    ({ path: '/' });
                 }
             }
 

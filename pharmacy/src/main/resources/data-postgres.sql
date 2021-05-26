@@ -53,61 +53,62 @@ INSERT INTO role (name) VALUES ('ROLE_PHARMACIST');
 INSERT INTO role (name) VALUES ('ROLE_PHARMACY_ADMIN');
 INSERT INTO role (name) VALUES ('ROLE_SUPPLIER');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('admin', '$2a$10$k/iwZ4.ZX3RQ.7k2qpT3yeLKmfF0IpGKoRz8bgXvoi58vXwaFsthi', 'admin@gmail.com', 'Admin', 'Adminic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted,  loggedFirstTime) values ('admin', '$2a$10$k/iwZ4.ZX3RQ.7k2qpT3yeLKmfF0IpGKoRz8bgXvoi58vXwaFsthi', 'admin@gmail.com', 'Admin', 'Adminic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into systemadmin (id) values (1);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('patient', '$2a$10$s9YM05JPaH8hZARhK1c0wex4g4FmqXbgNX1pKy8uvbyhhIbyWkIn2', 'patient@maildrop.cc', 'Patient', 'Patientic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('patient', '$2a$10$s9YM05JPaH8hZARhK1c0wex4g4FmqXbgNX1pKy8uvbyhhIbyWkIn2', 'patient@maildrop.cc', 'Patient', 'Patientic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into patient (id, penaltypoints) values (2, 0);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('padmin', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'padmin@email.com', 'Padmin', 'Padminic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('padmin', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'padmin@email.com', 'Padmin', 'Padminic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into pharmacyadmin (id, pharmacy_id) values (3, 1);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('milica', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milicam@email.com', 'Milica', 'Milic', 1, 'FEMALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('milica', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milicam@email.com', 'Milica', 'Milic', 1, 'FEMALE', 'ACTIVATED', 'False', 'True');
 insert into employees (id, rating ) values (4, 4.0);
 insert into dermatologist (id, dermatologistNickname) values (4, 'mica');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('vanja', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'vanjav@email.com', 'Vanja', 'Vanjic', 1, 'FEMALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('vanja', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'vanjav@email.com', 'Vanja', 'Vanjic', 1, 'FEMALE', 'ACTIVATED', 'False', 'True');
 insert into employees (id, rating ) values (5, 4.4);
 insert into dermatologist (id, dermatologistNickname) values (5, 'vanjuska');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('pera', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'perap@email.com', 'Pera', 'Perovic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('pera', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'perap@email.com', 'Pera', 'Perovic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into employees (id, rating ) values (6, 3.5);
 insert into dermatologist (id, dermatologistNickname) values (6, 'pera');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('mirko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'mirkov@email.com', 'Mirko', 'Visnjic', 1, 'MALE', 'ACTIVATED', 'False');
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('mirko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'mirkov@email.com', 'Mirko', 'Visnjic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into employees (id, rating ) values (7, 2.5);
 insert into pharmacist (id) values (7);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('ana', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Ana', 'Tot', 1, 'FEMALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('ana', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Ana', 'Tot', 1, 'FEMALE', 'ACTIVATED', 'False', 'True');
 insert into employees (id, rating ) values (8, 2.5);
 insert into pharmacist (id) values (8);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('zarko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'zarkoz@email.com', 'Zarko', 'Zrenjanin', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('zarko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'zarkoz@email.com', 'Zarko', 'Zrenjanin', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into employees (id, rating ) values (9, 2.5);
 insert into dermatologist (id, dermatologistNickname) values (9, 'zare');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('marko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'markok@email.com', 'Marko', 'Kraljevic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('marko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'markok@email.com', 'Marko', 'Kraljevic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into employees (id, rating ) values (10, 3.9);
 insert into dermatologist (id, dermatologistNickname) values (10, 'mare');
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('mica', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'mica@email.com', 'Mica', 'Micic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('mica', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'mica@email.com', 'Mica', 'Micic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into patient (id, penaltypoints) values (11, 0);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('supplier', '$2a$10$JP2z80y0qoRUFUb7KiT31OiwlX66Pso0dF/oRqRi9t0IWVLP731X6', 'supplier@email.com', 'Supplier', 'Supplieric', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('supplier', '$2a$10$JP2z80y0qoRUFUb7KiT31OiwlX66Pso0dF/oRqRi9t0IWVLP731X6', 'supplier@email.com', 'Supplier', 'Supplieric', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into supplier (id) values (12);
 INSERT INTO user_role (user_id, role_id) VALUES (12, 7); --  ROLE_SUPPLIER
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('supplier2', '$2a$10$8goTXhVe385ifP/jkkWMyOqEpQ3fDZwby8q0VGViOn/Bd9Ovl/DMq', 'supplier2@email.com', 'Supplier', 'Supplierov', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('supplier2', '$2a$10$8goTXhVe385ifP/jkkWMyOqEpQ3fDZwby8q0VGViOn/Bd9Ovl/DMq', 'supplier2@email.com', 'Supplier', 'Supplierov', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into supplier (id) values (13);
 INSERT INTO user_role (user_id, role_id) VALUES (13, 7); --  ROLE_SUPPLIER
 
 
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('milojko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milojko@email.com', 'Milojko', 'Pantic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('milojko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'milojko@email.com', 'Milojko', 'Pantic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into employees (id, rating ) values (14, 1.78);
 insert into pharmacist (id) values (14);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('jelisaveta', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Jelisaveta', 'Salvetic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('jelisaveta', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Jelisaveta', 'Salvetic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into employees (id, rating ) values (15, 3.24);
 insert into pharmacist (id) values (15);
 
@@ -131,14 +132,17 @@ insert into employment (employee_id, workTime, contractType, pharmacy_id, delete
 -- update farmaceuta da mu podesimo employment_id
 UPDATE pharmacist SET employment_id = 7  WHERE id = 15;
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('zikica', '$2a$10$JP2z80y0qoRUFUb7KiT31OiwlX66Pso0dF/oRqRi9t0IWVLP731X6', 'zikicam@email.com', 'Zivorad', 'Markovic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('zikica', '$2a$10$JP2z80y0qoRUFUb7KiT31OiwlX66Pso0dF/oRqRi9t0IWVLP731X6', 'zikicam@email.com', 'Zivorad', 'Markovic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into supplier (id) values (16);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('mojadmin', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'baskalo@email.com', 'Baki', 'Baskalo', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('mojadmin', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'baskalo@email.com', 'Baki', 'Baskalo', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into pharmacyadmin (id, pharmacy_id) values (17, 1);
 
-insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('andjelko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'andjelko@email.com', 'Andjelko', 'Bojanic', 1, 'MALE', 'ACTIVATED', 'False');
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('andjelko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'andjelko@email.com', 'Andjelko', 'Bojanic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into patient (id, penaltypoints) values (18, 3); 
+
+insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted,  loggedFirstTime) values ('admin2', '$2a$10$k/iwZ4.ZX3RQ.7k2qpT3yeLKmfF0IpGKoRz8bgXvoi58vXwaFsthi', 'admin2@maildrop.cc', 'Admin', 'Adminovic', 1, 'MALE', 'ACTIVATED', 'False', 'False');
+insert into systemadmin (id) values (19);
 
 INSERT INTO user_role (user_id, role_id) VALUES (1, 2); --  ROLE_SYSTEM_ADMIN
 INSERT INTO user_role (user_id, role_id) VALUES (2, 3); --  ROLE_PATIENT
@@ -156,6 +160,7 @@ INSERT INTO user_role (user_id, role_id) VALUES (15, 5); --  ROLE_PHARMACIST
 INSERT INTO user_role (user_id, role_id) VALUES (16, 7); --  ROLE_SUPPLIER
 INSERT INTO user_role (user_id, role_id) VALUES (17, 6); --  ROLE_SUPPLIER
 INSERT INTO user_role (user_id, role_id) VALUES (18, 3); --  ROLE_PATIENT
+INSERT INTO user_role (user_id, role_id) VALUES (19, 2); --  ROLE_SYSTEM_ADMIN
 
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 1, 1, 3, 350, '1.25.2021.', 'COMPLETED', 'rsrvtion01'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 2, 2, 10, 410, '5.21.2021.', 'CREATED', 'rsrvtion02'); --za sad americki format dok ne skontamo kako drugacije

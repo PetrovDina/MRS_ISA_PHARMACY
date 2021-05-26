@@ -73,14 +73,45 @@ export default {
                 localStorage.setItem("USERNAME", this.login.username); //dina dodala
                 this.$store.commit("changeLoggedUsername", this.login.username) //dina dodala
                 this.$store.commit("changeLoggedUserRole", payload.role);
-                if(localStorage.getItem('USER_TYPE') == 'PHARMACY_ADMIN')
-                    this.pharmacyAdminRedirect(localStorage.getItem('USERNAME'));
-                else if(localStorage.getItem('USER_TYPE') == 'PHARMACIST')
-                    this.pharmacistHomeRedirect();
-                else if(localStorage.getItem('USER_TYPE') == 'DERMATOLOGIST')
-                    this.dermatologistHomeRedirect();
+
+                // Provera dodata radi prvog logina
+                if(localStorage.getItem('USER_TYPE') == 'PHARMACY_ADMIN' || 
+                   localStorage.getItem('USER_TYPE') == 'SYSTEM_ADMIN'   || 
+                   localStorage.getItem('USER_TYPE') == 'PHARMACIST'     ||
+                   localStorage.getItem('USER_TYPE') == 'DERMATOLOGIST'  ||
+                   localStorage.getItem('USER_TYPE') == 'SUPPLIER')
+                {
+                    client({
+                        url: '/auth/loggedFirstTime/' + localStorage.getItem("USERNAME"),
+                        method: "GET",
+                    })
+                    .then((response) => {
+                        let loggedFirstTime = response.data;
+
+                        if(!loggedFirstTime)    // Ako se nije logovao
+                        {
+                            this.loginFristTimeRedirect();
+                        }
+                        else
+                        {
+                            if(localStorage.getItem('USER_TYPE') == 'PHARMACY_ADMIN')
+                                this.pharmacyAdminRedirect(localStorage.getItem('USERNAME'));
+                            else if(localStorage.getItem('USER_TYPE') == 'PHARMACIST')
+                                this.pharmacistHomeRedirect();
+                            else if(localStorage.getItem('USER_TYPE') == 'DERMATOLOGIST')
+                                this.dermatologistHomeRedirect();
+                            else
+                                this.homeRedirect();
+                        }
+                    })
+
+                }
                 else
+                {
+                    // Ako nije jedan od tipa korisnika kojima se proverava prvo logovanje
                     this.homeRedirect();
+                }
+                    
             }).
 			catch((response) => 
             {
@@ -168,8 +199,36 @@ export default {
                         console.error(err);
                     }
                 });
+        },
+
+        loginFristTimeRedirect()
+        {
+            this.$router
+                .push({ name: "LoginFirstTimePage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
         }
 
+    },
+
+    mounted() {
+
+        this.$store.commit("changeLogginFirstTimeDisableNav", false);
+
+        // Ako ikako uspe da udje izloguj ga
+        
+        this.$store.commit("changeLoggedUserRole", "GUEST")
+        this.$store.commit("changeLoggedUsername", "")
+
+        localStorage.removeItem("USER_TOKEN");
+        localStorage.removeItem("USER_TYPE");
+        localStorage.removeItem("USER_EXPIRES")
+        localStorage.removeItem("USERNAME");
     }
 
 

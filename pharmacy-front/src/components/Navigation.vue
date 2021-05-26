@@ -1,6 +1,7 @@
 <template>
-    <div class="topnav">
+    <div class="topnav" v-if="!isNavEnabled()">
 
+        
         <!-- all -->
         <div v-if="!isUserType('DERMATOLOGIST') && !isUserType('PHARMACIST')">
             <a @click="homeRedirect()" class="homeNav"><i class="fa fa-home" style="font-size:24px"></i></a>
@@ -200,6 +201,10 @@ export default {
 
         isUserType: function (ut) {
             return this.$store.getters.getLoggedUserRole === ut;
+        },
+
+        isNavEnabled: function() {
+            return this.$store.getters.getLogginFirstTimeDisableNav === true;
         },
 
         pharmacyRegisterRedirect: function () {

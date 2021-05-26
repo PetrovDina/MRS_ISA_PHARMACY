@@ -55,6 +55,7 @@ public class DermatologistController {
 		d.setRating(0.0);
 		d.setDermatologistNickname(null);
 		d.setDeleted(false);
+		d.setLoggedFirstTime(false);
 		
 		try 
 		{
