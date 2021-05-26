@@ -376,6 +376,7 @@ export default {
     float: right;
 }
 
+
 .sort-label {
     padding: 10px;
     display: inline-block;

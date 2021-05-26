@@ -75,7 +75,7 @@ insert into employees (id, rating ) values (6, 3.5);
 insert into dermatologist (id, dermatologistNickname) values (6, 'pera');
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('mirko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'mirkov@email.com', 'Mirko', 'Visnjic', 1, 'MALE', 'ACTIVATED', 'False');
-insert into employees (id, rating ) values (7, 4.5);
+insert into employees (id, rating ) values (7, 2.5);
 insert into pharmacist (id) values (7);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted) values ('ana', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'anat@email.com', 'Ana', 'Tot', 1, 'FEMALE', 'ACTIVATED', 'False');
@@ -173,6 +173,8 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 8, 20], "startTime": [12, 0, 0], "endDate": [2021, 8, 20], "endTime": [13, 30, 0]}', 8, 1000, 1, 'False', 2);
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 7, 25], "startTime": [12, 0, 0], "endDate": [2021, 7, 25], "endTime": [13, 0, 0]}', 8, 1000, 1, 'False', 2);
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 6, 3], "startTime": [12, 0, 0], "endDate": [2021, 6, 3], "endTime": [13, 30, 0]}', 8, 1400, 2, 'False', 11);
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('CONCLUDED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 2, 13], "startTime": [12, 0, 0], "endDate": [2021, 2, 13], "endTime": [13, 0, 0]}', 7, 1000, 1, 'False', 11);
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('CONCLUDED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 3, 19], "startTime": [10, 0, 0], "endDate": [2021, 3, 19], "endTime": [11, 0, 0]}', 4, 2000, 1, 'False', 11);
 
 
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 5], "startTime": [12, 0, 0], "endDate": [2021, 7, 5], "endTime": [13, 30, 0]}', 4, 2000, 1, 'False', 2);
@@ -253,9 +255,13 @@ insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescri
 insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (1, 3, 6, 2);
 insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (2, 4, 10, 2);
 
---employee ratings
+--dermatologist ratings - Milica Milic
 insert into rating (type, date, rating, employee_id, patient_id) values ('employee_rating', '2021-01-20', 3.0, 4, 2 );
 insert into rating (type, date, rating, employee_id, patient_id) values ('employee_rating', '2021-02-12', 5.0, 4, 11 );
+
+--pharmacist ratings - Mirko Visnjic
+insert into rating (type, date, rating, employee_id, patient_id) values ('employee_rating', '2021-01-20', 3.0, 7, 2 );
+insert into rating (type, date, rating, employee_id, patient_id) values ('employee_rating', '2021-01-20', 2.0, 7, 11 );
 
 insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('REQUESTED', 'VACATION', '{ "startDate":  [2021, 8, 1], "startTime": [0, 0, 0], "endDate": [2021, 8, 8], "endTime": [0, 0, 0]}', 4, 1);
 insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('REQUESTED', 'VACATION', '{ "startDate":  [2021, 12, 25], "startTime": [0, 0, 0], "endDate": [2022, 1, 15], "endTime": [0, 0, 0]}', 4, 1);
