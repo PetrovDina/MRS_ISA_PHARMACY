@@ -35,7 +35,8 @@ const store = new Vuex.Store({
     state: {
         loggedUserRole: "GUEST",
         loggedUsername: "",
-        lastPharmacyPatientView: -1
+        lastPharmacyPatientView: -1,
+        logginFirstTimeDisableNav: false
     },
 
     mutations: {
@@ -49,6 +50,10 @@ const store = new Vuex.Store({
 
         changeLastPharmacyPatientView(state, newPharmacyId) { 
             state.lastPharmacyPatientView = newPharmacyId;
+        },
+
+        changeLogginFirstTimeDisableNav(state, newLogginFirstTimeDisableNav) { 
+            state.logginFirstTimeDisableNav = newLogginFirstTimeDisableNav;
         }
 
     },
@@ -67,7 +72,13 @@ const store = new Vuex.Store({
         getLastPharmacyPatientView: state => {
             return state.lastPharmacyPatientView
 
-        }
+        },
+
+        getLogginFirstTimeDisableNav: state => {
+            return state.logginFirstTimeDisableNav
+
+        },
+
     }
 
 })

@@ -85,6 +85,7 @@ public class PharmacyAdminController
 		pa.setActiveStatus(UserStatus.UNVERIFIED);
 		pa.setRoles(roleService.findByName("ROLE_PHARMACY_ADMIN"));
 		pa.setDeleted(false);
+		pa.setLoggedFirstTime(false);
 		Pharmacy pharmacy = pharmacyService.findOne(pharmacyAdminDTO.getPharmacyId());
 		pa.setPharmacy(pharmacy);
 		

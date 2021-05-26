@@ -55,6 +55,7 @@ public class PharmacistController {
 		phar.setRoles(roleService.findByName("ROLE_PHARMACIST"));
 		phar.setRating(0.0);
 		phar.setDeleted(false);
+		phar.setLoggedFirstTime(false);
 
 		try 
 		{

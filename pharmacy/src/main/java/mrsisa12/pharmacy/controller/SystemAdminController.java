@@ -48,6 +48,7 @@ public class SystemAdminController {
 		sa.setActiveStatus(UserStatus.UNVERIFIED);
 		sa.setRoles(roleService.findByName("ROLE_SYSTEM_ADMIN"));
 		sa.setDeleted(false);
+		sa.setLoggedFirstTime(false);
 		
 		try 
 		{

@@ -228,6 +228,7 @@ public class PatientController {
 		pa.setActiveStatus(UserStatus.UNVERIFIED);
 		pa.setRoles(roleService.findByName("ROLE_PATIENT"));
 		pa.setDeleted(false);
+		pa.setLoggedFirstTime(true);
 		pa.setPenaltyPoints(new Integer(0));
 		
 		try 

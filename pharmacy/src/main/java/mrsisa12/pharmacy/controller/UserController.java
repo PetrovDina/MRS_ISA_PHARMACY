@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -130,5 +131,33 @@ public class UserController {
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	@PreAuthorize("hasAnyRole('SYSTEM_ADMIN','PHARMACY_ADMIN', 'SUPPLIER', 'DERMATOLOGIST', 'PHARMACIST')")
+	@GetMapping(value = "/loggedFirstTime/{username}")
+	public ResponseEntity<Object> loggedFirstTime(@PathVariable("username") String username) {
 
+		User user = userService.findByUsername(username);
+		
+		if (user == null) 
+		{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(user.isLoggedFirstTime(), HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasAnyRole('SYSTEM_ADMIN','PHARMACY_ADMIN', 'SUPPLIER', 'DERMATOLOGIST', 'PHARMACIST')")
+	@PostMapping(value = "/firstTimeChangePassword", consumes = "application/json")
+	public ResponseEntity<Boolean> loggedFirstTime(@RequestBody LoginDTO loginDTO)
+	{
+		User user = userService.findByUsername(loginDTO.getUsername());
+		
+		user.setPassword(passwordEncoder.encode(loginDTO.getPassword()));
+		
+		user.setLoggedFirstTime(true);
+		
+		userService.save(user);
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 }

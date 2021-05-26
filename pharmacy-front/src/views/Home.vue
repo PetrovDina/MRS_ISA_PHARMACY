@@ -265,6 +265,8 @@ export default {
     },
 
     mounted() {
+        this.$store.commit("changeLogginFirstTimeDisableNav", false);
+
         client({
             url: "med/all",
             method: "GET",
