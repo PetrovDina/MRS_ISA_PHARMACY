@@ -46,6 +46,8 @@ import AdminEmployeeComplaintPage from '@/views/AdminEmployeeComplaintPage'
 import ComplaintPharmacyUserPage from '@/views/ComplaintPharmacyUserPage'
 import ComplaintEmployeeUserPage from '@/views/ComplaintEmployeeUserPage'
 import LoginFirstTimePage from '@/views/LoginFirstTimePage'
+import ProfileAdminSupplierPage from '@/views/ProfileAdminSupplierPage'
+import AdminHomePage from '@/views/AdminHomePage'
 
 import MedicationReservationView from '@/views/MedicationReservationView'
 
@@ -520,6 +522,21 @@ export default new Router({
         },
 
         {
+            path: '/adminHomePage',
+            name: 'AdminHomePage',
+            component: AdminHomePage,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == 'SYSTEM_ADMIN') {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
+        },
+
+        {
             path: '/dispense-medication-page',
             name: 'DispenseMedicationPage',
             component: DispenseMedicationPage,
@@ -672,10 +689,6 @@ export default new Router({
             }
         },
 
-        
-
-        
-
         {
             path: '/LoginPage',
             name: 'LoginPage',
@@ -729,6 +742,22 @@ export default new Router({
             }
 
         },
+
+        {
+            path: '/profileAdminSupplierPage',
+            name: 'ProfileAdminSupplierPage',
+            component: ProfileAdminSupplierPage,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == 'SYSTEM_ADMIN' || user.userType == 'PHARMACY_ADMIN' || user.userType == 'SUPPLIER') {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
+        },
+
 
         {
             path: '/appointmentInProgress',

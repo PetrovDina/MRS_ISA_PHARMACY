@@ -16,23 +16,27 @@
 
         <!--pharmacy admin-->
         <div v-if="isUserType('PHARMACY_ADMIN')">
-            <a @click="pharmacyAdminReportRedirect()" class="registerNav">Pharmacy reports</a>
+            <a @click="adminSupplierRedirect()" class="registerNav">My profile</a>
+            <a @click="pharmacyAdminReportRedirect()" class="registerNav">Pharmacy reports</a> 
         </div>
 
         <!--system admin-->
         <div v-if="isUserType('SYSTEM_ADMIN')">
+            <a @click="adminSupplierRedirect()" class="registerNav">My profile</a>
+            <a @click="adminOptionsRedirect()" class="registerNav">Options</a>
             <!-- <a @click="pharmacyRegisterRedirect()" class="registerNav">Pharmacy Registration</a> -->
-            <a @click="pharmacyAdminRegistrationRedirect()" class="registerNav">Pharmacy Admin registration</a>
-            <a @click="systemAdminRegistrationRedirect()" class="registerNav">System Admin Registration</a>
+            <!-- <a @click="pharmacyAdminRegistrationRedirect()" class="registerNav">Pharmacy Admin registration</a>
+            <a @click="systemAdminRegistrationRedirect()" class="registerNav">System Admin Registration</a> -->
             <!-- <a @click="medicationRegistrationRedirect()" class="registerNav">Medication Registration</a> -->
-            <a @click="supplierRegistrationRedirect()" class="registerNav">Supplier Registration</a>
-            <a @click="dermatologistRegistrationRedirect()" class="registerNav">Dermos Registration</a> 
+            <!-- <a @click="supplierRegistrationRedirect()" class="registerNav">Supplier Registration</a>
+            <a @click="dermatologistRegistrationRedirect()" class="registerNav">Dermos Registration</a>  -->
             <!-- <a @click="pharmacyComplaintRegistrationRedirect()" class="registerNav">Pharmacy Complaints</a> 
             <a @click="employeeComplaintRegistrationRedirect()" class="registerNav">Employee Complaints</a> -->
         </div>
 
         <!--supplier-->
         <div v-if="isUserType('SUPPLIER')">
+            <a @click="adminSupplierRedirect()" class="registerNav">My profile</a>
             <a @click="medicationStorageRedirect()" class="registerNav">Medication Storage</a>
             <a @click="supplierOrdersRedirect()" class="registerNav">Pharmacy orders</a>
             <a @click="supplierOrdersOffersRedirect()" class="registerNav">Orders for my offers</a>
@@ -390,6 +394,30 @@ export default {
         pharmacyAdminReportRedirect : function(){
             this.$router
                 .push({ name: "PharmacyAdminReportView" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        adminOptionsRedirect: function() {
+            this.$router
+                .push({ name: "AdminHomePage" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        adminSupplierRedirect: function() {
+            this.$router
+                .push({ name: "ProfileAdminSupplierPage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {
