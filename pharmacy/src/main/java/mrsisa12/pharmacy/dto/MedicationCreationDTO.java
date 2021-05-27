@@ -13,8 +13,8 @@ public class MedicationCreationDTO extends MedicationDTO {
 	
 	public MedicationCreationDTO() { super(); }
 
-	public MedicationCreationDTO(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form, List<MedicationDTO> alternatives, String description, String content) {
-		super(id, name, manufacturer, prescriptionReq, form);
+	public MedicationCreationDTO(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form, List<MedicationDTO> alternatives, String description, String content, double rating) {
+		super(id, name, manufacturer, prescriptionReq, form, rating);
 		this.alternatives = alternatives;
 		this.description = description;
 		this.content = content;
@@ -22,7 +22,7 @@ public class MedicationCreationDTO extends MedicationDTO {
 	
 	public MedicationCreationDTO(Medication m)
 	{	
-		this(m.getId(), m.getName(), m.getManufacturer(), m.isPrescriptionReq(), m.getForm(), m.getDTOAlternatives(), m.getDescription(), m.getContent());
+		this(m.getId(), m.getName(), m.getManufacturer(), m.isPrescriptionReq(), m.getForm(), m.getDTOAlternatives(), m.getDescription(), m.getContent(), m.getRating());
 	}
 
 	public List<MedicationDTO> getAlternatives() {

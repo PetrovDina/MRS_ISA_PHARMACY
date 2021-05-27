@@ -11,17 +11,19 @@ public class MedicationDTO {
 	private boolean prescriptionReq;
 	private MedicationForm form;
 	private String nameAndForm;
+	private double rating;
 	
 	public MedicationDTO() {
 		
 	}
 	
 	public MedicationDTO(Medication medication) {
-		this(medication.getId(), medication.getName(), medication.getManufacturer(), medication.isPrescriptionReq(), medication.getForm());
+		this(medication.getId(), medication.getName(), medication.getManufacturer(), medication.isPrescriptionReq(), medication.getForm(), medication.getRating());
 		this.nameAndForm = medication.getName() + " (" + medication.getForm().toString() + ")";
+		this.rating = medication.getRating();
 	}
 
-	public MedicationDTO(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form) {
+	public MedicationDTO(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form, double rating) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -29,6 +31,7 @@ public class MedicationDTO {
 		this.prescriptionReq = prescriptionReq;
 		this.form = form;
 		this.nameAndForm = name + " (" + form.toString() + ")";
+		this.rating = rating;
 	}
 
 	public Long getId() {
@@ -77,6 +80,15 @@ public class MedicationDTO {
 
 	public void setNameAndForm(String nameAndForm) {
 		this.nameAndForm = nameAndForm;
+	}
+
+	
+	public double getRating() {
+		return rating;
+	}
+
+	public void setRating(double rating) {
+		this.rating = rating;
 	}
 
 	@Override

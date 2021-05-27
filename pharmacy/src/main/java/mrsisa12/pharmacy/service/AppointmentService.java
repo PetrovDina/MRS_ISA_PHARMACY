@@ -145,4 +145,8 @@ public class AppointmentService {
 		return data;
 	}
 
+	public List<Appointment> findAllConcludedByPatientAndPharmacy(String patientUsername, Long pharmacyId) {
+		return appointmentRepository.findAllConcludedByPatientAndPharmacy(patientUsername, pharmacyId);
+	}
+
 }

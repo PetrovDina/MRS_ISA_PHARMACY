@@ -1,7 +1,6 @@
 <template>
-    <div v-if="!!isModalShow()" id="myModal" class="modal">
-        <div class="modal-content">
-            <Button id="close_btn" @action-performed="closeWindow" class="close" text="X" color="white"></Button>
+    <div id="detailsDiv">
+        <div>
             <h1>{{medication.name}}</h1>
             <star-rating
                         data-toggle="tooltip"
@@ -82,7 +81,7 @@
             </div>
         </div>
 
-        <!-- Modal Can Rate
+        <!-- modal can rate  -->
         <div
             class="modal fade bd-example-modal-lg .modal-lg"
             id="rateModal"
@@ -132,6 +131,7 @@
             </div>
         </div>
 
+        <!-- modal cant rate -->
         <div
             class="modal fade bd-example-modal-lg .modal-lg"
             id="cantRateModal"
@@ -176,21 +176,21 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div> 
     </div>
 </template>
 
 <script>
 import { client } from "@/client/axiosClient";
-import Button from "./Button";
-import PharmaciesWithPriceComponent from "./PharmaciesWithPriceComponent.vue";
+import Button from "@/components/Button";
+import PharmaciesWithPriceComponent from "@/components/PharmaciesWithPriceComponent.vue";
 import StarRating from "vue-star-rating";
+import $ from "jquery";
 
 export default {
-    name : "ModaWindowMedicationDetail",
+    name : "MedicationDetailsView",
     components : {Button, PharmaciesWithPriceComponent, StarRating},
     props : {
-        modal_show : Boolean,
         medicationId: Number
     },
     data() {
@@ -204,32 +204,7 @@ export default {
     },
 
     methods : {
-        closeWindow: function()
-        {
-            this.$emit('modal-closed');
-        },
 
-        isModalShow: function()
-        {
-            if(this.medicationId != undefined && this.modal_show != false && this.medication.id != this.medicationId)
-            {
-                let url = "med/details/" + this.medicationId;
-                client({
-                        url: url,
-                        method: "GET",
-                }).then((response) => {
-                        this.medication = response.data;
-                        client({
-                            url: "pharmacyStorageItem/allByMedicationAndQuantity",
-                            params: {medicationId: this.medication.id},
-                            method: "GET",
-                        }).then((response) => (this.pharmacies = response.data));
-                });
-
-            }
-                
-            return this.modal_show === true;
-        },
         isPharmacyAdmin : function(){
             return localStorage.getItem('USER_TYPE') === "PHARMACY_ADMIN";
         },
@@ -241,7 +216,7 @@ export default {
         rateClicked() {
             //getting patients rating if it already exists
             client({
-                url: "medication/getRating",
+                url: "med/getRating",
                 params: {
                     patientUsername: localStorage.getItem("USERNAME"),
                     medicationId: this.medicationId,
@@ -250,7 +225,7 @@ export default {
             }).then((response) => {
                 this.patientsRating = response.data;
                     client({
-                        url: "medication/checkCanRate",
+                        url: "med/checkCanRate",
                         params: {
                             patientUsername: localStorage.getItem("USERNAME"),
                             medicationId: this.medicationId,
@@ -268,12 +243,64 @@ export default {
             });
 
         },
+
+        saveRating() {
+            client({
+                url: "med/rateMedication",
+                params: {
+                    patientUsername: localStorage.getItem("USERNAME"),
+                    medicationId: this.medicationId,
+                    ratedValue: this.patientsRating,
+                },
+                method: "GET",
+            }).then((response) => {
+                //refreshing
+                let url = "med/details/" + this.medicationId;
+                client({
+                        url: url,
+                        method: "GET",
+                }).then((response) => {
+                        this.medication = response.data;
+                        client({
+                            url: "pharmacyStorageItem/allByMedicationAndQuantity",
+                            params: {medicationId: this.medication.id},
+                            method: "GET",
+                        }).then((response) => (this.pharmacies = response.data));
+                });
+            });
+        },
+    },
+
+    mounted(){
+        if(this.medicationId != undefined && this.medication.id != this.medicationId)
+            {
+                let url = "med/details/" + this.medicationId;
+                client({
+                        url: url,
+                        method: "GET",
+                }).then((response) => {
+                        this.medication = response.data;
+                        client({
+                            url: "pharmacyStorageItem/allByMedicationAndQuantity",
+                            params: {medicationId: this.medication.id},
+                            method: "GET",
+                        }).then((response) => (this.pharmacies = response.data));
+                });
+
+            }
+            else{
+                this.$router.push({ name: "Home" });
+            }
     }
 };
 </script>
 
 
 <style scoped>
+
+#detailsDiv{
+    margin:50px;
+}
 
 .dajv{
     margin: 30px 100px 30px 100px
@@ -295,42 +322,8 @@ thead {
 
 body {font-family: Arial, Helvetica, sans-serif;}
 
-/* The Modal (background) */
-.modal {
-  display: block; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+h1{
+    margin-top: 30px;
 }
 
-/* Modal Content */
-.modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0px;
-  border: 1px solid #888;
-  width: 75%;
-}
-
-/* The Close Button */
-.close {
-  color: #aaaaaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
 </style>

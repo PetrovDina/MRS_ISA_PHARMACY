@@ -35,6 +35,9 @@ public class Medication {
 
 	@Column(name = "prescriptionReq", nullable = false)
 	private boolean prescriptionReq;
+	
+	@Column(name = "rating", nullable = false)
+	private double rating;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "form", nullable = false)
@@ -173,4 +176,14 @@ public class Medication {
 	public void setOrderItems(List<OrderItem> orderItems) {
 		this.orderItems = orderItems;
 	}
+
+	public double getRating() {
+		return rating;
+	}
+
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+	
+	
 }
