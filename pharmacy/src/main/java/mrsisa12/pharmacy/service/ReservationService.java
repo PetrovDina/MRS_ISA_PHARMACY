@@ -168,4 +168,12 @@ public class ReservationService {
 		return data;
 	}
 
+	public List<Reservation> findAllCompletedByPatientAndPharmacy(String patientUsername, Long pharmacyId) {
+		return reservationRepository.findAllCompletedByPatientAndPharmacy(patientUsername, pharmacyId);
+	}
+	
+	public List<Reservation> findAllCompletedByPatientAndMedication(String patientUsername, Long medicationId) {
+		return reservationRepository.findAllCompletedByPatientAndMedication(patientUsername, medicationId);
+	}
+
 }

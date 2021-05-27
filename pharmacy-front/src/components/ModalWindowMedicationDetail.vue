@@ -2,12 +2,29 @@
     <div v-if="!!isModalShow()" id="myModal" class="modal">
         <div class="modal-content">
             <Button id="close_btn" @action-performed="closeWindow" class="close" text="X" color="white"></Button>
-            <h4>{{medication.name}}</h4>
+            <h1>{{medication.name}}</h1>
+            <star-rating
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        :title="medication.rating"
+                        active-color="rgba(155, 82, 151, 0.527)"
+                        :star-size="50"
+                        :read-only="true"
+                        :show-rating="false"
+                        :rating="medication.rating"
+                        :increment="0.1"
+                    ></star-rating>
+                    <Button
+                        v-if="isPatient() == true"
+                        @action-performed="rateClicked()"
+                        text="Rate medication"
+                        style="margin-top: 10px"
+                    >
+                    </Button>
             <div class="dajv">
                 <table id="medicationTable" class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Id</th>
                             <th scope="col">Manufacturer</th>
                             <th scope="col">Prescription</th>
                             <th scope="col">Form</th>
@@ -17,7 +34,6 @@
 
                     <tbody>
                         <tr>
-                            <td>{{ medication.id }}</td>
                             <td>{{ medication.manufacturer }}</td>
                             <td>{{ medication.prescriptionReq ? "required" : "not required" }}</td>
                             <td>{{ medication.form }}</td>
@@ -39,7 +55,6 @@
                 <table id="alternativesTable" class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Id</th>
                             <th scope="col">Name</th>
                             <th scope="col">Manufacturer</th>
                             <th scope="col">Prescription</th>
@@ -50,7 +65,6 @@
 
                     <tbody>
                         <tr :key="medication.id" v-for="medication in medication.alternatives">
-                            <td>{{ medication.id }}</td>
                             <td>{{ medication.name }}</td>
                             <td>{{ medication.manufacturer }}</td>
                             <td>{{ medication.prescriptionReq ? "required" : "not required" }}</td>
@@ -67,6 +81,102 @@
                 ></PharmaciesWithPriceComponent>
             </div>
         </div>
+
+        <!-- Modal Can Rate
+        <div
+            class="modal fade bd-example-modal-lg .modal-lg"
+            id="rateModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+        >
+            <div
+                class="modal-dialog modal-dialog-centered .modal-lg"
+                role="document"
+            >
+                <div class="modal-content justify-content-center">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            How would you rate {{ medication.name }}?
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div
+                        class="modal-body w-100 text-center justify-content-center"
+                    >
+                        <star-rating
+                            style="margin: 0 auto"
+                            v-model="patientsRating"
+                            active-color="rgba(155, 82, 151, 0.527)"
+                        ></star-rating>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                            @click="saveRating()"
+                        >
+                            Save rating
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="modal fade bd-example-modal-lg .modal-lg"
+            id="cantRateModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+        >
+            <div
+                class="modal-dialog modal-dialog-centered .modal-lg"
+                role="document"
+            >
+                <div class="modal-content justify-content-center">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Rating unavailable
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div
+                        class="modal-body w-100 justify-content-center"
+                    >
+                        <p style="text-align:justify">Unfortunately, you can't rate {{ medication.name }}.<br> In
+                        order to rate a medication, you have to complete at least
+                        one <b>reservation</b>, or <b>ePrescription</b> with that medication.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div> -->
     </div>
 </template>
 
@@ -74,10 +184,11 @@
 import { client } from "@/client/axiosClient";
 import Button from "./Button";
 import PharmaciesWithPriceComponent from "./PharmaciesWithPriceComponent.vue";
+import StarRating from "vue-star-rating";
 
 export default {
     name : "ModaWindowMedicationDetail",
-    components : {Button, PharmaciesWithPriceComponent},
+    components : {Button, PharmaciesWithPriceComponent, StarRating},
     props : {
         modal_show : Boolean,
         medicationId: Number
@@ -86,7 +197,9 @@ export default {
         return {
             medication: { id: -1},
             pharmacies: [],
-            top: 100
+            top: 100,
+            patientsRating: 0.0,
+            canRate: true
         }
     },
 
@@ -119,7 +232,42 @@ export default {
         },
         isPharmacyAdmin : function(){
             return localStorage.getItem('USER_TYPE') === "PHARMACY_ADMIN";
-        }
+        },
+
+        isPatient: function () {
+            return localStorage.getItem("USER_TYPE") == "PATIENT";
+        },
+
+        rateClicked() {
+            //getting patients rating if it already exists
+            client({
+                url: "medication/getRating",
+                params: {
+                    patientUsername: localStorage.getItem("USERNAME"),
+                    medicationId: this.medicationId,
+                },
+                method: "GET",
+            }).then((response) => {
+                this.patientsRating = response.data;
+                    client({
+                        url: "medication/checkCanRate",
+                        params: {
+                            patientUsername: localStorage.getItem("USERNAME"),
+                            medicationId: this.medicationId,
+                        },
+                        method: "GET",
+                    }).then((response) => {
+                        this.canRate = response.data;
+                        if (this.canRate) {
+                            $("#rateModal").modal("show");
+                        } else {
+                            $("#cantRateModal").modal("show");
+                        }
+                    });
+                
+            });
+
+        },
     }
 };
 </script>

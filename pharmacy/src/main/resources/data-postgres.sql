@@ -1,11 +1,11 @@
-insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Probiotik', 'Ivancic i sinovi', 'False', 'PILL', 'Neki opis 1', 'Neki sadrzaj 1');
-insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Brufen', 'Bosna lijek', 'False', 'PILL', 'Neki opis 2', 'Neki sadrzaj 2');
-insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Paracetamol', 'Krka', 'False', 'CAPSULE', 'Neki opis 3', 'Neki sadrzaj 3');
-insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Panadol', 'Jugoremedija', 'False', 'PASTE', 'Neki opis 4', 'Neki sadrzaj 4');
-insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Panklav', 'Krka', 'True', 'CAPSULE', 'Neki opis 5', 'Neki sadrzaj 5');
-insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Tylolhot', 'Nobel', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 3');
-insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Fervex', 'Upsa', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 4');
-insert into medication (name, manufacturer, prescriptionReq, form, description, content) values ('Amoksicilin', 'Belupo', 'True', 'CAPSULE', 'Antibiotski lek za ...', 'Neki sadrzaj 5');
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Probiotik', 'Ivancic i sinovi', 'False', 'PILL', 'Neki opis 1', 'Neki sadrzaj 1');
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Brufen', 'Bosna lijek', 'False', 'PILL', 'Neki opis 2', 'Neki sadrzaj 2');
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Paracetamol', 'Krka', 'False', 'CAPSULE', 'Neki opis 3', 'Neki sadrzaj 3');
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Panadol', 'Jugoremedija', 'False', 'PASTE', 'Neki opis 4', 'Neki sadrzaj 4');
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Panklav', 'Krka', 'True', 'CAPSULE', 'Neki opis 5', 'Neki sadrzaj 5');
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Tylolhot', 'Nobel', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 3');
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Fervex', 'Upsa', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 4');
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Amoksicilin', 'Belupo', 'True', 'CAPSULE', 'Antibiotski lek za ...', 'Neki sadrzaj 5');
 
 
 insert into alternative_medications (medication_id, alternative_id) values (1, 5);

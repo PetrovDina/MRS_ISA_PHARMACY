@@ -26,6 +26,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>{
 	
 	@Query("select res from Reservation res where res.status = 'COMPLETED' and res.pharmacy = ?1")
 	public List<Reservation> findAllByPharmacyCompleted(Pharmacy pharmacy);
+
+	@Query("select res from Reservation res where res.patient.username = ?1 and res.pharmacy.id = ?2 and res.status = 'COMPLETED'")
+	public List<Reservation> findAllCompletedByPatientAndPharmacy(String patientUsername, Long pharmacyId);
+
+	@Query("select res from Reservation res where res.patient.username = ?1 and res.medication.id = ?2 and res.status = 'COMPLETED'")
+	public List<Reservation> findAllCompletedByPatientAndMedication(String patientUsername, Long medicationId);
 	
 //	public List<Reservation> findAllByName(String name);
 //	

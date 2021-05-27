@@ -45,4 +45,9 @@ export default {
     border-color: rgba(155, 82, 151, 0.527);
     box-shadow: 0 0 0 0.1rem rgba(155, 82, 151, 0.527);
 }
+
+.vue-star-rating{
+    align-items: center;
+    justify-content: center;
+}
 </style>

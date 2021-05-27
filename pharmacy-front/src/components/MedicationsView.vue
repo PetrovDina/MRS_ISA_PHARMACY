@@ -6,6 +6,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Manufacturer</th>
                     <th scope="col">Form</th>
+                    <th scope="col">Rating</th>
                     <th scope="col">Prescription</th>
 
                     <th scope="col"></th>
@@ -22,6 +23,16 @@
                     <td>{{ med.manufacturer }}</td>
 
                     <td>{{ med.form }}</td>
+                    <td><star-rating
+                            active-color="rgba(155, 82, 151, 0.527)"
+                            :inline="true"
+                            :star-size="20"
+                            :read-only="true"
+                            :show-rating="false"
+                            :rating="med.rating"
+                            :increment="0.1"
+                        ></star-rating></td>
+
                     <td>
                         {{ med.prescriptionReq ? "required" : "not required" }}
                     </td>
@@ -54,11 +65,12 @@
 
 <script>
 import ModalWindowMedicationDetail from "../components/ModalWindowMedicationDetail";
+import StarRating from "vue-star-rating";
 
 export default {
     name: "MedicationsView",
 
-    components: { ModalWindowMedicationDetail },
+    components: { ModalWindowMedicationDetail, StarRating },
 
     props: ["medications"],
 

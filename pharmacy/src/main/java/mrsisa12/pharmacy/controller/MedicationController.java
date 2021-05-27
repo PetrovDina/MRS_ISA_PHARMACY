@@ -21,11 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.MedicationCreationDTO;
 import mrsisa12.pharmacy.dto.MedicationDTO;
+import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Medication;
+import mrsisa12.pharmacy.model.MedicationRating;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.PharmacyRating;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
+import mrsisa12.pharmacy.model.Reservation;
+import mrsisa12.pharmacy.service.MedicationRatingService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PharmacyService;
+import mrsisa12.pharmacy.service.ReservationService;
 
 @RestController
 @RequestMapping("/med")
@@ -35,7 +41,13 @@ public class MedicationController {
 	private MedicationService medicationService;
 	
 	@Autowired
+	private MedicationRatingService medicationRatingService;
+	
+	@Autowired
 	private PharmacyService pharmacyService;
+	
+	@Autowired
+	private ReservationService reservationService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<MedicationDTO>> getAllMedications() {
@@ -97,6 +109,7 @@ public class MedicationController {
 		medication.setPrescriptionReq(medicationDTO.isPrescriptionReq());
 		medication.setDescription(medicationDTO.getDescription());
 		medication.setForm(medicationDTO.getForm());
+		medication.setRating(0);
 		
 		List<Medication> alternatives = new ArrayList<Medication>();
 		for (MedicationDTO m : medicationDTO.getAlternatives()) 
@@ -249,6 +262,47 @@ public class MedicationController {
 			medicationsDTO.add(new MedicationDTO(m));
 		}
 		return new ResponseEntity<>(medicationsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/getRating")
+	public ResponseEntity<Double> getRating(
+			@RequestParam String patientUsername, @RequestParam Long medicationId) {
+
+
+		MedicationRating rating = medicationRatingService.findOneByPatientAndMedication(patientUsername, medicationId);
+		
+		if (rating == null) {
+			return new ResponseEntity<Double>(0.0, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<Double>(rating.getRating(), HttpStatus.OK);	
+		}
+
+	}
+	
+	@GetMapping(value = "/checkCanRate")
+	public ResponseEntity<Boolean> checkCanRate(
+			@RequestParam String patientUsername, @RequestParam Long medicationId) {
+
+
+		MedicationRating rating = medicationRatingService.findOneByPatientAndMedication(patientUsername, medicationId);
+		
+		//if a rating already exists, that means the patient can rate the pharmacy
+		if (rating != null) {
+			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		}
+		else {
+			//checking if any reservation exist witht this medication
+			List<Reservation> reservations = reservationService.findAllCompletedByPatientAndMedication(patientUsername, medicationId);
+			if (reservations.size() > 0) {
+				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+			}
+
+			//TODO checking if any ePrescriptions exist with this medication
+			
+			return new ResponseEntity<Boolean>(false, HttpStatus.OK);	
+		}
+
 	}
 //	
 //	@GetMapping(value="/testAdd", produces = MediaType.APPLICATION_JSON_VALUE)

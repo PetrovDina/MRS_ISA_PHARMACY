@@ -1,6 +1,8 @@
 package mrsisa12.pharmacy.controller;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,9 +30,12 @@ import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.AppointmentPriceCatalog;
+import mrsisa12.pharmacy.model.Employee;
+import mrsisa12.pharmacy.model.EmployeeRating;
 import mrsisa12.pharmacy.model.Location;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.PharmacyRating;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
@@ -38,6 +43,7 @@ import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.PatientService;
+import mrsisa12.pharmacy.service.PharmacyRatingService;
 import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.ReservationService;
 
@@ -59,6 +65,9 @@ public class PharmacyController {
 	
 	@Autowired
 	private LocationService locationService;
+	
+	@Autowired
+	private PharmacyRatingService pharmacyRatingService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
@@ -266,5 +275,100 @@ public class PharmacyController {
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/getRating")
+	public ResponseEntity<Double> getRating(
+			@RequestParam String patientUsername, @RequestParam Long pharmacyId) {
+
+
+		PharmacyRating rating = pharmacyRatingService.findOneByPatientAndPharmacy(patientUsername, pharmacyId);
+		
+		if (rating == null) {
+			return new ResponseEntity<Double>(0.0, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<Double>(rating.getRating(), HttpStatus.OK);	
+		}
+
+	}
+	
+	@GetMapping(value = "/checkCanRate")
+	public ResponseEntity<Boolean> checkCanRate(
+			@RequestParam String patientUsername, @RequestParam Long pharmacyId) {
+
+
+		PharmacyRating rating = pharmacyRatingService.findOneByPatientAndPharmacy(patientUsername, pharmacyId);
+		
+		//if a rating already exists, that means the patient can rate the pharmacy
+		if (rating != null) {
+			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		}
+		else {
+			//checking if any reservation exists in this pharmacy
+			List<Reservation> reservations = reservationService.findAllCompletedByPatientAndPharmacy(patientUsername, pharmacyId);
+			if (reservations.size() > 0) {
+				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+			}
+			
+			//checking if any appointment exist in this pharmacy
+			List<Appointment> appointments = appointmentService.findAllConcludedByPatientAndPharmacy(patientUsername, pharmacyId);
+			if (appointments.size() > 0) {
+				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+			}
+			
+			//TODO checking if any ePrescriptions exist in this pharmacy
+			
+			return new ResponseEntity<Boolean>(false, HttpStatus.OK);	
+		}
+
+	}
+	
+	@GetMapping(value = "/ratePharmacy")
+	public ResponseEntity<Double> rateEmployee(
+			@RequestParam String patientUsername, @RequestParam Long pharmacyId, @RequestParam double ratedValue) {
+
+		if (ratedValue < 0 || ratedValue > 5) {
+			return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
+ 
+		}
+		Patient patient = patientService.findByUsername(patientUsername);
+		Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
+		
+		PharmacyRating rating = pharmacyRatingService.findOneByPatientAndPharmacy(patientUsername, pharmacyId);
+		
+		if (rating == null) {
+			//create new rating obj
+			rating = new PharmacyRating();
+			rating.setDate(new Date());
+			rating.setPharmacy(pharmacy);
+			rating.setPatient(patient);
+			rating.setRating(ratedValue);
+			pharmacyRatingService.save(rating);
+		}
+		else {
+			//update existing rating obj
+			rating.setRating(ratedValue);
+			rating.setDate(new Date());
+			pharmacyRatingService.save(rating);		
+		}
+		
+		//updating value in Pharmacy object
+		List<PharmacyRating> pharmaciesRatings = pharmacyRatingService.findAllByPharmacy(pharmacyId);
+		int numRatings = pharmaciesRatings.size();
+		double newRating = 0;
+		
+		for (PharmacyRating er : pharmaciesRatings) {
+			newRating += er.getRating();
+		}
+		
+		newRating /= numRatings;
+		
+		DecimalFormat df = new DecimalFormat("#.##");
+		newRating = Double.parseDouble(df.format(newRating));
+		
+		pharmacy.setRating(newRating);
+		pharmacyService.save(pharmacy);
+
+		return new ResponseEntity<Double>(newRating, HttpStatus.OK);
+	}
 
 }
