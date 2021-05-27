@@ -54,12 +54,12 @@
                 </tr>
             </tbody>
         </table>
-        <ModalWindowMedicationDetail
+        <!-- <ModalWindowMedicationDetail
             @modal-closed="closeModalWindow"
             :modal_show="modalWindowShowed"
             :medicationId="selectedMedicationId"
         >
-        </ModalWindowMedicationDetail>
+        </ModalWindowMedicationDetail> -->
     </div>
 </template>
 
@@ -95,7 +95,13 @@ export default {
 
         dblClickedOnRow: function (id) {
             this.selectedMedicationId = id;
-            this.modalWindowShowed = true;
+            //this.modalWindowShowed = true;
+            this.$router.push({
+                name: "MedicationDetailsView",
+                params: {
+                    medicationId: this.selectedMedicationId,
+                },
+            });
         },
 
         closeModalWindow: function () {

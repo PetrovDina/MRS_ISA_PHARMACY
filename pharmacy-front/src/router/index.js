@@ -51,6 +51,8 @@ import MedicationReservationView from '@/views/MedicationReservationView'
 
 import PharmacyAdminReportView from '@/views/PharmacyAdminReportView'
 
+import MedicationDetailsView from '@/views/MedicationDetailsView'
+
 import * as CheckUser from '../router/CheckUser.js'
 
 Vue.use(Router)
@@ -741,6 +743,14 @@ export default new Router({
                     ({ path: '/' });
                 }
             }
+        },
+
+        {
+            path: '/medicationDetailsView',
+            name: 'MedicationDetailsView',
+            component: MedicationDetailsView,
+            props: true
+
         },
 
     ]

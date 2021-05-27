@@ -323,7 +323,7 @@ public class PharmacyController {
 	}
 	
 	@GetMapping(value = "/ratePharmacy")
-	public ResponseEntity<Double> rateEmployee(
+	public ResponseEntity<Double> ratePharmacy(
 			@RequestParam String patientUsername, @RequestParam Long pharmacyId, @RequestParam double ratedValue) {
 
 		if (ratedValue < 0 || ratedValue > 5) {

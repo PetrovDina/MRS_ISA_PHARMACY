@@ -18,12 +18,12 @@ public class MedicationDTO {
 	}
 	
 	public MedicationDTO(Medication medication) {
-		this(medication.getId(), medication.getName(), medication.getManufacturer(), medication.isPrescriptionReq(), medication.getForm());
+		this(medication.getId(), medication.getName(), medication.getManufacturer(), medication.isPrescriptionReq(), medication.getForm(), medication.getRating());
 		this.nameAndForm = medication.getName() + " (" + medication.getForm().toString() + ")";
 		this.rating = medication.getRating();
 	}
 
-	public MedicationDTO(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form) {
+	public MedicationDTO(Long id, String name, String manufacturer, boolean prescriptionReq, MedicationForm form, double rating) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -31,6 +31,7 @@ public class MedicationDTO {
 		this.prescriptionReq = prescriptionReq;
 		this.form = form;
 		this.nameAndForm = name + " (" + form.toString() + ")";
+		this.rating = rating;
 	}
 
 	public Long getId() {

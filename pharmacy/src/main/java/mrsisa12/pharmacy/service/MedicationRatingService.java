@@ -32,7 +32,9 @@ public class MedicationRatingService {
 		return medicationRatingRepository.findOneByPatientAndMedication(patientUsername, medicationId);
 	}
 
-	public List<MedicationRating> findOneByPatientAndMedication(Long medicationId) {
+	public List<MedicationRating> findAllByMedication(Long medicationId) {
 		return medicationRatingRepository.findAllByMedication(medicationId);
 	}
+
+
 }
