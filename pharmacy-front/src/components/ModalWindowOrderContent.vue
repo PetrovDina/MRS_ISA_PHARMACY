@@ -80,6 +80,14 @@ export default {
             return moment(date).format('DD. MMM YYYY.');
         },
         accept : function(offer){
+            if(moment().format('DD. MMM YYYY.') < this.convertDate(this.order.dueDate)){
+                this.$toasted.show("This offer cannot be accepted due date "+ this.convertDate(this.order.dueDate), {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                return;
+            }
             client({
                 url: "/offer/accept",
                 method: "POST",

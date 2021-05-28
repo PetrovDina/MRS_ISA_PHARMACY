@@ -24,13 +24,6 @@
                 </v-spacer>
             </v-card-title>
         </v-card>
-        <Button v-if="checkRoleTEST('PATIENT')"
-            @action-performed="subscribedToggle" 
-            id="sub-btn"
-            class="btn"
-            :text="!subscribed ? 'Subscribe' : 'Subscribed'"
-            :bgd_color="!subscribed ? 'rgba(15, 95, 72, 0.95)' : 'grey'">
-        </Button>
         <TabNav v-if="checkRoleTEST('PHARMACY_ADMIN')"
             :tabs="['Dermatologists', 'Pharmacists', 'Medications', 'Orders']"
             :selected="selected"
@@ -90,6 +83,7 @@
                     @order-added = "addNewOrder"
                     @new-medications-added-from-order = "addMedIntoPharStorage"
                     @update-quanities-for-medications = "updateQuantities"
+                    @order-deleted = "deleteOrder"
                     :orders = "ordersSearchResults"
                     :medicationsInPharmacy = "medicationToSend">
                 </OrdersTable>
@@ -145,7 +139,6 @@ export default {
     data() {
         return {
             selected: "Dermatologists",
-            subscribed : false,
             pharmacy : { 
                 location: {} // morao da dodam zbog rendera
             },
@@ -155,7 +148,6 @@ export default {
             medicationToSend: [],
             ordersToSend: [],
             // lista svih slobodnih termina treba da se doda
-            rating: 0.0,
             modalEditPharmacyData : false,
             coordinates : [],
             modalMap : false,
@@ -184,8 +176,14 @@ export default {
         setSelected(tab) {
             this.selected = tab;
         },
-        subscribedToggle : function(){
-            this.subscribed = !this.subscribed;
+        deleteRecordFromList : function(data, datumId){
+            for(const datumIndex in data){
+                if(data[datumIndex].id === datumId){
+                    data.splice(datumIndex, 1);
+                    break;
+                }
+            }
+            return data;
         },
         deleteRecordFromDB : function(id){
             for(const medId in this.medicationToSend){
@@ -312,8 +310,19 @@ export default {
                 }
             }
         },
+        deleteOrder : function(order){
+            client({
+                url: "/order/" + order.id,
+                method: "DELETE"
+            })
+            .then(() => {
+                this.ordersToSend = this.deleteRecordFromList(this.ordersToSend, order.id);
+                this.ordersSearchResults = this.deleteRecordFromList(this.ordersSearchResults, order.id);
+            })
+        },
         addNewOrder : function(order){
             this.ordersToSend = [...this.ordersToSend, order];
+            this.ordersSearchResults = this.ordersToSend;
         },
         orderUpdated : function(orderUpdated){
             this.ordersToSend.forEach(order => {

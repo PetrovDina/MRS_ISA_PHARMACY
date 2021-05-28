@@ -3,6 +3,7 @@
         <table class="table table-hover" >
             <thead>
                 <tr>
+                    <th scope="col"></th>
                     <th scope="col">Duedate</th>
                     <th scope="col">Pharmacy admin</th>
                     <th scope="col">Status</th>
@@ -11,6 +12,7 @@
             </thead>
             <tbody>
                 <tr :key="order.id" v-for="order in orders">
+                    <td><button v-if="isDeletable(order)" @click="deleteRecord(order)"><i class="fa fa-trash fa-lg"></i></button></td>
                     <td>{{convertDate(order.dueDate)}}</td>
                     <td>{{order.pharmacyAdmin.username}}</td>
                     <td>{{order.orderStatus}}</td>
@@ -104,6 +106,21 @@ export default {
         },
         makeANewOrder : function(){
             this.mw_show_new_order = true;
+        },
+        isDeletable : function(order){
+            return order.orderStatus === "NEW";
+        },
+        deleteRecord : function(order){
+            // brisanje record-a
+            if (confirm('You want to delete the order from "'+ order.pharmacyAdmin.username + ' - ' + this.convertDate(order.dueDate) +'"?')) {
+                this.$emit('order-deleted', order);
+            } else {
+                this.$toasted.show("Deleting canceled!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+            }
         },
         saveOrder : function(order){
             this.mw_show_new_order = false;
