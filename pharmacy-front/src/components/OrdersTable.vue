@@ -112,7 +112,7 @@ export default {
         },
         deleteRecord : function(order){
             // brisanje record-a
-            if (confirm('You want to delete the order from "'+ order.pharmacyAdmin.username + ' - ' + this.convertDate(order.dueDate) +'"?')) {
+            if (confirm('You want to cancel the order from "'+ order.pharmacyAdmin.username + ' - ' + this.convertDate(order.dueDate) +'"?')) {
                 this.$emit('order-deleted', order);
             } else {
                 this.$toasted.show("Deleting canceled!", {

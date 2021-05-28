@@ -318,6 +318,11 @@ export default {
             .then(() => {
                 this.ordersToSend = this.deleteRecordFromList(this.ordersToSend, order.id);
                 this.ordersSearchResults = this.deleteRecordFromList(this.ordersSearchResults, order.id);
+                this.$toasted.show("Order successfuly canceled!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
             })
         },
         addNewOrder : function(order){
