@@ -141,6 +141,17 @@ export default {
         };
     },
 
+    props : {
+
+        adminSupplier : {
+            type : Boolean,
+            default() {
+                return false;
+            }
+        },
+
+    },
+
     methods: {
         saveChanges() {
             if (
@@ -160,28 +171,57 @@ export default {
                 return;
             }
 
-            client({
-                url: "/patient",
-                method: "PUT",
-                data: this.tempData,
-            })
-                .then((response) => {
-                    //modal window todo
-                    $("#exampleModal").modal("show");
-
+            if(this.adminSupplier) {    // Veljko dodao
+                client({
+                    url: "/auth",
+                    method: "PUT",
+                    data: this.tempData,
                 })
-                .catch((response) => alert(response));
+                    .then((response) => {
+                        //modal window todo
+                        $("#exampleModal").modal("show");
+
+                    })
+                    .catch((response) => alert(response));
+            }
+            else {
+                client({
+                    url: "/patient",
+                    method: "PUT",
+                    data: this.tempData,
+                })
+                    .then((response) => {
+                        //modal window todo
+                        $("#exampleModal").modal("show");
+
+                    })
+                    .catch((response) => alert(response));
+            }
+            
         },
     },
 
     mounted() {
-        client({
-            url: "patient/" + localStorage.getItem("USERNAME"),
-            method: "GET",
-        }).then((response) => {
-            this.user = response.data;
-            this.tempData = JSON.parse(JSON.stringify(response.data));
-        });
+
+        if(this.adminSupplier) {    // Veljko dodao
+            client({
+                url: "auth/" + localStorage.getItem("USERNAME"),
+                method: "GET",
+            }).then((response) => {
+                this.user = response.data;
+                this.tempData = JSON.parse(JSON.stringify(response.data));
+            });
+        }
+        else {
+            client({
+                url: "patient/" + localStorage.getItem("USERNAME"),
+                method: "GET",
+            }).then((response) => {
+                this.user = response.data;
+                this.tempData = JSON.parse(JSON.stringify(response.data));
+            });
+        }
+        
     },
 };
 </script>

@@ -16,15 +16,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.LoginDTO;
+import mrsisa12.pharmacy.dto.UserDTO;
 import mrsisa12.pharmacy.dto.UserTokenStateDTO;
 import mrsisa12.pharmacy.model.User;
 import mrsisa12.pharmacy.model.enums.UserStatus;
+import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.UserService;
 import mrsisa12.pharmacy.utils.TokenUtils;
 
@@ -43,6 +46,9 @@ public class UserController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private LocationService locationService;
 	
 
 	// Prvi endpoint koji pogadja korisnik kada se loguje.
@@ -160,4 +166,40 @@ public class UserController {
 		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	@PreAuthorize("hasAnyRole('SYSTEM_ADMIN','PHARMACY_ADMIN', 'SUPPLIER')")
+	@GetMapping(value = "/{username}")
+	public ResponseEntity<UserDTO> getOneByUsername(@PathVariable("username") String username) 
+	{
+		User user = userService.findByUsername(username);
+		
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasAnyRole('SYSTEM_ADMIN','PHARMACY_ADMIN', 'SUPPLIER')")
+	@PutMapping(consumes = "application/json")
+	public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO) 
+	{
+
+		User user = userService.findByUsername(userDTO.getUsername());
+
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		user.setFirstName(userDTO.getFirstName());
+		user.setLastName(userDTO.getLastName());
+		user.setUsername(userDTO.getUsername());
+		user.setLocation(userDTO.getLocation());
+		
+		userService.save(user);
+		locationService.save(user.getLocation());
+		
+		return new ResponseEntity<>(new UserDTO(user), HttpStatus.CREATED);
+	}
+	
 }
