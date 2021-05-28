@@ -1,6 +1,6 @@
 <template>
     <div id="medicationsViewDiv">
-        <table class="table table-hover">
+        <!-- <table class="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">Name</th>
@@ -23,7 +23,8 @@
                     <td>{{ med.manufacturer }}</td>
 
                     <td>{{ med.form }}</td>
-                    <td><star-rating
+                    <td>
+                        <star-rating
                             active-color="rgba(155, 82, 151, 0.527)"
                             :inline="true"
                             :star-size="20"
@@ -31,19 +32,14 @@
                             :show-rating="false"
                             :rating="med.rating"
                             :increment="0.1"
-                        ></star-rating></td>
+                        ></star-rating>
+                    </td>
 
                     <td>
                         {{ med.prescriptionReq ? "required" : "not required" }}
                     </td>
                     <td>
-                        <!-- <button
-                        v-if="checkRole()"
-                        class="reserveButton"
-                        @click="reserveMedication(med)"
-                    >
-                        RESERVE
-                    </button> -->
+
                         <i
                             v-if="checkRole() && !med.prescriptionReq"
                             @click="reserveMedication(med)"
@@ -53,24 +49,68 @@
                     </td>
                 </tr>
             </tbody>
-        </table>
+            
+        </table> -->
         <!-- <ModalWindowMedicationDetail
             @modal-closed="closeModalWindow"
             :modal_show="modalWindowShowed"
             :medicationId="selectedMedicationId"
         >
         </ModalWindowMedicationDetail> -->
+
+        <!-- CARDS -->
+        <div class="row">
+            <div class="col-sm-3" :key="med.id"
+                    v-for="med in medications">
+                <div class="card" >
+                    <div id="pictureDiv">
+                    <img class="card-img-top" src="@/assets/medicine2.png" alt="Card image cap">
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">{{med.name}}</h4>
+                        <star-rating
+
+                            active-color="rgba(155, 82, 151, 0.527)"
+                            :star-size="28"
+                            :read-only="true"
+                            :show-rating="false"
+                            :rating="med.rating"
+                            :increment="0.1"
+                            style="margin-bottom: 20px;"
+                        ></star-rating>
+
+                        <p class="card-text">
+                            Manufacturer: <b>{{med.manufacturer}}</b>
+                        </p>
+                        <p class="card-text">
+                            Form: <b>{{med.form}}</b>
+                        </p>
+                        <p class="card-text">
+                            Prescription: <b>{{ med.prescriptionReq ? "required" : "not required" }}</b>
+                        </p>
+                        <div style="display:flex; justify-content: center;
+">
+                        <Button  @action-performed="moreDetails(med.id)" bgd_color="rgba(87, 87, 87, 0.247)" text="Details"></Button>
+                        <Button v-if="checkRole() && !med.prescriptionReq" bgd_color="rgba(32, 102, 75, 0.295)"
+                            @action-performed="reserveMedication(med)" text="Buy"></Button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import ModalWindowMedicationDetail from "../components/ModalWindowMedicationDetail";
 import StarRating from "vue-star-rating";
+import Button from "@/components/Button";
 
 export default {
     name: "MedicationsView",
 
-    components: { ModalWindowMedicationDetail, StarRating },
+    components: { ModalWindowMedicationDetail, StarRating, Button },
 
     props: ["medications"],
 
@@ -93,7 +133,7 @@ export default {
             });
         },
 
-        dblClickedOnRow: function (id) {
+        moreDetails: function (id) {
             this.selectedMedicationId = id;
             //this.modalWindowShowed = true;
             this.$router.push({
@@ -123,7 +163,7 @@ export default {
 
 thead {
     /* background-color: rgba(15, 95, 72, 0.219); */
-    background-color: rgba(32, 102, 75, 0.295);
+    background-color: rgba(87, 87, 87, 0.247);
 }
 
 .reserveButton {
@@ -136,8 +176,28 @@ table {
     cursor: pointer;
 }
 
-i{
+i {
     font-size: 30px;
+}
+
+/* cards */
+.card-img-top{
+    max-width: 250px; 
+    max-height: 250px;
+
+}
+
+#pictureDiv {
+    align-content: center;
+}
+
+.card{
+    margin-top:20px;
+    text-align:center;
+}
+
+Button{
+    margin:10px;
 }
 </style>
 

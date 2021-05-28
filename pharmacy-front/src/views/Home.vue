@@ -1,7 +1,7 @@
 <template>
     <div id="homeDiv">
         <img
-            src="@/assets/logo2.png"
+            src="@/assets/logo3.png"
             height="100"
             width="100"
         />
