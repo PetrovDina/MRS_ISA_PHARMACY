@@ -13,7 +13,7 @@
                         <th scope="col">Gender</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Work time</th>
-                        <th scope="col">Appointment</th>
+                        <th scope="col">More</th>
                     </tr>
                 </thead>
 
@@ -39,7 +39,8 @@
                             ></star-rating>
                         </td>
                         <td>{{der.workTime.startTime}} - {{der.workTime.endTime}}</td>
-                        <td><Button @action-performed="clickedId(der.id)" class="btn" text="New" bgd_color="rgba(15, 95, 72, 0.85)" :style="{color : 'rgba(255,255,255, 0.9)'}"></Button></td>
+                        <td><button @click="showMore(der)"><i class="fa fa-ellipsis-h fa-2x"></i></button></td>
+                        <!-- <Button @action-performed="clickedId(der.id)" class="btn" text="New" bgd_color="rgba(15, 95, 72, 0.85)" :style="{color : 'rgba(255,255,255, 0.9)'}"></Button></td> -->
                     </tr>
                 </tbody>
             </table>
@@ -51,9 +52,11 @@
                 :style="{color : 'rgba(255,255,255, 0.9)', padding: '5px 5px', float:'left'}">
             </Button>
             <ModalWindowAddAppointment 
-                @modal-closed = "mw_show_appointment = false" 
-                :modal_show = "mw_show_appointment"
-                :dermatologistIdToSend = "dermatologistId">
+                @modal-closed = "mw_show_more = false"
+                @appointment-deleted = "deleteAppointment"
+                :modal_show = "mw_show_more"
+                :dermatologistToSend = "dermatologist"
+                :appointments = "dermosAppointments">
             </ModalWindowAddAppointment>
         </div>
         <Button
@@ -146,17 +149,26 @@ export default {
     },
     data() {
         return {
-            mw_show_appointment : false, // modal window cond-var
+            mw_show_more : false, // modal window cond-var
             mw_hire_dermatologist : false, // modal window cond-var
-            dermatologistId : null,
+            dermatologist : {},
+            dermosAppointments : [],
             selected_dermatologist: { id : -1},
             dermatologistsToHire : [],
         }
     },
     methods: {
-        clickedId: function(id){
-            this.dermatologistId = id;
-            this.mw_show_appointment = true;
+        showMore: function(derm){
+             client({
+                    url: "appointments/getAvailableDermAppointments",
+                    method: "GET",
+                    params: { employeeUsername: derm.username, pharmacyId : this.pharmacyId}
+                }).then((response) => {
+                    this.dermosAppointments = response.data;
+                    derm['pharmacyId'] = this.pharmacyId;
+                    this.dermatologist = derm;
+                    this.mw_show_more = true;
+                });
         },
         clickedOnRow: function(der){
             this.selected_dermatologist = der;
@@ -215,6 +227,14 @@ export default {
                     position: "top-center",
                     duration: 2000,
                 });
+        },
+        deleteAppointment : function(appointmentId){
+            for(const datumIndex in this.dermosAppointments){
+                if(this.dermosAppointments[datumIndex].id === appointmentId){
+                    this.dermosAppointments.splice(datumIndex, 1);
+                    break;
+                }
+            }
         }
     }
 }
