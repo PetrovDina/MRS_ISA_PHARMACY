@@ -502,54 +502,40 @@ public class AppointmentController {
 	}
 	
 	@GetMapping(value = "/createNewAppointmentByEmployee")
-	public ResponseEntity<Boolean> createNewAppointmentByEmployee(@RequestParam String employeeUsername, @RequestParam String patientUsername,
+	public ResponseEntity<String> createNewAppointmentByEmployee(@RequestParam String employeeUsername, @RequestParam String patientUsername,
 			@RequestParam String pharmacyId, @RequestParam String startDate, @RequestParam String startTime,@RequestParam String userType){
 		
 		Appointment appointment = new Appointment();
-		LocalDate startDate2 = LocalDate.parse(startDate);
-		LocalDate endDate2 = LocalDate.parse(startDate);
-		LocalTime startTime2 = LocalTime.parse(startTime);
-		LocalTime endTime2 = LocalTime.parse(startTime).plusHours(1);
-		TimePeriod tp = new TimePeriod(startDate2, startTime2, endDate2, endTime2);
+		TimePeriod tp = new TimePeriod(LocalDate.parse(startDate), LocalTime.parse(startTime), LocalDate.parse(startDate), LocalTime.parse(startTime).plusHours(1));
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
 		Patient patient = patientService.findByUsername(patientUsername);
 		Pharmacy pharmacy = pharmacyService.findOne(Long.parseLong(pharmacyId));
 		Employment employment = employmentService.findOneByEmployeeIdAndPharmacyId(emp.getId(), Long.parseLong(pharmacyId));
-		List<Absence> absences = absenceService.findAllByEmployeeId(emp.getId());
 		
-		boolean free = true; 
-		if (!employment.getWorkTime().getStartTime().isBefore(startTime2) || !employment.getWorkTime().getEndTime().isAfter(endTime2)) {
-			free = false; // ne upada u radno vrijeme
+		String free = "Free";
+		if (!employment.getWorkTime().getStartTime().isBefore(LocalTime.parse(startTime)) || !employment.getWorkTime().getEndTime().isAfter(LocalTime.parse(startTime).plusHours(1))) {
+			free = "Chosen time not in work hours."; // ne upada u radno vrijeme
 		}
 		
-		// Ovdje se mora provjeravati i datum i vrijeme za zaposlenog
-		for (Appointment appo : emp.getAppointments()) {
-			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
-			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
-			if (!(eWorkTSDateTime.isAfter(endDate2.atTime(endTime2))
-					&& eWorkTSDateTime.isAfter(startDate2.atTime(startTime2)))
-					&& !(eWorkTEDateTime.isBefore(endDate2.atTime(endTime2))
-							&& eWorkTEDateTime.isBefore(startDate2.atTime(startTime2)))) {
-				if(!(userType.equals("DERMATOLOGIST") && appo.getStatus()==AppointmentStatus.AVAILABLE)) {
-					free = false;  // preklapanje sa postojecim terminom
-					break;
-				}
-			}
+		//za zaposlenog
+		boolean empHasAppThen = appointmentService.checkEmployeeAppointments(tp, emp);
+		if(empHasAppThen) {
+			free = "You already have an appointment then.";
 		}
-		for (Absence absence : absences) {
-			if(absence.getStatus()!= AbsenceStatus.DENIED) {
-				LocalDateTime eWorkTSDateTime = absence.getTimePeriod().getStartDate().atTime(absence.getTimePeriod().getStartTime());
-				LocalDateTime eWorkTEDateTime = absence.getTimePeriod().getEndDate().atTime(absence.getTimePeriod().getEndTime());
-				if (!(eWorkTSDateTime.isAfter(endDate2.atTime(LocalTime.parse("00:00:00")))
-						&& eWorkTSDateTime.isAfter(startDate2.atTime(LocalTime.parse("00:00:00"))))
-						&& !(eWorkTEDateTime.isBefore(endDate2.atTime(LocalTime.parse("00:00:00")))
-								&& eWorkTEDateTime.isBefore(startDate2.atTime(LocalTime.parse("00:00:00"))))) {
-						free = false;  // preklapanje sa postojecim odsustvom
-						break;				
-				}
-			}
+		
+		// preklapanje sa postojecim odsustvom
+		boolean empIsAbsent = absenceService.checkEmployeeAbsences(tp, emp);
+		if(empIsAbsent) {
+			free = "You will be absent then.";
 		}
-		if(free) {
+		
+		// za pacijenta
+		boolean patHasAppThen = appointmentService.checkPatientAppointments(tp, patientUsername);
+		if(patHasAppThen) {
+			free = "Patient already has an appointment then.";
+		}
+		
+		if(free=="Free") {
 			appointment.setEmployee(emp);
 			appointment.setPatient(patient);
 			appointment.setPharmacy(pharmacy);
@@ -567,106 +553,31 @@ public class AppointmentController {
 			
 			appointment = appointmentService.save(appointment);
 			
-			String emailBody = "This email is confirmation that "
-			+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() 
-			+ " has successfully booked an appointment with you at "
-			+ appointment.getTimePeriod().getStartDate() + " " 
-			+ appointment.getTimePeriod().getStartTime();
+			String emailBody = "This email is confirmation that "+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() 
+			+ " has successfully booked an appointment with you at "+ appointment.getTimePeriod().getStartDate() + " " + appointment.getTimePeriod().getStartTime();
 			
 			EmailContent email = new EmailContent("Appointment booked", emailBody);
 			email.addRecipient(appointment.getPatient().getEmail());
 	        emailService.sendEmail(email);
 			
-			return new ResponseEntity<>(true, HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(false, HttpStatus.OK);
 		}
+		return new ResponseEntity<>(free, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/checkAvailableAppointmentByEmployee")
-	public ResponseEntity<String> checkAvailableAppointmentByEmployee(@RequestParam String employeeUsername, @RequestParam String patientUsername,
-			@RequestParam String pharmacyId, @RequestParam("startDate") String startDate, @RequestParam String startTime, @RequestParam String userType){
-		
-		LocalDate startDate2 = LocalDate.parse(startDate);
-		LocalDate endDate2 = LocalDate.parse(startDate);
-		LocalTime startTime2 = LocalTime.parse(startTime);
-		LocalTime endTime2 = LocalTime.parse(startTime).plusHours(1);
-		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
-		Employment employment = employmentService.findOneByEmployeeIdAndPharmacyId(emp.getId(), Long.parseLong(pharmacyId));
-		List<Appointment> patientAppointments = appointmentService.findAllByPatientUsername(patientUsername);
-		List<Absence> absences = absenceService.findAllByEmployeeId(emp.getId());
-		
-		String free = "Free";
-		if (!employment.getWorkTime().getStartTime().isBefore(startTime2) || !employment.getWorkTime().getEndTime().isAfter(endTime2)) {
-			free = "Chosen time not in work hours."; // ne upada u radno vrijeme
-		}
-		
-		// Ovdje se mora provjeravati i datum i vrijeme za zaposlenog
-		for (Appointment appo : emp.getAppointments()) {
-			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
-			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
-			if (!(eWorkTSDateTime.isAfter(endDate2.atTime(endTime2))
-					&& eWorkTSDateTime.isAfter(startDate2.atTime(startTime2)))
-					&& !(eWorkTEDateTime.isBefore(endDate2.atTime(endTime2))
-							&& eWorkTEDateTime.isBefore(startDate2.atTime(startTime2)))) {
-				if(!(userType.equals("DERMATOLOGIST") && appo.getStatus()==AppointmentStatus.AVAILABLE)) {
-					free = "You already have an appointment then.";  // preklapanje sa postojecim terminom
-					break;
-				}
-			}
-		}
-		for (Absence absence : absences) {
-			if(absence.getStatus()!= AbsenceStatus.DENIED) {
-				LocalDateTime eWorkTSDateTime = absence.getTimePeriod().getStartDate().atTime(absence.getTimePeriod().getStartTime());
-				LocalDateTime eWorkTEDateTime = absence.getTimePeriod().getEndDate().atTime(absence.getTimePeriod().getEndTime());
-				if (!(eWorkTSDateTime.isAfter(endDate2.atTime(LocalTime.parse("00:00:00")))
-						&& eWorkTSDateTime.isAfter(startDate2.atTime(LocalTime.parse("00:00:00"))))
-						&& !(eWorkTEDateTime.isBefore(endDate2.atTime(LocalTime.parse("00:00:00")))
-								&& eWorkTEDateTime.isBefore(startDate2.atTime(LocalTime.parse("00:00:00"))))) {
-						free = "You will be absent then.";  // preklapanje sa postojecim odsustvom
-						break;				
-				}
-			}
-		}
-		
-		// za pacijenta
-		for (Appointment appo : patientAppointments) {
-			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
-			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
-			if (!(eWorkTSDateTime.isAfter(endDate2.atTime(endTime2))
-					&& eWorkTSDateTime.isAfter(startDate2.atTime(startTime2)))
-					&& !(eWorkTEDateTime.isBefore(endDate2.atTime(endTime2))
-							&& eWorkTEDateTime.isBefore(startDate2.atTime(startTime2)))) {
-				free = "Patient already has an appointment then."; // preklapanje sa postojecim terminom
-				break;
-			}
-		}
-		
-		return new ResponseEntity<>(free, HttpStatus.OK);
-		
-	}
 	
 	@GetMapping(value = "/bookAvailableAppointment")
 	public ResponseEntity<String> bookAvailableAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId){
 		Appointment appointment = appointmentService.findOne(appointmentId);
-		List<Appointment> patientAppointments = appointmentService.findAllByPatientUsername(patientUsername);
 		
 		String free = "Free";
 		if(appointment.getStatus()!= AppointmentStatus.AVAILABLE || appointment.isDeleted()) {
 			free = "Appointment is unavailable.";
 		}
 		
-		// za pacijenta		
-		for (Appointment appo : patientAppointments) {
-			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
-			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
-			if (!(eWorkTSDateTime.isAfter(appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime()))
-					&& eWorkTSDateTime.isAfter(appointment.getTimePeriod().getStartDate().atTime(appointment.getTimePeriod().getStartTime())))
-					&& !(eWorkTEDateTime.isBefore(appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime()))
-							&& eWorkTEDateTime.isBefore(appointment.getTimePeriod().getStartDate().atTime(appointment.getTimePeriod().getStartTime())))) {
-				free = "Patient already has an appointment then."; // preklapanje sa postojecim terminom
-				break;
-			}
+		// za pacijenta
+		boolean patHasAppThen = appointmentService.checkPatientAppointments(appointment.getTimePeriod(), patientUsername);
+		if(patHasAppThen) {
+			free = "Patient already has an appointment then.";
 		}
 		
 		if(free == "Free") {
@@ -702,6 +613,18 @@ public class AppointmentController {
 	public ResponseEntity<ReportDTO> reportAppointmentMonth(@RequestParam String period, @RequestParam String year, @RequestParam Long pharmacyId) {
 		HashMap<String, Integer> data = appointmentService.getAllAppointmentsConcludedByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null);
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/allConcludedAppointmentsForEmployee")
+	public ResponseEntity<List<AppointmentDTO>> allConcludedAppointmentsForEmployee( @RequestParam String employeeUsername) {	
+		List<Appointment> appointments = appointmentService.getAllConcludedAppointmentsForEmployee(employeeUsername);
+		
+		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : appointments) {
+			appointmentsDTO.add(new AppointmentDTO(appointment));
+		}
+		
+		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
 }

@@ -11,28 +11,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.PrescriptionItemDTO;
+import mrsisa12.pharmacy.dto.TherapyItemDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
-import mrsisa12.pharmacy.model.EPrescription;
+import mrsisa12.pharmacy.model.Therapy;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
-import mrsisa12.pharmacy.model.PrescriptionItem;
+import mrsisa12.pharmacy.model.TherapyItem;
 import mrsisa12.pharmacy.model.enums.EPrescriptionStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
-import mrsisa12.pharmacy.service.EPrescriptionService;
+import mrsisa12.pharmacy.service.TherapyService;
 import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.PharmacyStorageItemService;
-import mrsisa12.pharmacy.service.PrescriptionItemService;
+import mrsisa12.pharmacy.service.TherapyItemService;
 
 @RestController
-@RequestMapping("/prescriptionItem")
-public class PrescriptionItemController {
+@RequestMapping("/therapyItem")
+public class TherapyItemController {
 
 	@Autowired
-	private PrescriptionItemService prescriptionItemService;
+	private TherapyItemService therapyItemService;
 			
 	@Autowired
 	private PharmacyStorageItemService pharmacyStorageItemService;
@@ -44,7 +44,7 @@ public class PrescriptionItemController {
 	private PharmacyService pharmacyService;
 	
 	@Autowired
-	private EPrescriptionService ePrescriptionService;
+	private TherapyService therapyService;
 	
 	@GetMapping(value = "/addPrescription")
 	public ResponseEntity<Void> savePrescriptionItem(@RequestParam String storageId,@RequestParam String quantity,@RequestParam String duration,
@@ -54,14 +54,14 @@ public class PrescriptionItemController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemService.findOne(Long.parseLong(storageId));
-		EPrescription epres = ePrescriptionService.findOne(Long.parseLong(ePrescriptionId));
+		Therapy epres = therapyService.findOne(Long.parseLong(ePrescriptionId));
 		
-		PrescriptionItem prescriptionItem = new PrescriptionItem();
+		TherapyItem prescriptionItem = new TherapyItem();
 		prescriptionItem.setEPrescription(epres);
 		prescriptionItem.setMedication(pharmacyStorageItem.getMedication());
 		prescriptionItem.setQuantity(Integer.parseInt(quantity));
 		prescriptionItem.setTherapyDuration(Integer.parseInt(duration));
-		prescriptionItemService.save(prescriptionItem);
+		therapyItemService.save(prescriptionItem);
 		
 		pharmacyStorageItem.setQuantity(pharmacyStorageItem.getQuantity() - Integer.parseInt(quantity));
 		pharmacyStorageItem = pharmacyStorageItemService.save(pharmacyStorageItem);

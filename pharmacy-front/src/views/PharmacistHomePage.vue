@@ -19,7 +19,7 @@
                     </v-card>
                 </v-col> 
                 <v-col md="3">
-                    <v-card class="oneCard" to="/new-appointment-page" >
+                    <v-card class="oneCard" to="/past-appointments-page" >
                     <v-card-title class="wordBreak">Appointment history</v-card-title>
                     </v-card>
                 </v-col> 
@@ -43,7 +43,7 @@
 <script>
     import SearchPatientsPage from '@/views/SearchPatientsPage.vue';
     import CalendarPage from '@/views/CalendarPage.vue';
-    import NewAppointmentPage from '@/views/NewAppointmentPage.vue'
+    import PastAppointmentsPage from '@/views/PastAppointmentsPage.vue'
     import RequestAbsencePage from '@/views/RequestAbsencePage.vue'
     import DispenseMedicationPage from '@/views/DispenseMedicationPage.vue'    
 
@@ -53,7 +53,7 @@
         components: {
         SearchPatientsPage,
         CalendarPage,
-        NewAppointmentPage,
+        PastAppointmentsPage,
         RequestAbsencePage,
         DispenseMedicationPage,
         },

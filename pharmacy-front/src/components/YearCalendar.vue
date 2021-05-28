@@ -127,14 +127,6 @@
                                                 this.selectedAppointment.pharmacy.name
                                             }}</b>
                                         </p>
-                                        <p class="card-text">
-                                            Date:
-                                            <b>{{
-                                                formatDate(
-                                                    this.selectedAppointment.timePeriod.startDate
-                                                )
-                                            }}</b>
-                                        </p>
 
                                         <p class="card-text">
                                             Time:

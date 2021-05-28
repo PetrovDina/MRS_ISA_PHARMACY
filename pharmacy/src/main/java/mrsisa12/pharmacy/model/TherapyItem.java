@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class PrescriptionItem {
+public class TherapyItem {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,16 +26,16 @@ public class PrescriptionItem {
 	private int therapyDuration;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "EPRESCRIPTION_ID", referencedColumnName = "ID")
-	private EPrescription ePrescription;
+	@JoinColumn(name = "THERAPY_ID", referencedColumnName = "ID")
+	private Therapy ePrescription;
 	
-	public PrescriptionItem() {
+	public TherapyItem() {
 		
 	}
 
 
-	public PrescriptionItem(Long id, int quantity, Medication medication, int therapyDuration,
-			EPrescription ePrescription) {
+	public TherapyItem(Long id, int quantity, Medication medication, int therapyDuration,
+			Therapy ePrescription) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
@@ -77,12 +77,12 @@ public class PrescriptionItem {
 		this.therapyDuration = therapyDuration;
 	}
 
-	public EPrescription getEPrescription() {
+	public Therapy getEPrescription() {
 		return ePrescription;
 	}
 
 
-	public void setEPrescription(EPrescription ePrescription) {
+	public void setEPrescription(Therapy ePrescription) {
 		this.ePrescription = ePrescription;
 	}
 

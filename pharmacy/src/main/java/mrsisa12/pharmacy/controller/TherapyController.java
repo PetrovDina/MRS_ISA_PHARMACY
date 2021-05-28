@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.AppointmentDTO;
-import mrsisa12.pharmacy.dto.EPrescriptionDTO;
-import mrsisa12.pharmacy.dto.EPrescriptionWithItemsDTO;
+import mrsisa12.pharmacy.dto.TherapyDTO;
+import mrsisa12.pharmacy.dto.TherapyWithItemsDTO;
 import mrsisa12.pharmacy.model.Appointment;
-import mrsisa12.pharmacy.model.EPrescription;
+import mrsisa12.pharmacy.model.Therapy;
 import mrsisa12.pharmacy.model.enums.EPrescriptionStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
-import mrsisa12.pharmacy.service.EPrescriptionService;
+import mrsisa12.pharmacy.service.TherapyService;
 
 @RestController
-@RequestMapping("/eprescription")
-public class EPrescriptionController {
+@RequestMapping("/therapy")
+public class TherapyController {
 	
 	@Autowired
-	private EPrescriptionService ePrescriptionService;
+	private TherapyService therapyService;
 	
 	@Autowired
 	private AppointmentService appointmentService;
@@ -36,12 +36,12 @@ public class EPrescriptionController {
     private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 	
 	@GetMapping(value = "/create")
-	public ResponseEntity<EPrescriptionDTO> createEPrescription(@RequestParam String appointmentId){
+	public ResponseEntity<TherapyDTO> createEPrescription(@RequestParam String appointmentId){
 		Appointment appointment = appointmentService.findOneWithPatient(Long.parseLong(appointmentId));
-		EPrescription ePrescription = new EPrescription();
+		Therapy ePrescription = new Therapy();
 		ePrescription.setPatient(appointment.getPatient());
 		ePrescription.setPrescribedDate(new Date());
-		ePrescription.setStatus(EPrescriptionStatus.CREATED);
+		ePrescription.setStatus(EPrescriptionStatus.COMPLETED);
 		//generates code
 		int length = 10;
         char[] text = new char[length];
@@ -50,37 +50,37 @@ public class EPrescriptionController {
         }
 		ePrescription.setCode(new String(text));
 		
-		ePrescriptionService.save(ePrescription);
+		therapyService.save(ePrescription);
 		
-		return new ResponseEntity<>( new EPrescriptionDTO(ePrescription) ,HttpStatus.CREATED);
+		return new ResponseEntity<>( new TherapyDTO(ePrescription) ,HttpStatus.CREATED);
 	}
 	
 	@GetMapping(value = "/newPrescriptionsByPatient")
-	public ResponseEntity<List<EPrescriptionWithItemsDTO>> getAllNewByPatient(@RequestParam String patientUsername) {
+	public ResponseEntity<List<TherapyWithItemsDTO>> getAllNewByPatient(@RequestParam String patientUsername) {
 
-		List<EPrescription> prescriptions = ePrescriptionService.findAllNewByPatientWithPrescriptionItems(patientUsername);
+		List<Therapy> prescriptions = therapyService.findAllNewByPatientWithPrescriptionItems(patientUsername);
 		
 		// convert to DTOs
-		List<EPrescriptionWithItemsDTO> prescriptionsDTO = new ArrayList<>();
-		for (EPrescription prescription : prescriptions) {
+		List<TherapyWithItemsDTO> prescriptionsDTO = new ArrayList<>();
+		for (Therapy prescription : prescriptions) {
 			
-			prescriptionsDTO.add(new EPrescriptionWithItemsDTO(prescription));
+			prescriptionsDTO.add(new TherapyWithItemsDTO(prescription));
 		}
 
 		return new ResponseEntity<>(prescriptionsDTO, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/filledPrescriptionsByPatient")
-	public ResponseEntity<List<EPrescriptionWithItemsDTO>> getAllFilledByPatient(@RequestParam String patientUsername) {
+	public ResponseEntity<List<TherapyWithItemsDTO>> getAllFilledByPatient(@RequestParam String patientUsername) {
 
-		List<EPrescription> prescriptions = ePrescriptionService.findAllFilledByPatientWithPrescriptionItems(patientUsername);
+		List<Therapy> prescriptions = therapyService.findAllFilledByPatientWithPrescriptionItems(patientUsername);
 		
 
 		// convert to DTOs
-		List<EPrescriptionWithItemsDTO> prescriptionsDTO = new ArrayList<>();
-		for (EPrescription prescription : prescriptions) {
+		List<TherapyWithItemsDTO> prescriptionsDTO = new ArrayList<>();
+		for (Therapy prescription : prescriptions) {
 			
-			prescriptionsDTO.add(new EPrescriptionWithItemsDTO(prescription));
+			prescriptionsDTO.add(new TherapyWithItemsDTO(prescription));
 		}
 
 		return new ResponseEntity<>(prescriptionsDTO, HttpStatus.OK);

@@ -107,7 +107,7 @@ export default {
     mounted() {
         //get patient's prescriptions
         client({
-            url: "eprescription/filledPrescriptionsByPatient",
+            url: "therapy/filledPrescriptionsByPatient",
             params: { patientUsername: localStorage.getItem("USERNAME") },
             method: "GET",
         }).then((response) => (this.prescriptions = response.data));

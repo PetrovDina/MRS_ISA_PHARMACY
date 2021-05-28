@@ -31,7 +31,7 @@ import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
-import mrsisa12.pharmacy.service.EPrescriptionService;
+import mrsisa12.pharmacy.service.TherapyService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
@@ -60,8 +60,6 @@ public class ReservationController {
 	@Autowired
 	private EmailService emailService;
 	
-	@Autowired
-	private EPrescriptionService ePrescriptionService;
 	
 	private Random random = new Random();
     private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";

@@ -416,17 +416,9 @@
           <v-btn
             color="green"
             plain
-            @click="testFree()"
-          >
-            Test availability
-          </v-btn>
-          <v-btn
-            color="green"
-            plain
             @click="addAppointment()"
-            v-if="appFree === true"
           >
-            Save
+            Add appointment
           </v-btn>
           <v-btn
             color="green"
@@ -661,14 +653,14 @@ import moment from "moment";
               if(snackText === null){
                 client({
                   method: 'GET',
-                  url: 'eprescription/create',
+                  url: 'therapy/create',
                   params: { appointmentId: this.appointmentId}
                 })
                 .then((response) => {
                   for(var item of this.items){
                   client({
                     method: 'GET',
-                    url: 'prescriptionItem/addPrescription',
+                    url: 'therapyItem/addPrescription',
                     params: { storageId: item.storageId, quantity: item.quantity, duration: item.therapyDuration,
                             pharmacyId: this.pharmacyId, ePrescriptionId: response.data.id},
                     })
@@ -714,27 +706,6 @@ import moment from "moment";
           })
         },
 
-        testFree: function(){
-          client({
-              method: 'GET',
-              params: {employeeUsername: localStorage.getItem("USERNAME"), patientUsername: this.patientUsername, 
-                      pharmacyId: this.pharmacyId, startDate: this.chosenDate, startTime: this.chosenTime,
-                       userType: localStorage.getItem("USER_TYPE")},
-              url: 'appointments/checkAvailableAppointmentByEmployee',
-          }).then((response) => {
-              console.log(response.data);
-              if(response.data == "Free"){
-                this.appFree = true;
-                this.snackbarText = "Appointment is available. Click 'SAVE' to book it.";
-                this.snackbar = true;
-              }else{
-                this.snackbarText = response.data;
-                this.snackbar = true;
-                this.appFree = false;
-              }
-          })
-        },
-
         addAppointment: function(){
           client({
               method: 'GET',
@@ -743,7 +714,7 @@ import moment from "moment";
                        userType: localStorage.getItem("USER_TYPE")},
               url: 'appointments/createNewAppointmentByEmployee',
           }).then((response) => {
-            if(response.data === true){
+            if(response.data == "Free"){
               this.snackbarText = "Successfully booked new appointment!";
               this.snackbar = true;
               this.appFree = false;
@@ -751,7 +722,7 @@ import moment from "moment";
               this.chosenTime = null;
               this.newAppointmentDialog = false;
             }else{
-              this.snackbarText = "Appointment is unavailable!";
+              this.snackbarText = response.data;
               this.snackbar = true;
               this.appFree = false;
             }

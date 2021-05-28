@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
-import mrsisa12.pharmacy.model.PrescriptionItem;
+import mrsisa12.pharmacy.model.TherapyItem;
 
-public interface PrescriptionItemRepository extends JpaRepository<PrescriptionItem, Long>{
+public interface TherapyItemRepository extends JpaRepository<TherapyItem, Long>{
 	
-	public Page<PrescriptionItem> findAll(Pageable pageable);
+	public Page<TherapyItem> findAll(Pageable pageable);
 	
 
 }

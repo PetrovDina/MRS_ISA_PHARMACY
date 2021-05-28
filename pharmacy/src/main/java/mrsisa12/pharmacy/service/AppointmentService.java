@@ -5,6 +5,8 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.Employee;
+import mrsisa12.pharmacy.model.Employment;
+import mrsisa12.pharmacy.model.TimePeriod;
+import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.repository.AppointmentRepository;
 
 @Service
@@ -147,6 +153,45 @@ public class AppointmentService {
 
 	public List<Appointment> findAllConcludedByPatientAndPharmacy(String patientUsername, Long pharmacyId) {
 		return appointmentRepository.findAllConcludedByPatientAndPharmacy(patientUsername, pharmacyId);
+	}
+	
+	
+	public boolean checkPatientAppointments(TimePeriod tp, String patientUsername) {
+		List<Appointment> patientAppointments = appointmentRepository.findAllByPatientUsername(patientUsername);
+
+		// za pacijenta
+		for (Appointment appo : patientAppointments) {
+			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+			if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
+					&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
+					&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
+							&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
+				return true;//"Patient already has an appointment then."; preklapanje sa postojecim terminom
+			}
+		}
+		return false;
+	}
+	
+	public boolean checkEmployeeAppointments(TimePeriod tp, Employee emp) {
+		
+		for (Appointment appo : emp.getAppointments()) {
+			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+			if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
+					&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
+					&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
+							&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
+					return true; //"You already have an appointment then.";   preklapanje sa postojecim terminom
+				
+			}
+		}
+		return false;
+
+	}
+	
+	public List<Appointment> getAllConcludedAppointmentsForEmployee(String username) {
+		return appointmentRepository.getAllConcludedAppointmentsForEmployee(username);
 	}
 
 }

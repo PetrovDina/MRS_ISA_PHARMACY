@@ -7,7 +7,7 @@ import PharmacyViewPatient from '@/views/PharmacyViewPatient'
 
 import CalendarPage from '@/views/CalendarPage'
 import DermatologistPage from '@/views/DermatologistPage'
-import NewAppointmentPage from '@/views/NewAppointmentPage'
+import PastAppointmentsPage from '@/views/PastAppointmentsPage'
 import RequestAbsencePage from '@/views/RequestAbsencePage'
 import SearchPatientsPage from '@/views/SearchPatientsPage'
 import DermatologistHomePage from '@/views/DermatologistHomePage'
@@ -180,9 +180,9 @@ export default new Router({
         },
 
         {
-            path: '/new-appointment-page',
-            name: 'NewAppointmentPage',
-            component: NewAppointmentPage,
+            path: '/past-appointments-page',
+            name: 'PastAppointmentsPage',
+            component: PastAppointmentsPage,
             beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
                 if (user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST') {

@@ -185,7 +185,7 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 5], "startTime": [12, 0, 0], "endDate": [2021, 7, 5], "endTime": [13, 30, 0]}', 4, 2000, 1, 'False', 2);
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 28], "startTime": [11, 0, 0], "endDate": [2021, 7, 28], "endTime": [12, 0, 0]}', 4, 2000, 1, 'False', 11);
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 23], "startTime": [12, 0, 0], "endDate": [2021, 7, 23], "endTime": [13, 30, 0]}', 4, 2000, 1, 'False', 2);
-insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 5, 26], "startTime": [11, 0, 0], "endDate": [2021, 5, 26], "endTime": [12, 0, 0]}', 4, 2000, 1, 'False', 11);
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 5, 23], "startTime": [11, 0, 0], "endDate": [2021, 5, 23], "endTime": [12, 0, 0]}', 4, 2000, 1, 'False', 11);
 
 
 -- alergije
@@ -251,14 +251,14 @@ insert into ComplaintEmployee(employee_id, id) values (5, 7);
 insert into complaint (patient_id, system_admin_id, content, response) values (2, 1, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', 'Farmaceut kaze nije.');
 insert into ComplaintEmployee(employee_id, id) values (7, 8);
 
-insert into ePrescription (patient_id, prescribedDate, code, status) values (2, '2021-05-14', 'code123456', 'CREATED');
-insert into ePrescription (patient_id, prescribedDate, code, status) values (2, '2021-04-10', 'code654321', 'CREATED');
+insert into therapy (patient_id, prescribedDate, code, status) values (2, '2021-05-14', 'code123456', 'CREATED');
+insert into therapy (patient_id, prescribedDate, code, status) values (2, '2021-04-10', 'code654321', 'CREATED');
 
-insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (2, 2, 7, 1);
-insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (5, 3, 30, 1);
-insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (4, 4, 20, 1);
-insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (1, 3, 6, 2);
-insert into prescriptionItem (quantity, medication_id, therapyDuration, ePrescription_id) values (2, 4, 10, 2);
+insert into therapyItem (quantity, medication_id, therapyDuration, therapy_id) values (2, 2, 7, 1);
+insert into therapyItem (quantity, medication_id, therapyDuration, therapy_id) values (5, 3, 30, 1);
+insert into therapyItem (quantity, medication_id, therapyDuration, therapy_id) values (4, 4, 20, 1);
+insert into therapyItem (quantity, medication_id, therapyDuration, therapy_id) values (1, 3, 6, 2);
+insert into therapyItem (quantity, medication_id, therapyDuration, therapy_id) values (2, 4, 10, 2);
 
 --dermatologist ratings - Milica Milic
 insert into rating (type, date, rating, employee_id, patient_id) values ('employee_rating', '2021-01-20', 3.0, 4, 2 );

@@ -108,6 +108,7 @@
                         >
                         <v-btn
                         plain 
+                        color="green"
                         @click="startAppointment(item)"
                         v-if="item.available === true">
                         Start Appointment
@@ -146,6 +147,7 @@
 
 <script>
 import {client} from '@/client/axiosClient';
+import moment from "moment";
 export default {
     name: "SearchPatientsPage",
 
@@ -201,7 +203,13 @@ export default {
             })
             .then((response) => {
                 for(var appointment of response.data){
-                    appointment.available = (new Date(appointment.timePeriod.startDate) == new Date()) ;
+                    var avail = false;
+                    var parts1 = appointment.timePeriod.startDate.split('-');
+                    var mon1 = parts1[1]-1;
+                    if(appointment.status === 'RESERVED' && ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
+                        avail = true;
+                    } 
+                    appointment.available = avail;
                     appointment.fixedDate = this.toDateTime(appointment.timePeriod.startDate, appointment.timePeriod.startTime, appointment.timePeriod.endTime);
                     this.allAppointments.push(appointment);
                 }

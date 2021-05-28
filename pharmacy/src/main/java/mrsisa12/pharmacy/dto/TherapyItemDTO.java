@@ -2,27 +2,27 @@ package mrsisa12.pharmacy.dto;
 
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Medication;
-import mrsisa12.pharmacy.model.PrescriptionItem;
+import mrsisa12.pharmacy.model.TherapyItem;
 
-public class PrescriptionItemDTO {
+public class TherapyItemDTO {
 
 	private Long id;
 	private int quantity;
 	private MedicationDTO medication;
 	private int therapyDuration;
 	
-	public PrescriptionItemDTO() {
+	public TherapyItemDTO() {
 		
 	}	
 
-	public PrescriptionItemDTO(Long id, int quantity, Medication medication, int therapyDuration) {
+	public TherapyItemDTO(Long id, int quantity, Medication medication, int therapyDuration) {
 		this.id = id;
 		this.quantity = quantity;
 		this.medication = new MedicationDTO(medication);
 		this.therapyDuration = therapyDuration;
 	}
 	
-	public PrescriptionItemDTO(PrescriptionItem reservationItem){
+	public TherapyItemDTO(TherapyItem reservationItem){
 		this(reservationItem.getId(), reservationItem.getQuantity(), reservationItem.getMedication(),
 				reservationItem.getTherapyDuration());
     }

@@ -23,6 +23,7 @@ import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AbsenceStatus;
 import mrsisa12.pharmacy.model.enums.AbsenceType;
 import mrsisa12.pharmacy.service.AbsenceService;
+import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.EmployeeService;
 import mrsisa12.pharmacy.service.PharmacyService;
 
@@ -38,6 +39,9 @@ public class AbsenceController {
 	
 	@Autowired
 	private PharmacyService pharmacyService;
+	
+	@Autowired
+	private AppointmentService appointmentService;
 	
 	@GetMapping(value = "/allAbsencesForEmployee")
 	public ResponseEntity<List<AbsenceDTO>> getAllAbsencesForEmployee(@RequestParam String username) {	
@@ -56,38 +60,25 @@ public class AbsenceController {
 	public ResponseEntity<Boolean> createAbsence(@RequestParam String pharmacyId, @RequestParam String startDate,
 			@RequestParam String endDate, @RequestParam String employeeUsername, @RequestParam String absenceType ){
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
-		List<Absence> absences = absenceService.findAllByEmployeeId(emp.getId());
 		LocalDate startDate2 = LocalDate.parse(startDate);
 		LocalDate endDate2 = LocalDate.parse(endDate);
+		TimePeriod tp = new TimePeriod(startDate2, LocalTime.parse("00:00:00"), endDate2, LocalTime.parse("00:00:00"));
 		
 		boolean free = true;
-		for (Appointment appo : emp.getAppointments()) {
-			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
-			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
-			if (!(eWorkTSDateTime.isAfter(endDate2.atTime(LocalTime.parse("00:00:00")))
-					&& eWorkTSDateTime.isAfter(startDate2.atTime(LocalTime.parse("00:00:00"))))
-					&& !(eWorkTEDateTime.isBefore(endDate2.atTime(LocalTime.parse("00:00:00")))
-							&& eWorkTEDateTime.isBefore(startDate2.atTime(LocalTime.parse("00:00:00"))))) {
-					free = false;  // preklapanje sa postojecim terminom
-					break;				
-			}
+		// Ovdje se mora provjeravati i datum i vrijeme za zaposlenog
+		boolean empHasAppThen = appointmentService.checkEmployeeAppointments(tp, emp);
+		if(empHasAppThen) {
+			free = false;
 		}
 		
-		for (Absence absence : absences) {
-			LocalDateTime eWorkTSDateTime = absence.getTimePeriod().getStartDate().atTime(absence.getTimePeriod().getStartTime());
-			LocalDateTime eWorkTEDateTime = absence.getTimePeriod().getEndDate().atTime(absence.getTimePeriod().getEndTime());
-			if (!(eWorkTSDateTime.isAfter(endDate2.atTime(LocalTime.parse("00:00:00")))
-					&& eWorkTSDateTime.isAfter(startDate2.atTime(LocalTime.parse("00:00:00"))))
-					&& !(eWorkTEDateTime.isBefore(endDate2.atTime(LocalTime.parse("00:00:00")))
-							&& eWorkTEDateTime.isBefore(startDate2.atTime(LocalTime.parse("00:00:00"))))) {
-					free = false;  // preklapanje sa postojecim odsustvom
-					break;				
-			}
+		// preklapanje sa postojecim odsustvom
+		boolean empIsAbsent = absenceService.checkEmployeeAbsences(tp, emp);
+		if(empIsAbsent) {
+			free = false;
 		}
 		
 		if(free) {
 			Pharmacy pharmacy = pharmacyService.findOne(Long.parseLong(pharmacyId));
-			TimePeriod tp = new TimePeriod(startDate2, LocalTime.parse("00:00:00"), endDate2, LocalTime.parse("00:00:00"));
 			Absence abs = new Absence();
 			abs.setStatus(AbsenceStatus.REQUESTED);
 			abs.setTimePeriod(tp);

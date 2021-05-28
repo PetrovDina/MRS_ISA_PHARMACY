@@ -7,16 +7,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import mrsisa12.pharmacy.model.PrescriptionItem;
-import mrsisa12.pharmacy.repository.PrescriptionItemRepository;
+import mrsisa12.pharmacy.model.TherapyItem;
+import mrsisa12.pharmacy.repository.TherapyItemRepository;
 
 @Service
-public class PrescriptionItemService {
+public class TherapyItemService {
 
 	@Autowired
-	private PrescriptionItemRepository prescriptionItemRepository;
+	private TherapyItemRepository prescriptionItemRepository;
 	
-	public PrescriptionItem save(PrescriptionItem prescriptionItem) {
+	public TherapyItem save(TherapyItem prescriptionItem) {
 		return prescriptionItemRepository.save(prescriptionItem);
 	}
 }

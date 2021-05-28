@@ -22,7 +22,7 @@ import javax.persistence.OneToOne;
 import mrsisa12.pharmacy.model.enums.EPrescriptionStatus;
 
 @Entity
-public class EPrescription {
+public class Therapy {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,20 +42,20 @@ public class EPrescription {
 	private EPrescriptionStatus status;
 		
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ePrescription")
-	private List<PrescriptionItem> prescriptionItems;
+	private List<TherapyItem> prescriptionItems;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "pharmacy_id", referencedColumnName = "id", nullable = true)
 	private Pharmacy pharmacy;
 	
-	public EPrescription() {
+	public Therapy() {
 		super();
 	}
 
 
 
-	public EPrescription(Long id, Patient patient, Date prescribedDate, String code, EPrescriptionStatus status,
-			List<PrescriptionItem> prescriptionItems) {
+	public Therapy(Long id, Patient patient, Date prescribedDate, String code, EPrescriptionStatus status,
+			List<TherapyItem> prescriptionItems) {
 		super();
 		this.id = id;
 		this.patient = patient;
@@ -99,19 +99,19 @@ public class EPrescription {
 		this.code = code;
 	}
 
-	public List<PrescriptionItem> getPrescriptionItems() {
+	public List<TherapyItem> getPrescriptionItems() {
 		if(prescriptionItems == null)
 			prescriptionItems = new ArrayList<>();
 		return prescriptionItems;
 	}
 
-	public void setPrescriptionItems(List<PrescriptionItem> newPrescriptionItems) {
+	public void setPrescriptionItems(List<TherapyItem> newPrescriptionItems) {
 		removeAllPrescriptionItems();
-		for (Iterator<PrescriptionItem> iter = newPrescriptionItems.iterator(); iter.hasNext();)
+		for (Iterator<TherapyItem> iter = newPrescriptionItems.iterator(); iter.hasNext();)
 			addPrescriptionItem(iter.next());
 	}
 	
-	public Iterator<PrescriptionItem> getIteratorPrescriptionItem() {
+	public Iterator<TherapyItem> getIteratorPrescriptionItem() {
 		if (prescriptionItems == null)
 			prescriptionItems = new ArrayList<>();
 		return prescriptionItems.iterator();
@@ -119,15 +119,15 @@ public class EPrescription {
 	
 	public void removeAllPrescriptionItems() {
 		if (prescriptionItems != null) {
-			PrescriptionItem oldItem;
-			for (Iterator<PrescriptionItem> iter = getIteratorPrescriptionItem(); iter.hasNext();) {
+			TherapyItem oldItem;
+			for (Iterator<TherapyItem> iter = getIteratorPrescriptionItem(); iter.hasNext();) {
 				oldItem = iter.next();
 				iter.remove();
 			}
 		}
 	}
 	
-	public void removePrescriptionItem(PrescriptionItem oldPrescriptionItem) {
+	public void removePrescriptionItem(TherapyItem oldPrescriptionItem) {
 		if (oldPrescriptionItem == null)
 			return;
 		if (this.prescriptionItems != null && this.prescriptionItems.contains(oldPrescriptionItem)) {
@@ -135,7 +135,7 @@ public class EPrescription {
 		}
 	}
 	
-	public void addPrescriptionItem(PrescriptionItem newPrescriptionItem) {
+	public void addPrescriptionItem(TherapyItem newPrescriptionItem) {
 		if (newPrescriptionItem == null)
 			return;
 		if (this.prescriptionItems == null)

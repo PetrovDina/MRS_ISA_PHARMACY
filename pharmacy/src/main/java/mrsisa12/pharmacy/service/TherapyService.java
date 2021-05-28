@@ -7,40 +7,40 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import mrsisa12.pharmacy.model.EPrescription;
-import mrsisa12.pharmacy.repository.EPrescriptionRepository;
+import mrsisa12.pharmacy.model.Therapy;
+import mrsisa12.pharmacy.repository.TherapyRepository;
 
 @Service
-public class EPrescriptionService {
+public class TherapyService {
 
 	@Autowired
-	private EPrescriptionRepository ePrescriptionRepository;
+	private TherapyRepository ePrescriptionRepository;
 	
-	public EPrescription findOne(Long id) {
+	public Therapy findOne(Long id) {
 		return ePrescriptionRepository.findById(id).orElseGet(null);
 	}
 	
-	public Page<EPrescription> findAll(Pageable page) {
+	public Page<Therapy> findAll(Pageable page) {
 		return ePrescriptionRepository.findAll(page);
 	}
 	
-	public List<EPrescription> findAll() {
+	public List<Therapy> findAll() {
 		return ePrescriptionRepository.findAll();
 	}
 	
-	public EPrescription save(EPrescription ePrescription) {
+	public Therapy save(Therapy ePrescription) {
 		return ePrescriptionRepository.save(ePrescription);
 	}
 	
-	public List<EPrescription> findAllByPatient(String patientUsername) {
+	public List<Therapy> findAllByPatient(String patientUsername) {
 		return ePrescriptionRepository.findAllByPatient(patientUsername);
 	}
 	
-	public List<EPrescription> findAllNewByPatientWithPrescriptionItems(String patientUsername) {
+	public List<Therapy> findAllNewByPatientWithPrescriptionItems(String patientUsername) {
 		return ePrescriptionRepository.findAllNewByPatientWithPrescriptionItems(patientUsername);
 	}
 	
-	public List<EPrescription> findAllFilledByPatientWithPrescriptionItems(String patientUsername) {
+	public List<Therapy> findAllFilledByPatientWithPrescriptionItems(String patientUsername) {
 		return ePrescriptionRepository.findAllFilledByPatientWithPrescriptionItems(patientUsername);
 	}
 	

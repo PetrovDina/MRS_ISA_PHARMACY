@@ -40,7 +40,7 @@ public class Patient extends User {
     private List<Pharmacy> subscriptions;
 	
 	@OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<EPrescription> ePrescriptions;
+	private List<Therapy> ePrescriptions;
 	
 	public Patient() { }
 
@@ -95,11 +95,11 @@ public class Patient extends User {
 	return false;
 	}
 
-	public List<EPrescription> getEPrescriptions() {
+	public List<Therapy> getEPrescriptions() {
 		return ePrescriptions;
 	}
 
-	public void setEPrescriptions(List<EPrescription> ePrescriptions) {
+	public void setEPrescriptions(List<Therapy> ePrescriptions) {
 		this.ePrescriptions = ePrescriptions;
 	}
 	
