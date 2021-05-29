@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.LocationDTO;
+import mrsisa12.pharmacy.dto.MedicationQrDTO;
+import mrsisa12.pharmacy.dto.PharmacyWithMedicationsPriceQrDTO;
+import mrsisa12.pharmacy.dto.QrCodeDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyWithEmploymentsDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PlainPharmacyDTO;
@@ -30,8 +34,7 @@ import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.AppointmentPriceCatalog;
-import mrsisa12.pharmacy.model.Employee;
-import mrsisa12.pharmacy.model.EmployeeRating;
+import mrsisa12.pharmacy.model.ItemPrice;
 import mrsisa12.pharmacy.model.Location;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -45,6 +48,7 @@ import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyRatingService;
 import mrsisa12.pharmacy.service.PharmacyService;
+import mrsisa12.pharmacy.service.PharmacyStorageItemService;
 import mrsisa12.pharmacy.service.ReservationService;
 
 @RestController
@@ -69,6 +73,9 @@ public class PharmacyController {
 	@Autowired
 	private PharmacyRatingService pharmacyRatingService;
 
+	@Autowired
+	private PharmacyStorageItemService pharmacyStorageItemService;
+	
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
 
@@ -290,6 +297,56 @@ public class PharmacyController {
 		}
 
 	}
+	
+	@PostMapping(value = "/getQrSearch", consumes = "application/json")
+	public ResponseEntity<List<PharmacyWithMedicationsPriceQrDTO>> getPharmaciesByQrSearch(@RequestBody QrCodeDTO medications) {
+
+		List<PharmacyWithMedicationsPriceQrDTO> pharmacyDTOs = new ArrayList<PharmacyWithMedicationsPriceQrDTO>();
+		
+		Map<Long, Double>  pharmaciesWithPrice   = new HashMap<Long, Double>();
+		Map<Long, Integer> pharmaciesWithCounter = new HashMap<Long, Integer>();
+		
+		for (MedicationQrDTO med : medications.getMedications()) 
+		{
+			List<PharmacyStorageItem> pharmacyStorageItems = pharmacyStorageItemService.findAllWithCurrentPriceByMedication(med.getId());
+			
+			for (PharmacyStorageItem item : pharmacyStorageItems) 
+			{
+				
+				if(item.getQuantity() >= med.getQuantity())
+				{
+					Long pharmacyId = item.getPharmacy().getId();
+					Double newPrice = pharmacyStorageItemService.getCurrentPrice(item);
+					
+					if(pharmaciesWithCounter.containsKey(pharmacyId))
+					{
+						pharmaciesWithCounter.put(pharmacyId, pharmaciesWithCounter.get(pharmacyId) + 1);
+						pharmaciesWithPrice.put(pharmacyId, pharmaciesWithPrice.get(pharmacyId) + newPrice);
+					}
+					else
+					{
+						pharmaciesWithCounter.put(pharmacyId, 1);
+						pharmaciesWithPrice.put(pharmacyId, newPrice);
+					}
+				}
+				
+			}
+		}
+		
+		for (Long id : pharmaciesWithCounter.keySet())
+		{
+			if(pharmaciesWithCounter.get(id) == medications.getMedications().size())
+			{
+				Double price = pharmaciesWithPrice.get(id);
+				Pharmacy pharmacy = pharmacyService.findOne(id);
+				pharmacyDTOs.add(new PharmacyWithMedicationsPriceQrDTO(new PharmacyDTO(pharmacy), price));
+			}
+		}
+
+		return new ResponseEntity<List<PharmacyWithMedicationsPriceQrDTO>>(pharmacyDTOs, HttpStatus.OK);	
+	}
+	
+	
 	
 	@GetMapping(value = "/checkCanRate")
 	public ResponseEntity<Boolean> checkCanRate(

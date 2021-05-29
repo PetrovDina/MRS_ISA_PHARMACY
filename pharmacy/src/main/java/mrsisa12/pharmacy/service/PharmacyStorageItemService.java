@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.model.ItemPrice;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
@@ -43,7 +44,7 @@ public class PharmacyStorageItemService {
 	public void updatePharmacyStorageItemQuantity(Medication medication, Pharmacy pharmacy, int quantity) 
 	{
 		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemRepository.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
-		// umanjujemo kolicinu za porucenu kolicinu
+		// povecavamo kolicinu za porucenu kolicinu - mozes da prosledis i negativan broj da bi smanjio kolicinu
 		pharmacyStorageItem.setQuantity(pharmacyStorageItem.getQuantity() + quantity);
 		pharmacyStorageItemRepository.save(pharmacyStorageItem);
 	}
@@ -67,5 +68,16 @@ public class PharmacyStorageItemService {
 	@Transactional(readOnly = false)
 	public void restoreDeletedPharmacyStorageItem(Long id) {
 		pharmacyStorageItemRepository.restoreById(id);
+	}
+	
+	public Double getCurrentPrice(PharmacyStorageItem item)
+	{
+		for(ItemPrice price : item.getItemPrices())
+		{
+			if(price.isCurrent())
+				return price.getPrice();
+		}
+		
+		return 0.0;
 	}
 }

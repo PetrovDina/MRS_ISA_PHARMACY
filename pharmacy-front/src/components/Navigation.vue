@@ -46,6 +46,7 @@
         <div v-if="isUserType('PATIENT')">
             <a @click="patientRedirect()" class="patientNav">Options</a>
             <a @click="patientProfileRedirect()" class="patientNav">My profile</a>
+            <a @click="patientQrCodeRedirect()" class="patientNav">Upload qr code</a>
 
         </div>
 
@@ -371,6 +372,18 @@ export default {
         patientProfileRedirect: function(){
             this.$router
                 .push({ name: "PatientProfile" })
+                .catch((err) => {
+                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    if (err.name != "NavigationDuplicated") {
+                        // But print any other errors to the console
+                        console.error(err);
+                    }
+                });
+        },
+
+        patientQrCodeRedirect: function(){
+            this.$router
+                .push({ name: "QrCodeSearchPage" })
                 .catch((err) => {
                     // Ignore the vuex err regarding  navigating to the page they are already on.
                     if (err.name != "NavigationDuplicated") {
