@@ -180,9 +180,26 @@ export default {
                     .then((response) => {
                         //modal window todo
                         $("#exampleModal").modal("show");
+                        this.$emit('eventname', response.data);
 
                     })
                     .catch((response) => alert(response));
+            }
+            else if(localStorage.getItem('USER_TYPE') == 'PHARMACIST' 
+            || localStorage.getItem('USER_TYPE') == 'DERMATOLOGIST'){
+                client({
+                    url: "/employee",//Olivera dodala
+                    method: "PUT",
+                    data: this.tempData,
+                })
+                    .then((response) => {
+                        //modal window todo
+                        $("#exampleModal").modal("show");
+                        this.$emit('eventname', response.data);
+
+                    })
+                    .catch((response) => alert(response));
+                
             }
             else {
                 client({
@@ -193,6 +210,7 @@ export default {
                     .then((response) => {
                         //modal window todo
                         $("#exampleModal").modal("show");
+                        this.$emit('eventname', response.data);
 
                     })
                     .catch((response) => alert(response));
@@ -206,6 +224,16 @@ export default {
         if(this.adminSupplier) {    // Veljko dodao
             client({
                 url: "auth/" + localStorage.getItem("USERNAME"),
+                method: "GET",
+            }).then((response) => {
+                this.user = response.data;
+                this.tempData = JSON.parse(JSON.stringify(response.data));
+            });
+        }
+        else if(localStorage.getItem('USER_TYPE') == 'PHARMACIST' 
+        || localStorage.getItem('USER_TYPE') == 'DERMATOLOGIST'){
+            client({
+                url: "employee/" + localStorage.getItem("USERNAME"),//Olivera dodala
                 method: "GET",
             }).then((response) => {
                 this.user = response.data;

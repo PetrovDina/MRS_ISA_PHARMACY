@@ -11,10 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mrsisa12.pharmacy.dto.EmployeeDTO;
+import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.dto.PlainEmployeeDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
@@ -24,6 +28,7 @@ import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.EmployeeRatingService;
 import mrsisa12.pharmacy.service.EmployeeService;
+import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.PatientService;
 
 @RestController
@@ -41,6 +46,9 @@ public class EmployeeController {
 	
 	@Autowired
 	private EmployeeRatingService employeeRatingService;
+	
+	@Autowired
+	private LocationService locationService;
 	
 	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/{username}/complaints")
@@ -130,6 +138,37 @@ public class EmployeeController {
 			return new ResponseEntity<Double>(rating.getRating(), HttpStatus.OK);	
 		}
 
+	}
+	
+	@GetMapping(value = "/{username}")
+	public ResponseEntity<EmployeeDTO> getOneByUsername(@PathVariable("username") String username) {
+
+		Employee employee = employeeService.findOneByUsername(username);
+		
+		if (employee == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(new EmployeeDTO(employee), HttpStatus.OK);
+	}
+	
+	@PutMapping(consumes = "application/json")
+	public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
+
+		Employee p = employeeService.findOne(employeeDTO.getId());
+
+		if (p == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		p.setFirstName(employeeDTO.getFirstName());
+		p.setLastName(employeeDTO.getLastName());
+		p.setUsername(employeeDTO.getUsername());
+		p.setLocation(employeeDTO.getLocation());
+		System.err.println(p.getLocation().getStreet());
+		employeeService.save(p);
+		locationService.save(p.getLocation());
+		return new ResponseEntity<>(new EmployeeDTO(p), HttpStatus.CREATED);
 	}
 	
 }

@@ -6,7 +6,7 @@ import PharmacyView from '@/views/PharmacyView'
 import PharmacyViewPatient from '@/views/PharmacyViewPatient'
 
 import CalendarPage from '@/views/CalendarPage'
-import DermatologistPage from '@/views/DermatologistPage'
+import EmployeeProfilePage from '@/views/EmployeeProfilePage'
 import PastAppointmentsPage from '@/views/PastAppointmentsPage'
 import RequestAbsencePage from '@/views/RequestAbsencePage'
 import SearchPatientsPage from '@/views/SearchPatientsPage'
@@ -166,11 +166,11 @@ export default new Router({
 
         {
             path: '/',
-            name: 'DermatologistPage',
-            component: DermatologistPage,
+            name: 'EmployeeProfilePage',
+            component: EmployeeProfilePage,
             beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
-                if (user.userType == 'DERMATOLOGIST') {
+                if (user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST') {
                     next();
                 }
                 else {

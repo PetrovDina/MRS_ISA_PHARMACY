@@ -14,6 +14,22 @@
                         <b>Address: </b>{{ user.location.street }}
                         {{ user.location.streetNum }}, {{ user.location.city }}
                     </p>
+                    <p class="card-text">
+                        <b>Employee rating:</b>
+                        <b>
+                            <star-rating
+                                active-color="rgba(155, 82, 151, 0.527)"
+                                :inline="true"
+                                :star-size="20"
+                                :read-only="true"
+                                :show-rating="false"
+                                :rating="user
+                                        .rating
+                                "
+                                :increment="0.1"
+                            ></star-rating>
+                        </b>
+                    </p>
                 </div>
             </div>
             <div id="optionsBar" class="card flex-card">
@@ -21,9 +37,6 @@
                     :tabs="[
                         'Edit profile',
                         'Change password',
-                        'Allergies',
-                        'Subscriptions',
-                        'Penalty system',
                     ]"
                     :selected="selected"
                     @selected="setSelected"
@@ -36,17 +49,6 @@
                         <PasswordChangeComponent></PasswordChangeComponent>
                     </Tab>
 
-                    <Tab :isSelected="selected === 'Allergies'">
-                        <AllergiesAddEdit></AllergiesAddEdit>
-                    </Tab>
-
-                    <Tab :isSelected="selected === 'Subscriptions'">
-                        <SubscriptionsView></SubscriptionsView>
-                    </Tab>
-
-                    <Tab :isSelected="selected === 'Penalty system'">
-                        <PenaltySystemComponent></PenaltySystemComponent>
-                    </Tab>
                 </TabNav>
             </div>
         </div>
@@ -59,18 +61,14 @@ import moment from "moment";
 import Button from "@/components/Button";
 import TabNav from "../components/TabNav.vue";
 import Tab from "../components/Tab.vue";
-import AllergiesAddEdit from "../components/AllergiesAddEdit.vue";
 import PatientProfileEdit from "../components/PatientProfileEdit.vue";
 import PasswordChangeComponent from "../components/PasswordChangeComponent.vue";
-import PenaltySystemComponent from "../components/PenaltySystemComponent.vue";
-import SubscriptionsView from "../components/SubscriptionsView.vue";
-
-import $ from "jquery";
+import StarRating from "vue-star-rating";
 
 export default {
-    name: "PatientProfile",
+    name: "EmployeeProfilePage",
 
-    components: { Button, TabNav, Tab, AllergiesAddEdit, PatientProfileEdit, PasswordChangeComponent, PenaltySystemComponent, SubscriptionsView},
+    components: { Button, TabNav, Tab,  PatientProfileEdit, PasswordChangeComponent,  StarRating},
 
     data() {
         return {
@@ -84,22 +82,22 @@ export default {
         setSelected(tab) {
             this.selected = tab;
         },
-
-        updateparent(pat) {
-            this.user = pat;
+        
+        updateparent(emp) {
+            this.user = emp;
         },
     },
 
     mounted() {
         client({
-            url: "patient/" + localStorage.getItem("USERNAME"),
+            url: "employee/" + localStorage.getItem("USERNAME"),
             method: "GET",
         }).then((response) => (this.user = response.data));
     },
 };
 </script>
 
-
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #profileDiv {
     margin: 50px 50px 50px 50px;
@@ -144,4 +142,3 @@ img {
     flex: 3;
 }
 </style>
-

@@ -182,7 +182,7 @@ export default {
         
 
         dermProfileRedirect: function () {
-            this.$router.push({ name: "DermatologistPage" }).catch((err) => {
+            this.$router.push({ name: "EmployeeProfilePage" }).catch((err) => {
                 // Ignore the vuex err regarding  navigating to the page they are already on.
                 if (err.name != "NavigationDuplicated") {
                     // But print any other errors to the console

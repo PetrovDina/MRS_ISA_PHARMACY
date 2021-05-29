@@ -26,7 +26,7 @@
                     @selected="setSelected"
                 >
                     <Tab :isSelected="selected === 'Edit profile'">
-                        <PatientProfileEdit :adminSupplier="true"></PatientProfileEdit>
+                        <PatientProfileEdit :adminSupplier="true" @eventname="updateparent"></PatientProfileEdit>
                     </Tab>
 
                     <Tab :isSelected="selected === 'Change password'">
@@ -74,6 +74,10 @@ export default {
     methods: {
         setSelected(tab) {
             this.selected = tab;
+        },
+        
+        updateparent(user) {
+            this.user = user;
         },
     },
 
