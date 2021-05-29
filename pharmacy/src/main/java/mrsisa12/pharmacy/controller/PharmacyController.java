@@ -316,7 +316,7 @@ public class PharmacyController {
 				if(item.getQuantity() >= med.getQuantity())
 				{
 					Long pharmacyId = item.getPharmacy().getId();
-					Double newPrice = pharmacyStorageItemService.getCurrentPrice(item);
+					Double newPrice = pharmacyStorageItemService.getCurrentPrice(item) * med.getQuantity();
 					
 					if(pharmaciesWithCounter.containsKey(pharmacyId))
 					{

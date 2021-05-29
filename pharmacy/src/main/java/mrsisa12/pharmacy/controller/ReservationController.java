@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mrsisa12.pharmacy.dto.MedicationQrDTO;
+import mrsisa12.pharmacy.dto.QrCodeDTO;
 import mrsisa12.pharmacy.dto.ReservationDTO;
 import mrsisa12.pharmacy.dto.ReservationPickupDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
@@ -31,7 +33,6 @@ import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
-import mrsisa12.pharmacy.service.TherapyService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
@@ -184,7 +185,7 @@ public class ReservationController {
 		psi.setQuantity(psi.getQuantity()-resDTO.getQuantity());
 		pharmacyStorageItemService.save(psi);
 
-
+		// reservation.setMedicationPrice(pharmacyStorageItemService.getCurrentPrice(psi) /* med.getQuantity()*/);
 		reservation = reservationService.save(reservation);
 		
 		// email!
@@ -246,5 +247,50 @@ public class ReservationController {
 		HashMap<String, Integer> data = reservationService.getAllMedicationConsumptedByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null);
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
+	
+	
+	@PostMapping(value = "/buyMedicationsQr", consumes = "application/json")
+	public ResponseEntity<Boolean> buyMedicationsByQrSearch(@RequestBody QrCodeDTO medications, 
+			@RequestParam("pharmacyId") Long pharmacyId, @RequestParam("username") String username)
+	{
+		Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
+		Patient patient = patientService.findByUsername(username);
+		
+		for (MedicationQrDTO med : medications.getMedications()) 
+		{
+			Reservation reservation = new Reservation();
+			
+			Medication medication = medicationService.findOne(med.getId());
+			
+			reservation.setPharmacy(pharmacy);
+			reservation.setPatient(patient);
+			reservation.setMedication(medication);
+			reservation.setDueDate(new Date());
+			reservation.setQuantity(med.getQuantity());
+			reservation.setStatus(ReservationStatus.COMPLETED);
+			
+			int length = 10;
+	        char[] text = new char[length];
+	        for (int i = 0; i < length; i++) {
+	            text[i] = SOURCES.charAt(random.nextInt(SOURCES.length()));
+	        }
+			reservation.setCode(new String(text));
+			
+			PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
+			psi = pharmacyStorageItemService.findOneWithItemPrices(psi.getId());
+			psi.setQuantity(psi.getQuantity() - med.getQuantity());
+			pharmacyStorageItemService.save(psi);
+			
+			reservation.setMedicationPrice(pharmacyStorageItemService.getCurrentPrice(psi) /* med.getQuantity()*/);
+			reservation = reservationService.save(reservation);
+		}
+		
+		emailService.sendQrPickupConfirmation(patient);
+		
+		return new ResponseEntity<>(true, HttpStatus.CREATED);
+	}
+	
+	
+	
 }
 

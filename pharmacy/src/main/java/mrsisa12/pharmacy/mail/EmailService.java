@@ -16,6 +16,7 @@ import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Promotion;
+import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.Supplier;
 import mrsisa12.pharmacy.model.SystemAdmin;
 import mrsisa12.pharmacy.model.User;
@@ -108,7 +109,17 @@ public class EmailService {
 		EmailContent email = new EmailContent("Special discount due " + promotion.getDueDate().toString(), emailBody);
 		email.addRecipient(patient.getEmail());
 		this.sendEmail(email);
+	}
+	
+	public void sendQrPickupConfirmation(Patient patient)
+	{	
+		String emailBody = "Dear " + patient.getFirstName() + " " + patient.getLastName()
+		+ ",\n\nWe want to inform you that your qr code reservaton has been successfuly picked up."
+		+ "\n\nThis is an automatically generated email – please do not reply to it. ©Tim12-MRS-ISA";
 		
+		EmailContent email = new EmailContent("Qr code reservation pick up information", emailBody);
+        email.addRecipient(patient.getEmail());
+        this.sendEmail(email);
 	}
     
 }

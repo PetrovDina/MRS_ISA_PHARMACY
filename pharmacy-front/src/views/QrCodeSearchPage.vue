@@ -62,7 +62,9 @@ export default {
 
             results: [],
 
-            medications: []
+            medications: [],
+
+            medicationsForBack: null
 
         }
 
@@ -72,7 +74,28 @@ export default {
 
         buyMedications : function(pharmacyId, price)
         {
-            alert("ae");
+            client({
+
+                url: "reservation/buyMedicationsQr",
+                data: this.medicationsForBack,
+                params: { pharmacyId: pharmacyId, username: localStorage.getItem("USERNAME") },
+                method: "POST",
+
+            }).then((response) => 
+            {
+                this.$toasted.show("Medications successfuly bought", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                    
+                this.$router.push({ name: "Home" }).catch((err) => 
+                {
+                    if (err.name != "NavigationDuplicated") {
+                        console.error(err);
+                    }
+                });
+            });
         },
 
         onDecode (decoded) 
@@ -83,15 +106,14 @@ export default {
 
         getResults: function() 
         {
-
-            console.log(this.decoded)
-
             var medications_list = JSON.parse(this.decoded);
             
             var medications = 
             {
                 "medications": medications_list
             }
+
+            this.medicationsForBack = medications;
 
             client({
                 url: "pharmacy/getQrSearch",

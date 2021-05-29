@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import mrsisa12.pharmacy.dto.MedicationQrDTO;
 import mrsisa12.pharmacy.dto.PharmacyWithMedicationsPriceQrDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -158,6 +159,17 @@ public class PharmacyService {
 		}
 		
 		return false;
+	}
+	
+	public Integer getQuantityOfMedication(List<MedicationQrDTO> medications, Long id)
+	{
+		for (MedicationQrDTO med : medications) 
+		{
+			if(med.getId() == id)
+				return med.getQuantity();
+		}
+		
+		return -1;
 	}
 
 }
