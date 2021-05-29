@@ -161,13 +161,15 @@ public class AppointmentService {
 
 		// za pacijenta
 		for (Appointment appo : patientAppointments) {
-			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
-			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
-			if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
-					&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
-					&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
-							&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
-				return true;//"Patient already has an appointment then."; preklapanje sa postojecim terminom
+			if(appo.getStatus().equals(AppointmentStatus.RESERVED)) {
+				LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+				LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+				if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
+						&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
+						&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
+								&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
+					return true;//"Patient already has an appointment then."; preklapanje sa postojecim terminom
+				}
 			}
 		}
 		return false;
@@ -176,14 +178,15 @@ public class AppointmentService {
 	public boolean checkEmployeeAppointments(TimePeriod tp, Employee emp) {
 		
 		for (Appointment appo : emp.getAppointments()) {
-			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
-			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
-			if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
-					&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
-					&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
-							&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
-					return true; //"You already have an appointment then.";   preklapanje sa postojecim terminom
-				
+			if(appo.getStatus().equals(AppointmentStatus.RESERVED)) {
+				LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+				LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+				if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
+						&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
+						&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
+								&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
+						return true; //"You already have an appointment then.";   preklapanje sa postojecim terminom					
+				}
 			}
 		}
 		return false;
