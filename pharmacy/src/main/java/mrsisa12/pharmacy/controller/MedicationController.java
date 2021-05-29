@@ -23,12 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.MedicationCreationDTO;
 import mrsisa12.pharmacy.dto.MedicationDTO;
-import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.dto.MedicationQrDTO;
+import mrsisa12.pharmacy.dto.MedicationQrTableDTO;
+import mrsisa12.pharmacy.dto.QrCodeDTO;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.MedicationRating;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
-import mrsisa12.pharmacy.model.PharmacyRating;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.service.MedicationRatingService;
@@ -360,6 +361,22 @@ public class MedicationController {
 
 		return new ResponseEntity<Double>(newRating, HttpStatus.OK);
 	}
+	
+	
+	@PostMapping(value = "/getQrSearch", consumes = "application/json")
+	public ResponseEntity<List<MedicationQrTableDTO>> getMedicationsByQrSearch(@RequestBody QrCodeDTO medications) {
+
+		List<MedicationQrTableDTO> medicationDTOs = new ArrayList<MedicationQrTableDTO>();
+		
+		for (MedicationQrDTO med : medications.getMedications()) 
+		{
+			Medication medication = medicationService.findOne(med.getId());
+			medicationDTOs.add(new MedicationQrTableDTO(medication, med.getQuantity()));
+		}
+
+		return new ResponseEntity<List<MedicationQrTableDTO>>(medicationDTOs, HttpStatus.OK);	
+	}
+	
 //	
 //	@GetMapping(value="/testAdd", produces = MediaType.APPLICATION_JSON_VALUE)
 //	public ResponseEntity<Collection<Medication>> addSomeTest() {

@@ -1,0 +1,125 @@
+<template>
+    <div>
+        <v-card class="ma-5">
+            <v-card-title>
+                <v-spacer></v-spacer>
+                <div >
+                    <h2>Qr code reader</h2>
+                </div>
+                <v-spacer></v-spacer>
+            </v-card-title>
+        </v-card>
+
+        <div class="mb" style="margin-bottom: 40px; margin-top: 40px;">
+
+            <qrcode-capture style="margin-left: 100px;" class="mb" @decode="onDecode" />
+
+        </div>
+
+        <div v-if="decoded !=''"  style="margin-bottom: 40px;">
+            <h4>Here are all medications that are in qr code</h4>
+            <MedicationsTableQR 
+                :medications="medications">
+            </MedicationsTableQR>
+        </div>
+        
+
+
+        <div v-if="decoded !=''" style="margin-bottom: 200px;">
+            <PharmaciesWithPriceQR 
+                :results="results"
+                @buy-medications="buyMedications">
+            </PharmaciesWithPriceQR>
+        </div>
+        
+
+    </div>
+    
+</template>
+
+
+<script>
+
+import { client } from "@/client/axiosClient";
+
+import { QrcodeCapture } from 'vue-qrcode-reader'
+import PharmaciesWithPriceQR from '../components/PharmaciesWithPriceQR.vue';
+import MedicationsTableQR from '../components/MedicationsTableQR.vue';
+
+export default {
+    name: "QrCodeSearchPage",
+
+    components: {
+        QrcodeCapture,
+        PharmaciesWithPriceQR,
+        MedicationsTableQR
+    },
+
+    data () {
+
+        return {
+            decoded: '',
+
+            results: [],
+
+            medications: []
+
+        }
+
+    },
+
+    methods: {
+
+        buyMedications : function(pharmacyId, price)
+        {
+            alert("ae");
+        },
+
+        onDecode (decoded) 
+        {
+            this.decoded = decoded;
+            this.getResults();
+        },
+
+        getResults: function() 
+        {
+
+            console.log(this.decoded)
+
+            var medications_list = JSON.parse(this.decoded);
+            
+            var medications = 
+            {
+                "medications": medications_list
+            }
+
+            client({
+                url: "pharmacy/getQrSearch",
+                data: medications,
+                method: "POST",
+            })
+            .then((response) => 
+            {
+                this.results = response.data;          
+            });
+
+            client({
+                url: "med/getQrSearch",
+                data: medications,
+                method: "POST",
+            })
+            .then((response) => 
+            {
+                this.medications = response.data;         
+            });
+
+        }
+    }
+
+
+
+
+}
+
+
+</script>

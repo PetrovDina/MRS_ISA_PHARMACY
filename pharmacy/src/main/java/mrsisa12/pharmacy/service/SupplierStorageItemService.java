@@ -43,7 +43,7 @@ public class SupplierStorageItemService {
 		SupplierStorageItem supplierStorageItem = supplierStorageItemRepository.findOneByMedication(medication, supplier);
 		// umanjujemo kolicinu za porucenu kolicinu
 		supplierStorageItem.setQuantity(supplierStorageItem.getQuantity() - quantity);
-		//supplierStorageItem.setReservedQuantity(supplierStorageItem.getReservedQuantity() - quantity);
+		supplierStorageItem.setReservedQuantity(supplierStorageItem.getReservedQuantity() - quantity);
 		supplierStorageItemRepository.save(supplierStorageItem);
 	}
 	

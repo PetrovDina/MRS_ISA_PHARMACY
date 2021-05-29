@@ -48,6 +48,7 @@ import ComplaintEmployeeUserPage from '@/views/ComplaintEmployeeUserPage'
 import LoginFirstTimePage from '@/views/LoginFirstTimePage'
 import ProfileAdminSupplierPage from '@/views/ProfileAdminSupplierPage'
 import AdminHomePage from '@/views/AdminHomePage'
+import QrCodeSearchPage from '@/views/QrCodeSearchPage'
 
 import MedicationReservationView from '@/views/MedicationReservationView'
 
@@ -766,6 +767,21 @@ export default new Router({
             beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
                 if (user.userType == 'PHARMACIST' || user.userType == 'DERMATOLOGIST') {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
+        },
+
+        {
+            path: '/qrCodeSearchPage',
+            name: 'QrCodeSearchPage',
+            component: QrCodeSearchPage,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == 'PATIENT') {
                     next();
                 }
                 else {

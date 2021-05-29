@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import mrsisa12.pharmacy.dto.PharmacyWithMedicationsPriceQrDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.Reservation;
@@ -146,6 +147,17 @@ public class PharmacyService {
 			}
 		}
 		return data;
+	}
+	
+	public boolean pharmacyInList(List<PharmacyWithMedicationsPriceQrDTO> pharmacies, Pharmacy pharmacy)
+	{
+		for (PharmacyWithMedicationsPriceQrDTO p : pharmacies) 
+		{
+			if(p.getPharmacy().getId() == pharmacy.getId())
+				return true;
+		}
+		
+		return false;
 	}
 
 }
