@@ -22,13 +22,12 @@
                 :medications="medications">
             </MedicationsTableQR>
         </div>
-        
-
 
         <div v-if="decoded !=''" style="margin-bottom: 200px;">
             <PharmaciesWithPriceQR 
                 :results="results"
-                @buy-medications="buyMedications">
+                @buy-medications="buyMedications"
+                @sort-performed="sortPerformed">
             </PharmaciesWithPriceQR>
         </div>
         
@@ -71,6 +70,54 @@ export default {
     },
 
     methods: {
+
+        sortPerformed : function(sortCriterium) 
+        {
+            
+            if (sortCriterium === "-") 
+                return;
+
+            else if (sortCriterium === "rating") 
+            {
+                this.results = this.results.sort(function (
+                    a,
+                    b
+                ) {
+                    return b.pharmacy.rating - a.pharmacy.rating;
+                });
+            }
+
+            else if (sortCriterium === "price") 
+            {
+                this.results = this.results.sort(function (
+                    a,
+                    b
+                ) {
+                    return b.price - a.price;
+                });
+            }
+
+            else if (sortCriterium === "city") 
+            {
+                this.results = this.results.sort(function (
+                    a,
+                    b
+                ) {
+                    return a.pharmacy.location.city > b.pharmacy.location.city ? 1 : -1;
+                });
+            }
+
+            else if (sortCriterium === "name") 
+            {
+                this.results = this.results.sort(function (
+                    a,
+                    b
+                ) {
+                    return a.pharmacy.name > b.pharmacy.name ? 1 : -1;
+                });
+            }
+            
+        },
 
         buyMedications : function(pharmacyId, price)
         {

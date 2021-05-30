@@ -3,6 +3,14 @@
         <h4 v-if="results.length == 0">There are no pharmacies where you can buy medications from qr code</h4>
         <div v-else>
             <h4 style="margin-bottom: 40px;">Here are pharmacies where you can buy all medications from qr code</h4>
+
+            <div id="sort" v-if="results.length != 0">
+                <p class="sort-label">sort by</p>
+                <select class="sort-dropdown" @change="sortPerformed">
+                    <option v-for="option in options" :key="option" :value="option">{{option}}</option>
+                </select>
+            </div>
+
             <table class="table" >
                 <thead>
                     <tr>
@@ -66,6 +74,8 @@ export default {
     data() {
         return {
 
+            options: ['-', 'price', 'rating', 'name', 'city']
+
         };
     },
 
@@ -74,6 +84,12 @@ export default {
         buyMedications: function(pharmacyId, price)
         {
             this.$emit('buy-medications', pharmacyId, price);
+        },
+
+        sortPerformed: function(event)
+        {
+            let sortCriterium = event.target.value;
+            this.$emit("sort-performed", sortCriterium);
         }
 
     },
@@ -92,5 +108,68 @@ thead {
 
 .selected {
     background-color: rgba(155, 82, 151, 0.527);
+}
+
+.sort-dropdown {
+    padding: 5px;
+    border: 0.5px solid rgba(128, 128, 128, 0.473);
+    border-radius: 5px;
+
+    display: inline-block;
+
+}
+
+#sort{
+    margin-top: 40px;
+    width:100%;
+    text-align:right;
+
+}
+
+.sort-label{
+    /* margin: 10px 0 10px 0; */
+    display: inline-block;
+    /* float: right; */
+
+}
+
+#sort-and-filter{
+    /* float:right; */
+    text-align: right;
+    /* margin: 5px 0 30px 0; */
+}
+
+.inlinepls{
+    display:inline;
+}
+
+#filterDiv{
+    margin-top: 20px;
+    text-align: left;
+}
+
+.rating-input{
+    width: 30px;
+}
+
+input{
+    border: 0.5px solid rgba(128, 128, 128, 0.473);
+    border-radius: 5px;
+
+
+}
+
+.filter-element{
+    margin-right: 30px;
+}
+
+#blackIcon {
+    color: rgba(0, 0, 0, 0.747);
+
+}
+
+#iconHolder{
+    width: 10%;
+    height:100%;
 }
 </style>
