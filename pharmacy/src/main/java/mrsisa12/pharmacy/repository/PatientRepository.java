@@ -46,4 +46,24 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
 	@Query("select pat from Patient pat left join fetch pat.subscriptions al where pat.username = ?1")
 	public Patient findByUsernameWithSubscriptions(String patientUsername);
+	
+	@Modifying
+	@Query("update Patient pat set pat.category='REGULAR' where pat.loyaltyPoints <= ?1")
+	public void updateRegularCategory(Integer regularPoints);
+	
+	@Modifying
+	@Query("update Patient pat set pat.category='SILVER' where pat.loyaltyPoints > ?1 and pat.loyaltyPoints <= ?2")
+	public void updateSilverCategory(Integer regularPoints, Integer silverPoints);
+	
+	@Modifying
+	@Query("update Patient pat set pat.category='GOLD' where pat.loyaltyPoints > ?1")
+	public void updateGoldCategory(Integer silverPoints);
 }
+
+
+
+
+
+
+
+

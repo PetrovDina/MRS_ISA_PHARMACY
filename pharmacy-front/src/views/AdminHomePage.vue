@@ -93,6 +93,14 @@
                         </v-card>
                     </v-col>
 
+                    <v-col class="staticPosition" md="3">
+                        <v-card class="oneCard" to="/loyaltyProgramDefinitionPage">
+                            <v-card-title class="wordBreak"
+                                >Define loyalty program</v-card-title
+                            >
+                        </v-card>
+                    </v-col>
+
                 </v-row>
             </v-card-text>
         </v-card>

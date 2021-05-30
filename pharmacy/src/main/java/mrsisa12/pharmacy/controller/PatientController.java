@@ -230,6 +230,7 @@ public class PatientController {
 		pa.setDeleted(false);
 		pa.setLoggedFirstTime(true);
 		pa.setPenaltyPoints(new Integer(0));
+		pa.setLoyaltyPoints(new Integer(0));
 		
 		try 
 		{

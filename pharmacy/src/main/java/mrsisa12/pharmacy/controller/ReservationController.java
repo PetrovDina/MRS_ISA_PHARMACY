@@ -33,6 +33,7 @@ import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
+import mrsisa12.pharmacy.service.LoyaltyProgramService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
@@ -60,7 +61,9 @@ public class ReservationController {
 	
 	@Autowired
 	private EmailService emailService;
-	
+
+	@Autowired
+	private LoyaltyProgramService loyaltyProgramService;
 	
 	private Random random = new Random();
     private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
@@ -256,12 +259,16 @@ public class ReservationController {
 	{
 		Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
 		Patient patient = patientService.findByUsername(username);
+		Integer pointsForPatient = 0;
 		
 		for (MedicationQrDTO med : medications.getMedications()) 
 		{
 			Reservation reservation = new Reservation();
 			
 			Medication medication = medicationService.findOne(med.getId());
+			
+			// Sabiranje poena za dodavanje pacijentu na kraju kupovine
+			pointsForPatient += medication.getLoyaltyPoints() * med.getQuantity();
 			
 			reservation.setPharmacy(pharmacy);
 			reservation.setPatient(patient);
@@ -282,9 +289,16 @@ public class ReservationController {
 			psi.setQuantity(psi.getQuantity() - med.getQuantity());
 			pharmacyStorageItemService.save(psi);
 			
-			reservation.setMedicationPrice(pharmacyStorageItemService.getCurrentPrice(psi) /* med.getQuantity()*/);
+			
+			Double medicationPrice = pharmacyStorageItemService.getCurrentPrice(psi);
+			Double finalPrice = loyaltyProgramService.getFinalPrice(medicationPrice, patient);
+			reservation.setMedicationPrice(finalPrice);
+			
 			reservation = reservationService.save(reservation);
 		}
+		
+		// Dodavanje poena pacijentu i izmena kategorije ako je potrebno
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
 		
 		emailService.sendQrPickupConfirmation(patient);
 		

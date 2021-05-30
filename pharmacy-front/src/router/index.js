@@ -49,6 +49,7 @@ import LoginFirstTimePage from '@/views/LoginFirstTimePage'
 import ProfileAdminSupplierPage from '@/views/ProfileAdminSupplierPage'
 import AdminHomePage from '@/views/AdminHomePage'
 import QrCodeSearchPage from '@/views/QrCodeSearchPage'
+import LoyaltyProgramDefinitionPage from '@/views/LoyaltyProgramDefinitionPage'
 
 import MedicationReservationView from '@/views/MedicationReservationView'
 
@@ -796,6 +797,21 @@ export default new Router({
             component: MedicationDetailsView,
             props: true
 
+        },
+
+        {
+            path: '/loyaltyProgramDefinitionPage',
+            name: 'LoyaltyProgramDefinitionPage',
+            component: LoyaltyProgramDefinitionPage,
+            beforeEnter: function (to, from, next) {
+                let user = CheckUser.getLoggedUserData();
+                if (user.userType == 'SYSTEM_ADMIN') {
+                    next();
+                }
+                else {
+                    ({ path: '/' });
+                }
+            }
         },
 
     ]

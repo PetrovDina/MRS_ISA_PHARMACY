@@ -1,11 +1,11 @@
-insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Probiotik', 'Ivancic i sinovi', 'False', 'PILL', 'Neki opis 1', 'Neki sadrzaj 1');
-insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Brufen', 'Bosna lijek', 'False', 'PILL', 'Neki opis 2', 'Neki sadrzaj 2');
-insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Paracetamol', 'Krka', 'False', 'CAPSULE', 'Neki opis 3', 'Neki sadrzaj 3');
-insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Panadol', 'Jugoremedija', 'False', 'PASTE', 'Neki opis 4', 'Neki sadrzaj 4');
-insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Panklav', 'Krka', 'True', 'CAPSULE', 'Neki opis 5', 'Neki sadrzaj 5');
-insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Tylolhot', 'Nobel', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 3');
-insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Fervex', 'Upsa', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 4');
-insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content) values (0, 'Amoksicilin', 'Belupo', 'True', 'CAPSULE', 'Antibiotski lek za ...', 'Neki sadrzaj 5');
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Probiotik', 'Ivancic i sinovi', 'False', 'PILL', 'Neki opis 1', 'Neki sadrzaj 1', 2);
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Brufen', 'Bosna lijek', 'False', 'PILL', 'Neki opis 2', 'Neki sadrzaj 2', 3);
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Paracetamol', 'Krka', 'False', 'CAPSULE', 'Neki opis 3', 'Neki sadrzaj 3', 2);
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Panadol', 'Jugoremedija', 'False', 'PASTE', 'Neki opis 4', 'Neki sadrzaj 4', 4);
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Panklav', 'Krka', 'True', 'CAPSULE', 'Neki opis 5', 'Neki sadrzaj 5', 9);
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Tylolhot', 'Nobel', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 3', 5);
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Fervex', 'Upsa', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 4', 7);
+insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Amoksicilin', 'Belupo', 'True', 'CAPSULE', 'Antibiotski lek za ...', 'Neki sadrzaj 5', 1);
 
 
 insert into alternative_medications (medication_id, alternative_id) values (1, 5);
@@ -57,7 +57,7 @@ insert into system_user (username, password, email, firstname, lastname, locatio
 insert into systemadmin (id) values (1);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('patient', '$2a$10$s9YM05JPaH8hZARhK1c0wex4g4FmqXbgNX1pKy8uvbyhhIbyWkIn2', 'patient@maildrop.cc', 'Patient', 'Patientic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
-insert into patient (id, penaltypoints) values (2, 0);
+insert into patient (id, penaltypoints, loyaltyPoints, category) values (2, 0, 499, 'SILVER');
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('padmin', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'padmin@email.com', 'Padmin', 'Padminic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into pharmacyadmin (id, pharmacy_id) values (3, 1);
@@ -92,7 +92,7 @@ insert into employees (id, rating ) values (10, 0);
 insert into dermatologist (id, dermatologistNickname) values (10, 'mare');
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('mica', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'mica@email.com', 'Mica', 'Micic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
-insert into patient (id, penaltypoints) values (11, 0);
+insert into patient (id, penaltypoints, loyaltyPoints, category) values (11, 0, 0, 'REGULAR');
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('supplier', '$2a$10$JP2z80y0qoRUFUb7KiT31OiwlX66Pso0dF/oRqRi9t0IWVLP731X6', 'supplier@email.com', 'Supplier', 'Supplieric', 1, 'MALE', 'ACTIVATED', 'False', 'True');
 insert into supplier (id) values (12);
@@ -139,7 +139,7 @@ insert into system_user (username, password, email, firstname, lastname, locatio
 insert into pharmacyadmin (id, pharmacy_id) values (17, 1);
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted, loggedFirstTime) values ('andjelko', '$2a$10$F.92g9Y99STKAL3TCExFYuboFCcgMlhH3dOZXa8XX0bKbc88Rzn26', 'andjelko@email.com', 'Andjelko', 'Bojanic', 1, 'MALE', 'ACTIVATED', 'False', 'True');
-insert into patient (id, penaltypoints) values (18, 3); 
+insert into patient (id, penaltypoints, loyaltyPoints, category) values (18, 3, 0, 'REGULAR'); 
 
 insert into system_user (username, password, email, firstname, lastname, location_id, gender, activestatus, deleted,  loggedFirstTime) values ('admin2', '$2a$10$k/iwZ4.ZX3RQ.7k2qpT3yeLKmfF0IpGKoRz8bgXvoi58vXwaFsthi', 'admin2@maildrop.cc', 'Admin', 'Adminovic', 1, 'MALE', 'ACTIVATED', 'False', 'False');
 insert into systemadmin (id) values (19);
@@ -272,3 +272,4 @@ insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharma
 insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('REQUESTED', 'VACATION', '{ "startDate":  [2021, 12, 25], "startTime": [0, 0, 0], "endDate": [2022, 1, 15], "endTime": [0, 0, 0]}', 4, 1);
 insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('DENIED', 'ABSENCE', '{ "startDate":  [2021, 5, 5], "startTime": [0, 0, 0], "endDate": [2021, 5, 10], "endTime": [0, 0, 0]}', 4, 1);
 
+insert into loyalty_program (afterAppointment, maxPointsRegular, maxPointsSilver, silverDis, goldDis) values (0, 200, 500, 10, 30);

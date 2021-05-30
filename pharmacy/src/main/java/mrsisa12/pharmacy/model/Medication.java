@@ -42,6 +42,9 @@ public class Medication {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "form", nullable = false)
 	private MedicationForm form;
+	
+	@Column(name = "loyaltyPoints", nullable = false)
+	private Integer loyaltyPoints;
 
 	@ManyToMany
 	@JoinTable(name = "alternative_medications", joinColumns = @JoinColumn(name = "medication_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "alternative_id", referencedColumnName = "id"))
@@ -184,6 +187,13 @@ public class Medication {
 	public void setRating(double rating) {
 		this.rating = rating;
 	}
-	
+
+	public Integer getLoyaltyPoints() {
+		return loyaltyPoints;
+	}
+
+	public void setLoyaltyPoints(Integer loyaltyPoints) {
+		this.loyaltyPoints = loyaltyPoints;
+	}
 	
 }

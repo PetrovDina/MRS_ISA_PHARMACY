@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.MedicationCreationDTO;
 import mrsisa12.pharmacy.dto.MedicationDTO;
+import mrsisa12.pharmacy.dto.MedicationDetailsDTO;
 import mrsisa12.pharmacy.dto.MedicationQrDTO;
 import mrsisa12.pharmacy.dto.MedicationQrTableDTO;
 import mrsisa12.pharmacy.dto.QrCodeDTO;
@@ -118,6 +119,7 @@ public class MedicationController {
 		medication.setDescription(medicationDTO.getDescription());
 		medication.setForm(medicationDTO.getForm());
 		medication.setRating(0);
+		medication.setLoyaltyPoints(medicationDTO.getLoyaltyPoints());
 		
 		List<Medication> alternatives = new ArrayList<Medication>();
 		for (MedicationDTO m : medicationDTO.getAlternatives()) 
@@ -161,7 +163,7 @@ public class MedicationController {
 	}
 	
 	@GetMapping(value = "details/{id}")
-	public ResponseEntity<MedicationDTO> getMedicationDetails(@PathVariable Long id) {
+	public ResponseEntity<MedicationDetailsDTO> getMedicationDetails(@PathVariable Long id) {
 		Medication medication = medicationService.findOneWithAlternatives(id);
 		if (medication == null) 
 		{
@@ -172,7 +174,7 @@ public class MedicationController {
 			medication.setAlternatives(new ArrayList<Medication>());
 		}
 
-		return new ResponseEntity<>(new MedicationCreationDTO(medication), HttpStatus.OK);
+		return new ResponseEntity<>(new MedicationDetailsDTO(medication), HttpStatus.OK);
 	}
 	
 	@PostMapping(consumes = "application/json")

@@ -8,7 +8,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +23,9 @@ public class PatientService {
 	
 	@Autowired
 	private PharmacyService pharmacyService;
+	
+	@Autowired
+	private LoyaltyProgramService loyaltyProgramService;
 
 	public List<Patient> findAll() {
 		return patientRepository.findAll();
@@ -60,6 +62,13 @@ public class PatientService {
 	public void removeAllergy(Long patientId, Long allergyId) {
 		patientRepository.removeAllergy(patientId, allergyId);
 		
+	}
+	
+	public void addPointsAndUpdateCategory(Patient patient, Integer points) 
+	{
+		patient.setLoyaltyPoints(patient.getLoyaltyPoints() + points);
+		patient.setCategory(loyaltyProgramService.getPatientCategory(patient));
+		this.save(patient);
 	}
 
 	public Patient findByUsernameWithSubscriptions(String patientUsername) {
@@ -103,6 +112,14 @@ public class PatientService {
     			
     		}
     	}
+	}
+	
+	@Transactional
+	public void updateCategories(Integer regularPoints, Integer silverPoints)
+	{
+		patientRepository.updateRegularCategory(regularPoints);
+		patientRepository.updateSilverCategory(regularPoints, silverPoints);
+		patientRepository.updateGoldCategory(silverPoints);
 	}
 
 

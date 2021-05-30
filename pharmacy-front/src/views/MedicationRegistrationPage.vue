@@ -22,6 +22,11 @@
 		                            <input type="text" name="manufacturer" id="manufacturer" class="form-control" required="" v-model="registration.manufacturer"
 									oninvalid="this.setCustomValidity('Enter medication manufacturer.')"  oninput="setCustomValidity('')">
 		                        </div>
+                                <div class="form-group">
+		                            <label for="manufacturer" >Loyalty points (0 - 12):</label><br>
+		                            <input type="number" name="loyaltyPoints" id="loyaltyPoints" min="0" max="12" class="form-control" required="" v-model="registration.loyaltyPoints"
+									oninvalid="this.setCustomValidity('Value must be 12 or lower.')"  oninput="setCustomValidity('')">
+		                        </div>
 		                        <div class="form-group">
 		                            <input type="radio" id="req" name="prescriptionReq" value=true v-model="registration.prescriptionReq">
 									<label for="req" >Prescription required</label>
@@ -110,6 +115,7 @@ export default {
                 content: "",
                 manufacturer: "",
                 description: "",
+                loyaltyPoints: 0,
                 form: "PILL",
             },
             medicationFormLabel: "Pill",
@@ -171,6 +177,7 @@ export default {
         register : function(registration)
         {
             if(this.isSomeFieldEmpty(registration)) return;
+            if(registration.loyaltyPoints < 0 || registration.loyaltyPoints > 12) return;
             registration.alternatives = this.alternatives;
             // console.log(registration.alternatives[0]);
 
@@ -194,6 +201,7 @@ export default {
 			if(registration.name == '') return true;
 			if(registration.content == '') return true;
 			if(this.manufacturer == '') return true;
+            if(this.loyaltyPoints == '') return true;
 			if(registration.description == '') return true;
 			return false;
 		},

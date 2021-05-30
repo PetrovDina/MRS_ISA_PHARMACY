@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -12,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import mrsisa12.pharmacy.model.enums.Gender;
+import mrsisa12.pharmacy.model.enums.PatientCategory;
 import mrsisa12.pharmacy.model.enums.UserStatus;
 
 @Entity
@@ -22,6 +25,13 @@ public class Patient extends User {
 	
 	@Column(name = "penaltyPoints", unique=false, nullable=false)
 	Integer penaltyPoints;
+	
+	@Column(name = "loyaltyPoints", unique=false, nullable=false)
+	Integer loyaltyPoints;
+	
+	@Column(name = "category", unique=false, nullable=false)
+	@Enumerated(EnumType.STRING)
+	private PatientCategory category;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "allergies",
@@ -50,6 +60,15 @@ public class Patient extends User {
 		super(id, username, password, email, firstName, lastName, location, gender, activeStatus, userRoles, deleted);
 		this.penaltyPoints = penaltyPoints;
 		this.complaints = complaints;
+	}
+	
+	public Patient(Long id, String username, String password, String email, String firstName, String lastName,
+			Location location, Gender gender, UserStatus activeStatus, List<UserRole> userRoles, boolean deleted, Integer penaltyPoints, 
+			List<Complaint> complaints, Integer loyaltyPoints) {
+		super(id, username, password, email, firstName, lastName, location, gender, activeStatus, userRoles, deleted);
+		this.penaltyPoints = penaltyPoints;
+		this.complaints = complaints;
+		this.loyaltyPoints = loyaltyPoints;
 	}
 
 	public List<Medication> getAllergies() {
@@ -102,6 +121,21 @@ public class Patient extends User {
 	public void setEPrescriptions(List<Therapy> ePrescriptions) {
 		this.ePrescriptions = ePrescriptions;
 	}
-	
+
+	public Integer getLoyaltyPoints() {
+		return loyaltyPoints;
+	}
+
+	public void setLoyaltyPoints(Integer loyaltyPoints) {
+		this.loyaltyPoints = loyaltyPoints;
+	}
+
+	public PatientCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(PatientCategory category) {
+		this.category = category;
+	}
 	
 }
