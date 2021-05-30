@@ -25,7 +25,7 @@ import ScheduledAppointmentsView from '@/views/ScheduledAppointmentsView'
 
 import AppointmentHistoryView from '@/views/AppointmentHistoryview'
 import PenaledScreen from '@/views/PenaledScreen'
-import PatientsAllPrescriptionsView from '@/views/PatientsAllPrescriptionsView'
+import PatientsPrescribedTherapiesView from '@/views/PatientsPrescribedTherapiesView'
 
 
 import PharmacyRegistration from '@/views/PharmacyRegistration'
@@ -643,9 +643,9 @@ export default new Router({
         },
 
         {
-            path: '/patientsPrescriptions',
-            name: 'PatientsAllPrescriptionsView',
-            component: PatientsAllPrescriptionsView,
+            path: '/patientsTherapies',
+            name: 'PatientsPrescribedTherapiesView',
+            component: PatientsPrescribedTherapiesView,
             beforeEnter: function (to, from, next) {
                 let user = CheckUser.getLoggedUserData();
                 if (user.userType == 'PATIENT') {

@@ -46,16 +46,16 @@
                 <v-spacer></v-spacer>
 
                 <div class="cardCollectionTitle">
-                    RESERVATIONS & PRESCRIPTIONS
+                    RESERVATIONS, PRESCRIPTIONS & THERAPY
                 </div>
                 <v-spacer></v-spacer>
             </v-card-title>
             <v-card-text>
                 <v-row>
                     <v-col class="staticPosition" md="3">
-                        <v-card class="oneCard" to="/patientsPrescriptions">
+                        <v-card class="oneCard" to="/patientsTherapies">
                             <v-card-title class="wordBreak"
-                                >My ePrescriptions</v-card-title
+                                >My therapy</v-card-title
                             >
                         </v-card>
                     </v-col>

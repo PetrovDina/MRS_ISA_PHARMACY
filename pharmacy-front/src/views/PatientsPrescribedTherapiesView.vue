@@ -1,6 +1,8 @@
 <template>
     <div id="prescriptions"> 
-         <p style="font-size:20px; margin-top:50px" v-if="prescriptions.length == 0">You don't have any new ePrescriptions.</p>
+        <p class="therapies-title">My therapy</p>
+
+         <p style="font-size:20px; margin-top:50px" v-if="prescriptions.length == 0">You don't have any new therapies.</p>
 
         <div id="sort-and-filter" v-if="prescriptions.length != 0">
             <div id="sort">
@@ -56,7 +58,7 @@ import moment from "moment";
 import PrescriptionItemsTable from '../components/PrescriptionItemsTable.vue';
 
 export default {
-    name: "PatientsNewPrescriptionsView",
+    name: "PatientsPrescribedTherapiesView",
 
     components:{
         PrescriptionItemsTable
@@ -104,7 +106,7 @@ export default {
     mounted() {
         //get patient's prescriptions
         client({
-            url: "therapy/newPrescriptionsByPatient",
+            url: "therapy/byPatient",
             params: { patientUsername: localStorage.getItem("USERNAME") },
             method: "GET",
         }).then((response) => (this.prescriptions = response.data));
@@ -162,5 +164,10 @@ export default {
 
 #sort-and-filter {
     width: 90%;
+}
+
+.therapies-title {
+    font-size: 5vh;
+    margin-top: 40px;
 }
 </style>

@@ -5,6 +5,28 @@
         </p>
         <p style="font-size:20px; margin-top:30px" v-if="reservations.length == 0">You don't have any reservations.</p>
 
+        <div id="sort-and-filter" v-if="reservations.length != 0">
+            <div id="sort">
+                <p class="sort-label">sort by</p>
+
+                <select
+                    class="sort-dropdown"
+                    name="optionsSelect"
+                    id="optionsSelect"
+                    @change="sortSelected"
+                >
+                    <option
+                        class="option"
+                        v-for="option in options"
+                        :key="option"
+                        :value="option"
+
+                    >
+                        {{ option }}
+                    </option>
+                </select>
+            </div>
+        </div>
         <div :key="reservation.id" v-for="reservation in reservations">
             <div class="card mx-auto">
                 <div class="card-body">
@@ -51,6 +73,10 @@
                             </div>
                             <div class="col-sm">
                                 <div class="c2">
+                                    <p class="card-text">
+                                        Unit price:
+                                        <b>{{reservation.medicationPrice}},00 RSD </b>
+                                    </p>
                                     <p class="card-text">
                                         Quantity:
                                         <b> {{ reservation.quantity }} </b>
@@ -173,6 +199,8 @@ export default {
         return {
             reservations: [],
             selectedReservation: null,
+            options: ["-", "due date older first", "due date recent first", "status"]
+
         };
     },
 
@@ -210,6 +238,32 @@ export default {
                 }).then((response) => (this.reservations = response.data)); //refreshing page
             });
         },
+
+        sortSelected(event) {
+            let sortCriterium = event.target.value;
+            let self = this;
+            if (sortCriterium === "-") {
+                this.reservations = this.reservations;
+                return;
+            } else if (sortCriterium === "due date recent first") {
+                this.reservations = this.reservations.sort(function (a, b) {
+                    let dateA = new Date(a.dueDate);
+                    let dateB = new Date(b.dueDate);
+                    return dateB - dateA;
+                });
+            } else if (sortCriterium === "due date older first") {
+                this.reservations = this.reservations.sort(function (a, b) {
+                    let dateA = new Date(a.dueDate);
+                    let dateB = new Date(b.dueDate);
+                    return dateA - dateB;
+                });
+            }else if(sortCriterium === "status"){
+                this.reservations = this.reservations.sort(function (a, b) {
+                    return (a.status > b.status) ? 1 : -1;
+                });
+            
+            }
+        },
     },
 
     mounted() {
@@ -231,7 +285,7 @@ export default {
     margin-top: 30px;
 }
 .card {
-    width: 70%;
+    width: 80%;
     margin-top: 40px;
     border: 1px solid rgba(63, 63, 63, 0.349);
 }
@@ -267,6 +321,28 @@ export default {
 
 .cancellation-alert {
     margin-top: 10px;
+}
+
+/* sort */
+.sort-dropdown {
+    padding: 10px;
+    border: 0.5px solid rgba(128, 128, 128, 0.473);
+    display: inline-block;
+}
+
+#sort {
+
+        float: right;
+
+}
+
+.sort-label {
+    padding: 10px;
+    display: inline-block;
+}
+
+#sort-and-filter {
+    width: 90%;
 }
 </style>
 

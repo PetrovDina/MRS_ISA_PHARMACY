@@ -208,6 +208,7 @@ export default {
                     medication: this.medication,
                     quantity: this.chosenQuantity,
                     dueDate: this.chosenDueDate,
+                    medicationPrice: this.chosenRow.currentPrice
                 },
             }).then();
 
