@@ -21,11 +21,5 @@ public interface TherapyRepository  extends JpaRepository<Therapy, Long>{
 	@Query("select distinct res from Therapy res join fetch res.prescriptionItems pi where res.patient.username = ?1")
 	public List<Therapy> findAllByPatientWithPrescriptionItems(String patientUserName);
 
-	@Query("select distinct res from Therapy res join fetch res.prescriptionItems pi where res.status = 'COMPLETED' and res.patient.username = ?1")
-
-	public List<Therapy> findAllFilledByPatientWithPrescriptionItems(String patientUsername);
-	
-	@Query("select distinct res from Therapy res join fetch res.prescriptionItems pi where res.status = 'CREATED' and res.patient.username = ?1")
-	public List<Therapy> findAllNewByPatientWithPrescriptionItems(String patientUsername);
 
 }

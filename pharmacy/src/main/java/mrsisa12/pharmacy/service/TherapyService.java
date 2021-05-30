@@ -36,12 +36,10 @@ public class TherapyService {
 		return ePrescriptionRepository.findAllByPatient(patientUsername);
 	}
 	
-	public List<Therapy> findAllNewByPatientWithPrescriptionItems(String patientUsername) {
-		return ePrescriptionRepository.findAllNewByPatientWithPrescriptionItems(patientUsername);
-	}
+
 	
-	public List<Therapy> findAllFilledByPatientWithPrescriptionItems(String patientUsername) {
-		return ePrescriptionRepository.findAllFilledByPatientWithPrescriptionItems(patientUsername);
+	public List<Therapy> findAllByPatientWithPrescriptionItems(String patientUsername) {
+		return ePrescriptionRepository.findAllByPatientWithPrescriptionItems(patientUsername);
 	}
 	
 }

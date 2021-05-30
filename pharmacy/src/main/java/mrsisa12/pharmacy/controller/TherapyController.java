@@ -54,26 +54,12 @@ public class TherapyController {
 		
 		return new ResponseEntity<>( new TherapyDTO(ePrescription) ,HttpStatus.CREATED);
 	}
+
 	
-	@GetMapping(value = "/newPrescriptionsByPatient")
-	public ResponseEntity<List<TherapyWithItemsDTO>> getAllNewByPatient(@RequestParam String patientUsername) {
+	@GetMapping(value = "/byPatient")
+	public ResponseEntity<List<TherapyWithItemsDTO>> getAllByPatient(@RequestParam String patientUsername) {
 
-		List<Therapy> prescriptions = therapyService.findAllNewByPatientWithPrescriptionItems(patientUsername);
-		
-		// convert to DTOs
-		List<TherapyWithItemsDTO> prescriptionsDTO = new ArrayList<>();
-		for (Therapy prescription : prescriptions) {
-			
-			prescriptionsDTO.add(new TherapyWithItemsDTO(prescription));
-		}
-
-		return new ResponseEntity<>(prescriptionsDTO, HttpStatus.OK);
-	}
-	
-	@GetMapping(value = "/filledPrescriptionsByPatient")
-	public ResponseEntity<List<TherapyWithItemsDTO>> getAllFilledByPatient(@RequestParam String patientUsername) {
-
-		List<Therapy> prescriptions = therapyService.findAllFilledByPatientWithPrescriptionItems(patientUsername);
+		List<Therapy> prescriptions = therapyService.findAllByPatientWithPrescriptionItems(patientUsername);
 		
 
 		// convert to DTOs

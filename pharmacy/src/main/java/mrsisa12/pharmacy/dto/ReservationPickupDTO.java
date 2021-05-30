@@ -16,6 +16,7 @@ public class ReservationPickupDTO {
     private String status;
     private int quantity;
     private boolean valid;
+    private double medicationPrice;
 
     public ReservationPickupDTO(Reservation reservation){
         this.patientEmail = reservation.getPatient().getEmail();
@@ -27,6 +28,7 @@ public class ReservationPickupDTO {
         this.id = reservation.getId().toString();
         this.status = reservation.getStatus().toString();
         this.setQuantity(reservation.getQuantity());
+        this.medicationPrice = reservation.getMedicationPrice();
         checkValidity();
     }
 
@@ -121,4 +123,14 @@ public class ReservationPickupDTO {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
+
+	public double getMedicationPrice() {
+		return medicationPrice;
+	}
+
+	public void setMedicationPrice(double medicationPrice) {
+		this.medicationPrice = medicationPrice;
+	}
+	
+	
 }

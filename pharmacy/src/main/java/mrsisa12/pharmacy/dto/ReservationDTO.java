@@ -16,6 +16,7 @@ public class ReservationDTO {
 	private int quantity;
 	private Date dueDate;
 	private ReservationStatus status;
+	private double medicationPrice;
 
 	
 	public ReservationDTO() {
@@ -31,6 +32,7 @@ public class ReservationDTO {
 		this.quantity = r.getQuantity();
 		this.dueDate = r.getDueDate();
 		this.status = r.getStatus();
+		this.medicationPrice = r.getMedicationPrice();
 	}
 
 	public Long getId() {
@@ -93,6 +95,17 @@ public class ReservationDTO {
 
 	public void setPharmacy(PharmacyDTO pharmacy) {
 		this.pharmacy = pharmacy;
+	}
+
+	
+
+	public double getMedicationPrice() {
+		return medicationPrice;
+	}
+
+
+	public void setMedicationPrice(double medicationPrice) {
+		this.medicationPrice = medicationPrice;
 	}
 
 
