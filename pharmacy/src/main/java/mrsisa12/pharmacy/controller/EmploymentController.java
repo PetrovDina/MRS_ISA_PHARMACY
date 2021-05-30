@@ -219,4 +219,17 @@ public class EmploymentController {
 		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/employmentsOfDermatologist")
+	public ResponseEntity<List<EmploymentDTO>> getEmploymentsOfDermatologist(@RequestParam String username) {
+		Employee emp = employeeService.findOneByUsername(username);
+		List<Employment> employments = employmentService.findAllEmploymentsOfDermatologist(emp.getId());
+		
+		List<EmploymentDTO> employmentsDTO = new ArrayList<>();
+		for (Employment e : employments) {
+			employmentsDTO.add(new EmploymentDTO(e));
+		}
+
+		return new ResponseEntity<>(employmentsDTO, HttpStatus.OK);
+	}
+	
 }

@@ -13,7 +13,8 @@
                         <th scope="col">Gender</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Work time</th>
-                        <th scope="col">More</th>
+                        <th scope="col">Appointments</th>
+                        <th scope="col">Absences</th>
                     </tr>
                 </thead>
 
@@ -38,9 +39,9 @@
                                 :increment="0.1"
                             ></star-rating>
                         </td>
-                        <td>{{der.workTime.startTime}} - {{der.workTime.endTime}}</td>
-                        <td><button @click="showMore(der)"><i class="fa fa-ellipsis-h fa-2x"></i></button></td>
-                        <!-- <Button @action-performed="clickedId(der.id)" class="btn" text="New" bgd_color="rgba(15, 95, 72, 0.85)" :style="{color : 'rgba(255,255,255, 0.9)'}"></Button></td> -->
+                        <td style="cursor:pointer" @click="showEmployments(der)"><i class="fa fa-clock-o" aria-hidden="true"></i> {{der.workTime.startTime}} - {{der.workTime.endTime}}</td>
+                        <td><button @click="showMore(der)"><i class="fa fa-book fa-lg" aria-hidden="true"></i></button></td>
+                        <td><button @click="showAbscene(der)"><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i></button></td>
                     </tr>
                 </tbody>
             </table>
@@ -58,6 +59,20 @@
                 :dermatologistToSend = "dermatologist"
                 :appointments = "dermosAppointments">
             </ModalWindowAddAppointment>
+            <ModalWindowAbsence 
+                @modal-closed = "mw_show_abscence = false"
+                @absence-remove-from-list = "removeAbsence"
+                :modal_show = "mw_show_abscence"
+                :absences = "dermosAbsenceRequests">
+            </ModalWindowAbsence>
+            <ModalWindowDermatologistsEmployments 
+                @modal-closed = "mw_show_employments = false"
+                :modal_show = "mw_show_employments"
+                :dermatologist = "dermatologist"
+                :employments = "dermosEmployments"
+                :pharmacyId = "pharmacyId">
+            </ModalWindowDermatologistsEmployments>
+            
         </div>
         <Button
             @action-performed="hireDermatologist()"
@@ -82,7 +97,8 @@ import Button from './Button.vue';
 import ModalWindowAddAppointment from './ModalViewAddAppointment';
 import ModalWindowHireDermatologist from './ModalWindowHireDermatologist.vue';
 import StarRating from 'vue-star-rating';
-
+import ModalWindowAbsence from './ModalWindowAbsence.vue'
+import ModalWindowDermatologistsEmployments from './ModalWindowDermatologistsEmployments.vue'
 // import Vue from 'vue'
 
 // // This variable will hold the reference to
@@ -137,7 +153,14 @@ import StarRating from 'vue-star-rating';
 
 export default {
     name: "Dermatologists",
-    components: { Button, ModalWindowAddAppointment, ModalWindowHireDermatologist, StarRating},
+    components: { 
+        Button, 
+        ModalWindowAddAppointment, 
+        ModalWindowHireDermatologist, 
+        StarRating,
+        ModalWindowAbsence,
+        ModalWindowDermatologistsEmployments
+    },
     props: {
         dermatologists : {
             type : Array,
@@ -151,8 +174,12 @@ export default {
         return {
             mw_show_more : false, // modal window cond-var
             mw_hire_dermatologist : false, // modal window cond-var
+            mw_show_abscence : false,
+            mw_show_employments: false,
             dermatologist : {},
             dermosAppointments : [],
+            dermosAbsenceRequests : [],
+            dermosEmployments : [],
             selected_dermatologist: { id : -1},
             dermatologistsToHire : [],
         }
@@ -169,6 +196,35 @@ export default {
                     this.dermatologist = derm;
                     this.mw_show_more = true;
                 });
+        },
+        showAbscene : function(derm){
+            client({
+                url: "absences/allRequestedAbsencesForEmployee",
+                method: "GET",
+                params: { username : derm.username}
+            }).then((response) => {
+                this.dermosAbsenceRequests = response.data;
+                this.mw_show_abscence = true;
+            });
+        },
+        showEmployments : function(derm){
+            client({
+                url: "employments/employmentsOfDermatologist",
+                method: "GET",
+                params: { username : derm.username}
+            }).then((response) => {
+                this.dermosEmployments = response.data;
+                this.dermatologist = derm;
+                this.mw_show_employments = true;
+            });
+        },
+        removeAbsence : function(absence){
+            for(const absenceIndex in this.dermosAbsenceRequests){
+                if(this.dermosAbsenceRequests[absenceIndex].id === absence.id){
+                    this.dermosAbsenceRequests.splice(absenceIndex, 1);
+                    break;
+                }
+            }
         },
         clickedOnRow: function(der){
             this.selected_dermatologist = der;

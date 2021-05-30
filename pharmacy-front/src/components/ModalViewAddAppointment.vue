@@ -2,10 +2,10 @@
     <div v-if="modal_show === true" id="myModal" class="modal">
         <div class="modal-content">
             <Button id="close_btn" @action-performed="closeWindow" class="close" text="X" color="white"></Button>
-            <h2>Appointment creation</h2>
+            <h3>More about dermatologist {{dermatologistToSend.firstName}} {{dermatologistToSend.lastName}}</h3>
+            <span><b>Dermatologist worktime : {{dermatologistToSend.workTime.startTime}} - {{dermatologistToSend.workTime.endTime}}</b></span><br>
             <div v-if="hasAnyAvailableAppointment()">
-                <span> Dermatologist worktime : {{dermatologistToSend.workTime.startTime}} - {{dermatologistToSend.workTime.endTime}}</span><br>
-                <br><span>All available appointments</span>
+                <span>All available appointments</span>
                 <table class="table table-hover" >
                     <thead>
                         <tr>
@@ -26,26 +26,26 @@
                     </tbody>
                 </table>
             </div>
-            <div class="md-form mx-5 my-5">
+            <div style="width:30%; margin:auto">
                 <label for="date">Pick up date</label>
-                <input type="date" id="date" name="date" :min="today"
-                    class="form-control"/>
+                <input type="date" id="date" name="date" :min="today" :value="today"
+                    class="form-control" style="padding-left:23%; font-size:15px" />
             </div>
             <div>
-                <div class="md-form mx-5 my-5">
-                    <label class="label" for="start_time">Choose starting time</label>
-                    <input type="time" id="start_time" class="form-control">
+                <div style="width:20%; display:inline-block; margin-top: 2%; margin-right:1%">
+                    <label class="label" for="start_time">Starting time</label>
+                    <input type="time" id="start_time" class="form-control" style="padding-left:35%; margin: 2px 10px;">
                 </div>
-                <div class="md-form mx-5 my-5">
-                    <label class="label" for="end_time">Choose ending time</label>
-                    <input type="time" id="end_time" class="form-control">
+                <div style="width:20%; display:inline-block; margin-top: 2%; margin-left:1%">
+                    <label class="label" for="end_time">Ending time</label>
+                    <input type="time" id="end_time" class="form-control" style="padding-left:35%; margin: 2px 10px;">
                 </div>
             </div>
             <Button 
                     @action-performed="addAppointment()" 
                     text="Add appointment" 
                     bgd_color="rgba(15, 95, 72, 0.95)" 
-                    style="color:white; width:200px; text-align:center;margin: auto">
+                    style="color:white; width:200px; text-align:center; margin: auto; margin-top:1%">
             </Button>
         </div>
     </div>
@@ -97,6 +97,24 @@ export default {
             date = this.convertDate(date);
             start_time = this.convertTime(start_time);
             end_time = this.convertTime(end_time);
+
+            if(date == moment().format())
+                if(start_time < moment().format() || end_time < moment().format()){
+                    this.$toasted.show("Starting and ending time cannot be in the past.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                    return false;
+                }
+            if(start_time > end_time){ 
+                this.$toasted.show("Starting time must be before ending time!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                return false;
+            }
             // provjera za radno vrijeme
             if(!(this.convertTime(this.dermatologistToSend.workTime.startTime) <= start_time) 
                 || !(this.convertTime(this.dermatologistToSend.workTime.endTime) >= end_time)) {
@@ -112,22 +130,21 @@ export default {
             let endDateTime = moment(date+"T"+end_time).format();
 
             for (const appointmentIndex in this.dermatologistToSend.appointments) {
-                if (Object.hasOwnProperty.call(this.dermatologistToSend.appointments, appointmentIndex)) {
-                    const appointment = this.dermatologistToSend.appointments[appointmentIndex];
-                    let appoStartDateTime = moment(appointment.timePeriod.startDate+"T"+appointment.timePeriod.startTime).format();
-                    let appoEndDateTime = moment(appointment.timePeriod.endDate+"T"+appointment.timePeriod.endTime).format();
-                     if (!(appoStartDateTime > endDateTime
-                            && appoStartDateTime > startDateTime)
-                                && !(appoEndDateTime < endDateTime
-                                    && appoEndDateTime < startDateTime)){
-                                        this.$toasted.show("An appointment at that time already exists!", {
-                                            theme: "toasted-primary",
-                                            position: "top-center",
-                                            duration: 2000,
-                                        });
-                                        return false;
-                                    }
-                }
+                const appointment = this.dermatologistToSend.appointments[appointmentIndex];
+                let appoStartDateTime = moment(appointment.timePeriod.startDate+"T"+appointment.timePeriod.startTime).format();
+                let appoEndDateTime = moment(appointment.timePeriod.endDate+"T"+appointment.timePeriod.endTime).format();
+                    if (!(appoStartDateTime > endDateTime
+                        && appoStartDateTime > startDateTime)
+                            && !(appoEndDateTime < endDateTime
+                                && appoEndDateTime < startDateTime)){
+                                    this.$toasted.show("An appointment at that time already exists!", {
+                                        theme: "toasted-primary",
+                                        position: "top-center",
+                                        duration: 2000,
+                                    });
+                                    return false;
+                                }
+                
             }
             return true;
         },
@@ -138,7 +155,12 @@ export default {
             let end_time_value = document.getElementById('end_time').value;
 
             if(!date || !start_time_value || !end_time_value){
-                alert("All inputs must be filled!");
+                this.$toasted.show("All fields must be filled!", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 2000,
+                });
+                return false;
             }
             else
             {
@@ -187,7 +209,7 @@ export default {
                     duration: 2000,
                 });
             })
-        }
+        },
     }
 };
 </script>
@@ -211,7 +233,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 .modal {
   display: block; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 1; /* Siit on top */
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
@@ -228,7 +250,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 45%;
+  width: 60%;
 }
 
 /* The Close Button */
@@ -253,5 +275,9 @@ thead {
 
 tr.selected {
 	 background-color: rgba(155, 82, 151, 0.527);
+}
+
+#date {
+    text-align: center;
 }
 </style>
