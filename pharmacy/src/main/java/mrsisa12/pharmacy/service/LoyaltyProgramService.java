@@ -59,7 +59,7 @@ public class LoyaltyProgramService {
 	
 	public String generateMessage(Patient patient, Double finalPrice, Integer pointsEarned)
 	{
-		String message = "Medication/s successfully bought by price: " + finalPrice + "dinars.";
+		String message = "Medication/s successfully bought by price: " + finalPrice + " dinars.";
 		if(patient.getCategory() != PatientCategory.REGULAR)
 		{
 			message += " You have discount of " + this.getDiscount(patient) + "% for each medication because of your "

@@ -156,7 +156,7 @@ export default {
         {
             client({
 
-                url: "reservation/buyMedicationsQr",
+                url: "ePrescription/buyMedicationsQr",
                 data: this.medicationsForBack,
                 params: { pharmacyId: pharmacyId, username: localStorage.getItem("USERNAME") },
                 method: "POST",
