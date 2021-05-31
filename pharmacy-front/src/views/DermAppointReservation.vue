@@ -248,7 +248,7 @@ export default {
 
         bookAppointment(apt) {
             client({
-                url: "appointments/checkIfCanBook",
+                url: "appointments/checkIfCanBookDerm",
                 method: "GET",
                 params: {
                     appointmentId: apt.id,

@@ -13,6 +13,7 @@ import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.TimePeriod;
+import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.repository.EmployeeRepository;
 import mrsisa12.pharmacy.repository.EmploymentRepository;
 
@@ -63,14 +64,18 @@ public class EmployeeService {
 
 		// Ovdje se mora provjeravati i datum i vrijeme
 		for (Appointment appo : employee.getAppointments()) {
-			LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate()
-					.atTime(appo.getTimePeriod().getStartTime());
-			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
-			if (!(eWorkTSDateTime.isAfter(timePeriod.getEndDate().atTime(timePeriod.getEndTime()))
-					&& eWorkTSDateTime.isAfter(timePeriod.getStartDate().atTime(timePeriod.getStartTime())))
-					&& !(eWorkTEDateTime.isBefore(timePeriod.getEndDate().atTime(timePeriod.getEndTime()))
-							&& eWorkTEDateTime.isBefore(timePeriod.getStartDate().atTime(timePeriod.getStartTime()))))
-				return false; // preklapanje sa postojecim terminom
+			
+			if (appo.getStatus() != AppointmentStatus.CANCELLED) {
+				LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate()
+						.atTime(appo.getTimePeriod().getStartTime());
+				LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+				if (!(eWorkTSDateTime.isAfter(timePeriod.getEndDate().atTime(timePeriod.getEndTime()))
+						&& eWorkTSDateTime.isAfter(timePeriod.getStartDate().atTime(timePeriod.getStartTime())))
+						&& !(eWorkTEDateTime.isBefore(timePeriod.getEndDate().atTime(timePeriod.getEndTime()))
+								&& eWorkTEDateTime.isBefore(timePeriod.getStartDate().atTime(timePeriod.getStartTime()))))
+					return false; // preklapanje sa postojecim terminom
+			}
+			
 		}
 		// ako je u okviru radnog vremena i ne preklapa se ni sa jednim terminom koji
 		// postoji dobro je!

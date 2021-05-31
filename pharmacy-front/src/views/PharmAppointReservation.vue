@@ -137,6 +137,46 @@
                 </div>
             </div>
         </div>
+
+        <!-- invalid Modal -->
+        <div
+            class="modal fade"
+            id="invalidModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Booking unavailable
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        You have already cancelled this appointment!
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -201,8 +241,6 @@ export default {
             }
 
             //checking which pharmacies have pharmacists available at chosen time and date
-
-            //TODO DODAJ PROVERU DA L' POSTOJE APPOINTMENTI TADA!!!!!
             client({
                 url: "employments/pharmacistEmploymentsByTime",
                 method: "GET",
@@ -246,7 +284,7 @@ export default {
             this.chosenPharmacy = ph;
             this.pharmacists = [];
             for (let empl of this.employments) {
-                if (empl.pharmacy === this.chosenPharmacy) {
+                if (empl.pharmacy.id === this.chosenPharmacy.id) {
                     this.pharmacists.push(empl.employee);
                 }
             }
@@ -258,7 +296,24 @@ export default {
 
         bookClicked() {
             //ovde sad saljes novi appointment na back!
+
+            //prvo provera da l sme taj termin da rezervise (npr ako je vec isti otkazao)
             client({
+                url: "appointments/checkIfCanBookPharm",
+                method: "GET",
+                params: {
+                    patientUsername: localStorage.getItem("USERNAME"),
+                    startDate: this.chosenDate,
+                    startTime: this.chosenTime,
+                    employeeId: this.chosenPharmacist.id,
+                    pharmacyId: this.chosenPharmacy.id
+                },
+            }).then((response) => {
+                if (!response.data) {
+                    $("#invalidModal").modal("show");
+                    return;
+                }
+                client({
                 url: "appointments/savePharmacistAppointment",
                 method: "POST",
                 data: {
@@ -285,6 +340,8 @@ export default {
                     $("#bookModal").modal("show");
                 })
                 .catch((response) => alert("Sorry... "));
+            });
+            
         },
 
         goHome() {

@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+
 import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
@@ -191,8 +193,8 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/checkIfCanBook")
-	public ResponseEntity<Boolean> checkIfCanBook(@RequestParam Long appointmentId, @RequestParam String patientUsername) {
+	@GetMapping(value = "/checkIfCanBookDerm")
+	public ResponseEntity<Boolean> checkIfCanBookDerm(@RequestParam Long appointmentId, @RequestParam String patientUsername) {
 
 		List<Appointment> appointments = appointmentService.getAllDermHistoryByPatient(patientUsername);
 		Appointment appointment = appointmentService.findOne(appointmentId);
@@ -201,6 +203,27 @@ public class AppointmentController {
 					&& a.getTimePeriod().getStartTime().equals(appointment.getTimePeriod().getStartTime()) 
 					&& appointment.getEmployee().getId() == a.getEmployee().getId()
 					&& appointment.getPharmacy().getId() == a.getPharmacy().getId()){
+				return new ResponseEntity<>(false, HttpStatus.OK);
+			}
+		}
+
+
+		return new ResponseEntity<>(true, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/checkIfCanBookPharm")
+	public ResponseEntity<Boolean> checkIfCanBookPharm( @RequestParam String patientUsername, @RequestParam String startDate,
+			@RequestParam String startTime, @RequestParam Long employeeId, @RequestParam Long pharmacyId ) {
+
+		List<Appointment> appointments = appointmentService.getAllPharmHistoryByPatient(patientUsername);
+		LocalDate startDate2 = LocalDate.parse(startDate);
+		LocalTime startTime2 = LocalTime.parse(startTime);
+		
+		for (Appointment a : appointments) {
+			if (a.getStatus() == AppointmentStatus.CANCELLED && a.getTimePeriod().getStartDate().equals(startDate2)
+					&& a.getTimePeriod().getStartTime().equals(startTime2) 
+					&& employeeId == a.getEmployee().getId()
+					&& pharmacyId == a.getPharmacy().getId()){
 				return new ResponseEntity<>(false, HttpStatus.OK);
 			}
 		}
