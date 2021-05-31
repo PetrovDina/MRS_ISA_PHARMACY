@@ -258,12 +258,13 @@ public class ReservationController {
 	
 	
 	@PostMapping(value = "/buyMedicationsQr", consumes = "application/json")
-	public ResponseEntity<Boolean> buyMedicationsByQrSearch(@RequestBody QrCodeDTO medications, 
+	public ResponseEntity<String> buyMedicationsByQrSearch(@RequestBody QrCodeDTO medications, 
 			@RequestParam("pharmacyId") Long pharmacyId, @RequestParam("username") String username)
 	{
 		Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
 		Patient patient = patientService.findByUsername(username);
 		Integer pointsForPatient = 0;
+		Double finalFinalPrice = (double) 0;		// Ukupna cena za sve kupljene lekove
 		
 		for (MedicationQrDTO med : medications.getMedications()) 
 		{
@@ -298,15 +299,20 @@ public class ReservationController {
 			Double finalPrice = loyaltyProgramService.getFinalPrice(medicationPrice, patient);
 			reservation.setMedicationPrice(finalPrice);
 			
+			finalFinalPrice += (finalPrice * med.getQuantity());
+			
 			reservation = reservationService.save(reservation);
 		}
+		
+		
+		String message = loyaltyProgramService.generateMessage(patient, finalFinalPrice, pointsForPatient);
 		
 		// Dodavanje poena pacijentu i izmena kategorije ako je potrebno
 		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
 		
 		emailService.sendQrPickupConfirmation(patient);
 		
-		return new ResponseEntity<>(true, HttpStatus.CREATED);
+		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
 	
 	
