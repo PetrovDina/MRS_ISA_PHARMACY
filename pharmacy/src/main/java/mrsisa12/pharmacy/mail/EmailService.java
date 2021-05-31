@@ -9,6 +9,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import mrsisa12.pharmacy.model.Absence;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Order;
 import mrsisa12.pharmacy.model.OrderItem;
@@ -120,6 +121,22 @@ public class EmailService {
 		EmailContent email = new EmailContent("Qr code reservation pick up information", emailBody);
         email.addRecipient(patient.getEmail());
         this.sendEmail(email);
+	}
+
+	public void sendEmailToEmployeeAboutAbsence(Absence absence, String kind, String additionalMessage) {
+		String emailBody = "Dear " + absence.getEmployee().getFirstName() + " " + absence.getEmployee().getLastName()
+				+ ",\n\nI would like to inform you that your " + absence.getType() + " request from " + absence.getTimePeriod().getStartDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		emailBody += " to " + absence.getTimePeriod().getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " is " + kind+"!\n";
+		emailBody += additionalMessage;
+		
+		emailBody += "\n\nThank you very much,\nyour " + absence.getPharmacy().getName() + "!";
+		emailBody += "\n\nThis is an automatically generated email – please do not reply to it. ©Tim12-MRS-ISA";
+		
+		// slanje mail-a
+		EmailContent email = new EmailContent(absence.getClass() + " " + kind, emailBody);
+		email.addRecipient(absence.getEmployee().getEmail());
+		this.sendEmail(email);
+		
 	}
     
 }

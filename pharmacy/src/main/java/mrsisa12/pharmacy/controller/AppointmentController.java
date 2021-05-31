@@ -243,11 +243,11 @@ public class AppointmentController {
 
 		// Trebace vjerovatno da se nesto uradi sa datumom.
 		// appointment.setTimePeriod(appointmentDTO.getTimePeriodDTO());
-		boolean res = employeeService.checkAppointmentTime(new TimePeriod(appointmentDTO.getTimePeriod()),
-				appointmentDTO.getEmployee().getId());
-		if (!res) {
-			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-		}
+//		boolean res = employeeService.checkAppointmentTime(new TimePeriod(appointmentDTO.getTimePeriod()),
+//				appointmentDTO.getEmployee().getId());
+//		if (!res) {
+//			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//		}
 		// postavljamo vrijeme i datum
 		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
 		// postavljamo status da je dostupan jer se kreira

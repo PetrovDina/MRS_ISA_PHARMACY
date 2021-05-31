@@ -13,6 +13,7 @@
                         <th scope="col">Gender</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Work time</th>
+                        <th scope="col">Absences</th>
                     </tr>
                 </thead>
 
@@ -38,6 +39,7 @@
                             ></star-rating>
                         </td>
                         <td>{{phar.workTime.startTime}} - {{phar.workTime.endTime}}</td>
+                        <td><button @click="showAbscene(phar)"><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i></button></td>
                     </tr>
                 </tbody>
             </table>
@@ -53,9 +55,13 @@
             @registeredPharmacist = "addPharmacistIntoList"
             @modal-closed = "modal_window_show_pharmacist_reg = false" 
             :modal_show = "modal_window_show_pharmacist_reg"
-            :pharmacyId = "pharmacyId"
-        >
+            :pharmacyId = "pharmacyId">
         </ModalWindowHirePharmacist>
+        <ModalWindowAbsence 
+            @modal-closed = "mw_show_abscence = false"
+            :modal_show = "mw_show_abscence"
+            :absences = "pharmacistAbsenceRequests">
+        </ModalWindowAbsence>
         <Button
             @action-performed="hirePharmacist()"
             class="btn" 
@@ -71,10 +77,16 @@ import { client } from "@/client/axiosClient";
 import Button from './Button.vue';
 import ModalWindowHirePharmacist from './ModalWindowHirePharmacist.vue';
 import StarRating from 'vue-star-rating';
+import ModalWindowAbsence from './ModalWindowAbsence.vue'
 
 export default {
     name: "PharmacistsTable",
-    components: { Button, ModalWindowHirePharmacist, StarRating},
+    components: { 
+        Button, 
+        ModalWindowHirePharmacist,
+        StarRating,
+        ModalWindowAbsence
+    },
     props: {
         pharmacists : {
             type : Array,
@@ -92,6 +104,8 @@ export default {
     data() {
         return {
             modal_window_show_pharmacist_reg : false,
+            mw_show_abscence: false,
+            pharmacistAbsenceRequests : [],
             selected_pharmacist: { id : -1},
         }
     },
@@ -125,7 +139,17 @@ export default {
                     position: "top-center",
                     duration: 2000,
                 });
-        }
+        },
+        showAbscene : function(pharmacist){
+            client({
+                url: "absences/allRequestedAbsencesForEmployee",
+                method: "GET",
+                params: { username : pharmacist.username}
+            }).then((response) => {
+                this.pharmacistAbsenceRequests = response.data;
+                this.mw_show_abscence = true;
+            });
+        },
     }
 }
 

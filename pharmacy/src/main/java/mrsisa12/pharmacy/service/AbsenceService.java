@@ -68,4 +68,8 @@ public class AbsenceService {
 		}
 		return false;
 	}
+
+	public List<Absence> findAllRequestedByEmployeeId(Long id) {
+		return absenceRepository.findAllRequestedByEmployeeId(id);
+	}
 }
