@@ -88,6 +88,7 @@
                         <p class="card-text">
                             Prescription: <b>{{ med.prescriptionReq ? "required" : "not required" }}</b>
                         </p>
+
                         <div style="display:flex; justify-content: center;
 ">
                         <Button  @action-performed="moreDetails(med.id)" bgd_color="rgba(87, 87, 87, 0.247)" text="Details"></Button>

@@ -2,7 +2,10 @@
     <div id="appointments">
         <p class="appointments-title">Available dermatologist appointments</p>
 
-        <p style="font-size:20px;" v-if="appointments.length == 0">Unfortunately, there aren't any available appointments at this time. Please check back soon.</p>
+        <p style="font-size: 20px" v-if="appointments.length == 0">
+            Unfortunately, there aren't any available appointments at this time.
+            Please check back soon.
+        </p>
         <div id="sort-and-filter" v-if="appointments.length != 0">
             <div id="sort">
                 <p class="sort-label">sort by</p>
@@ -18,7 +21,6 @@
                         v-for="option in options"
                         :key="option"
                         :value="option"
-
                     >
                         {{ option }}
                     </option>
@@ -47,21 +49,22 @@
                                                 }}
                                             </b>
                                         </p>
-                                        
+
                                         <p class="card-text">
                                             Dermatologist rating:
                                             <b>
                                                 <star-rating
-                                                active-color="rgba(155, 82, 151, 0.527)"
-                                                :inline="true"
-                                                :star-size="20"
-                                                :read-only="true"
-                                                :show-rating="false"
-                                                :rating="
-                                                    appointment.employee.rating
-                                                "
-                                                :increment="0.1"
-                                            ></star-rating>
+                                                    active-color="rgba(155, 82, 151, 0.527)"
+                                                    :inline="true"
+                                                    :star-size="20"
+                                                    :read-only="true"
+                                                    :show-rating="false"
+                                                    :rating="
+                                                        appointment.employee
+                                                            .rating
+                                                    "
+                                                    :increment="0.1"
+                                                ></star-rating>
                                             </b>
                                         </p>
                                         <p class="card-text">
@@ -158,6 +161,45 @@
                 </div>
             </div>
         </div>
+        <!-- invalid Modal -->
+        <div
+            class="modal fade"
+            id="invalidModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Booking unavailable
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        You have already cancelled this appointment!
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -185,70 +227,64 @@ export default {
             return moment(d).format("MMMM Do yyyy");
         },
 
-        sortSelected(event){
-
+        sortSelected(event) {
             let sortCriterium = event.target.value;
             let self = this;
-            if (sortCriterium === "-") 
-                return;
-
+            if (sortCriterium === "-") return;
             else if (sortCriterium === "rating") {
-                this.appointments = this.appointments.sort(function (
-                    a,
-                    b
-                ) {
+                this.appointments = this.appointments.sort(function (a, b) {
                     return b.employee.rating - a.employee.rating;
                 });
-            }
-
-            else if (sortCriterium === "price low first") {
-                this.appointments = this.appointments.sort(function (
-                    a,
-                    b
-                ) {
+            } else if (sortCriterium === "price low first") {
+                this.appointments = this.appointments.sort(function (a, b) {
                     return a.price - b.price;
                 });
-            }
-
-            
-            else if (sortCriterium === "price high first") {
-                this.appointments = this.appointments.sort(function (
-                    a,
-                    b
-                ) {
+            } else if (sortCriterium === "price high first") {
+                this.appointments = this.appointments.sort(function (a, b) {
                     return b.price - a.price;
                 });
             }
-
-
         },
 
         bookAppointment(apt) {
             client({
-                url: "appointments/book",
-                params: {
-                    patientUsername: this.$store.getters.getLoggedUsername,
-                    appointmentId: apt.id,
-                },
+                url: "appointments/checkIfCanBook",
                 method: "GET",
+                params: {
+                    appointmentId: apt.id,
+                    patientUsername: localStorage.getItem("USERNAME"),
+                },
             }).then((response) => {
-                //alert message here
-
-                //refreshing available appointments
+                if (!response.data) {
+                    $("#invalidModal").modal("show");
+                    return;
+                }
                 client({
-                    url: "appointments/allDermatologistAvailable",
+                    url: "appointments/book",
+                    params: {
+                        patientUsername: this.$store.getters.getLoggedUsername,
+                        appointmentId: apt.id,
+                    },
                     method: "GET",
                 }).then((response) => {
-                    this.appointments = response.data;
+                    //alert message here
+
+                    //refreshing available appointments
+                    client({
+                        url: "appointments/allDermatologistAvailable",
+                        method: "GET",
+                    }).then((response) => {
+                        this.appointments = response.data;
+                        $("#bookModal").modal("show");
+
+                    });
                 });
             });
 
-            $("#bookModal").modal("show");
         },
     },
 
     mounted() {
-
         //check if user is barred
         client({
             url: "patient/" + localStorage.getItem("USERNAME"),
@@ -264,8 +300,9 @@ export default {
         client({
             url: "appointments/allDermatologistAvailable",
             method: "GET",
-        }).then((response) => (this.appointments = response.data));
-
+        }).then((response) => {
+            this.appointments = response.data;
+        });
     },
 };
 </script>
@@ -316,9 +353,7 @@ export default {
 }
 
 #sort {
-
-        float: right;
-
+    float: right;
 }
 
 .sort-label {
@@ -330,8 +365,8 @@ export default {
     width: 85%;
 }
 
-#appointmentCards{
-    margin-top:80px;
+#appointmentCards {
+    margin-top: 80px;
 }
 </style>
 

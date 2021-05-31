@@ -25,7 +25,7 @@ public class LoyaltyProgramController {
 	@Autowired
 	private PatientService patientService;
 	
-	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN') or hasRole('PATIENT')")
 	@GetMapping(value = "/getLoyalty")
 	public ResponseEntity<LoyaltyProgramDTO> getAllMedications() {
 

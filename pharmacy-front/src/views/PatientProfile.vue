@@ -24,6 +24,7 @@
                         'Allergies',
                         'Subscriptions',
                         'Penalty system',
+                        'Loyalty system',
                     ]"
                     :selected="selected"
                     @selected="setSelected"
@@ -43,7 +44,9 @@
                     <Tab :isSelected="selected === 'Subscriptions'">
                         <SubscriptionsView></SubscriptionsView>
                     </Tab>
-
+                    <Tab :isSelected="selected === 'Loyalty system'">
+                        <LoyaltySystemComponent></LoyaltySystemComponent>
+                    </Tab>
                     <Tab :isSelected="selected === 'Penalty system'">
                         <PenaltySystemComponent></PenaltySystemComponent>
                     </Tab>
@@ -63,6 +66,8 @@ import AllergiesAddEdit from "../components/AllergiesAddEdit.vue";
 import PatientProfileEdit from "../components/PatientProfileEdit.vue";
 import PasswordChangeComponent from "../components/PasswordChangeComponent.vue";
 import PenaltySystemComponent from "../components/PenaltySystemComponent.vue";
+import LoyaltySystemComponent from "../components/LoyaltySystemComponent.vue";
+
 import SubscriptionsView from "../components/SubscriptionsView.vue";
 
 import $ from "jquery";
@@ -70,7 +75,7 @@ import $ from "jquery";
 export default {
     name: "PatientProfile",
 
-    components: { Button, TabNav, Tab, AllergiesAddEdit, PatientProfileEdit, PasswordChangeComponent, PenaltySystemComponent, SubscriptionsView},
+    components: { Button, TabNav, Tab, AllergiesAddEdit, PatientProfileEdit, PasswordChangeComponent, PenaltySystemComponent, LoyaltySystemComponent, SubscriptionsView},
 
     data() {
         return {

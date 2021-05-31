@@ -174,7 +174,6 @@ public class ReservationController {
 		reservation.setMedication(medication);
 		reservation.setDueDate(resDTO.getDueDate());
 		reservation.setQuantity(resDTO.getQuantity());
-		reservation.setMedicationPrice(resDTO.getMedicationPrice());
 		reservation.setStatus(ReservationStatus.CREATED);
 		//generates code
 		int length = 10;
@@ -189,6 +188,11 @@ public class ReservationController {
 		psi.setQuantity(psi.getQuantity()-resDTO.getQuantity());
 		pharmacyStorageItemService.save(psi);
 
+		//checking loyalty system price discount
+		double price = resDTO.getMedicationPrice();
+		double finalPrice = loyaltyProgramService.getFinalPrice(price, patient);
+		
+		reservation.setMedicationPrice(finalPrice);
 		//reservation.setMedicationPrice(pharmacyStorageItemService.getCurrentPrice(psi));
 		reservation = reservationService.save(reservation);
 		

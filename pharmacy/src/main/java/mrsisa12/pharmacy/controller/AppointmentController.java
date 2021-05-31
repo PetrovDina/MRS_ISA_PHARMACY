@@ -140,13 +140,34 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/cancel")
-	public ResponseEntity<AppointmentDTO> cancelAppointment(@RequestParam Long appointmentId) {
+	@GetMapping(value = "/cancelDerm")
+	public ResponseEntity<AppointmentDTO> cancelDermAppointment(@RequestParam Long appointmentId) {
 		Appointment appointment = appointmentService.findOne(appointmentId);
 		if(appointment != null) {
 			
 			//setting appointment status to cancelled
-			appointment.setStatus(AppointmentStatus.PENALED);
+			appointment.setStatus(AppointmentStatus.CANCELLED);
+    		appointmentService.save(appointment);
+    		
+    		//creating new free appointment
+    		Appointment freeApp = new Appointment(appointment);
+    		freeApp.setStatus(AppointmentStatus.AVAILABLE);
+    		freeApp.setPatient(null);
+    		appointmentService.save(freeApp);
+    		
+            return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/cancelPharm")
+	public ResponseEntity<AppointmentDTO> cancelPharmAppointment(@RequestParam Long appointmentId) {
+		Appointment appointment = appointmentService.findOne(appointmentId);
+		if(appointment != null) {
+			
+			//setting appointment status to cancelled
+			appointment.setStatus(AppointmentStatus.CANCELLED);
     		appointmentService.save(appointment);
     		
             return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);
@@ -160,6 +181,7 @@ public class AppointmentController {
 
 		List<Appointment> appointments = appointmentService.findAllAvailableDermatologistAppointments();
 
+
 		// convert appointments to DTOs
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
 		for (Appointment appointment : appointments) {
@@ -169,6 +191,23 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/checkIfCanBook")
+	public ResponseEntity<Boolean> checkIfCanBook(@RequestParam Long appointmentId, @RequestParam String patientUsername) {
+
+		List<Appointment> appointments = appointmentService.getAllDermHistoryByPatient(patientUsername);
+		Appointment appointment = appointmentService.findOne(appointmentId);
+		for (Appointment a : appointments) {
+			if (a.getStatus() == AppointmentStatus.CANCELLED && a.getTimePeriod().getStartDate().equals(appointment.getTimePeriod().getStartDate())
+					&& a.getTimePeriod().getStartTime().equals(appointment.getTimePeriod().getStartTime()) 
+					&& appointment.getEmployee().getId() == a.getEmployee().getId()
+					&& appointment.getPharmacy().getId() == a.getPharmacy().getId()){
+				return new ResponseEntity<>(false, HttpStatus.OK);
+			}
+		}
+
+
+		return new ResponseEntity<>(true, HttpStatus.OK);
+	}
 	
 
 	@GetMapping

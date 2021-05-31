@@ -13,6 +13,7 @@ public class MedicationDTO {
 	private String nameAndForm;
 	private double rating;
 	
+	
 	public MedicationDTO() {
 		
 	}
@@ -32,8 +33,10 @@ public class MedicationDTO {
 		this.form = form;
 		this.nameAndForm = name + " (" + form.toString() + ")";
 		this.rating = rating;
+		
 	}
 
+	
 	public Long getId() {
 		return id;
 	}
