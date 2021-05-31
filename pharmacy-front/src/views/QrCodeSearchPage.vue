@@ -30,6 +30,36 @@
                 @sort-performed="sortPerformed">
             </PharmaciesWithPriceQR>
         </div>
+
+        <div
+            class="modal fade"
+            id="exampleModal3"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">Purchase ended successfully!</div>
+                    <div class="modal-body">
+                        <p style="text-align: justify">
+                            {{message}}
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                            @click="goBack()"
+                        >
+                            Go back
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         
 
     </div>
@@ -44,6 +74,7 @@ import { client } from "@/client/axiosClient";
 import { QrcodeCapture } from 'vue-qrcode-reader'
 import PharmaciesWithPriceQR from '../components/PharmaciesWithPriceQR.vue';
 import MedicationsTableQR from '../components/MedicationsTableQR.vue';
+import $ from "jquery";
 
 export default {
     name: "QrCodeSearchPage",
@@ -63,7 +94,9 @@ export default {
 
             medications: [],
 
-            medicationsForBack: null
+            medicationsForBack: null,
+
+            message: ""
 
         }
 
@@ -130,19 +163,15 @@ export default {
 
             }).then((response) => 
             {
-                this.$toasted.show("Medications successfuly bought", {
-                        theme: "toasted-primary",
-                        position: "top-center",
-                        duration: 2000,
-                    });
-                    
-                this.$router.push({ name: "Home" }).catch((err) => 
-                {
-                    if (err.name != "NavigationDuplicated") {
-                        console.error(err);
-                    }
-                });
+                this.message = response.data;
+                
+                $("#exampleModal3").modal("show");
             });
+        },
+
+        goBack() 
+        {
+            this.$router.push({ name: "Home" });
         },
 
         onDecode (decoded) 
