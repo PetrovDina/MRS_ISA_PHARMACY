@@ -139,6 +139,7 @@ public class OfferController {
 			// povecavamo kolicinu u apoteci
 			pharmacyStorageItemService.updatePharmacyStorageItemQuantity(orderItem.getMedication(), orderWithOrderItems.getPharmacy(),
 					orderItem.getQuantity());
+			pharmacyStorageItemService.updatePharmacyStorageItemCounter(orderItem.getMedication(), orderWithOrderItems.getPharmacy());
 		}
 		orderWithOffers.setStatus(OrderStatus.DONE);
 		orderService.save(orderWithOffers);

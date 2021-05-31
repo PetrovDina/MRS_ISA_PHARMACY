@@ -48,6 +48,14 @@ public class PharmacyStorageItemService {
 		pharmacyStorageItem.setQuantity(pharmacyStorageItem.getQuantity() + quantity);
 		pharmacyStorageItemRepository.save(pharmacyStorageItem);
 	}
+	
+	public void updatePharmacyStorageItemCounter(Medication medication, Pharmacy pharmacy) 
+	{
+		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemRepository.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
+		// kada dostavljac dostavio lijek, counter koji oznacava broj trazenja lijeka se stavlja na 0, jer vise quantity nije 0
+		pharmacyStorageItem.setCounter(0);
+		pharmacyStorageItemRepository.save(pharmacyStorageItem);
+	}
 
 	public PharmacyStorageItem findOneWithItemPrices(Long pharmacyStorageItemId) {
 		return pharmacyStorageItemRepository.findOneWithItemPrices(pharmacyStorageItemId);

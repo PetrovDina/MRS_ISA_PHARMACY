@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.PharmacyWithMedicationPriceDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
-import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemOutOfStockDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemWithItemPricesDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
