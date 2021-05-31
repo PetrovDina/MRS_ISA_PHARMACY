@@ -42,6 +42,20 @@
 									<input type="radio" id="female" name="gender" value="FEMALE" v-model="registration.gender" checked>
 									<label for="female" >Female</label>
 		                        </div>
+
+								<div class="form-group">
+		                            <label for="city" >City:</label><br>
+		                            <input type="text" name="city" id="city" class="form-control" v-model="registration.location.city">
+		                        </div>
+								<div class="form-group">
+		                            <label for="street" >Street:</label><br>
+		                            <input type="text" name="street" id="street" class="form-control" v-model="registration.location.street">
+		                        </div>
+								<div class="form-group">
+		                            <label for="streetNum" >Street number:</label><br>
+		                            <input type="number" name="streetNum" id="streetNum" class="form-control" v-model="registration.location.streetNum">
+		                        </div>
+
 		                        <!-- <div class="form-group">
 		                            <label for="date" class="text-info">Birth date:</label><br>
 		                            <input type="date" name="date" id="date" class="form-control" required="" v-model="registration.birthDate"
@@ -96,7 +110,13 @@ export default {
 
     data() {
         return {
-			registration: {},
+			registration: {
+				location: {
+					city: "",
+					street: "",
+					streetNum: 0
+				}
+			},
 			passwordRepeat: "",
 			url: "",
 			title: "",
@@ -132,41 +152,68 @@ export default {
 
 			if(this.typeToRegister === "PHARMACIST")
 				if(this.checkInputFields()) return true;
+
+			const url =
+			"https://nominatim.openstreetmap.org/search/" +
+			registration.location.city +
+			", " +
+			registration.location.street +
+			" " +
+			registration.location.streetNum;
 			
-			registration.location = 
+			this.axios.get(
+                url, {
+                params: {
+                    format: "json",
+                    limit: 1, 
+                    "accept-language": "en",
+                },
+            })
+			.then((response) => 
 			{
-					id: 4,
-					latitude: 30.00,
-					longitude: 30.00,
-					street: 'Ljube Nesica',
-					city: 'Zajecar',
-					zipCode: '19000',
-					streetNum: 21
-			};
-			client({
-                url: this.url,
-                method: "POST",
-				data: registration
-            }).then((response) => {
-				if(this.pharmacyId != -1)
-					this.createPharmacistEmployment(response.data);
-				else
+				if (response.data && response.data.lenght != 0) 
 				{
-					this.homeRedirect(); 
-					this.$toasted.show("Registration ended successfully. Check your email to confirm it.", {
-                        theme: "toasted-primary",
-                        position: "top-center",
-                        duration: 10000,
-                    });
-					this.$emit('registered', response.data); // vracamo objekat koji je registrovan
+                    registration.location['longitude'] = response.data[0].lon;
+                    registration.location['latitude'] = response.data[0].lat;
+                    registration.location['zipcode'] = 21000;
+
+					client({
+						url: this.url,
+						method: "POST",
+						data: registration
+					}).then((response) => {
+						if(this.pharmacyId != -1)
+							this.createPharmacistEmployment(response.data);
+						else
+						{
+							this.homeRedirect(); 
+							this.$toasted.show("Registration ended successfully. Check your email to confirm it.", {
+								theme: "toasted-primary",
+								position: "top-center",
+								duration: 10000,
+							});
+							this.$emit('registered', response.data); // vracamo objekat koji je registrovan
+						}
+					}).catch((response) => {
+						this.$toasted.show("Username is taken. Try another.", {
+							theme: "toasted-primary",
+							position: "top-center",
+							duration: 5000,
+						});
+					});
+
 				}
-			}).catch((response) => {
-				this.$toasted.show("Username is taken. Try another.", {
+			})
+			.catch(() => 
+			{
+                this.$toasted.show("Could not find coordinates based on given info.", {
 					theme: "toasted-primary",
 					position: "top-center",
-					duration: 5000,
+					duration: 2000,
 				});
-			});
+            });
+
+			
         },
 		checkPassword: function() {
 			var inputPasswordRepeat = document.getElementById('passwordRepeat');
@@ -189,6 +236,9 @@ export default {
 			if(registration.firstName == '') return true;
 			if(registration.lastName == '') return true;
 			if(registration.email == '') return true;
+			if(registration.location.city == '') return true;
+			if(registration.location.street == '') return true;
+			if(registration.location.streetNum == '' || registration.location.streetNum < 1) return true;
 			if(this.typeToRegister === "PHARMACIST")
 			{
 				if(document.getElementById('start_time').value == '') return true;

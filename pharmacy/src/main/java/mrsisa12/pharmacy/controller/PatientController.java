@@ -3,7 +3,6 @@ package mrsisa12.pharmacy.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.mapping.Subclass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +24,7 @@ import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.enums.PatientCategory;
 import mrsisa12.pharmacy.model.enums.UserStatus;
 import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.MedicationService;
@@ -231,6 +231,7 @@ public class PatientController {
 		pa.setLoggedFirstTime(true);
 		pa.setPenaltyPoints(new Integer(0));
 		pa.setLoyaltyPoints(new Integer(0));
+		pa.setCategory(PatientCategory.REGULAR);
 		
 		try 
 		{

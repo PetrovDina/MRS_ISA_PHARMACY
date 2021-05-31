@@ -5,6 +5,7 @@ import static javax.persistence.InheritanceType.JOINED;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -56,7 +57,7 @@ public abstract class User implements UserDetails {
 	@Column(name = "lastName", unique=false, nullable=false)
 	private String lastName;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Location location;
 	
 	@Column(name = "gender", unique=false, nullable=false)

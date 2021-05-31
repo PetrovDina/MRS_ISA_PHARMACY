@@ -30,7 +30,7 @@ public class Pharmacy {
 	@Column(name = "rating")
 	private double rating;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Location location;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "pharmacy")

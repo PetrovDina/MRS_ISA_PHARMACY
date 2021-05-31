@@ -12,8 +12,16 @@
 		                            <input type="text" name="pharmacyName" id="pharmacyName" class="form-control" v-model="pharmacy.name">
 		                        </div>
                                 <div class="form-group">
-		                            <label for="pharmacyLocation" >Location:</label><br>
-		                            <input type="text" name="pharmacyLocation" id="pharmacyLocation" class="form-control" v-model="pharmacy.location">
+		                            <label for="city" >City:</label><br>
+		                            <input type="text" name="city" id="city" class="form-control" v-model="pharmacy.location.city">
+		                        </div>
+								<div class="form-group">
+		                            <label for="street" >Street:</label><br>
+		                            <input type="text" name="street" id="street" class="form-control" v-model="pharmacy.location.street">
+		                        </div>
+								<div class="form-group">
+		                            <label for="streetNum" >Street number:</label><br>
+		                            <input type="number" name="streetNum" id="streetNum" class="form-control" v-model="pharmacy.location.streetNum">
 		                        </div>
 								<div class="form-group">
 		                            <label for="examinationPrice" >Examination price:</label><br>
@@ -46,6 +54,13 @@ export default {
         return {
 			pharmacy: {
 				name : '',
+
+				location : {
+					city: "",
+					street: "",
+					streetNum: 0
+				},
+
 				appointmentPriceCatalog : {
 					examinationPrice : '',
 					consultationPrice : '',
@@ -58,8 +73,10 @@ export default {
     },
 
     methods: {
-		checkInputFields : function(pharmacy) {
-			if(pharmacy.name == '') {
+		checkInputFields : function(pharmacy) 
+		{
+			if(pharmacy.name == '') 
+			{
 				this.$toasted.show("Please insert pharmacy name!", {
 					theme: "toasted-primary",
 					position: "top-center",
@@ -67,7 +84,39 @@ export default {
 				});
 				return true;
 			}
-			if(pharmacy.appointmentPriceCatalog.examinationPrice == '' || parseInt(pharmacy.appointmentPriceCatalog.examinationPrice) <= 0) {
+
+			if(pharmacy.location.city == '') 
+			{
+				this.$toasted.show("Please insert city!", {
+					theme: "toasted-primary",
+					position: "top-center",
+					duration: 2000,
+				});
+				return true;
+			}
+
+			if(pharmacy.location.street == '') 
+			{
+				this.$toasted.show("Please insert street!", {
+					theme: "toasted-primary",
+					position: "top-center",
+					duration: 2000,
+				});
+				return true;
+			}
+
+			if(pharmacy.location.street == '' || pharmacy.location.street < 1) 
+			{
+				this.$toasted.show("Please insert proper value for street number!", {
+					theme: "toasted-primary",
+					position: "top-center",
+					duration: 2000,
+				});
+				return true;
+			}
+
+			if(pharmacy.appointmentPriceCatalog.examinationPrice == '' || parseInt(pharmacy.appointmentPriceCatalog.examinationPrice) <= 0) 
+			{
 				this.$toasted.show("Please insert a proper value for examination price!", {
 					theme: "toasted-primary",
 					position: "top-center",
@@ -75,7 +124,8 @@ export default {
 				});
 				return true;
 			}
-			if( pharmacy.appointmentPriceCatalog.consultationPrice == '' || parseInt(pharmacy.appointmentPriceCatalog.consultationPrice) <= 0) {
+			if( pharmacy.appointmentPriceCatalog.consultationPrice == '' || parseInt(pharmacy.appointmentPriceCatalog.consultationPrice) <= 0) 
+			{
 				this.$toasted.show("Please insert a proper value for consultation price!", {
 					theme: "toasted-primary",
 					position: "top-center",
@@ -85,33 +135,72 @@ export default {
 			}
 			return false;
 		},
-		register: function (pharmacy) {
-			if(this.checkInputFields(pharmacy)) return;
 
-			client({
-                url: "pharmacy/create",
-                method: "POST",
-				data: {
-					name: this.pharmacy.name,
-					location: {
-						id: 4,
-						latitude: 30.00,
-						longitude: 30.00,
-						street: 'Ljube Nesica',
-						city: 'Zajecar',
-						zipCode: '19000',
-						streetNum: 21
-					},
-					appointmentPriceCatalog:{
-						examinationPrice: this.pharmacy.appointmentPriceCatalog.examinationPrice,
-						consultationPrice: this.pharmacy.appointmentPriceCatalog.consultationPrice,
-					}
+		register: function (pharmacy) 
+		{
+			if(this.checkInputFields(pharmacy)) return;
+			
+			const url =
+                "https://nominatim.openstreetmap.org/search/" +
+                pharmacy.location.city +
+                ", " +
+                pharmacy.location.street +
+                " " +
+                pharmacy.location.streetNum;
+
+			this.axios.get
+			(
+                url, {
+                params: {
+                    format: "json",
+                    limit: 1, 
+                    "accept-language": "en",
+                },
+            })
+			.then((response) => 
+			{
+				if (response.data && response.data.lenght != 0)
+				{
+					pharmacy.location['longitude'] = response.data[0].lon;
+                    pharmacy.location['latitude'] = response.data[0].lat;
+                    pharmacy.location['zipcode'] = 21000;
+					console.log(pharmacy);
+                    client({
+                        url: "pharmacy/create",
+                        method: "POST",
+                        data: pharmacy
+                    })
+					.then((response) => 
+					{
+                        this.$toasted.show("Pharmacy reigstration completed successfully.", {
+							theme: "toasted-primary",
+							position: "top-center",
+							duration: 5000,
+						});
+						
+						this.homeRedirect();
+                    });
 				}
-            }).then((response) => (this.homeRedirect())).
-			catch((response) => (console.log(response)));
+			})
+			.catch(() => 
+			{
+				this.$toasted.show("Could not find coordinates based on given info.", {
+					theme: "toasted-primary",
+					position: "top-center",
+					duration: 2000,
+				});
+			})
+
+			// client({
+            //     url: "pharmacy/create",
+            //     method: "POST",
+			// 	data: pharmacy
+            // }).then((response) => (this.homeRedirect())).
+			// catch((response) => (console.log(response)));
         },
 
-		homeRedirect: function () {
+		homeRedirect: function () 
+		{
             this.$router
                 .push({ name: "Home" })
                 .catch((err) => {

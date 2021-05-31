@@ -3,6 +3,9 @@ package mrsisa12.pharmacy.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import mrsisa12.pharmacy.dto.LocationDTO;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
@@ -43,6 +46,11 @@ public class Location {
 		this.city = city;
 		this.zipcode = zipcode;
 		this.streetNum = streetNum;
+	}
+	
+	public Location(LocationDTO l)
+	{
+		this(l.getLatitude(), l.getLongitude(), l.getStreet(), l.getCity(), l.getZipcode(), l.getStreetNum());
 	}
 	
 	public Long getId() {

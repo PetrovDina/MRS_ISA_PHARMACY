@@ -34,7 +34,6 @@ import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.AppointmentPriceCatalog;
-import mrsisa12.pharmacy.model.ItemPrice;
 import mrsisa12.pharmacy.model.Location;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -146,8 +145,8 @@ public class PharmacyController {
 		Pharmacy pharmacy = new Pharmacy();
 
 		pharmacy.setName(pharmacyDTO.getName());
-		//pharmacy.setLocation(pharmacyDTO.getLocation());
-		// prilikom kreiranja postavljamo cijenovnik
+		pharmacy.setLocation(new Location(pharmacyDTO.getLocation()));
+
 		AppointmentPriceCatalog appointmentPriceCatalog = new AppointmentPriceCatalog(
 				pharmacyDTO.getAppointmentPriceCatalog().getExaminationPrice(),
 				pharmacyDTO.getAppointmentPriceCatalog().getConsultationPrice());
