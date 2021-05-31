@@ -29,4 +29,7 @@ public interface PharmacyStorageItemRepository extends JpaRepository<PharmacySto
 
 	@Query("select s from PharmacyStorageItem s where s.medication.id =?1 and s.pharmacy.id =?2")
 	public PharmacyStorageItem findOneWithMedicationAndPharmacy(Long medicationId, Long pharmacyId);
+	
+	@Query("select s from PharmacyStorageItem s where s.pharmacy.id =?1 and s.counter > 0")
+	public List<PharmacyStorageItem> findAllOutOfStock(Long pharmacyId);
 }

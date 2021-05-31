@@ -80,4 +80,8 @@ public class PharmacyStorageItemService {
 		
 		return 0.0;
 	}
+
+	public List<PharmacyStorageItem> findAllOutOfStock(Long pharmacyId) {
+		return pharmacyStorageItemRepository.findAllOutOfStock(pharmacyId);
+	}
 }

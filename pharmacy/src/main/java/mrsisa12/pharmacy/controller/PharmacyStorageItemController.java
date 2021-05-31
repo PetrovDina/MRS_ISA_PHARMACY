@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.PharmacyWithMedicationPriceDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
+import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemOutOfStockDTO;
 import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemWithItemPricesDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
@@ -334,6 +335,16 @@ public class PharmacyStorageItemController {
 		return new ResponseEntity<>(pharmacyStorageItemDTO, HttpStatus.OK);
 	}
 	
-	
+	@GetMapping(value = "/getPharmacyStorageItemsOutOfStock/{id}")
+	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorageItemsOutOfStock(@PathVariable Long id) {
+
+		List<PharmacyStorageItem> pharmacyStorageItems = pharmacyStorageItemService.findAllOutOfStock(id);
+		List<PharmacyStorageItemDTO> pharmacyStorageItemsDTO = new ArrayList<PharmacyStorageItemDTO>();
+		
+		for (PharmacyStorageItem pharmacyStorageItem : pharmacyStorageItems) {
+			pharmacyStorageItemsDTO.add(new PharmacyStorageItemDTO(pharmacyStorageItem));
+		}
+		return new ResponseEntity<>(pharmacyStorageItemsDTO, HttpStatus.OK);
+	}
 	
 }

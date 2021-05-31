@@ -28,9 +28,9 @@
                         <span>Price catalogue</span>
                         <hr class="solid">
                         <label class="label" for="examinationPrice">Examination price:</label>
-                        <input type="text" id="examinationPrice" class="form-control" :value="pharmacy.appointmentPriceCatalog.examinationPrice">
+                        <input type="text" id="examinationPrice" class="form-control" :value="pharmacy.appointmentPriceCatalog.examinationPrice" disabled>
                         <label class="label" for="consultationPrice">Consultation price:</label>
-                        <input type="text" id="consultationPrice" class="form-control" :value="pharmacy.appointmentPriceCatalog.consultationPrice">
+                        <input type="text" id="consultationPrice" class="form-control" :value="pharmacy.appointmentPriceCatalog.consultationPrice" disabled>
                     </div>
                 </div>
             </div>

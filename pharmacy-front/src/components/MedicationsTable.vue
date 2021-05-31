@@ -1,5 +1,6 @@
 <template>
     <div id="medicationsViewDiv">
+        <a id="medOutOfStock" @click="showMedicationOutOfStock">Check for medication out of stock →</a><br><br>
         <table class="table table-hover" >
             <thead>
                 <tr>
@@ -71,6 +72,12 @@
         :modal_show = "modal_window_make_promotion"
         >
         </ModalWindowMakePromotion>
+        <ModalWindowMedOutOfStock
+        @modal-closed = "modal_window_medicationOutOfStock = false"
+        :modal_show="modal_window_medicationOutOfStock"
+        :medications="medicationOutOfStock"
+        > 
+        </ModalWindowMedOutOfStock>
     </div>
 </template>
 
@@ -79,10 +86,16 @@ import { client } from "@/client/axiosClient";
 import Button from './Button.vue';
 import ModalWindowAddMed from './ModalWindowAddMed.vue';
 import ModalWindowMakePromotion from "./ModalWindowMakePromotion.vue";
+import ModalWindowMedOutOfStock from "./ModalWindowMedOutOfStock.vue"
 
 export default {
     name: "MedicationsTable",
-    components: {Button, ModalWindowAddMed, ModalWindowMakePromotion},
+    components: {
+        Button,
+        ModalWindowAddMed,
+        ModalWindowMakePromotion,
+        ModalWindowMedOutOfStock
+    },
     props: {
         medications: {
             type : Array,
@@ -96,8 +109,10 @@ export default {
         return {
             modal_window_show : false,
             modal_window_make_promotion : false,
+            modal_window_medicationOutOfStock : false,
             medicationsForAdd : [],
             medicationsForPromotion : [],
+            medicationOutOfStock : []
         };
     },
     methods: {
@@ -177,6 +192,16 @@ export default {
         },
         addPromotion : function(promotion){
             this.$emit("promotion-created", promotion);
+        },
+        showMedicationOutOfStock : function(){
+            client({
+                url: "pharmacyStorageItem/getPharmacyStorageItemsOutOfStock/" + this.pharmacyId,
+                method: "GET",
+            }).then((response) => {
+                console.log(response.data);
+                this.medicationOutOfStock = response.data;
+                this.modal_window_medicationOutOfStock = true;
+            });
         }
     },
 };
@@ -191,5 +216,14 @@ export default {
 thead { 
     /* background-color: rgba(15, 95, 72, 0.219); */
     background-color: rgba(32, 102, 75, 0.295)
+}
+
+#medOutOfStock{
+    float: left;
+    color: rgba(15, 95, 72, 1);
+}
+
+#medOutOfStock:hover {
+    text-decoration: none;
 }
 </style>
