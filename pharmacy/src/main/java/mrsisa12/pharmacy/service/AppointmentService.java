@@ -1,5 +1,6 @@
 package mrsisa12.pharmacy.service;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,10 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
+import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.repository.AppointmentRepository;
 
 @Service
@@ -195,6 +201,21 @@ public class AppointmentService {
 	
 	public List<Appointment> getAllConcludedAppointmentsForEmployee(String username) {
 		return appointmentRepository.getAllConcludedAppointmentsForEmployee(username);
+	}
+	
+	@EventListener(ApplicationReadyEvent.class)
+	public void checkExpiredAppointments() {
+		List<Appointment> apps = appointmentRepository.findAllReservedAndAvailable();
+		System.out.println("--SETTING APPOINTMENT STATUS TO EXPIRED--");
+		TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
+
+		for (Appointment appo: apps) {
+			LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+			if (eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))) {
+				appo.setStatus(AppointmentStatus.EXPIRED);
+				appointmentRepository.save(appo);
+			}
+		}
 	}
 
 }

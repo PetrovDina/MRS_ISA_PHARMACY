@@ -44,6 +44,7 @@ public class TherapyController {
 		ePrescription.setPatient(appointment.getPatient());
 		ePrescription.setPrescribedDate(new Date());
 		ePrescription.setStatus(EPrescriptionStatus.COMPLETED);
+		ePrescription.setPharmacy(appointment.getPharmacy());
 		//generates code
 		int length = 10;
         char[] text = new char[length];

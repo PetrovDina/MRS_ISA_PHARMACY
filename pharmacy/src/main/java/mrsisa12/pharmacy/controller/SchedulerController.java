@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
+import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.ReservationService;
 
@@ -17,6 +18,9 @@ public class SchedulerController {
 	
 	@Autowired
 	PatientService patientService;
+	
+	@Autowired
+	AppointmentService appointmentService;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -45,7 +49,13 @@ public class SchedulerController {
 		logger.info("< SYSTEM CLOCK: - finished resetting patients' penals");
 	}
 	
-
+	//u 2 ujutru svakog dana - At 02:00 every single day
+	@Scheduled(cron = "0 0 2 * * *")
+	public void checkExpiredAppointments() {
+		logger.info("> SYSTEM CLOCK: - checking expired appointments");
+		appointmentService.checkExpiredAppointments();
+		logger.info("< SYSTEM CLOCK: - finished checking expired appointments");
+	}
 
 	
 

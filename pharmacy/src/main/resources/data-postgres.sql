@@ -267,8 +267,8 @@ insert into ComplaintEmployee(employee_id, id) values (5, 7);
 insert into complaint (patient_id, system_admin_id, content, response) values (2, 1, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', 'Farmaceut kaze nije.');
 insert into ComplaintEmployee(employee_id, id) values (7, 8);
 
-insert into therapy (patient_id, prescribedDate, code, status) values (2, '2021-05-14', 'code123456', 'CREATED');
-insert into therapy (patient_id, prescribedDate, code, status) values (2, '2021-04-10', 'code654321', 'CREATED');
+insert into therapy (pharmacy_id, patient_id, prescribedDate, code, status) values (1, 2, '2021-05-14', 'code123456', 'CREATED');
+insert into therapy (pharmacy_id, patient_id, prescribedDate, code, status) values (1, 2, '2021-04-10', 'code654321', 'CREATED');
 
 insert into therapyItem (quantity, medicationPrice, medication_id, therapyDuration, therapy_id) values (2, 350, 2, 7, 1);
 insert into therapyItem (quantity, medicationPrice, medication_id, therapyDuration, therapy_id) values (5, 300, 3, 30, 1);

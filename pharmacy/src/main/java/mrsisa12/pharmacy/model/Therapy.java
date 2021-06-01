@@ -45,7 +45,7 @@ public class Therapy {
 	private List<TherapyItem> prescriptionItems;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "pharmacy_id", referencedColumnName = "id", nullable = true)
+	@JoinColumn(name = "pharmacy_id", referencedColumnName = "id", nullable = false)
 	private Pharmacy pharmacy;
 	
 	public Therapy() {

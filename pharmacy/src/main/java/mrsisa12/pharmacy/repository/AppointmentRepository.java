@@ -60,4 +60,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
 	
 	@Query("select app from Appointment app where app.employee.username = ?1 and app.status = 'CONCLUDED'")
 	public List<Appointment> getAllConcludedAppointmentsForEmployee(String username);
+	
+	@Query("select app from Appointment app where app.status = 'AVAILABLE' or app.status = 'RESERVED'")
+	public List<Appointment> findAllReservedAndAvailable();
 }

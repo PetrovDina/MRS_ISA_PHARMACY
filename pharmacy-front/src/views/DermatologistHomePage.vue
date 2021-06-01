@@ -3,13 +3,13 @@
         <v-card class="cardCollection staticPosition ma-5">
             <v-card-title>
                 <v-spacer></v-spacer>
-                <div class="cardCollectionTitle">Home page</div>
+                <div class="cardCollectionTitle">HOME PAGE</div>
                 <v-spacer></v-spacer>
             </v-card-title>  
             <v-card-text>
                 <v-row>
                 <v-col  md="3">
-                    <v-card class="oneCard" to="/search-patients-page" >
+                    <v-card class="oneCard " to="/search-patients-page" >
                     <v-card-title class="wordBreak">Search patients</v-card-title>
                     </v-card>
                 </v-col>  

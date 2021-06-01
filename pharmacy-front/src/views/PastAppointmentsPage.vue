@@ -1,7 +1,7 @@
 <template>
 <div class="container">
     <div id="appointments">
-        <p class="titl">Patients with concluded appointments</p>
+        <p class="titl">Concluded appointments</p>
         <br>
         <br>
         <v-row justify="center">
