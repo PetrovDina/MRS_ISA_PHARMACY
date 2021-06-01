@@ -275,10 +275,10 @@ insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharma
 
 insert into loyalty_program (afterAppointment, maxPointsRegular, maxPointsSilver, silverDis, goldDis) values (0, 200, 500, 10, 30);
 
-insert into eprescription (id, code, patientfirstname, patientlastname, prescribeddate, price, pharmacy_id) values (1, 'code1', 'Patient', 'Patientic', '2021-05-31', 450, 1);
+insert into eprescription (id, code, patientfirstname, patientlastname, prescribeddate, price, pharmacy_id, patient_id) values (1, 'code1', 'Patient', 'Patientic', '2021-05-12', 450, 1, 2);
 insert into eprescriptionitem (id, quantity, e_prescription_id, medication_id) values (1, 2, 1, 2);
 
-insert into eprescription (id, code, patientfirstname, patientlastname, prescribeddate, price, pharmacy_id) values (2, 'code2', 'Patient', 'Patientic', '2021-05-31', 741, 1);
+insert into eprescription (id, code, patientfirstname, patientlastname, prescribeddate, price, pharmacy_id, patient_id) values (2, 'code2', 'Patient', 'Patientic', '2021-05-31', 741, 1, 2);
 insert into eprescriptionitem (id, quantity, e_prescription_id, medication_id) values (2, 1, 2, 1);
 insert into eprescriptionitem (id, quantity, e_prescription_id, medication_id) values (3, 1, 2, 2);
 insert into eprescriptionitem (id, quantity, e_prescription_id, medication_id) values (4, 1, 2, 3);

@@ -2,6 +2,7 @@ package mrsisa12.pharmacy.dto;
 
 import java.util.Date;
 
+import mrsisa12.pharmacy.model.EPrescription;
 import mrsisa12.pharmacy.model.Therapy;
 import mrsisa12.pharmacy.model.enums.EPrescriptionStatus;
 
@@ -23,6 +24,15 @@ public class TherapyDTO {
 
 	public TherapyDTO() {
 		super();
+	}
+
+	public TherapyDTO(EPrescription prescription) {
+		super();
+		this.id = prescription.getId();
+		this.patient = new PatientDTO(prescription.getPatient());
+		this.prescribedDate = prescription.getPrescribedDate();
+		this.code = prescription.getCode();
+		this.status = EPrescriptionStatus.COMPLETED;
 	}
 
 	public Long getId() {

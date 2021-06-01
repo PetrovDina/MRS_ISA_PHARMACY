@@ -5,7 +5,7 @@
                 <tr>
                     <th scope="col">Medication</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Therapy duration</th>
+                    <th v-if="mode==='therapy'" scope="col">Therapy duration</th>
                 </tr>
             </thead>
 
@@ -13,7 +13,7 @@
                 <tr :key="item.id" v-for="item in items">
                     <td>{{ item.medication.name }}</td>
                     <td>{{ item.quantity }}</td>
-                    <td>{{ item.therapyDuration }}</td>
+                    <td v-if="mode==='therapy'">{{ item.therapyDuration }}</td>
                 </tr>
             </tbody>
         </table>
@@ -30,6 +30,11 @@ export default {
                 return [];
             },
         },
+
+        mode:{
+            type:String,
+            default:"therapy"
+        }
     },
 };
 </script>

@@ -1,6 +1,7 @@
 package mrsisa12.pharmacy.dto;
 
 import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.model.EPrescriptionItem;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.TherapyItem;
 
@@ -27,6 +28,11 @@ public class TherapyItemDTO {
 				reservationItem.getTherapyDuration());
     }
 	
+	public TherapyItemDTO(EPrescriptionItem e) {
+		this(e.getId(), e.getQuantity(), e.getMedication(),
+				0);
+	}
+
 	public Long getId() {
 		return id;
 	}

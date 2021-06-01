@@ -3,7 +3,6 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
                     <th scope="col">First name</th>
                     <th scope="col">Last name</th>
                     <th scope="col">Gender</th>
@@ -20,7 +19,6 @@
                         selected: selected_pharmacist.id === phar.id,
                     }"
                 >
-                    <td>{{ phar.id }}</td>
                     <td>{{ phar.firstName }}</td>
                     <td>{{ phar.lastName }}</td>
                     <td>
