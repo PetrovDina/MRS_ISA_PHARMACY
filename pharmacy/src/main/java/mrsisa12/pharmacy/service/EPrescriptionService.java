@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mrsisa12.pharmacy.model.EPrescription;
-import mrsisa12.pharmacy.model.Therapy;
+import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.repository.EPrescriptionRepository;
 
 @Service
@@ -20,7 +20,19 @@ public class EPrescriptionService {
 		return ePrescriptionRepository.save(ePrescription);
 	}
 
-	public List<EPrescription> findAllByPatientWithPrescriptionItems(String patientUsername) {
+	public List<EPrescription> findAllByPatientWithPrescriptionItems(String patientUsername) 
+	{
 		return ePrescriptionRepository.findAllByPatientWithPrescriptionItems(patientUsername); 
 	}
+	
+	public EPrescription findOneByCode(String code)
+	{
+		return ePrescriptionRepository.findOneByCode(code);
+	}
+	
+	public List<EPrescription>  findAllByPatient(Patient patient)
+	{
+		return ePrescriptionRepository.findAllByPatient(patient);
+	}
+	
 }

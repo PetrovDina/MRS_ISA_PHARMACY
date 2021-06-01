@@ -3,7 +3,6 @@ package mrsisa12.pharmacy.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,6 @@ import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
-import mrsisa12.pharmacy.model.Therapy;
 import mrsisa12.pharmacy.service.EPrescriptionService;
 import mrsisa12.pharmacy.service.LoyaltyProgramService;
 import mrsisa12.pharmacy.service.MedicationService;
@@ -58,16 +56,19 @@ public class EPrescriptionController {
 	
 	@Autowired
 	private PharmacyStorageItemService pharmacyStorageItemService;
-	
-	
-	private Random random = new Random();
-    private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+
 	
 	@PreAuthorize("hasRole('PATIENT')")
     @PostMapping(value = "/buyMedicationsQr", consumes = "application/json")
 	public ResponseEntity<String> buyMedicationsByQrSearch(@RequestBody QrCodeDTO medications, 
 			@RequestParam("pharmacyId") Long pharmacyId, @RequestParam("username") String username)
 	{
+    	System.err.println(medications.getCode());
+    	if(ePrescriptionService.findOneByCode(medications.getCode()) != null)
+    	{
+    		return new ResponseEntity<>("Qr code has been used once already.", HttpStatus.FORBIDDEN); 
+    	}
+    	
     	Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
 		Patient patient = patientService.findByUsername(username);
 		Integer pointsForPatient = 0;
@@ -78,14 +79,7 @@ public class EPrescriptionController {
 		ePrescription.setPatientLastName(patient.getLastName());
 		ePrescription.setPrescribedDate(new Date());
 		ePrescription.setPatient(patient);
-		
-		int length = 10;
-        char[] text = new char[length];
-        for (int i = 0; i < length; i++) 
-        {
-            text[i] = SOURCES.charAt(random.nextInt(SOURCES.length()));
-        }
-		ePrescription.setCode(new String(text));
+		ePrescription.setCode(medications.getCode());
 		
 		List<EPrescriptionItem> eItems = new ArrayList<EPrescriptionItem>();
 		Double totalPrice = 0.0;

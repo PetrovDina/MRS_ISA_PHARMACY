@@ -63,7 +63,6 @@ public class EPrescription {
 	}
 	
 	
-
 	public Patient getPatient() {
 		return patient;
 	}
@@ -71,7 +70,7 @@ public class EPrescription {
 	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
