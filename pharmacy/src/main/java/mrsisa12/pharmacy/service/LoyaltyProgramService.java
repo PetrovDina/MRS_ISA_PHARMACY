@@ -39,6 +39,15 @@ public class LoyaltyProgramService {
 		return finalPrice;
 	}
 	
+	public Double getFinalAppointmentPrice(Double appointmentPrice, Patient patient)
+	{
+		Integer discount = this.getDiscount(patient);
+		Double finalPrice = appointmentPrice - (appointmentPrice * (((double)discount) / 100));
+		return finalPrice;
+	}
+	
+	
+	
 	public PatientCategory getPatientCategory(Patient patient)
 	{
 		LoyaltyProgram l = this.getLoyaltyProgram();
@@ -68,6 +77,37 @@ public class LoyaltyProgramService {
 		message += "Loyalty points earned with this purchase: " + pointsEarned + ".";
 		
 		return message;
+	}
+	
+	public String generateReservationMessage(Patient patient, Double finalPrice, Integer pointsEarned)
+	{
+		String message = "Medication successfully reserved by price: " + finalPrice + " dinars.";
+		if(patient.getCategory() != PatientCategory.REGULAR)
+		{
+			message += " You have discount of " + this.getDiscount(patient) + "% for each isntance of medication because of your "
+					+ "loyalty program cateogry. ";
+		}
+		message += "Loyalty points earned with this purchase: " + pointsEarned + ".";
+		
+		return message;
+	}
+	
+	public String generateAppointmentMessage(Patient patient, Double finalPrice, Integer pointsEarned)
+	{
+		String message = "Appointment successfully booked by price: " + finalPrice + " dinars.";
+		if(patient.getCategory() != PatientCategory.REGULAR)
+		{
+			message += " You have discount of " + this.getDiscount(patient) + "% because of your "
+					+ "loyalty program cateogry. ";
+		}
+		message += "Loyalty points earned with this appointment bookage: " + pointsEarned + ".";
+		
+		return message;
+	}
+	
+	public Integer appointmentPoints()
+	{
+		return this.getLoyaltyProgram().getAfterAppointment();
 	}
 	
 }

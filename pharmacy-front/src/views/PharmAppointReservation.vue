@@ -122,7 +122,7 @@
                         </h5>
                     </div>
                     <div class="modal-body">
-                        You can see all your scheduled appointments on your page
+                        {{successMessage}}
                     </div>
                     <div class="modal-footer">
                         <button
@@ -214,7 +214,9 @@ export default {
             chosenPharmacist: {},
 
             pharmacySortResults: [],
-            pharmacistSortResults: []
+            pharmacistSortResults: [],
+
+            successMessage: ""
         };
     },
 
@@ -337,6 +339,7 @@ export default {
                 },
             })
                 .then((response) => {
+                    this.successMessage = response.data;
                     $("#bookModal").modal("show");
                 })
                 .catch((response) => alert("Sorry... "));

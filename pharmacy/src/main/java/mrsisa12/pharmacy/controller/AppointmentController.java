@@ -1,7 +1,6 @@
 package mrsisa12.pharmacy.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,27 +22,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-
 import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
-import mrsisa12.pharmacy.model.Absence;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
-import mrsisa12.pharmacy.model.enums.AbsenceStatus;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.model.enums.AppointmentType;
 import mrsisa12.pharmacy.service.AbsenceService;
 import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.EmployeeService;
 import mrsisa12.pharmacy.service.EmploymentService;
+import mrsisa12.pharmacy.service.LoyaltyProgramService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
 
@@ -71,6 +67,9 @@ public class AppointmentController {
 	
 	@Autowired
 	private AbsenceService absenceService;
+	
+	@Autowired
+	private LoyaltyProgramService loyaltyProgramService;
 	
 
 	@GetMapping(value = "/all")
@@ -278,7 +277,7 @@ public class AppointmentController {
 	//dina pravila za kreiranja termina kod FARMACEUTA!
 	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/savePharmacistAppointment", consumes = "application/json")
-	public ResponseEntity<AppointmentDTO> savePharmacistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+	public ResponseEntity<String> savePharmacistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
 		Appointment appointment = new Appointment();
 
 		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
@@ -304,10 +303,20 @@ public class AppointmentController {
 		appointment.setPharmacy(pharmacy);
 
 		appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
+		
+		Double price = appointment.getPrice();
+		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
+		appointment.setPrice(price);
+		
+		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
+		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		
+		
 		appointment = appointmentService.save(appointment);
 		employeeService.save(employee); //idk da l ovo treba
 
-		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);
+		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
 
 	@PostMapping(consumes = "application/json")
@@ -352,11 +361,22 @@ public class AppointmentController {
 	
 	@GetMapping(value = "/book")
 	@PreAuthorize("hasRole('PATIENT')")
-	public ResponseEntity<AppointmentDTO> reserveAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId) {
+	public ResponseEntity<String> reserveAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId) {
 
+		Patient patient = patientService.findByUsername(patientUsername);
+		
 		Appointment appointment = appointmentService.findOne(appointmentId);
-		appointment.setPatient(patientService.findByUsername(patientUsername));
+		appointment.setPatient(patient);
 		appointment.setStatus(AppointmentStatus.RESERVED);
+		
+		Double price = appointment.getPrice();
+		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
+		appointment.setPrice(price);
+		
+		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
+		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		
 		appointment = appointmentService.save(appointment);
 		
 		// email!
@@ -369,8 +389,7 @@ public class AppointmentController {
 		email.addRecipient(appointment.getPatient().getEmail());
         emailService.sendEmail(email);
 
-
-		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);
+		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
 
 	@PutMapping(consumes = "application/json")

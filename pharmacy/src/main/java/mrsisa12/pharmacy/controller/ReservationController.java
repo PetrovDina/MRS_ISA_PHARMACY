@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.MedicationQrDTO;
-import mrsisa12.pharmacy.dto.QrCodeDTO;
 import mrsisa12.pharmacy.dto.ReservationDTO;
 import mrsisa12.pharmacy.dto.ReservationPickupDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
@@ -126,7 +124,7 @@ public class ReservationController {
 	
 	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/create", consumes = "application/json")
-	public ResponseEntity<ReservationDTO> saveReservation(@RequestBody ReservationDTO resDTO) {
+	public ResponseEntity<String> saveReservation(@RequestBody ReservationDTO resDTO) {
 		
 		System.out.println(resDTO.toString());
 		Reservation reservation = new Reservation();
@@ -159,7 +157,11 @@ public class ReservationController {
 		double finalPrice = loyaltyProgramService.getFinalPrice(price, patient);
 		
 		reservation.setMedicationPrice(finalPrice);
-		//reservation.setMedicationPrice(pharmacyStorageItemService.getCurrentPrice(psi));
+		
+		Integer pointsForPatient = medication.getLoyaltyPoints() * reservation.getQuantity();
+		String message = loyaltyProgramService.generateReservationMessage(patient, finalPrice, pointsForPatient);
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		
 		reservation = reservationService.save(reservation);
 		
 		// email!
@@ -167,7 +169,7 @@ public class ReservationController {
 		EmailContent email = new EmailContent("Medicine reservation confirmation", emailBody);
 		email.addRecipient(reservation.getPatient().getEmail());
         emailService.sendEmail(email);
-		return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.CREATED);
+		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
 	
 	@GetMapping(value = "/pickup/{code}")

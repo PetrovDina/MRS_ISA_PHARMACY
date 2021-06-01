@@ -7,6 +7,7 @@ insert into medication (rating, name, manufacturer, prescriptionReq, form, descr
 insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Fervex', 'Upsa', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 4', 7);
 insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Amoksicilin', 'Belupo', 'True', 'CAPSULE', 'Antibiotski lek za ...', 'Neki sadrzaj 5', 1);
 
+insert into loyalty_program (afterAppointment, maxPointsRegular, maxPointsSilver, silverDis, goldDis) values (5, 200, 500, 10, 30);
 
 insert into alternative_medications (medication_id, alternative_id) values (1, 5);
 insert into alternative_medications (medication_id, alternative_id) values (1, 3);
@@ -286,8 +287,6 @@ insert into rating (type, date, rating, employee_id, patient_id) values ('employ
 insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('REQUESTED', 'VACATION', '{ "startDate":  [2021, 8, 1], "startTime": [0, 0, 0], "endDate": [2021, 8, 8], "endTime": [0, 0, 0]}', 4, 1);
 insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('REQUESTED', 'VACATION', '{ "startDate":  [2021, 12, 25], "startTime": [0, 0, 0], "endDate": [2022, 1, 15], "endTime": [0, 0, 0]}', 4, 1);
 insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharmacy_id) values ('DENIED', 'ABSENCE', '{ "startDate":  [2021, 5, 5], "startTime": [0, 0, 0], "endDate": [2021, 5, 10], "endTime": [0, 0, 0]}', 4, 1);
-
-insert into loyalty_program (afterAppointment, maxPointsRegular, maxPointsSilver, silverDis, goldDis) values (0, 200, 500, 10, 30);
 
 insert into eprescription (code, patientfirstname, patientlastname, prescribeddate, price, pharmacy_id, patient_id) values ('code1', 'Patient', 'Patientic', '2021-05-31', 450, 1, 2);
 insert into eprescriptionitem (quantity, e_prescription_id, medication_id) values (2, 1, 2);

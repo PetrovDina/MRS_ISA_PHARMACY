@@ -128,8 +128,7 @@
                         <div class="modal-header">Successfully reserved!</div>
                         <div class="modal-body">
                             <p style="text-align: justify">
-                                You can see all your reserved medications on
-                                your profile.
+                                {{successMessage}}
                             </p>
                         </div>
                         <div class="modal-footer">
@@ -179,6 +178,8 @@ export default {
             chosenDueDate: null,
 
             today: moment().format("YYYY-MM-DD"),
+
+            successMessage: "",
         };
     },
 
@@ -228,11 +229,15 @@ export default {
                     dueDate: this.chosenDueDate,
                     medicationPrice: this.chosenRow.currentPrice,
                 },
-            }).then();
+            }).then((response) => {
 
-            $("#exampleModal3").modal("show");
+                this.successMessage = response.data;
+                $("#exampleModal3").modal("show");
+            });
 
-            //this.$router.push({ name: "Home" });
+            // $("#exampleModal3").modal("show");
+
+            // //this.$router.push({ name: "Home" });
         },
 
         goBack() {

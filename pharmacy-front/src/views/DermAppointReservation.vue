@@ -147,7 +147,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        You can see all your scheduled appointments on your page
+                        {{successMessage}}
                     </div>
                     <div class="modal-footer">
                         <button
@@ -219,6 +219,9 @@ export default {
         return {
             appointments: [],
             options: ["-", "price low first", "price high first", "rating"],
+
+            successMessage: "",
+
         };
     },
 
@@ -267,16 +270,16 @@ export default {
                     },
                     method: "GET",
                 }).then((response) => {
-                    //alert message here
 
+                    this.successMessage = response.data;
+                    $("#bookModal").modal("show");
                     //refreshing available appointments
+
                     client({
                         url: "appointments/allDermatologistAvailable",
                         method: "GET",
                     }).then((response) => {
                         this.appointments = response.data;
-                        $("#bookModal").modal("show");
-
                     });
                 });
             });
