@@ -3,7 +3,6 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Manufacturer</th>
                     <th scope="col"></th>
@@ -12,7 +11,6 @@
 
             <tbody>
                 <tr :key="med.id" v-for="med in medications">
-                    <td>{{med.id}}</td>
                     <td>{{med.name }}</td>
                     <td>{{med.manufacturer}}</td> 
                     <td>

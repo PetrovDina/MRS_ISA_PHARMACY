@@ -3,7 +3,6 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Address</th>
                     <th scope="col">Rating</th>
@@ -19,7 +18,6 @@
                     @click="choosePharmacy(result)"
                     :class="[selected === result ? 'selected' : '']"
                 >
-                    <td>{{ result.pharmacy.id }}</td>
                     <td>{{ result.pharmacy.name }}</td>
                     <td>
                         {{ result.pharmacy.location.street }}

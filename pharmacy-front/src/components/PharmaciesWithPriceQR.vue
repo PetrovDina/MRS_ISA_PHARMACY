@@ -14,7 +14,6 @@
             <table class="table" >
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Address</th>
                         <th scope="col">Rating</th>
@@ -28,7 +27,6 @@
                         :key="result.pharmacy.id"
                         v-for="result in results"
                     >
-                        <td>{{ result.pharmacy.id }}</td>
                         <td>{{ result.pharmacy.name }}</td>
                         <td>
                             {{ result.pharmacy.location.street }}

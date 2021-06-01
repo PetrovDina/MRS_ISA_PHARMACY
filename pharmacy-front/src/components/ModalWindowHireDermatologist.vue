@@ -5,7 +5,6 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">Username</th>
                         <th scope="col">Email</th>
                         <th scope="col">First name</th>
@@ -16,7 +15,6 @@
                 </thead>
                 <tbody>
                     <tr :key="der.id" v-for="der in dermatologists" @click="clickedOnRow(der)" v-bind:class="{selected : selected_dermos.id===der.id}">
-                        <td>{{der.id}}</td>
                         <td>{{der.username}}</td>
                         <td>{{der.email}}</td>
                         <td>{{der.firstName}}</td>

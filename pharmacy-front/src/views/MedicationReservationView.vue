@@ -4,6 +4,7 @@
         <p class="titl2">Please select one</p>
 
         <PharmaciesWithPriceComponent
+            v-if="results.length != 0"
             :results="results"
             @pharmacySelected="chosenPharmacySelected"
         ></PharmaciesWithPriceComponent>
