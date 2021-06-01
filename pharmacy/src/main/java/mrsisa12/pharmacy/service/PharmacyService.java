@@ -18,8 +18,11 @@ import mrsisa12.pharmacy.dto.PharmacyWithMedicationsPriceQrDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.Reservation;
+import mrsisa12.pharmacy.model.Therapy;
+import mrsisa12.pharmacy.model.TherapyItem;
 import mrsisa12.pharmacy.repository.PharmacyRepository;
 import mrsisa12.pharmacy.repository.ReservationRepository;
+import mrsisa12.pharmacy.repository.TherapyRepository;
 
 @Service
 public class PharmacyService {
@@ -29,6 +32,9 @@ public class PharmacyService {
 	
 	@Autowired
 	private ReservationRepository reservationRepository;
+	
+	@Autowired
+	private TherapyRepository therapyRepository;
 
 	public Pharmacy findOne(Long id) {
 		return pharmacyRepository.findById(id).orElseGet(null);
@@ -91,12 +97,13 @@ public class PharmacyService {
 		return pharmacyRepository.findOneWithSubscribedPatients(id);
 	}
 	
-	public HashMap<String, Integer> getAllMedicationConsumptedByYear(String year, Pharmacy pharmacy) {
+	public HashMap<String, Integer> getPharmacyRevenueByYear(String year, Pharmacy pharmacy) {
 		HashMap<String, Integer> data = new HashMap<String, Integer>();
 		List<Reservation> reservationsFromPharmacy = reservationRepository.findAllByPharmacyCompleted(pharmacy);
+		List<Therapy> therapies = therapyRepository.findAllByPharmacyCompleted(pharmacy);
 		String[] quarters = {"Q1", "Q2", "Q3", "Q4"};
 		for (String quarter : quarters) {
-			HashMap<String, Integer> dataFromQuarter = getAllMedicationConsumptedByQuarter(quarter, year, pharmacy, reservationsFromPharmacy);
+			HashMap<String, Integer> dataFromQuarter = getPharmacyRevenueByQuarter(quarter, year, pharmacy, reservationsFromPharmacy, therapies);
 			for(Map.Entry<String, Integer> entry : dataFromQuarter.entrySet()) {
 				data.put(entry.getKey(), entry.getValue());
 			}
@@ -104,16 +111,18 @@ public class PharmacyService {
 		return data;
 	}
 
-	public HashMap<String, Integer> getAllMedicationConsumptedByQuarter(String quarter, String year, Pharmacy pharmacy, List<Reservation> reservations) {
+	public HashMap<String, Integer> getPharmacyRevenueByQuarter(String quarter, String year, Pharmacy pharmacy, List<Reservation> reservations, List<Therapy> therapies) {
 		HashMap<String, Integer> data = new HashMap<String, Integer>();
 		if(reservations == null)
 			reservations = reservationRepository.findAllByPharmacyCompleted(pharmacy);
+		if(therapies == null)	
+			therapies = therapyRepository.findAllByPharmacyCompleted(pharmacy);
 		if(ReportDTO.quarters.containsKey(quarter)) {
 			String[] monthsInQuarter = ReportDTO.quarters.get(quarter).split(",");
 			for (String month : monthsInQuarter) {
 				String monthTrimmed = month.trim();
 				data.put(monthTrimmed, 0);
-				HashMap<String, Integer> dataFromMonth = getAllMedicationConsumptedByMonthInYear(monthTrimmed, year, pharmacy, reservations);
+				HashMap<String, Integer> dataFromMonth = getPharmacyRevenueByMonthInYear(monthTrimmed, year, pharmacy, reservations, therapies);
 				for(Map.Entry<String, Integer> entry : dataFromMonth.entrySet()) {
 				    data.put(monthTrimmed, data.get(monthTrimmed) + entry.getValue());
 				}
@@ -122,7 +131,7 @@ public class PharmacyService {
 		return data;
 	}
 
-	public HashMap<String, Integer> getAllMedicationConsumptedByMonthInYear(String period, String year, Pharmacy pharmacy, List<Reservation> reservations) {
+	public HashMap<String, Integer> getPharmacyRevenueByMonthInYear(String period, String year, Pharmacy pharmacy, List<Reservation> reservations, List<Therapy> therapies) {
 		HashMap<String, Integer> data = new HashMap<String, Integer>();
 		LocalDate startDate, endDate;
 		
@@ -130,9 +139,10 @@ public class PharmacyService {
 		LocalDate initial = LocalDate.parse(year+"-"+ month +"-01");
 		startDate = initial.withDayOfMonth(1);
 		endDate = initial.withDayOfMonth(initial.lengthOfMonth());
-		if(reservations == null) 
+		if(reservations == null)
 			reservations = reservationRepository.findAllByPharmacyCompleted(pharmacy);
-		
+		if(therapies == null)	
+			therapies = therapyRepository.findAllByPharmacyCompleted(pharmacy);
 		Calendar start = Calendar.getInstance();
 		start.setTime(Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		Calendar end = Calendar.getInstance();
@@ -143,7 +153,14 @@ public class PharmacyService {
 		    data.put(dayInMonth, 0);
 		    for (Reservation reservation : reservations) {
 				if(date.isEqual(reservation.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())) {
-					data.put(dayInMonth, data.get(dayInMonth) + reservation.getQuantity() * 200); // Za sad je svaki lijek 200 din
+					data.put(dayInMonth, data.get(dayInMonth) + reservation.getQuantity() * (int) reservation.getMedicationPrice());
+				}
+			}
+		    for (Therapy therapy : therapies) {
+				if(date.isEqual(therapy.getPrescribedDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())) {
+					for (TherapyItem therapyItem : therapy.getPrescriptionItems()) {
+						data.put(dayInMonth, data.get(dayInMonth) + therapyItem.getQuantity() * (int) therapyItem.getMedicationPrice());
+					}
 				}
 			}
 		}

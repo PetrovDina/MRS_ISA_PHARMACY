@@ -253,19 +253,19 @@ public class PharmacyController {
 	
 	@GetMapping(value = "/reportPharmacyRevenueYear")
 	public ResponseEntity<ReportDTO> reportAppointmentYear(@RequestParam String year, @RequestParam Long pharmacyId) {
-		HashMap<String, Integer> data = pharmacyService.getAllMedicationConsumptedByYear(year, pharmacyService.findOne(pharmacyId));
+		HashMap<String, Integer> data = pharmacyService.getPharmacyRevenueByYear(year, pharmacyService.findOne(pharmacyId));
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/reportPharmacyRevenueQuarter")
 	public ResponseEntity<ReportDTO> reportAppointmentQuarter(@RequestParam String quarter, @RequestParam String year, @RequestParam Long pharmacyId) {
-		HashMap<String, Integer> data = pharmacyService.getAllMedicationConsumptedByQuarter(quarter, year, pharmacyService.findOne(pharmacyId), null);
+		HashMap<String, Integer> data = pharmacyService.getPharmacyRevenueByQuarter(quarter, year, pharmacyService.findOne(pharmacyId), null, null);
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/reportPharmacyRevenueMonth")
 	public ResponseEntity<ReportDTO> reportAppointmentMonth(@RequestParam String period, @RequestParam String year, @RequestParam Long pharmacyId) {
-		HashMap<String, Integer> data = pharmacyService.getAllMedicationConsumptedByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null);
+		HashMap<String, Integer> data = pharmacyService.getPharmacyRevenueByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null, null);
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	

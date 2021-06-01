@@ -345,10 +345,12 @@ export default {
         },
         monthSelected : function(event){
             this.selectedMonth = event.target.value;
+            document.getElementById("checkBox").checked = false;
             this.defaultQuarter();
         },
         quarterSelected : function(event){
             this.selectedQuarter = event.target.value;
+            document.getElementById("checkBox").checked = false;
             this.defaultMonth();
         },
         yearSelected : function(event){
