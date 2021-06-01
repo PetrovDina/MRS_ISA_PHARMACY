@@ -5,23 +5,19 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mrsisa12.pharmacy.dto.TherapyItemDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
-import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Therapy;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.TherapyItem;
-import mrsisa12.pharmacy.model.enums.EPrescriptionStatus;
-import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.TherapyService;
 import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.PharmacyStorageItemService;
@@ -46,6 +42,7 @@ public class TherapyItemController {
 	@Autowired
 	private TherapyService therapyService;
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/addPrescription")
 	public ResponseEntity<Void> savePrescriptionItem(@RequestParam String storageId,@RequestParam String quantity,@RequestParam String duration,
 			 @RequestParam String pharmacyId, @RequestParam String ePrescriptionId) {
@@ -61,6 +58,7 @@ public class TherapyItemController {
 		prescriptionItem.setMedication(pharmacyStorageItem.getMedication());
 		prescriptionItem.setQuantity(Integer.parseInt(quantity));
 		prescriptionItem.setTherapyDuration(Integer.parseInt(duration));
+		prescriptionItem.setMedicationPrice(pharmacyStorageItem.getItemPrices().get(0).getPrice());
 		therapyItemService.save(prescriptionItem);
 		
 		pharmacyStorageItem.setQuantity(pharmacyStorageItem.getQuantity() - Integer.parseInt(quantity));

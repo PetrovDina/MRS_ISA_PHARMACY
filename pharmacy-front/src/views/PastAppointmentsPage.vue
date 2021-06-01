@@ -154,13 +154,8 @@
                 <v-card-text>
                 <v-container>
                 <v-card class="ma-5">
-                    <v-card-text>
-                        <v-textarea readonly v-if="this.selectedAppointment.report != null">{{this.selectedAppointment.report}}
-                        </v-textarea>
-                    </v-card-text>
-                    <v-card-text>
-                        <v-textarea readonly v-if="this.selectedAppointment.report == null" value="No report has been written.">
-                        </v-textarea>
+                    <v-card-text >
+                        <span>{{this.selectedAppointment.report}}</span>
                     </v-card-text>
                 </v-card>
                 </v-container>

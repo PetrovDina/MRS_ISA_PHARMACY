@@ -19,6 +19,9 @@ public class TherapyItem {
 	@Column(name = "quantity", nullable = false)
 	private int quantity;
 	
+	@Column(name = "medicationPrice", nullable = false)
+	private double medicationPrice;
+	
 	@ManyToOne(optional=false)
 	private Medication medication;
 	
@@ -35,13 +38,14 @@ public class TherapyItem {
 
 
 	public TherapyItem(Long id, int quantity, Medication medication, int therapyDuration,
-			Therapy ePrescription) {
+			Therapy ePrescription, double medicationPrice) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
 		this.medication = medication;
 		this.therapyDuration = therapyDuration;
 		this.ePrescription = ePrescription;
+		this.medicationPrice = medicationPrice;
 	}
 
 
@@ -84,6 +88,16 @@ public class TherapyItem {
 
 	public void setEPrescription(Therapy ePrescription) {
 		this.ePrescription = ePrescription;
+	}
+
+
+	public double getMedicationPrice() {
+		return medicationPrice;
+	}
+
+
+	public void setMedicationPrice(double medicationPrice) {
+		this.medicationPrice = medicationPrice;
 	}
 
 	

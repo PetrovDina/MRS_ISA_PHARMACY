@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,7 +51,8 @@ public class AbsenceController {
 	
 	@Autowired
 	private AppointmentService appointmentService;
-	
+
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/allAbsencesForEmployee")
 	public ResponseEntity<List<AbsenceDTO>> getAllAbsencesForEmployee(@RequestParam String username) {	
 		Employee emp = employeeService.findOneByUsername(username);
@@ -77,6 +79,7 @@ public class AbsenceController {
 		return new ResponseEntity<>(absencesDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/create")
 	public ResponseEntity<Boolean> createAbsence(@RequestParam String pharmacyId, @RequestParam String startDate,
 			@RequestParam String endDate, @RequestParam String employeeUsername, @RequestParam String absenceType ){
@@ -87,13 +90,13 @@ public class AbsenceController {
 		
 		boolean free = true;
 		// Ovdje se mora provjeravati i datum i vrijeme za zaposlenog
-		boolean empHasAppThen = appointmentService.checkEmployeeAppointments(tp, emp);
+		boolean empHasAppThen = appointmentService.checkEmployeeAppointments(tp, emp, true);
 		if(empHasAppThen) {
 			free = false;
 		}
 		
 		// preklapanje sa postojecim odsustvom
-		boolean empIsAbsent = absenceService.checkEmployeeAbsences(tp, emp);
+		boolean empIsAbsent = absenceService.checkEmployeeAbsences(tp, emp, pharmacyId);
 		if(empIsAbsent) {
 			free = false;
 		}

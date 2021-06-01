@@ -430,7 +430,7 @@ public class AppointmentController {
 		}
 	}
 
-
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/upcomingPatientsForEmployee")
 	public ResponseEntity<List<PatientDTO>> getUpcomingPatientsForEmployee(@RequestParam String username) {	
 		Employee emp = employeeService.findOneByUsername(username);
@@ -469,6 +469,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(unique, HttpStatus.OK);
 	}
 		
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/upcomingAppointmentsForPatient")
 	public ResponseEntity<List<AppointmentDTO>> getUpcomingAppointmentsForEmployee(@RequestParam("patientUsername") String patientUsername, @RequestParam String employeeUsername) {	
 		Patient patient = patientService.findByUsername(patientUsername);
@@ -483,78 +484,32 @@ public class AppointmentController {
 		
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
-	
-	@GetMapping(value = "/searchPatients")
-	public ResponseEntity<List<PatientDTO>> searchPatients(@RequestParam String patientFirstName, @RequestParam String patientLastName, @RequestParam String employeeUsername) {	
-		Employee emp = employeeService.findOneByUsername(employeeUsername);
-		List<Appointment> appointments = appointmentService.findAll();
-		
-		List<PatientDTO> patientsDTO = new ArrayList<>();
-		for (Appointment appointment : appointments) {
-			if(appointment.getEmployee().getId().equals(emp.getId()) && appointment.getStatus() == AppointmentStatus.RESERVED) {
-				if(patientLastName == "" && patientFirstName != "" && appointment.getPatient().getFirstName().toLowerCase().contains(patientFirstName.toLowerCase())) {
-					patientsDTO.add(new PatientDTO(appointment.getPatient()));	
-				}
-				else if(patientFirstName == "" && patientLastName != "" && appointment.getPatient().getLastName().toLowerCase().contains(patientLastName.toLowerCase())) {
-					patientsDTO.add(new PatientDTO(appointment.getPatient()));		
-				}
-				else if(patientLastName != ""  && patientFirstName != ""
-						 && appointment.getPatient().getFirstName().toLowerCase().contains(patientFirstName.toLowerCase()) 
-						 && appointment.getPatient().getLastName().toLowerCase().contains(patientLastName.toLowerCase())) {
-					patientsDTO.add(new PatientDTO(appointment.getPatient()));		
-				}
-			}
-		}
-		
-		List<PatientDTO> unique = new ArrayList<>();
-        for(PatientDTO patient : patientsDTO){
-        	boolean hasPatientWithEmail = false;
-        	for(PatientDTO p : unique){
-                if(p.getEmail().equals(patient.getEmail())){
-                	hasPatientWithEmail = true;
-                }
-            }
-            if(!hasPatientWithEmail){
-                unique.add(patient);
-            } else {
-            	List<PatientDTO> overwritten = new ArrayList<>();
-
-                for(PatientDTO test : unique){
-                    if(test.getEmail().equals(patient.getEmail())){
-                        overwritten.add(patient);
-                    } else {
-                        overwritten.add(test);
-                    }
-                }
-                unique = overwritten;
-            }
-        }	
-		
-		return new ResponseEntity<>(unique, HttpStatus.OK);
-	}
-	
+			
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/allAppointmentsForEmployee")
 	public ResponseEntity<List<AppointmentDTO>> getAllAppointmentsForEmployee( @RequestParam String employeeUsername, @RequestParam String minDate, @RequestParam String maxDate) {	
-		Employee emp = employeeService.findOneByUsername(employeeUsername);
-		List<Appointment> appointments = appointmentService.findAll();
+		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
 		String min = minDate.split("T")[0];
 		String max = maxDate.split("T")[0];
 		
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
-		for (Appointment appointment : appointments) {
-			boolean afterMin = appointment.getTimePeriod().getStartDate().isAfter(LocalDate.parse(min));
-			boolean equalMin = appointment.getTimePeriod().getStartDate().isEqual(LocalDate.parse(min));
-			boolean beforeMax = appointment.getTimePeriod().getEndDate().isBefore(LocalDate.parse(max));
-			boolean equalMax = appointment.getTimePeriod().getEndDate().isEqual(LocalDate.parse(max));
-			if(appointment.getEmployee().getId().equals(emp.getId()) && appointment.getStatus() != AppointmentStatus.AVAILABLE
-					&& (afterMin || equalMin) && (beforeMax || equalMax) && !appointment.isDeleted()) {
-				appointmentsDTO.add(new AppointmentDTO(appointment));
+		for (Appointment appointment : emp.getAppointments()) {
+			if(!appointment.isDeleted() && appointment.getStatus() != AppointmentStatus.AVAILABLE) {
+				boolean afterMin = appointment.getTimePeriod().getStartDate().isAfter(LocalDate.parse(min));
+				boolean equalMin = appointment.getTimePeriod().getStartDate().isEqual(LocalDate.parse(min));
+				boolean beforeMax = appointment.getTimePeriod().getEndDate().isBefore(LocalDate.parse(max));
+				boolean equalMax = appointment.getTimePeriod().getEndDate().isEqual(LocalDate.parse(max));
+				if(appointment.getEmployee().getId().equals(emp.getId()) 
+						&& (afterMin || equalMin) && (beforeMax || equalMax) && !appointment.isDeleted()) {
+					appointmentsDTO.add(new AppointmentDTO(appointment));
+				}
 			}
 		}
 		
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/finishAppointment")
 	public ResponseEntity<Void> finishAppointment(  @RequestParam String appointmentId, @RequestParam String report) {	
 		Appointment appointment = appointmentService.findOne(Long.parseLong(appointmentId));
@@ -567,6 +522,7 @@ public class AppointmentController {
 		return new ResponseEntity<>( HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/patientDidntShowUp")
 	public ResponseEntity<Void> patientDidntShowUp(@RequestParam String appointmentId) {	
 		Appointment appointment = appointmentService.findOne(Long.parseLong(appointmentId));
@@ -583,6 +539,7 @@ public class AppointmentController {
 		return new ResponseEntity<>( HttpStatus.OK);
 	}
 		
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/getAvailableDermAppointments")
 	public ResponseEntity<List<AppointmentDTO>> getAvailableDermAppointments(@RequestParam String employeeUsername,@RequestParam String pharmacyId){
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
@@ -596,6 +553,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(avail, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/createNewAppointmentByEmployee")
 	public ResponseEntity<String> createNewAppointmentByEmployee(@RequestParam String employeeUsername, @RequestParam String patientUsername,
 			@RequestParam String pharmacyId, @RequestParam String startDate, @RequestParam String startTime,@RequestParam String userType){
@@ -613,13 +571,13 @@ public class AppointmentController {
 		}
 		
 		//za zaposlenog
-		boolean empHasAppThen = appointmentService.checkEmployeeAppointments(tp, emp);
+		boolean empHasAppThen = appointmentService.checkEmployeeAppointments(tp, emp, false);
 		if(empHasAppThen) {
 			free = "You already have an appointment then.";
 		}
 		
 		// preklapanje sa postojecim odsustvom
-		boolean empIsAbsent = absenceService.checkEmployeeAbsences(tp, emp);
+		boolean empIsAbsent = absenceService.checkEmployeeAbsences(tp, emp, pharmacyId);
 		if(empIsAbsent) {
 			free = "You will be absent then.";
 		}
@@ -659,7 +617,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(free, HttpStatus.OK);
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/bookAvailableAppointment")
 	public ResponseEntity<String> bookAvailableAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId){
 		Appointment appointment = appointmentService.findOne(appointmentId);
@@ -710,6 +668,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/allConcludedAppointmentsForEmployee")
 	public ResponseEntity<List<AppointmentDTO>> allConcludedAppointmentsForEmployee( @RequestParam String employeeUsername) {	
 		List<Appointment> appointments = appointmentService.getAllConcludedAppointmentsForEmployee(employeeUsername);

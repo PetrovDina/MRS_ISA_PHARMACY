@@ -36,6 +36,7 @@ public class TherapyController {
 	private Random random = new Random();
     private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 	
+    @PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/create")
 	public ResponseEntity<TherapyDTO> createEPrescription(@RequestParam String appointmentId){
 		Appointment appointment = appointmentService.findOneWithPatient(Long.parseLong(appointmentId));

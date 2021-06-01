@@ -90,4 +90,8 @@ public class EmploymentService {
 		return employmentRepository.findAllEmploymentsOfDermatologist(employeeId);
 	}
 	
+	public Employment findPharmacistEmploymentsByUsername(String username) {
+		return employmentRepository.findPharmacistEmploymentsByUsername(username);
+	}
+	
 }

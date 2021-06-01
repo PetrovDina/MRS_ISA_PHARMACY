@@ -51,20 +51,19 @@ public class AbsenceService {
 		return absenceRepository.findAllAprovedAbsencesByEmployeeId(id);
 	}
 	
-	public boolean checkEmployeeAbsences(TimePeriod tp, Employee emp) {
-		List<Absence> absences = absenceRepository.findAllByEmployeeId(emp.getId());
+	public boolean checkEmployeeAbsences(TimePeriod tp, Employee emp, String pharmacyId) {
+		List<Absence> absences = absenceRepository.findAllAprovedAbsencesByEmployeeIdAndPharmacyId(emp.getId(), Long.parseLong(pharmacyId));
 		
 		for (Absence absence : absences) {
-			if(absence.getStatus()== AbsenceStatus.APPROVED) {
-				LocalDateTime eWorkTSDateTime = absence.getTimePeriod().getStartDate().atTime(absence.getTimePeriod().getStartTime());
-				LocalDateTime eWorkTEDateTime = absence.getTimePeriod().getEndDate().atTime(absence.getTimePeriod().getEndTime());
-				if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
-						&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
-						&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
-								&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
-						return true;			
-				}
+			LocalDateTime eWorkTSDateTime = absence.getTimePeriod().getStartDate().atTime(absence.getTimePeriod().getStartTime());
+			LocalDateTime eWorkTEDateTime = absence.getTimePeriod().getEndDate().atTime(absence.getTimePeriod().getEndTime());
+			if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
+					&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
+					&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
+							&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
+					return true;			
 			}
+			
 		}
 		return false;
 	}

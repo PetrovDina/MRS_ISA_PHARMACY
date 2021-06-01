@@ -172,6 +172,7 @@ public class ReservationController {
 		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/pickup/{code}")
     public ResponseEntity<ReservationPickupDTO> getReservationForPickup(@PathVariable String code, @RequestParam Long pharmId){
 		List<Reservation> reservations = reservationService.findAllByPharmacy(pharmId);
@@ -192,6 +193,7 @@ public class ReservationController {
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@PostMapping(value = "/confirm-pickup")
     public ResponseEntity<Boolean> confirmPickup(@RequestBody String id){
 		String sub = id.substring(18, id.length()-2);

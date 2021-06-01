@@ -175,17 +175,17 @@ public class AppointmentService {
 		return false;
 	}
 	
-	public boolean checkEmployeeAppointments(TimePeriod tp, Employee emp) {
+	public boolean checkEmployeeAppointments(TimePeriod tp, Employee emp, boolean check) {
 		
 		for (Appointment appo : emp.getAppointments()) {
-			if(appo.getStatus().equals(AppointmentStatus.RESERVED)) {
+			if(!appo.getStatus().equals(AppointmentStatus.CANCELLED) && !(check == true && appo.getStatus().equals(AppointmentStatus.AVAILABLE))) {
 				LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
 				LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
 				if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
 						&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
 						&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
 								&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
-						return true; //"You already have an appointment then.";   preklapanje sa postojecim terminom					
+						return true; //"You already have an appointment then.";   preklapanje sa postojecim terminom
 				}
 			}
 		}

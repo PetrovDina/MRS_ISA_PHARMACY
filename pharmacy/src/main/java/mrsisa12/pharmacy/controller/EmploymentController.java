@@ -191,23 +191,18 @@ public class EmploymentController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/pharmacyOfLoggedInPharmacist")
 	public ResponseEntity<PharmacyDTO> getPharmacyOfLoggedInPharmacist(@RequestParam String username) {
-		List<Employment> employments = employmentService.findAllPharmacistEmployments();
-		Employee emp = employeeService.findOneByUsername(username);
-		Pharmacy p = null;
-		for (Employment e : employments) {
-			if (e.getEmployee().getId() == emp.getId()) {
-				p = e.getPharmacy();
-			}
-		}
-		if (p == null) {
+		Employment employment = employmentService.findPharmacistEmploymentsByUsername(username);
+		if (employment == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-
-		return new ResponseEntity<>(new PharmacyDTO(p), HttpStatus.OK);
+		
+		return new ResponseEntity<>(new PharmacyDTO(employment.getPharmacy()), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/pharmaciesOfLoggedInDermatologist")
 	public ResponseEntity<List<PharmacyDTO>> getPharmaciesOfLoggedInDermatologist(@RequestParam String username) {
 		Employee emp = employeeService.findOneByUsername(username);

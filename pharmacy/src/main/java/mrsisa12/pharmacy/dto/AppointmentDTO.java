@@ -17,13 +17,14 @@ public class AppointmentDTO {
 	private PatientDTO patient;
 	private PharmacyDTO pharmacy;
 	private AppointmentType type;
+	private String report;
 
 
 	public AppointmentDTO() {
 	}
 
 	public AppointmentDTO(Long id, AppointmentStatus status, TimePeriodDTO timePeriod, EmployeeDTO employee,
-			PatientDTO patient, double price, PharmacyDTO pharmacy, AppointmentType type) {
+			PatientDTO patient, double price, PharmacyDTO pharmacy, AppointmentType type, String report) {
 		super();
 		this.id = id;
 		this.status = status;
@@ -33,14 +34,15 @@ public class AppointmentDTO {
 		this.price = price;
 		this.pharmacy = pharmacy;
 		this.type = type;
+		this.setReport(report);
 	}
 
 	public AppointmentDTO(Appointment appointment) {
 		this(appointment.getId(), appointment.getStatus(), new TimePeriodDTO(appointment.getTimePeriod()),
 				new EmployeeDTO(appointment.getEmployee()),
-				(appointment.getPatient() == null) ? null : new PatientDTO(appointment.getPatient()), appointment.getPrice(), new PharmacyDTO(appointment.getPharmacy()), appointment.getType());
+				(appointment.getPatient() == null) ? null : new PatientDTO(appointment.getPatient()), appointment.getPrice(), new PharmacyDTO(appointment.getPharmacy()), appointment.getType(), appointment.getReport());
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -103,6 +105,14 @@ public class AppointmentDTO {
 
 	public void setType(AppointmentType type) {
 		this.type = type;
+	}
+
+	public String getReport() {
+		return report;
+	}
+
+	public void setReport(String report) {
+		this.report = report;
 	}
 
 	

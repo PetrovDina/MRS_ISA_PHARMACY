@@ -24,4 +24,8 @@ public interface AbsenceRepository extends JpaRepository<Absence, Long>{
 
 	@Query("select ab from Absence ab where ab.status = 'REQUESTED' and ab.employee.id = ?1")
 	public List<Absence> findAllRequestedByEmployeeId(Long id);
+	
+	@Query("select ab from Absence ab where ab.employee.id = ?1 and ab.status = 'APPROVED' and ab.pharmacy.id = ?2")
+	public List<Absence> findAllAprovedAbsencesByEmployeeIdAndPharmacyId(Long id, Long pharmId);
+	
 }

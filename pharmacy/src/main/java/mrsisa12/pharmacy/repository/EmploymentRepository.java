@@ -27,5 +27,8 @@ public interface EmploymentRepository extends JpaRepository<Employment, Long>{
 	
 	@Query("select emp from Employment emp where emp.employee.id = ?1")
 	public List<Employment> findAllEmploymentsOfDermatologist(Long employeeId);
+	
+	@Query("select emp from Employment emp where emp.contractType = 'PHARMACIST_CONTRACT' and emp.employee.username = ?1")
+	public Employment findPharmacistEmploymentsByUsername(String username);
 
 }

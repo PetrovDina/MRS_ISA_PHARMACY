@@ -33,13 +33,34 @@
         <v-btn class="cancelButton btn btn-secondary" color=" grey lighten-1 "  @click="resetList()" >Reset</v-btn>
         </v-row>
         <br>
+        <div id="sort-and-filter" v-if="patients.length != 0">
+            <div id="sort">
+                <p class="sort-label">sort by</p>
+
+                <select
+                    class="sort-dropdown"
+                    name="optionsSelect"
+                    id="optionsSelect"
+                    @change="sortSelected"
+                >
+                    <option
+                        class="option"
+                        v-for="option in options"
+                        :key="option"
+                        :value="option"
+                    >
+                        {{ option }}
+                    </option>
+                </select>
+            </div>
+        </div>
         <br>
-        <div :key="patient.id" v-for="patient in patients">
+        <div :key="item.patient.id" v-for="item in patients">
             <v-card
             class="mx-auto my-12"
-            max-width="500">
-            <v-card-title>{{patient.firstName}} {{patient.lastName}}
-            <v-btn :right="true" :absolute="true" @click="loadUpcomingAppointments(patient.username)">
+            max-width="800">
+            <v-card-title>{{item.patient.firstName}} {{item.patient.lastName}}
+            <v-btn :right="true" :absolute="true" @click="loadUpcomingAppointments(item.appointments)">
                 <v-icon >fa fa-angle-right</v-icon>
             </v-btn>
             </v-card-title>
@@ -163,6 +184,15 @@ export default {
             snackbar: false,
             vertical: false,
             selectedItem: null,
+            options: [
+                "-",
+                "date older",
+                "date recent",
+                "name descending",
+                "name ascending",
+                "surname descending",
+                "surname ascending",
+            ],
         };
     },
 
@@ -175,13 +205,65 @@ export default {
         resetList: function(){
             this.getAllPatients();
         },
+
+        closerDate(olddate, newdate){
+            var parts1 = olddate.startDate.split('-');
+            var parts2 = newdate.startDate.split('-');
+            if((moment(new Date(parts1[0], parts1[1]-1, parts1[2])).format("MMMM Do yyyy") > moment(new Date(parts2[0], parts2[1]-1, parts2[2])).format("MMMM Do yyyy"))){
+                return newdate;
+            }else{
+                return olddate;
+            }
+        },
+
         getAllPatients: function(){
+            var patients = [];
             client({
             url: "appointments/upcomingPatientsForEmployee",
             params: { username : localStorage.getItem('USERNAME') },
             method: "GET",
-            }).then((response) => (
-                this.patients = response.data));
+            }).then((response) => {
+                for(var pat of response.data){
+                    var link = "appointments/upcomingAppointmentsForPatient";
+                    client({
+                        url: link,
+                        method: 'GET',
+                        params: { patientUsername : pat.username, employeeUsername : localStorage.getItem('USERNAME'),
+                        },
+                    })
+                    .then((response) => {
+                        var apps = [];
+                        var clos = null;
+                        var p = null;
+                        for(var appointment of response.data){
+                            p = appointment.patient;
+                            var avail = false;
+                            var parts1 = appointment.timePeriod.startDate.split('-');
+                            var mon1 = parts1[1]-1;
+                            if(appointment.status === 'RESERVED' && ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
+                                avail = true;
+                            } 
+                            appointment.available = avail;
+                            appointment.fixedDate = this.toDateTime(appointment.timePeriod.startDate, appointment.timePeriod.startTime, appointment.timePeriod.endTime);
+                            if(clos==null){
+                                clos = appointment;
+                            }else{
+                                var parts1 = clos.timePeriod.startDate.split('-');
+                                var parts2 = appointment.timePeriod.startDate.split('-');
+                                if((moment(new Date(parts1[0], parts1[1]-1, parts1[2])).format("MMMM Do yyyy") > moment(new Date(parts2[0], parts2[1]-1, parts2[2])).format("MMMM Do yyyy"))){
+                                    clos = appointment;
+                                }
+                            }
+                            apps.push(appointment);
+                        }    
+                        patients.push({
+                            patient: p,
+                            appointments: apps,
+                            closest: clos,
+                        });
+                        });
+                }
+                this.patients = patients});
         },
 
         toDateTime: function(d, t1, t2){
@@ -193,54 +275,64 @@ export default {
             this.allAppointments = [];
         },
 
-        loadUpcomingAppointments: function(username){
-            var link = "appointments/upcomingAppointmentsForPatient";
-            client({
-                url: link,
-                method: 'GET',
-                params: { patientUsername : username, employeeUsername : localStorage.getItem('USERNAME'),
-                },
-            })
-            .then((response) => {
-                for(var appointment of response.data){
-                    var avail = false;
-                    var parts1 = appointment.timePeriod.startDate.split('-');
-                    var mon1 = parts1[1]-1;
-                    if(appointment.status === 'RESERVED' && ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
-                        avail = true;
-                    } 
-                    appointment.available = avail;
-                    appointment.fixedDate = this.toDateTime(appointment.timePeriod.startDate, appointment.timePeriod.startTime, appointment.timePeriod.endTime);
-                    this.allAppointments.push(appointment);
-                }
-
-                this.dialog = true;
-                if(localStorage.getItem("USER_TYPE") === "PHARMACIST"){
-                    this.dialogHeadlineText = "Select a counseling!";
-                } else {
-                    this.dialogHeadlineText = "Select a checkup!";
-                }
-                console.log(this.allAppointments);
-            })
+        loadUpcomingAppointments: function(appointments){
+            this.allAppointments = appointments;
+            this.dialog = true;
+            if(localStorage.getItem("USER_TYPE") === "PHARMACIST"){
+                this.dialogHeadlineText = "Select a counseling!";
+            } else {
+                this.dialogHeadlineText = "Select a checkup!";
+            }
         },
 
-        searchQuery: function(){
-            var link = 'appointments/searchPatients';
-            client({
-                method: 'GET',
-                url: link,
-                params: { employeeUsername : localStorage.getItem('USERNAME'),
-                            patientFirstName : this.query1,
-                            patientLastName : this.query2
-                },
-            })
-            .then((response) => {
-                if(response.data.length === 0){
-                    this.snackbar = true;
-                    this.snackbarText = "No patients found!";
-                }
-                this.patients = response.data;
-            })
+        searchQuery(){
+            if (this.query1 != "") {
+                this.patients = this.patients.filter(p => {
+                    return p.patient.firstName.toLowerCase().includes(this.query1);
+                });
+            } 
+            if (this.query2 != "") {
+                this.patients = this.patients.filter(p => {
+                    return p.patient.lastName.toLowerCase().includes(this.query2);
+                });
+            } 
+        },
+
+        sortSelected(event) {
+            let sortCriterium = event.target.value;
+            let self = this;
+            if (sortCriterium === "-") {
+                this.patients = this.patients;
+                return;
+            } else if (sortCriterium === "date recent") {
+                this.patients = this.patients.sort(function (a, b) {
+                    let dateA = new Date(a.closest.timePeriod.startDate);
+                    let dateB = new Date(b.closest.timePeriod.startDate);
+                    return dateB - dateA;
+                });
+            } else if (sortCriterium === "date older") {
+                this.patients = this.patients.sort(function (a, b) {
+                    let dateA = new Date(a.closest.timePeriod.startDate);
+                    let dateB = new Date(b.closest.timePeriod.startDate);
+                    return dateA - dateB;
+                });
+            }else if(sortCriterium === "name ascending"){
+                this.patients = this.patients.sort(function (a, b) {
+                    return (a.patient.firstName > b.patient.firstName) ? 1 : -1;
+                });
+            }else if(sortCriterium === "name descending"){
+                this.patients = this.patients.sort(function (a, b) {
+                    return (a.patient.firstName < b.patient.firstName) ? 1 : -1;
+                });
+            }else if(sortCriterium === "surname ascending"){
+                this.patients = this.patients.sort(function (a, b) {
+                    return (a.patient.lastName > b.patient.lastName) ? 1 : -1;
+                });
+            }else if(sortCriterium === "surname descending"){
+                this.patients = this.patients.sort(function (a, b) {
+                    return (a.patient.lastName < b.patient.lastName) ? 1 : -1;
+                });
+            }
         },
 
         startAppointment: function(appointment){
@@ -301,5 +393,25 @@ thead {
     /* background-color: rgba(15, 95, 72, 0.219); */
     background-color: rgba(32, 102, 75, 0.295)
 }
+
+.sort-dropdown {
+    padding: 10px;
+    border: 0.5px solid rgba(128, 128, 128, 0.473);
+    display: inline-block;
+}
+
+#sort {
+    float: right;
+}
+
+.sort-label {
+    padding: 10px;
+    display: inline-block;
+}
+
+#sort-and-filter {
+    width: 90%;
+}
+
 </style>
 

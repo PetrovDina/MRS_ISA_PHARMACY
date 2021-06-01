@@ -263,6 +263,7 @@ public class PharmacyStorageItemController {
 
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/checkAvailableQuantity")
 	public ResponseEntity<Integer> checkAvailableQuantity(@RequestParam String storageId, @RequestParam String pharmacyId) {
 		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemService.findOne(Long.parseLong(storageId));
@@ -283,6 +284,7 @@ public class PharmacyStorageItemController {
 		return new ResponseEntity<>(quantity, HttpStatus.OK);
 	}
 
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/getPharmacyStorage")
 	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorage(@RequestParam String pharmacyId, @RequestParam String patientUsername) {
 		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));
@@ -304,7 +306,7 @@ public class PharmacyStorageItemController {
 		return new ResponseEntity<>(pharmacyStorageItemsDTO, HttpStatus.OK);
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/getAlternatives")
 	public ResponseEntity<List<PharmacyStorageItemDTO>> getAlternatives(@RequestParam String pharmacyId, @RequestParam String medicationId, @RequestParam String patientUsername) {
 		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(Long.parseLong(pharmacyId));

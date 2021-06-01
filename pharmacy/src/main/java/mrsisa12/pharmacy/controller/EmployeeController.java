@@ -142,6 +142,7 @@ public class EmployeeController {
 
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/{username}")
 	public ResponseEntity<EmployeeDTO> getOneByUsername(@PathVariable("username") String username) {
 
@@ -154,6 +155,7 @@ public class EmployeeController {
 		return new ResponseEntity<>(new EmployeeDTO(employee), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
 
