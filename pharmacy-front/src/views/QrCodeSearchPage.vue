@@ -41,7 +41,7 @@
         >
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">Purchase ended successfully!</div>
+                    <div class="modal-header">{{title}}</div>
                     <div class="modal-body">
                         <p style="text-align: justify">
                             {{message}}
@@ -96,7 +96,9 @@ export default {
 
             medicationsForBack: null,
 
-            message: ""
+            message: "",
+
+            title: ""
 
         }
 
@@ -164,7 +166,14 @@ export default {
             }).then((response) => 
             {
                 this.message = response.data;
+                this.title = "Purchase ended successfully."
                 
+                $("#exampleModal3").modal("show");
+            })
+            .catch((response) => 
+            {
+                this.message = "Qr code has been used once already."
+                this.title = "Purchase failed."
                 $("#exampleModal3").modal("show");
             });
         },
@@ -182,12 +191,23 @@ export default {
 
         getResults: function() 
         {
-            var medications_list = JSON.parse(this.decoded);
-            
-            var medications = 
+            var medications_list;       // sa kodom
+
+            try
             {
-                "medications": medications_list
+                medications_list = JSON.parse(this.decoded);
             }
+            catch (error)
+            {
+                this.$toasted.show("Invalid qr code.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 2000,
+                    });
+                return;
+            }
+            
+            var medications = medications_list
 
             this.medicationsForBack = medications;
 

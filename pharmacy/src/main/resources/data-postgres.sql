@@ -34,6 +34,13 @@ insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion
 insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (5, 2, 2, null, 'False', 0); /* pet brufena */
 insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (11, 4, 2, null, 'False', 0); /* jedanaest panadola */
 
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (20, 5, 3, null, 'False', 0); /* 20 panklava */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (20, 4, 3, null, 'False', 0); /* 20 panadola */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (20, 8, 3, null, 'False', 0); /* 20 amoksicilina */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (20, 7, 3, null, 'False', 0); /* 20 fervexa */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (20, 7, 4, null, 'False', 0); /* 20 fervexa */
+insert into pharmacystorageitem (quantity, medication_id, pharmacy_id, promotion_id, deleted, counter) values (20, 6, 4, null, 'False', 0); /* 20 tylolhota */
+
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (430, false, false,'{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": [2021, 4, 5], "endTime": [23, 28, 14]}', 1);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (200, false, false, '{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": [2021, 5, 22], "endTime": [17, 38, 0]}', 2);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (550, true, false, '{ "startDate": [2021, 4, 2], "startTime": [22, 28, 14], "endDate": null, "endTime": null }', 3);
@@ -43,6 +50,13 @@ insert into itemprice (price, current, promotion, timeperiod, pharmacystorageite
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (370, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": [2021, 5, 19], "endTime": [0, 0, 0]}', 6);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (225, true, true, '{ "startDate": [2021, 5, 22], "startTime": [17, 38, 0], "endDate": [2021, 5, 25], "endTime": [18, 0, 0]}', 1);
 insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (166, true, true, '{ "startDate": [2021, 5, 22], "startTime": [17, 38, 0], "endDate": [2021, 5, 27], "endTime": [18, 0, 0]}', 2);
+
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (250, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": [2021, 6, 19], "endTime": [0, 0, 0]}', 7);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (210, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": [2021, 6, 19], "endTime": [0, 0, 0]}', 8);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (350, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": [2021, 6, 19], "endTime": [0, 0, 0]}', 9);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (325, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": [2021, 6, 19], "endTime": [0, 0, 0]}', 10);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (345, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": [2021, 6, 19], "endTime": [0, 0, 0]}', 11);
+insert into itemprice (price, current, promotion, timeperiod, pharmacystorageitem_id) values (345, true, false, '{ "startDate": [2021, 4, 2], "startTime": [0, 28, 14], "endDate": [2021, 6, 19], "endTime": [0, 0, 0]}', 12);
 
  -- TREBA DA SE UBACE ROLE I BLA BLA NADALJE
 INSERT INTO role (name) VALUES ('ROLE_GUEST');
@@ -275,12 +289,12 @@ insert into absence (absenceStatus, absenceType, timePeriod, employee_id, pharma
 
 insert into loyalty_program (afterAppointment, maxPointsRegular, maxPointsSilver, silverDis, goldDis) values (0, 200, 500, 10, 30);
 
-insert into eprescription (id, code, patientfirstname, patientlastname, prescribeddate, price, pharmacy_id) values (1, 'code1', 'Patient', 'Patientic', '2021-05-31', 450, 1);
-insert into eprescriptionitem (id, quantity, e_prescription_id, medication_id) values (1, 2, 1, 2);
+insert into eprescription (code, patientfirstname, patientlastname, prescribeddate, price, pharmacy_id) values ('code1', 'Patient', 'Patientic', '2021-05-31', 450, 1);
+insert into eprescriptionitem (quantity, e_prescription_id, medication_id) values (2, 1, 2);
 
-insert into eprescription (id, code, patientfirstname, patientlastname, prescribeddate, price, pharmacy_id) values (2, 'code2', 'Patient', 'Patientic', '2021-05-31', 741, 1);
-insert into eprescriptionitem (id, quantity, e_prescription_id, medication_id) values (2, 1, 2, 1);
-insert into eprescriptionitem (id, quantity, e_prescription_id, medication_id) values (3, 1, 2, 2);
-insert into eprescriptionitem (id, quantity, e_prescription_id, medication_id) values (4, 1, 2, 3);
+insert into eprescription (code, patientfirstname, patientlastname, prescribeddate, price, pharmacy_id) values ('code2', 'Patient', 'Patientic', '2021-05-31', 741, 1);
+insert into eprescriptionitem (quantity, e_prescription_id, medication_id) values (1, 2, 1);
+insert into eprescriptionitem (quantity, e_prescription_id, medication_id) values (1, 2, 2);
+insert into eprescriptionitem (quantity, e_prescription_id, medication_id) values (1, 2, 3);
 
 

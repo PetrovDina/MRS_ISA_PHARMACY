@@ -34,6 +34,7 @@ import mrsisa12.pharmacy.dto.pharmacyStorageItem.PharmacyStorageItemDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.AppointmentPriceCatalog;
+import mrsisa12.pharmacy.model.EPrescription;
 import mrsisa12.pharmacy.model.Location;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -43,6 +44,7 @@ import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.service.AppointmentService;
+import mrsisa12.pharmacy.service.EPrescriptionService;
 import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyRatingService;
@@ -74,6 +76,9 @@ public class PharmacyController {
 
 	@Autowired
 	private PharmacyStorageItemService pharmacyStorageItemService;
+	
+	@Autowired
+	private EPrescriptionService ePrescriptionService;
 	
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
@@ -252,7 +257,12 @@ public class PharmacyController {
 					pharmacies.add(appointment.getPharmacy());
 		}
 		
-		// Dodati i za recepte
+		List<EPrescription> ePrescriptions = ePrescriptionService.findAllByPatient(patient);
+		for (EPrescription ePrescription : ePrescriptions) 
+		{
+			if(!pharmacyService.containsPharmacy(pharmacies, ePrescription.getPharmacy()))
+				pharmacies.add(ePrescription.getPharmacy());
+		}
 		
 		List<PlainPharmacyDTO> pharmaciesDTO = new ArrayList<PlainPharmacyDTO>();
 		for (Pharmacy pharmacy : pharmacies) 

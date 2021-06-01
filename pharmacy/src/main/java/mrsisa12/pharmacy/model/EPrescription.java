@@ -30,6 +30,10 @@ public class EPrescription {
 	@Column(name = "patientLastName", nullable = false)
 	private String patientLastName;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "patient_id", referencedColumnName = "id")
+	private Patient patient;
+	
 	@Column(name = "code", nullable = false, length =  10)
 	private String code;
 	
@@ -57,6 +61,15 @@ public class EPrescription {
 		this.price = price;
 	}
 
+	
+	public Patient getPatient() {
+		return patient;
+	}
+
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+	
 	public Long getId() {
 		return id;
 	}
