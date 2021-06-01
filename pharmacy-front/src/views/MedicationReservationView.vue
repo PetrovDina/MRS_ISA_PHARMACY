@@ -1,49 +1,66 @@
 <template>
     <div v-if="medication != null" id="reservationDiv">
-        <p class="titl">Pharmacies that carry {{ medication.name }}</p>
-        <p class="titl2">Please select one</p>
-
-        <PharmaciesWithPriceComponent
-            v-if="results.length != 0"
-            :results="results"
-            @pharmacySelected="chosenPharmacySelected"
-        ></PharmaciesWithPriceComponent>
-        <br />
-        <div>
-            <span>
-                <input
-                    v-model="chosenQuantity"
-                    ref="quantityInput"
-                    type="number"
-                    class="form-control"
-                    id="quantityInput"
-                    placeholder="Enter quantity"
-                    min="0"
-                    :max="[chosenRow ? chosenRow.availableQuantity : 100]"
-                />
-            </span>
-
-            <span>
-                <label for="dueDate">Pick up due date</label>
-                <input
-                    type="date"
-                    id="dueDate"
-                    name="dueDate"
-                    :min="today"
-                    class="form-control"
-                    v-model="chosenDueDate"
-                />
-            </span>
-            <br /><br /><br />
-            <button class="cancelButton btn btn-secondary" @click="goBack()">
-                Cancel
-            </button>
+        <p class="titl" v-if="results.length == 0">
+            Unfortunately, {{ medication.name }} is out of stock!
+            <br><br>
             <button
-                class="finishButton btn btn-primary"
-                @click="finishReservation()"
-            >
-                Complete reservation
+                    class="cancelButton btn btn-secondary"
+                    @click="goBack()"
+                >
+                    Go back
             </button>
+        </p>
+
+        <div v-if="results.length != 0">
+            <p class="titl">
+                Pharmacies that carry {{ medication.name }}
+            </p>
+            <p class="titl2">Please select one</p>
+
+            <PharmaciesWithPriceComponent
+                :results="results"
+                @pharmacySelected="chosenPharmacySelected"
+            ></PharmaciesWithPriceComponent>
+            <br />
+            <div>
+                <span>
+                    <input
+                        v-model="chosenQuantity"
+                        ref="quantityInput"
+                        type="number"
+                        class="form-control"
+                        id="quantityInput"
+                        placeholder="Enter quantity"
+                        min="0"
+                        :max="[chosenRow ? chosenRow.availableQuantity : 100]"
+                    />
+                </span>
+
+                <span>
+                    <label for="dueDate">Pick up due date</label>
+                    <input
+                        type="date"
+                        id="dueDate"
+                        name="dueDate"
+                        :min="today"
+                        class="form-control"
+                        v-model="chosenDueDate"
+                    />
+                </span>
+                <br /><br /><br />
+                <button
+                    class="cancelButton btn btn-secondary"
+                    @click="goBack()"
+                >
+                    Cancel
+                </button>
+                <button
+                    class="finishButton btn btn-primary"
+                    @click="finishReservation()"
+                >
+                    Complete reservation
+                </button>
+            </div>
 
             <!-- Modal for filling all fields -->
             <div
@@ -209,7 +226,7 @@ export default {
                     medication: this.medication,
                     quantity: this.chosenQuantity,
                     dueDate: this.chosenDueDate,
-                    medicationPrice: this.chosenRow.currentPrice
+                    medicationPrice: this.chosenRow.currentPrice,
                 },
             }).then();
 
@@ -221,7 +238,6 @@ export default {
         goBack() {
             this.$router.push({ name: "Home" });
         },
-
     },
 
     mounted() {
@@ -274,7 +290,7 @@ span {
 }
 
 #reservationDiv {
-    margin: 100px 60px 30px 60px;
+    margin: 50px 60px 30px 60px;
 }
 
 .titl2 {
