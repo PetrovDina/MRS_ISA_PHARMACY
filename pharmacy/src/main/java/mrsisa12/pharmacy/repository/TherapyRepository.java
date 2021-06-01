@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.Therapy;
 
 public interface TherapyRepository  extends JpaRepository<Therapy, Long>{
@@ -20,6 +21,9 @@ public interface TherapyRepository  extends JpaRepository<Therapy, Long>{
 	
 	@Query("select distinct res from Therapy res join fetch res.prescriptionItems pi where res.patient.username = ?1")
 	public List<Therapy> findAllByPatientWithPrescriptionItems(String patientUserName);
+
+	@Query("select distinct res from Therapy res join fetch res.prescriptionItems pi where res.status = 'COMPLETED' and res.pharmacy = ?1")
+	public List<Therapy> findAllByPharmacyCompleted(Pharmacy pharmacy);
 
 
 }

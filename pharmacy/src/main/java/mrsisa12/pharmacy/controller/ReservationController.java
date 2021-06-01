@@ -154,7 +154,7 @@ public class ReservationController {
 
 		//checking loyalty system price discount
 		double price = resDTO.getMedicationPrice();
-		double finalPrice = loyaltyProgramService.getFinalPrice(price, patient);
+		double finalPrice = loyaltyProgramService.getFinalPrice(price, patient) * reservation.getQuantity();
 		
 		reservation.setMedicationPrice(finalPrice);
 		
@@ -216,13 +216,13 @@ public class ReservationController {
 	
 	@GetMapping(value = "/reportMedicationConsumptionQuarter")
 	public ResponseEntity<ReportDTO> reportAppointmentQuarter(@RequestParam String quarter, @RequestParam String year, @RequestParam Long pharmacyId) {
-		HashMap<String, Integer> data = reservationService.getAllMedicationConsumptedByQuarter(quarter, year, pharmacyService.findOne(pharmacyId), null);
+		HashMap<String, Integer> data = reservationService.getAllMedicationConsumptedByQuarter(quarter, year, pharmacyService.findOne(pharmacyId), null, null);
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/reportMedicationConsumptionMonth")
 	public ResponseEntity<ReportDTO> reportAppointmentMonth(@RequestParam String period, @RequestParam String year, @RequestParam Long pharmacyId) {
-		HashMap<String, Integer> data = reservationService.getAllMedicationConsumptedByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null);
+		HashMap<String, Integer> data = reservationService.getAllMedicationConsumptedByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null, null);
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	
