@@ -263,7 +263,7 @@ export default {
             url: "pharmacyStorageItem/allByMedicationAndQuantity",
             params: { medicationId: this.medication.id },
             method: "GET",
-        }).then((response) => (this.results = response.data));
+        }).then((response) => (this.results = response.data.filter(i => i.availableQuantity > 0)));
     },
 };
 </script>
