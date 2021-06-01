@@ -93,6 +93,7 @@ public class UserController {
 		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyRole('PATIENT', 'SUPPLIER', 'DERMATOLOGIST', 'PHARMACIST')")
 	@GetMapping(value = "/tryChangePassword")
 	public ResponseEntity<Boolean> tryChangePassword(@RequestParam("username") String username, @RequestParam("oldPassword") String oldPassword,
 			@RequestParam("newPassword") String newPassword) {

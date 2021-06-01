@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,33 +58,9 @@ public class PatientController {
 	@Autowired
 	private EmailService emailService;
 	
-	@GetMapping(value = "/all")
-	public ResponseEntity<List<PatientDTO>> getAllPatients() {
 
-		List<Patient> patients = patientService.findAll();
-
-		List<PatientDTO> patientsDTO = new ArrayList<>();
-		for (Patient p : patients) {
-			patientsDTO.add(new PatientDTO(p));
-		}
-
-		return new ResponseEntity<>(patientsDTO, HttpStatus.OK);
-	}
-	
-	@GetMapping(value = "/{username}")
-	public ResponseEntity<PatientDTO> getOneByUsername(@PathVariable("username") String username) {
-
-		Patient patient = patientService.findByUsername(username);
 		
-		if (patient == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-
-
-
-		return new ResponseEntity<>(new PatientDTO(patient), HttpStatus.OK);
-	}
-		
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/addAllergy")
 	public ResponseEntity<PatientDTO> addAllergyToPatient(@RequestParam("patientUsername") String patientUsername, @RequestParam("allergyId") Long allergyId) {
 
@@ -94,6 +71,7 @@ public class PatientController {
 		return new ResponseEntity<>(new PatientDTO(patient), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/removeAllergy")
 	public ResponseEntity<PatientDTO> removeAllergyFromPatient(@RequestParam("patientUsername") String patientUsername,
 			@RequestParam("allergyId") Long allergyId) {
@@ -109,6 +87,7 @@ public class PatientController {
 		return new ResponseEntity<>(new PatientDTO(patient), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/getPatientsAllergies")
 	public ResponseEntity<List<MedicationDTO>> getPatientsAllergies(@RequestParam("patientUsername") String patientUsername) {
 
@@ -121,6 +100,7 @@ public class PatientController {
 		return new ResponseEntity<>(allergies, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/allowedMedications")
 	public ResponseEntity<List<MedicationDTO>> getPatientsAllowedMedications(@RequestParam("patientUsername") String patientUsername) {
 
@@ -149,6 +129,7 @@ public class PatientController {
 		return false;
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/removeSubscription")
 	public ResponseEntity<Void> removeSubscriptionFromPatient(@RequestParam("patientUsername") String patientUsername,
 			@RequestParam("subscriptionId") Long subscriptionId) {
@@ -158,6 +139,7 @@ public class PatientController {
 		return new ResponseEntity<>( HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/addSubscription")
 	public ResponseEntity<Void> addSubscriptionFromPatient(@RequestParam("patientUsername") String patientUsername,
 			@RequestParam("subscriptionId") Long subscriptionId) {
@@ -167,6 +149,7 @@ public class PatientController {
 		return new ResponseEntity<>( HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/getSubscriptions")
 	public ResponseEntity<List<PharmacyDTO>> getPatientsSubsriptions(@RequestParam("patientUsername") String patientUsername) {
 
@@ -179,6 +162,7 @@ public class PatientController {
 		return new ResponseEntity<List<PharmacyDTO>>(subscriptions, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/isSubscribed")
 	public ResponseEntity<Boolean> isSubscribed(@RequestParam("patientUsername") String patientUsername,
 			@RequestParam("pharmacyId") Long pharmacyId) {
@@ -194,6 +178,7 @@ public class PatientController {
 		return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patientDTO) {
 
@@ -245,6 +230,33 @@ public class PatientController {
 		emailService.confirmationEmailUserRegistration(pa);
 		
 		return new ResponseEntity<>(new UserDTO(pa), HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value = "/all")
+	public ResponseEntity<List<PatientDTO>> getAllPatients() {
+
+		List<Patient> patients = patientService.findAll();
+
+		List<PatientDTO> patientsDTO = new ArrayList<>();
+		for (Patient p : patients) {
+			patientsDTO.add(new PatientDTO(p));
+		}
+
+		return new ResponseEntity<>(patientsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/{username}")
+	public ResponseEntity<PatientDTO> getOneByUsername(@PathVariable("username") String username) {
+
+		Patient patient = patientService.findByUsername(username);
+		
+		if (patient == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+
+
+		return new ResponseEntity<>(new PatientDTO(patient), HttpStatus.OK);
 	}
 
 }

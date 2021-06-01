@@ -199,7 +199,7 @@ export default {
         return {
             reservations: [],
             selectedReservation: null,
-            options: ["-", "due date older first", "due date recent first", "status"]
+            options: ["-", "due date older first", "due date newer first", "status"]
 
         };
     },
@@ -245,7 +245,7 @@ export default {
             if (sortCriterium === "-") {
                 this.reservations = this.reservations;
                 return;
-            } else if (sortCriterium === "due date recent first") {
+            } else if (sortCriterium === "due date newer first") {
                 this.reservations = this.reservations.sort(function (a, b) {
                     let dateA = new Date(a.dueDate);
                     let dateB = new Date(b.dueDate);

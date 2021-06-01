@@ -8,6 +8,7 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,7 +56,7 @@ public class TherapyController {
 		return new ResponseEntity<>( new TherapyDTO(ePrescription) ,HttpStatus.CREATED);
 	}
 
-	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/byPatient")
 	public ResponseEntity<List<TherapyWithItemsDTO>> getAllByPatient(@RequestParam String patientUsername) {
 

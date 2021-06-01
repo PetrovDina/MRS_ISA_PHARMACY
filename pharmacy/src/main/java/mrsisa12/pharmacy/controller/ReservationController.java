@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,43 +69,7 @@ public class ReservationController {
 	private Random random = new Random();
     private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 	
-	@GetMapping(value = "/all")
-	public ResponseEntity<List<ReservationDTO>> getAllReservations() {
 
-		List<Reservation> reservations = reservationService.findAll();
-
-		List<ReservationDTO> reservationsDTO = new ArrayList<>();
-		for (Reservation r : reservations) {
-			reservationsDTO.add(new ReservationDTO(r));
-		}
-
-		return new ResponseEntity<>(reservationsDTO, HttpStatus.OK);
-	}
-	
-	@GetMapping
-	public ResponseEntity<List<ReservationDTO>> getAllReservationsPage(Pageable page) {
-
-		Page<Reservation> reservations = reservationService.findAll(page);
-
-		List<ReservationDTO> reservationsDTO = new ArrayList<>();
-		for (Reservation r : reservations) {
-			reservationsDTO.add(new ReservationDTO(r));
-		}
-
-		return new ResponseEntity<>(reservationsDTO, HttpStatus.OK);
-	}
-	
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id) {
-
-		Reservation reservation = reservationService.findOne(id);
-
-		if (reservation == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-
-		return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.OK);
-	}
 	
 	@GetMapping(value = "/findByPharmacy")
 	public ResponseEntity<List<ReservationDTO>> getReservationsByPharmacy(@RequestParam Long pharmacyId) {
@@ -120,6 +85,7 @@ public class ReservationController {
 		return new ResponseEntity<>(reservationsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/findByPatient")
 	public ResponseEntity<List<ReservationDTO>> getReservationsByPatient(@RequestParam String username) {
 		System.out.println(username);
@@ -134,6 +100,7 @@ public class ReservationController {
 		return new ResponseEntity<>(reservationsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/cancel")
 	public ResponseEntity<ReservationDTO> cancelReservation(@RequestParam Long reservationId) {
 		Reservation reservation = reservationService.findOne(reservationId);
@@ -157,8 +124,7 @@ public class ReservationController {
             return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 	
-	
-	
+	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<ReservationDTO> saveReservation(@RequestBody ReservationDTO resDTO) {
 		
@@ -254,6 +220,44 @@ public class ReservationController {
 	public ResponseEntity<ReportDTO> reportAppointmentMonth(@RequestParam String period, @RequestParam String year, @RequestParam Long pharmacyId) {
 		HashMap<String, Integer> data = reservationService.getAllMedicationConsumptedByMonthInYear(period, year, pharmacyService.findOne(pharmacyId), null);
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/all")
+	public ResponseEntity<List<ReservationDTO>> getAllReservations() {
+
+		List<Reservation> reservations = reservationService.findAll();
+
+		List<ReservationDTO> reservationsDTO = new ArrayList<>();
+		for (Reservation r : reservations) {
+			reservationsDTO.add(new ReservationDTO(r));
+		}
+
+		return new ResponseEntity<>(reservationsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<ReservationDTO>> getAllReservationsPage(Pageable page) {
+
+		Page<Reservation> reservations = reservationService.findAll(page);
+
+		List<ReservationDTO> reservationsDTO = new ArrayList<>();
+		for (Reservation r : reservations) {
+			reservationsDTO.add(new ReservationDTO(r));
+		}
+
+		return new ResponseEntity<>(reservationsDTO, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id) {
+
+		Reservation reservation = reservationService.findOne(id);
+
+		if (reservation == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.OK);
 	}
 	
 }

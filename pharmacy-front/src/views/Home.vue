@@ -81,6 +81,7 @@ export default {
                 "manufacturer",
                 "prescription",
                 "form",
+                "rating"
             ],
 
             
@@ -217,6 +218,15 @@ export default {
                     b
                 ) {
                     return a.form > b.form ? 1 : -1;
+                });
+            }
+
+            else if (sortCriterium === "rating") {
+                this.medicationSearchResults = this.medicationSearchResults.sort(function (
+                    a,
+                    b
+                ) {
+                    return b.rating - a.rating;
                 });
             }
 

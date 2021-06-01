@@ -88,18 +88,6 @@ public class PharmacyController {
 		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/searchPharmacies")
-	public ResponseEntity<List<PharmacyDTO>> searchPharmacies(@RequestParam String query) {
-
-		List<Pharmacy> pharmacies = pharmacyService.findByQuery(query);
-
-		List<PharmacyDTO> pharmaciesDTO = new ArrayList<>();
-		for (Pharmacy m : pharmacies) {
-			pharmaciesDTO.add(new PharmacyDTO(m));
-		}
-
-		return new ResponseEntity<>(pharmaciesDTO, HttpStatus.OK);
-	}
 
 	@GetMapping
 	public ResponseEntity<List<PharmacyDTO>> getPharmaciesPage(Pageable page) {
@@ -198,18 +186,8 @@ public class PharmacyController {
 		}
 	}
 
-	@GetMapping(value = "/findName")
-	public ResponseEntity<List<PharmacyDTO>> getPharmacyByName(@RequestParam String name) {
 
-		List<Pharmacy> pharmacies = pharmacyService.findByNameAllIgnoringCase(name);
-
-		List<PharmacyDTO> pharmacyDTO = new ArrayList<>();
-		for (Pharmacy s : pharmacies) {
-			pharmacyDTO.add(new PharmacyDTO(s));
-		}
-		return new ResponseEntity<>(pharmacyDTO, HttpStatus.OK);
-	}
-
+	//ovo valjda niko ne koristi?
 	@GetMapping(value = "/{pharmacyId}/pharmacyStorageItemsAndPrices")
 	public ResponseEntity<List<PharmacyStorageItemDTO>> getPharmacyStorageItemsAndPrices(
 			@PathVariable Long pharmacyId) {
@@ -281,6 +259,7 @@ public class PharmacyController {
 		return new ResponseEntity<>(new ReportDTO(data), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/getRating")
 	public ResponseEntity<Double> getRating(
 			@RequestParam String patientUsername, @RequestParam Long pharmacyId) {
@@ -297,6 +276,7 @@ public class PharmacyController {
 
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/getQrSearch", consumes = "application/json")
 	public ResponseEntity<List<PharmacyWithMedicationsPriceQrDTO>> getPharmaciesByQrSearch(@RequestBody QrCodeDTO medications) {
 
@@ -346,7 +326,7 @@ public class PharmacyController {
 	}
 	
 	
-	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/checkCanRate")
 	public ResponseEntity<Boolean> checkCanRate(
 			@RequestParam String patientUsername, @RequestParam Long pharmacyId) {
@@ -378,6 +358,7 @@ public class PharmacyController {
 
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/ratePharmacy")
 	public ResponseEntity<Double> ratePharmacy(
 			@RequestParam String patientUsername, @RequestParam Long pharmacyId, @RequestParam double ratedValue) {

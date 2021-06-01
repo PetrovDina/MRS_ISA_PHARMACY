@@ -8,6 +8,7 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +63,7 @@ public class EPrescriptionController {
 	private Random random = new Random();
     private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 	
+	@PreAuthorize("hasRole('PATIENT')")
     @PostMapping(value = "/buyMedicationsQr", consumes = "application/json")
 	public ResponseEntity<String> buyMedicationsByQrSearch(@RequestBody QrCodeDTO medications, 
 			@RequestParam("pharmacyId") Long pharmacyId, @RequestParam("username") String username)
@@ -120,6 +122,7 @@ public class EPrescriptionController {
 		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
     
+	@PreAuthorize("hasRole('PATIENT')")
     @GetMapping(value = "/byPatient")
 	public ResponseEntity<List<TherapyWithItemsDTO>> getAllByPatient(@RequestParam String patientUsername) {
 

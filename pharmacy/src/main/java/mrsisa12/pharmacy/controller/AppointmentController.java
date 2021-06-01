@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,6 +87,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/scheduledDermByPatient")
 	public ResponseEntity<List<AppointmentDTO>> getAllScheduledDermByPatient(@RequestParam String patientUsername) {
 
@@ -100,6 +102,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/scheduledPharmByPatient")
 	public ResponseEntity<List<AppointmentDTO>> getAllScheduledPharmByPatient(@RequestParam String patientUsername) {
 
@@ -114,6 +117,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/dermHistoryByPatient")
 	public ResponseEntity<List<AppointmentDTO>> getAllDermHistoryByPatient(@RequestParam String patientUsername) {
 
@@ -128,6 +132,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/pharmHistoryByPatient")
 	public ResponseEntity<List<AppointmentDTO>> getAllPharmHistoryByPatient(@RequestParam String patientUsername) {
 
@@ -142,6 +147,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/cancelDerm")
 	public ResponseEntity<AppointmentDTO> cancelDermAppointment(@RequestParam Long appointmentId) {
 		Appointment appointment = appointmentService.findOne(appointmentId);
@@ -163,6 +169,7 @@ public class AppointmentController {
             return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/cancelPharm")
 	public ResponseEntity<AppointmentDTO> cancelPharmAppointment(@RequestParam Long appointmentId) {
 		Appointment appointment = appointmentService.findOne(appointmentId);
@@ -178,6 +185,8 @@ public class AppointmentController {
             return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 	
+	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/allDermatologistAvailable")
 	public ResponseEntity<List<AppointmentDTO>> getAllAvailableDermatologistAppointments() {
 
@@ -193,6 +202,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentsDTO, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/checkIfCanBookDerm")
 	public ResponseEntity<Boolean> checkIfCanBookDerm(@RequestParam Long appointmentId, @RequestParam String patientUsername) {
 
@@ -211,6 +221,8 @@ public class AppointmentController {
 		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
 	
+	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/checkIfCanBookPharm")
 	public ResponseEntity<Boolean> checkIfCanBookPharm( @RequestParam String patientUsername, @RequestParam String startDate,
 			@RequestParam String startTime, @RequestParam Long employeeId, @RequestParam Long pharmacyId ) {
@@ -264,6 +276,7 @@ public class AppointmentController {
 	
 	
 	//dina pravila za kreiranja termina kod FARMACEUTA!
+	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/savePharmacistAppointment", consumes = "application/json")
 	public ResponseEntity<AppointmentDTO> savePharmacistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
 		Appointment appointment = new Appointment();
@@ -338,6 +351,7 @@ public class AppointmentController {
 	}
 	
 	@GetMapping(value = "/book")
+	@PreAuthorize("hasRole('PATIENT')")
 	public ResponseEntity<AppointmentDTO> reserveAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId) {
 
 		Appointment appointment = appointmentService.findOne(appointmentId);

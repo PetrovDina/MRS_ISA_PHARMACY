@@ -75,6 +75,7 @@ public class EmployeeController {
 		return new ResponseEntity<>(employeeDTOs, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/rateEmployee")
 	public ResponseEntity<Double> rateEmployee(
 			@RequestParam String patientUsername, @RequestParam Long employeeId, @RequestParam double ratedValue) {
@@ -124,6 +125,7 @@ public class EmployeeController {
 		return new ResponseEntity<Double>(newRating, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/getRating")
 	public ResponseEntity<Double> getRating(
 			@RequestParam String patientUsername, @RequestParam Long employeeId) {

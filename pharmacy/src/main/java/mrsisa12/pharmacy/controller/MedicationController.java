@@ -274,6 +274,8 @@ public class MedicationController {
 		return new ResponseEntity<>(medicationsDTO, HttpStatus.OK);
 	}
 	
+	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/getRating")
 	public ResponseEntity<Double> getRating(
 			@RequestParam String patientUsername, @RequestParam Long medicationId) {
@@ -290,6 +292,7 @@ public class MedicationController {
 
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/checkCanRate")
 	public ResponseEntity<Boolean> checkCanRate(
 			@RequestParam String patientUsername, @RequestParam Long medicationId) {
@@ -315,6 +318,7 @@ public class MedicationController {
 
 	}
 	
+	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/rateMedication")
 	public ResponseEntity<Double> rateMedication(
 			@RequestParam String patientUsername, @RequestParam Long medicationId, @RequestParam double ratedValue) {
@@ -364,7 +368,7 @@ public class MedicationController {
 		return new ResponseEntity<Double>(newRating, HttpStatus.OK);
 	}
 	
-	
+	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/getQrSearch", consumes = "application/json")
 	public ResponseEntity<List<MedicationQrTableDTO>> getMedicationsByQrSearch(@RequestBody QrCodeDTO medications) {
 
