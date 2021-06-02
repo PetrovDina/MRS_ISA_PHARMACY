@@ -149,12 +149,17 @@ public class AppointmentController {
 	
 	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/cancelDerm")
-	public ResponseEntity<AppointmentDTO> cancelDermAppointment(@RequestParam Long appointmentId) {
+	public ResponseEntity<AppointmentDTO> cancelDermAppointment(@RequestParam Long appointmentId, @RequestParam String patientUsername) {
 		Appointment appointment = appointmentService.findOne(appointmentId);
 		if(appointment != null) {
 			
 			//setting appointment status to cancelled
 			appointment.setStatus(AppointmentStatus.CANCELLED);
+			
+			Patient patient = patientService.findByUsername(patientUsername);
+			Integer pointsToLoose = loyaltyProgramService.appointmentPoints();
+			patientService.addPointsAndUpdateCategory(patient, (-pointsToLoose));
+			
     		appointmentService.save(appointment);
     		
     		//creating new free appointment
@@ -171,12 +176,17 @@ public class AppointmentController {
 	
 	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/cancelPharm")
-	public ResponseEntity<AppointmentDTO> cancelPharmAppointment(@RequestParam Long appointmentId) {
+	public ResponseEntity<AppointmentDTO> cancelPharmAppointment(@RequestParam Long appointmentId, @RequestParam String patientUsername) {
 		Appointment appointment = appointmentService.findOne(appointmentId);
 		if(appointment != null) {
 			
 			//setting appointment status to cancelled
 			appointment.setStatus(AppointmentStatus.CANCELLED);
+			
+			Patient patient = patientService.findByUsername(patientUsername);
+			Integer pointsToLoose = loyaltyProgramService.appointmentPoints();
+			patientService.addPointsAndUpdateCategory(patient, (-pointsToLoose));
+			
     		appointmentService.save(appointment);
     		
             return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);

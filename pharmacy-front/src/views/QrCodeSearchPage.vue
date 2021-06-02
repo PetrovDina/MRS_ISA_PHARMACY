@@ -185,7 +185,9 @@ export default {
             })
             .catch((response) => 
             {
-                this.message = "Qr code has been used once already."
+                if(response.response.status == 403)
+                    this.message = "Qr code has been used once already."
+
                 this.title = "Purchase failed."
                 $("#exampleModal3").modal("show");
             });
@@ -204,7 +206,7 @@ export default {
 
         getResults: function() 
         {
-            var medications_list;       // sa kodom
+            var medications_list;      
 
             try
             {
@@ -212,15 +214,27 @@ export default {
             }
             catch (error)
             {
-                this.$toasted.show("Invalid qr code.", {
+                this.$toasted.show("Invalid json format in qr code.", {
                         theme: "toasted-primary",
                         position: "top-center",
-                        duration: 2000,
+                        duration: 3000,
                     });
                 return;
             }
             
+            console.log(medications_list);           // Ostavljeno zbog sadrzaja qr koda
+
             var medications = medications_list
+
+            if(!this.formatOfJsonIsValid(medications)) 
+            {
+                this.$toasted.show("Invalid qr code.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 3000,
+                    });
+                return;
+            }
 
             this.medicationsForBack = medications;
 
@@ -243,7 +257,32 @@ export default {
             {
                 this.medications = response.data;         
             });
+        },
 
+        formatOfJsonIsValid: function(qr)
+        {
+            console.log(qr);
+            if(qr.medications === undefined) return false;
+            if(qr.medications.constructor != Array) return false;
+            if(qr.code === undefined) return false;
+            
+            for(let i = 0; i < qr.medications.length; i++)
+            {
+                if(qr.medications[i].id === undefined) return false;
+                if(qr.medications[i].quantity === undefined) return false;
+                
+                try
+                {
+                    parseInt(qr.medications[i].id);
+                    parseInt(qr.medications[i].quantity)
+                }
+                catch (error)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 
