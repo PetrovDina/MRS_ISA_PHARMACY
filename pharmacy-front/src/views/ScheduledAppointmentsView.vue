@@ -339,7 +339,7 @@ export default {
         cancelDerm(appointment) {
             client({
                 url: "appointments/cancelDerm",
-                params: { appointmentId: appointment.id },
+                params: { appointmentId: appointment.id, patientUsername: localStorage.getItem("USERNAME")},
                 method: "GET",
             }).then((response) => {
                 client({
@@ -356,7 +356,7 @@ export default {
         cancelPharm(appointment) {
             client({
                 url: "appointments/cancelPharm",
-                params: { appointmentId: appointment.id },
+                params: { appointmentId: appointment.id, patientUsername: localStorage.getItem("USERNAME")},
                 method: "GET",
             }).then((response) => {
                 client({

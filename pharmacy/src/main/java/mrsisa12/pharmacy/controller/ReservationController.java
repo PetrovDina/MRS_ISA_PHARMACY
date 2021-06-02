@@ -100,10 +100,14 @@ public class ReservationController {
 	
 	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/cancel")
-	public ResponseEntity<ReservationDTO> cancelReservation(@RequestParam Long reservationId) {
+	public ResponseEntity<ReservationDTO> cancelReservation(@RequestParam Long reservationId, @RequestParam String patientUsername) {
 		Reservation reservation = reservationService.findOne(reservationId);
 
 		if(reservation != null) {
+			
+			Patient patient = patientService.findByUsername(patientUsername);
+			Integer pointsToLoose = reservation.getMedication().getLoyaltyPoints() * reservation.getQuantity();
+			patientService.addPointsAndUpdateCategory(patient, (-pointsToLoose));
 			
 			//setting reservation status to cancelled
             reservation.setStatus(ReservationStatus.CANCELLED);

@@ -227,7 +227,7 @@ export default {
         cancelReservation() {
             client({
                 url: "reservation/cancel",
-                params: { reservationId: this.selectedReservation.id },
+                params: { reservationId: this.selectedReservation.id, patientUsername: localStorage.getItem("USERNAME")},
                 method: "GET",
             }).then((response) => {
                 client({

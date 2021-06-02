@@ -63,7 +63,6 @@ public class EPrescriptionController {
 	public ResponseEntity<String> buyMedicationsByQrSearch(@RequestBody QrCodeDTO medications, 
 			@RequestParam("pharmacyId") Long pharmacyId, @RequestParam("username") String username)
 	{
-    	System.err.println(medications.getCode());
     	if(ePrescriptionService.findOneByCode(medications.getCode()) != null)
     	{
     		return new ResponseEntity<>("Qr code has been used once already.", HttpStatus.FORBIDDEN); 
