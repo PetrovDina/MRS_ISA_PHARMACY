@@ -27,12 +27,15 @@ import mrsisa12.pharmacy.dto.MedicationDetailsDTO;
 import mrsisa12.pharmacy.dto.MedicationQrDTO;
 import mrsisa12.pharmacy.dto.MedicationQrTableDTO;
 import mrsisa12.pharmacy.dto.QrCodeDTO;
+import mrsisa12.pharmacy.model.EPrescription;
+import mrsisa12.pharmacy.model.EPrescriptionItem;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.MedicationRating;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
+import mrsisa12.pharmacy.service.EPrescriptionService;
 import mrsisa12.pharmacy.service.MedicationRatingService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
@@ -57,6 +60,9 @@ public class MedicationController {
 	
 	@Autowired
 	private PatientService patientService;
+	
+	@Autowired
+	private EPrescriptionService ePrescriptionService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<MedicationDTO>> getAllMedications() {
@@ -311,7 +317,16 @@ public class MedicationController {
 				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 			}
 
-			//TODO checking if any ePrescriptions exist with this medication
+			//checking if any ePrescriptions exist with this medication
+			List<EPrescription> prescriptions = ePrescriptionService.findAllByPatientWithPrescriptionItems(patientUsername);
+			for (EPrescription pres : prescriptions) {
+				for (EPrescriptionItem item : pres.getPrescriptionItems()) {
+					if (item.getMedication().getId() == medicationId) {
+						return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+
+					}
+				}
+			}
 			
 			return new ResponseEntity<Boolean>(false, HttpStatus.OK);	
 		}

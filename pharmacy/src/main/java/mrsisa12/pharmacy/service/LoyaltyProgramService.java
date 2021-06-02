@@ -68,11 +68,11 @@ public class LoyaltyProgramService {
 	
 	public String generateMessage(Patient patient, Double finalPrice, Integer pointsEarned)
 	{
-		String message = "Medication/s successfully bought by price: " + finalPrice + " dinars.";
+		String message = "Medication/s successfully bought with the price of: " + finalPrice + ",00 RSD.";
 		if(patient.getCategory() != PatientCategory.REGULAR)
 		{
-			message += " You have discount of " + this.getDiscount(patient) + "% for each medication because of your "
-					+ "loyalty program cateogry. ";
+			message += " You have gained a discount of " + this.getDiscount(patient) + "% for each medication because of your "
+					+ "loyalty program category. ";
 		}
 		message += "Loyalty points earned with this purchase: " + pointsEarned + ".";
 		
@@ -81,11 +81,11 @@ public class LoyaltyProgramService {
 	
 	public String generateReservationMessage(Patient patient, Double finalPrice, Integer pointsEarned)
 	{
-		String message = "Medication successfully reserved by price: " + finalPrice + " dinars.";
+		String message = "Medication successfully reserved with the price of: " + finalPrice + " dinars.";
 		if(patient.getCategory() != PatientCategory.REGULAR)
 		{
-			message += " You have discount of " + this.getDiscount(patient) + "% for each isntance of medication because of your "
-					+ "loyalty program cateogry. ";
+			message += " You have gained discount of " + this.getDiscount(patient) + "% for each instance of medication because of your "
+					+ "loyalty program category. ";
 		}
 		message += "Loyalty points earned with this purchase: " + pointsEarned + ".";
 		
