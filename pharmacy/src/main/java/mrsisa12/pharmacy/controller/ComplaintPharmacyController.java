@@ -58,6 +58,7 @@ public class ComplaintPharmacyController {
 		complaintPharmacy.setPatient(patientService.findByUsername(complaintDTO.getPatientUsername()));
 		complaintPharmacy.setPharmacy(pharmacyService.findOne(complaintDTO.getPharmacyId()));
 		complaintPharmacy.setContent(complaintDTO.getContent());
+		complaintPharmacy.setVersion((long)0);
 		
 		complaintPharmacyService.save(complaintPharmacy);
 		

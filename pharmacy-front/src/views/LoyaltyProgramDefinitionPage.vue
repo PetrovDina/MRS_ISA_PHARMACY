@@ -94,6 +94,26 @@ export default {
                     }
                 });
 			})
+			.catch((response) => 
+			{
+				this.$toasted.show("Error ocured. Please try again.", {
+                    theme: "toasted-primary",
+                    position: "top-center",
+                    duration: 5000,
+                });
+				client({
+					url: "loyalty/getLoyalty",
+					method: "GET",
+				})
+				.then((response) => 
+				{
+					this.loyalty.afterAppointment = response.data.afterAppointment;
+					this.loyalty.maxPointsRegular = response.data.maxPointsRegular;
+					this.loyalty.maxPointsSilver = response.data.maxPointsSilver;
+					this.loyalty.silverDis = response.data.silverDis;
+					this.loyalty.goldDis = response.data.goldDis;
+				})
+			})
 
        },
 

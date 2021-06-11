@@ -2,7 +2,10 @@ package mrsisa12.pharmacy.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.dto.LoyaltyProgramDTO;
 import mrsisa12.pharmacy.model.LoyaltyProgram;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.enums.PatientCategory;
@@ -14,6 +17,9 @@ public class LoyaltyProgramService {
 	@Autowired
 	private LoyaltyProgramRepository loyaltyProgramRepository;
 	
+	@Autowired
+	private PatientService patientService;
+	
 	@SuppressWarnings("deprecation")
 	public LoyaltyProgram getLoyaltyProgram()
 	{
@@ -24,6 +30,26 @@ public class LoyaltyProgramService {
 	{
 		return loyaltyProgramRepository.save(loyaltyProgram);
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public LoyaltyProgram updateLoyaltyProgram(LoyaltyProgramDTO loyaltyProgramDTO)
+	{
+		LoyaltyProgram loyaltyProgram = this.getLoyaltyProgram();
+		
+		loyaltyProgram.setAfterAppointment(loyaltyProgramDTO.getAfterAppointment());
+		loyaltyProgram.setMaxPointsRegular(loyaltyProgramDTO.getMaxPointsRegular());
+		loyaltyProgram.setMaxPointsSilver(loyaltyProgramDTO.getMaxPointsSilver());
+		loyaltyProgram.setSilverDis(loyaltyProgramDTO.getSilverDis());
+		loyaltyProgram.setGoldDis(loyaltyProgramDTO.getGoldDis());
+		
+		this.save(loyaltyProgram);
+		
+		patientService.updateCategories(loyaltyProgram.getMaxPointsRegular(), loyaltyProgram.getMaxPointsSilver());
+		
+		return loyaltyProgram;
+	}
+	
+	
 	
 	public Integer getDiscount(Patient patient)
 	{

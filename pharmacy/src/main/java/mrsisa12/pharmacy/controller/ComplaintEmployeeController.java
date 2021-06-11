@@ -58,6 +58,7 @@ public class ComplaintEmployeeController {
 		complaintEmployee.setPatient(patientService.findByUsername(complaintDTO.getPatientUsername()));
 		complaintEmployee.setEmployee(employeeService.findOneByUsername(complaintDTO.getEmployeeUsername()));
 		complaintEmployee.setContent(complaintDTO.getContent());
+		complaintEmployee.setVersion((long)0);
 		
 		complaintEmployeeService.save(complaintEmployee);
 		
@@ -97,6 +98,7 @@ public class ComplaintEmployeeController {
 		String response = complaintDTO.getResponse();
 		String patientUsername = complaintDTO.getPatientUsername();
 		String employeeUsername = complaintDTO.getEmployeeUsername();
+		complaintEmployee.setVersion((long)1);
 		
 		try
 		{
