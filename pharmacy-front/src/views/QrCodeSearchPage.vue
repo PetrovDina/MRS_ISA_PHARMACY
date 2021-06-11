@@ -187,6 +187,8 @@ export default {
             {
                 if(response.response.status == 403)
                     this.message = "Qr code has been used once already."
+                if(response.response.status == 409)
+                    this.message = "There was an error. Please try again."
 
                 this.title = "Purchase failed."
                 $("#exampleModal3").modal("show");
