@@ -91,7 +91,6 @@ public class EPrescriptionService {
 		List<EPrescriptionItem> eItems = new ArrayList<EPrescriptionItem>();
 		Double totalPrice = 0.0;
 		
-		
 		for (MedicationQrDTO med : medications.getMedications()) 
 		{
 			Medication medication = medicationService.findOne(med.getId());
@@ -101,13 +100,15 @@ public class EPrescriptionService {
 			// Sabiranje poena za dodavanje pacijentu na kraju kupovine
 			pointsForPatient += medication.getLoyaltyPoints() * med.getQuantity();
 			
-			//pessimistic write zbog promene kvantiteta
+			//pessimistic write
 			PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
 			psi = pharmacyStorageItemService.findOneWithItemPrices(psi.getId());
 			
-			if (psi.getQuantity() < med.getQuantity()) {
+			if (psi.getQuantity() < med.getQuantity()) 
+			{
 				throw new IllegalArgumentException();
 			}
+			
 			psi.setQuantity(psi.getQuantity() - med.getQuantity());
 			pharmacyStorageItemService.save(psi);
 			
@@ -117,6 +118,7 @@ public class EPrescriptionService {
 		}
 		ePrescription.setPrescriptionItems(eItems);
 		ePrescription.setPrice(totalPrice);
+		
 		this.save(ePrescription);
 		
 		String message = loyaltyProgramService.generateMessage(patient, totalPrice, pointsForPatient);
