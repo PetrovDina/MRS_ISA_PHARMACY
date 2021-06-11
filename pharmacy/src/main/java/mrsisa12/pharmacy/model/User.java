@@ -20,6 +20,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -79,6 +80,10 @@ public abstract class User implements UserDetails {
 	
 	@Column(name = "loggedFirstTime", unique=false, nullable=false)
 	private boolean loggedFirstTime;
+	
+	@Version
+	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	private Long version;
 	
 	public User() { }
 	
@@ -250,5 +255,13 @@ public abstract class User implements UserDetails {
 
 	public void setLoggedFirstTime(boolean loggedFirstTime) {
 		this.loggedFirstTime = loggedFirstTime;
+	}
+	
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 }

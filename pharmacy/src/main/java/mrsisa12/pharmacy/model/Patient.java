@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 import mrsisa12.pharmacy.model.enums.Gender;
 import mrsisa12.pharmacy.model.enums.PatientCategory;
@@ -51,6 +52,8 @@ public class Patient extends User {
 	
 	@OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Therapy> ePrescriptions;
+	
+
 	
 	public Patient() { }
 
