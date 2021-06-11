@@ -98,7 +98,20 @@ export default {
                     });
                 this.removeFromTable(complaintDTO.id, complaintDTO.response);
 
-            });
+            }).catch((response) => {
+                this.$toasted.show("Error ocured. Please try again.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 5000,
+                    });
+
+                client({
+                        url: "complaintEmployee/all/forResponse",
+                        method: "GET",
+                    }).then((response) => {
+                    this.complaints = response.data;
+                });
+            })
         },
 
         removeFromTable: function(complaintId, response)
