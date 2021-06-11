@@ -285,16 +285,20 @@ public class AppointmentController {
 	}
 	
 	
+	//farm
 	//dina pravila za kreiranja termina kod FARMACEUTA!
 	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/savePharmacistAppointment", consumes = "application/json")
 	public ResponseEntity<String> savePharmacistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+		
 		Appointment appointment = new Appointment();
 
 		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
 		appointment.getTimePeriod().setEndTime(appointment.getTimePeriod().getStartTime().plusHours(1)); //todo promeni da bude pravo trajanje!
 		appointment.setStatus(AppointmentStatus.RESERVED); //rezervisemo ga!
 		appointment.setDeleted(false);
+		
+		//dodati proveru dostupnosti farmaceuta zbog konkurentnosti
 		
 		// postavljamo farmaceuta na termin
 		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
@@ -370,6 +374,7 @@ public class AppointmentController {
 		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);
 	}
 	
+	//derm
 	@GetMapping(value = "/book")
 	@PreAuthorize("hasRole('PATIENT')")
 	public ResponseEntity<String> reserveAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId) {

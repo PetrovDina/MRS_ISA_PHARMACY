@@ -63,54 +63,11 @@ public class EPrescriptionController {
 	public ResponseEntity<String> buyMedicationsByQrSearch(@RequestBody QrCodeDTO medications, 
 			@RequestParam("pharmacyId") Long pharmacyId, @RequestParam("username") String username)
 	{
-    	if(ePrescriptionService.findOneByCode(medications.getCode()) != null)
-    	{
-    		return new ResponseEntity<>("Qr code has been used once already.", HttpStatus.FORBIDDEN); 
+    	String message = ePrescriptionService.buyMedicationsByQrSearch(medications, pharmacyId, username);
+    	if (message.equals("Qr code has been used once already.")) {
+    		return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
+
     	}
-    	
-    	Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
-		Patient patient = patientService.findByUsername(username);
-		Integer pointsForPatient = 0;
-		
-		EPrescription ePrescription = new EPrescription();
-		ePrescription.setPharmacy(pharmacy);
-		ePrescription.setPatientFirstName(patient.getFirstName());
-		ePrescription.setPatientLastName(patient.getLastName());
-		ePrescription.setPrescribedDate(new Date());
-		ePrescription.setPatient(patient);
-		ePrescription.setCode(medications.getCode());
-		
-		List<EPrescriptionItem> eItems = new ArrayList<EPrescriptionItem>();
-		Double totalPrice = 0.0;
-		
-		for (MedicationQrDTO med : medications.getMedications()) 
-		{
-			Medication medication = medicationService.findOne(med.getId());
-			EPrescriptionItem item = new EPrescriptionItem(med.getQuantity(), medication, ePrescription);
-			eItems.add(item);
-			
-			// Sabiranje poena za dodavanje pacijentu na kraju kupovine
-			pointsForPatient += medication.getLoyaltyPoints() * med.getQuantity();
-			
-			PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
-			psi = pharmacyStorageItemService.findOneWithItemPrices(psi.getId());
-			psi.setQuantity(psi.getQuantity() - med.getQuantity());
-			pharmacyStorageItemService.save(psi);
-			
-			Double medicationPrice = pharmacyStorageItemService.getCurrentPrice(psi);
-			Double finalMedicationPrice = loyaltyProgramService.getFinalPrice(medicationPrice, patient);
-			totalPrice += finalMedicationPrice * med.getQuantity();
-		}
-		ePrescription.setPrescriptionItems(eItems);
-		ePrescription.setPrice(totalPrice);
-		ePrescriptionService.save(ePrescription);
-		
-		String message = loyaltyProgramService.generateMessage(patient, totalPrice, pointsForPatient);
-		
-		// Dodavanje poena pacijentu i izmena kategorije ako je potrebno
-		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
-		
-		emailService.sendQrPickupConfirmation(patient);
 		
 		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}

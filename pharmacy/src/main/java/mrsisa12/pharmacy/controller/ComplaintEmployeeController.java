@@ -95,6 +95,8 @@ public class ComplaintEmployeeController {
 		ComplaintEmployee complaintEmployee = complaintEmployeeService.findOneById(complaintDTO.getId());
 		SystemAdmin systemAdmin = systemAdminService.findOneByUsername(complaintDTO.getSystemAdminUsername());
 		
+		//proveri da l vec postoji admin i ako postoji return i vrati GRESKU!
+		
 		complaintEmployee.setResponse(complaintDTO.getResponse());
 		complaintEmployee.setSystemAdmin(systemAdmin);
 		

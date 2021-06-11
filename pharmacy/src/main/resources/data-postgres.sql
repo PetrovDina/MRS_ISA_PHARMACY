@@ -234,10 +234,10 @@ insert into subscriptions (patient_id, pharmacy_id) values (2, 2);
 insert into subscriptions (patient_id, pharmacy_id) values (11, 1);
 
 -- narudzbenice
-insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-06-10', 3, 1, 'False');
-insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-06-11', 3, 1, 'False');
-insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('HAS_OFFERS', '2021-05-29', 3, 1, 'False');
-insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-06-13', 3, 1, 'False');
+insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-07-10', 3, 1, 'False');
+insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-07-11', 3, 1, 'False');
+insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('HAS_OFFERS', '2021-06-11', 3, 1, 'False');
+insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-07-13', 3, 1, 'False');
 
 -- orderitem
 insert into orderitem (quantity, medication_id, order_id, deleted) values (2, 5, 1, 'False');

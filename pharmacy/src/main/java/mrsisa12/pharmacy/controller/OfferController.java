@@ -128,37 +128,9 @@ public class OfferController {
 	@PostMapping(value = "/accept", consumes = "application/json")
 	public ResponseEntity<OfferDTO> acceptOffer(@RequestBody OfferDTO offerDTO) {
 		
-		Order orderWithOrderItems = orderService.findOneWithOrderItems(offerDTO.getOrderId());
-		Order orderWithOffers = orderService.findOneWithOffers(offerDTO.getOrderId());
-		Offer offer = offerService.findOne(offerDTO.getId());
-		Supplier supplier = supplierService.findOne(offerDTO.getSupplierUsername());
-		// prihvatamo ponudu
-		for (OrderItem orderItem : orderWithOrderItems.getOrderItems()) {
-			// umanjujemo kolicinu kod supplier-a
-			supplierStorageItemService.updateSupplierStorageItemQuantity(orderItem.getMedication(), offer.getSupplier(), orderItem.getQuantity());
-			// povecavamo kolicinu u apoteci
-			pharmacyStorageItemService.updatePharmacyStorageItemQuantity(orderItem.getMedication(), orderWithOrderItems.getPharmacy(),
-					orderItem.getQuantity());
-			pharmacyStorageItemService.updatePharmacyStorageItemCounter(orderItem.getMedication(), orderWithOrderItems.getPharmacy());
-		}
-		orderWithOffers.setStatus(OrderStatus.DONE);
-		orderService.save(orderWithOffers);
-		// saljemo mail o prihvatanju
-		emailService.sendEmailToSupplier(supplier, offer.getPrice(), orderWithOrderItems, "ACCEPTED");
-		// promjena statusa ponude koja je prihvacena
-		offer.setStatus(OfferStatus.ACCEPTED);
-		offerService.save(offer);
 		
-		// saljemo mailove o odbijanju ponuda
-		for (Offer offerToReject : orderWithOffers.getOffers()) {
-			if(offerToReject.getId() == offer.getId()) continue; // preskacemo onu koju smo prihvatili
-			emailService.sendEmailToSupplier(offerToReject.getSupplier(), offerToReject.getPrice(), orderWithOrderItems, "REJECTED");
-			// promujena statusa ponude koja je odbijena
-			offerToReject.setStatus(OfferStatus.REJECTED);
-			offerService.save(offerToReject);
-		}
-
-		return new ResponseEntity<>(new OfferDTO(offerService.findOne(offerDTO.getId())), HttpStatus.OK);
+		Offer offer = offerService.acceptOffer(offerDTO);
+		return new ResponseEntity<>(new OfferDTO(offer), HttpStatus.OK);
 	}
 
 	private boolean medicationInList(List<SupplierStorageItem> ssis, Medication med) {

@@ -71,9 +71,7 @@ public class ReservationController {
 	
 	@GetMapping(value = "/findByPharmacy")
 	public ResponseEntity<List<ReservationDTO>> getReservationsByPharmacy(@RequestParam Long pharmacyId) {
-		System.out.println(pharmacyId);
 		List<Reservation> reservations = reservationService.findAllByPharmacy(pharmacyId);
-		System.out.println(reservations.size());
 
 		// convert reservations to DTOs
 		List<ReservationDTO> reservationsDTO = new ArrayList<>();
@@ -101,79 +99,32 @@ public class ReservationController {
 	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/cancel")
 	public ResponseEntity<ReservationDTO> cancelReservation(@RequestParam Long reservationId, @RequestParam String patientUsername) {
-		Reservation reservation = reservationService.findOne(reservationId);
+		
+		
+		Reservation reservation = reservationService.cancelReservation(reservationId, patientUsername);
 
 		if(reservation != null) {
 			
-			Patient patient = patientService.findByUsername(patientUsername);
-			Integer pointsToLoose = reservation.getMedication().getLoyaltyPoints() * reservation.getQuantity();
-			patientService.addPointsAndUpdateCategory(patient, (-pointsToLoose));
-			
-			//setting reservation status to cancelled
-            reservation.setStatus(ReservationStatus.CANCELLED);
-    		
-    		//updating storage item quantity
-    		PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(reservation.getMedication().getId(), reservation.getPharmacy().getId());
-    		psi.setQuantity(psi.getQuantity() + reservation.getQuantity());
-    		
-    		reservationService.save(reservation);
-    		pharmacyStorageItemService.save(psi);
- 
-    		
+
             return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.OK);
         }
         else
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 	
 	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<String> saveReservation(@RequestBody ReservationDTO resDTO) {
 		
-		System.out.println(resDTO.toString());
-		Reservation reservation = new Reservation();
-		
-		Pharmacy pharmacy = pharmacyService.findOne(resDTO.getPharmacy().getId());
-		Patient patient = patientService.findOne(resDTO.getPatient().getId());
-		Medication medication = medicationService.findOne(resDTO.getMedication().getId());
-		
-		reservation.setPharmacy(pharmacy);
-		reservation.setPatient(patient);
-		reservation.setMedication(medication);
-		reservation.setDueDate(resDTO.getDueDate());
-		reservation.setQuantity(resDTO.getQuantity());
-		reservation.setStatus(ReservationStatus.CREATED);
-		//generates code
-		int length = 10;
-        char[] text = new char[length];
-        for (int i = 0; i < length; i++) {
-            text[i] = SOURCES.charAt(random.nextInt(SOURCES.length()));
-        }
-		reservation.setCode(new String(text));
-		
-		
-		PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
-		psi.setQuantity(psi.getQuantity()-resDTO.getQuantity());
-		pharmacyStorageItemService.save(psi);
+		try {
+			String message = reservationService.saveReservation(resDTO);
+			return new ResponseEntity<>(message, HttpStatus.CREATED);
 
-		//checking loyalty system price discount
-		double price = resDTO.getMedicationPrice();
-		double finalPrice = loyaltyProgramService.getFinalPrice(price, patient) * reservation.getQuantity();
+
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<>("Unfortunately, we don't have enough medicine in storage. Please try again later.", HttpStatus.BAD_REQUEST);
+		}
 		
-		reservation.setMedicationPrice(finalPrice);
-		
-		Integer pointsForPatient = medication.getLoyaltyPoints() * reservation.getQuantity();
-		String message = loyaltyProgramService.generateReservationMessage(patient, finalPrice, pointsForPatient);
-		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
-		
-		reservation = reservationService.save(reservation);
-		
-		// email!
-		String emailBody = "This email is confirmation that you have successfully reserved " + medication.getName() + ". Your unique reservation number is: " + reservation.getCode();
-		EmailContent email = new EmailContent("Medicine reservation confirmation", emailBody);
-		email.addRecipient(reservation.getPatient().getEmail());
-        emailService.sendEmail(email);
-		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")

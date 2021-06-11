@@ -233,6 +233,10 @@ export default {
 
                 this.successMessage = response.data;
                 $("#exampleModal3").modal("show");
+            }).catch((response) => {
+
+                this.successMessage = response.data; //failed 
+                $("#exampleModal3").modal("show");
             });
 
             // $("#exampleModal3").modal("show");
