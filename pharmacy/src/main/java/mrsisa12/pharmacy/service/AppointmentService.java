@@ -1,13 +1,12 @@
 package mrsisa12.pharmacy.service;
 
-import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -17,18 +16,17 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import mrsisa12.pharmacy.dto.report.ReportDTO;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
-import mrsisa12.pharmacy.model.Pharmacy;
-import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.Employee;
-import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Patient;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
-import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.repository.AppointmentRepository;
 
 @Service
@@ -36,6 +34,18 @@ public class AppointmentService {
 
 	@Autowired
 	private AppointmentRepository appointmentRepository;
+	
+	@Autowired
+	private PatientService patientService;
+	
+	@Autowired
+	private AppointmentService appointmentService;
+	
+	@Autowired
+	private LoyaltyProgramService loyaltyProgramService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public Appointment findOne(Long id) {
 		return appointmentRepository.findById(id).orElseGet(null);
@@ -216,6 +226,37 @@ public class AppointmentService {
 				appointmentRepository.save(appo);
 			}
 		}
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public String reserveAppointment(String patientUsername, Long appointmentId) {
+		
+		Patient patient = patientService.findByUsername(patientUsername);
+		
+		Appointment appointment = appointmentService.findOne(appointmentId);
+		
+		// provjera da li je neko zauzeo termin
+		if(appointment.getStatus() == AppointmentStatus.RESERVED) {
+			return "Reservation failed, try again leater.";
+		}
+		
+		appointment.setPatient(patient);
+		appointment.setStatus(AppointmentStatus.RESERVED);
+		
+		
+		Double price = appointment.getPrice();
+		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
+		appointment.setPrice(price);
+		
+		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
+		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		
+		appointment = appointmentService.save(appointment);
+		
+		emailService.sendEmailToPatient(appointment, patient);
+		
+		return message;
 	}
 
 }

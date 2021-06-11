@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -378,32 +379,12 @@ public class AppointmentController {
 	@GetMapping(value = "/book")
 	@PreAuthorize("hasRole('PATIENT')")
 	public ResponseEntity<String> reserveAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId) {
-
-		Patient patient = patientService.findByUsername(patientUsername);
-		
-		Appointment appointment = appointmentService.findOne(appointmentId);
-		appointment.setPatient(patient);
-		appointment.setStatus(AppointmentStatus.RESERVED);
-		
-		Double price = appointment.getPrice();
-		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
-		appointment.setPrice(price);
-		
-		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
-		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
-		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
-		
-		appointment = appointmentService.save(appointment);
-		
-		// email!
-		String emailBody = "This email is confirmation that you have successfully booked your appointment with " 
-		+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() + " at "
-		+ appointment.getTimePeriod().getStartDate() + " " 
-		+ appointment.getTimePeriod().getStartTime();
-		
-		EmailContent email = new EmailContent("Appointment booked", emailBody);
-		email.addRecipient(appointment.getPatient().getEmail());
-        emailService.sendEmail(email);
+		String message;
+		try {
+			message = appointmentService.reserveAppointment(patientUsername, appointmentId);
+		} catch (ObjectOptimisticLockingFailureException e) {
+			message = "Reservation failed, try again leater.";
+		}
 
 		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}

@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import mrsisa12.pharmacy.model.Absence;
+import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Order;
 import mrsisa12.pharmacy.model.OrderItem;
@@ -136,6 +137,23 @@ public class EmailService {
 		EmailContent email = new EmailContent(absence.getClass() + " " + kind, emailBody);
 		email.addRecipient(absence.getEmployee().getEmail());
 		this.sendEmail(email);
+		
+	}
+
+	public void sendEmailToPatient(Appointment appointment, Patient patient) {
+		String emailBody = "Dear " + appointment.getPatient().getFirstName() + " " + appointment.getPatient().getLastName()
+				+ ",\n\nI would like to inform you that you have successfully booked your appointment with " 
+			+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() + " at "
+			+ appointment.getTimePeriod().getStartDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " " 
+			+ appointment.getTimePeriod().getStartTime();
+		
+		emailBody += "\n\nThank you very much,\nyour " + appointment.getPharmacy().getName() + "!";
+		emailBody += "\n\nThis is an automatically generated email – please do not reply to it. ©Tim12-MRS-ISA";
+		
+		// slanje mail-a
+		EmailContent email = new EmailContent("Appointment booked", emailBody);
+		email.addRecipient(appointment.getPatient().getEmail());
+	    sendEmail(email);
 		
 	}
     
