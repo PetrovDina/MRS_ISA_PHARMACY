@@ -43,9 +43,6 @@ public class AppointmentService {
 	private PatientService patientService;
 	
 	@Autowired
-	private AppointmentService appointmentService;
-	
-	@Autowired
 	private LoyaltyProgramService loyaltyProgramService;
 	
 	@Autowired
@@ -243,7 +240,7 @@ public class AppointmentService {
 		
 		Patient patient = patientService.findByUsername(patientUsername);
 		
-		Appointment appointment = appointmentService.findOne(appointmentId);
+		Appointment appointment = findOne(appointmentId);
 		
 		// provjera da li je neko zauzeo termin
 		if(appointment.getStatus() == AppointmentStatus.RESERVED) {
@@ -262,7 +259,7 @@ public class AppointmentService {
 		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
 		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
 		
-		appointment = appointmentService.save(appointment);
+		appointment = save(appointment);
 		
 		emailService.sendEmailToPatient(appointment, patient);
 		
@@ -275,10 +272,11 @@ public class AppointmentService {
 		Appointment appointment = new Appointment();
 		
 		Employee emp = employeeService.findOneEmployee(appointmentDTO.getEmployee().getId());
-
+		
 		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
 		
 		TimePeriod tp = new TimePeriod(appointmentDTO.getTimePeriod());
+		
 		for (Appointment appo : employee.getAppointments()) {
 			if(appo.getStatus() == AppointmentStatus.RESERVED) {
 				LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
@@ -291,6 +289,7 @@ public class AppointmentService {
 				}
 			}
 		}
+		
 		appointment.setEmployee(employee);
 		
 		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
@@ -308,14 +307,18 @@ public class AppointmentService {
 		appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
 		
 		Double price = pharmacy.getAppointmentPriceCatalog().getConsultationPrice();
+		System.err.println(price);
 		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
+		System.err.println(price);
+		
 		appointment.setPrice(price);
 		
 		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
 		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
 		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		System.err.println(message);
 		
-		appointmentService.save(appointment);
+		save(appointment);
 		
 		return message;
 	}
