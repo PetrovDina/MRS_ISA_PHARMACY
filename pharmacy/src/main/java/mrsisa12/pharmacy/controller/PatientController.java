@@ -29,10 +29,8 @@ import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.enums.PatientCategory;
 import mrsisa12.pharmacy.model.enums.UserStatus;
-import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
-import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.RoleService;
 
 @RestController
@@ -45,12 +43,6 @@ public class PatientController {
 	@Autowired
 	private MedicationService medicationService;
 	
-	@Autowired
-	private LocationService locationService;
-	
-	@Autowired
-	private PharmacyService pharmacyService;
-
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
@@ -185,20 +177,14 @@ public class PatientController {
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patientDTO) {
 
-		Patient p = patientService.findOne(patientDTO.getId());
-
+    	Patient p = patientService.updatePatient(patientDTO);
+		
 		if (p == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
-		p.setFirstName(patientDTO.getFirstName());
-		p.setLastName(patientDTO.getLastName());
-		p.setUsername(patientDTO.getUsername());
-		p.setLocation(patientDTO.getLocation());
-		System.err.println(p.getLocation().getStreet());
-		patientService.save(p);
-		locationService.save(p.getLocation());
-		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.CREATED);
+		
+		return new ResponseEntity<>(null, HttpStatus.CREATED);
 	}
 	
 	@SuppressWarnings("deprecation")

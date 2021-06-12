@@ -1,6 +1,5 @@
 package mrsisa12.pharmacy.dto;
 
-import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.EPrescriptionItem;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.TherapyItem;

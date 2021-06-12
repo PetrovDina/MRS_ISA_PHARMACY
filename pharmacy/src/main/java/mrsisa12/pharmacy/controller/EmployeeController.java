@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.EmployeeDTO;
-import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.dto.PlainEmployeeDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;

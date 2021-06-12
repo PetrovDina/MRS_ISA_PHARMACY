@@ -17,7 +17,6 @@ import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Promotion;
-import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.Supplier;
 import mrsisa12.pharmacy.model.SystemAdmin;
 import mrsisa12.pharmacy.model.User;

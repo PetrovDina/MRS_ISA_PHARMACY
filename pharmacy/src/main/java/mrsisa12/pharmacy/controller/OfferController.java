@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.OfferDTO;
 import mrsisa12.pharmacy.dto.OfferWithOrderWithOrderItemsDTO;
 import mrsisa12.pharmacy.dto.order.OrderWithOrderItemsDTO;
-import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Offer;
 import mrsisa12.pharmacy.model.Order;
@@ -31,7 +30,6 @@ import mrsisa12.pharmacy.model.enums.OrderStatus;
 import mrsisa12.pharmacy.service.OfferService;
 import mrsisa12.pharmacy.service.OrderItemService;
 import mrsisa12.pharmacy.service.OrderService;
-import mrsisa12.pharmacy.service.PharmacyStorageItemService;
 import mrsisa12.pharmacy.service.SupplierService;
 import mrsisa12.pharmacy.service.SupplierStorageItemService;
 
@@ -48,18 +46,12 @@ public class OfferController {
 	@Autowired
 	private SupplierStorageItemService supplierStorageItemService;
 
-	@Autowired
-	private PharmacyStorageItemService pharmacyStorageItemService;
-
 	@SuppressWarnings("unused")
 	@Autowired
 	private OrderItemService orderItemService;
 	
 	@Autowired
 	private SupplierService supplierService;
-
-	@Autowired
-	private EmailService emailService;
 
 	@PreAuthorize("hasRole('SUPPLIER')")
 	@PostMapping(value = "/create", consumes = "application/json")

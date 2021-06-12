@@ -106,7 +106,7 @@ public class UserController {
 		
 		//provera sifre i postavljanje nove!
 		try {
-			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					username, oldPassword));
 			
 			//ispravna lozinka

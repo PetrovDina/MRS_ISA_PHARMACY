@@ -2,7 +2,6 @@ package mrsisa12.pharmacy.dto;
 
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
 import mrsisa12.pharmacy.model.Appointment;
-import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.model.enums.AppointmentType;
 

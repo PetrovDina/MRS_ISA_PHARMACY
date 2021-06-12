@@ -16,7 +16,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import mrsisa12.pharmacy.model.enums.EmploymentContractType;
-import mrsisa12.pharmacy.model.enums.MedicationForm;
 
 @Entity
 @SQLDelete(sql = "UPDATE employment " + "SET deleted = true " + "WHERE id = ?")

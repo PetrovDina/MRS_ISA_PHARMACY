@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import mrsisa12.pharmacy.model.Dermatologist;
 import mrsisa12.pharmacy.model.EmployeeRating;
 import mrsisa12.pharmacy.repository.EmployeeRatingRepository;
 

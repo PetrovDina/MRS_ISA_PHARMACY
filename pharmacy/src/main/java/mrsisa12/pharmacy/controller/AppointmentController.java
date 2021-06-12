@@ -1,7 +1,6 @@
 package mrsisa12.pharmacy.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -490,11 +489,11 @@ public class AppointmentController {
 	public ResponseEntity<List<AppointmentDTO>> getUpcomingAppointmentsForEmployee(@RequestParam("patientUsername") String patientUsername, @RequestParam String employeeUsername) {	
 		Patient patient = patientService.findByUsername(patientUsername);
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
-		TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
+		new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
 		
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
 		for (Appointment appointment : emp.getAppointments()) {
-			LocalDateTime eWorkTEDateTime = appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
+			appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
 			if(appointment.getStatus() == AppointmentStatus.RESERVED && appointment.getPatient().getId().equals(patient.getId()) && !appointment.isDeleted() ) {
 				/*if(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))) {
 					appointment.setStatus(AppointmentStatus.EXPIRED);
@@ -513,11 +512,11 @@ public class AppointmentController {
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
 		String min = minDate.split("T")[0];
 		String max = maxDate.split("T")[0];
-		TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
+		new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
 		
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
 		for (Appointment appointment : emp.getAppointments()) {
-			LocalDateTime eWorkTEDateTime = appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
+			appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
 			if(!appointment.isDeleted() && appointment.getStatus() != AppointmentStatus.AVAILABLE) {
 				boolean afterMin = appointment.getTimePeriod().getStartDate().isAfter(LocalDate.parse(min));
 				boolean equalMin = appointment.getTimePeriod().getStartDate().isEqual(LocalDate.parse(min));

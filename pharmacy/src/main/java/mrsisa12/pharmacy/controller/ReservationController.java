@@ -24,19 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.ReservationDTO;
 import mrsisa12.pharmacy.dto.ReservationPickupDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
-import mrsisa12.pharmacy.mail.EmailContent;
-import mrsisa12.pharmacy.mail.EmailService;
-import mrsisa12.pharmacy.model.Medication;
-import mrsisa12.pharmacy.model.Patient;
-import mrsisa12.pharmacy.model.Pharmacy;
-import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
-import mrsisa12.pharmacy.service.LoyaltyProgramService;
-import mrsisa12.pharmacy.service.MedicationService;
-import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
-import mrsisa12.pharmacy.service.PharmacyStorageItemService;
 import mrsisa12.pharmacy.service.ReservationService;
 
 @RestController
@@ -47,29 +37,10 @@ public class ReservationController {
 	private ReservationService reservationService;
 	
 	@Autowired
-	private MedicationService medicationService;
-	
-	@Autowired
 	private PharmacyService pharmacyService;
 	
-	@Autowired
-	private PatientService patientService;
-	
-	@Autowired
-	private PharmacyStorageItemService pharmacyStorageItemService;
-	
-	@Autowired
-	private EmailService emailService;
-
-	@Autowired
-	private LoyaltyProgramService loyaltyProgramService;
-	
 	private Random random = new Random();
-    private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-	
-
-	
-	@GetMapping(value = "/findByPharmacy")
+    @GetMapping(value = "/findByPharmacy")
 	public ResponseEntity<List<ReservationDTO>> getReservationsByPharmacy(@RequestParam Long pharmacyId) {
 		List<Reservation> reservations = reservationService.findAllByPharmacy(pharmacyId);
 

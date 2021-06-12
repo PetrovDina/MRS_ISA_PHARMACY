@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.ItemPriceDTO;
 import mrsisa12.pharmacy.model.ItemPrice;
-import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.service.ItemPriceService;
-import mrsisa12.pharmacy.service.PharmacyStorageItemService;
 
 @RestController
 @RequestMapping("/itemPrice")
@@ -24,8 +21,7 @@ public class ItemPriceController {
 	@Autowired
 	private ItemPriceService itemPriceService;
 	
-	@Autowired
-	private PharmacyStorageItemService pharmacyStorageItemService;
+	
 	
 	/*@PostMapping(consumes = "application/json")
 	public ResponseEntity<ItemPriceDTO> createItemPrice(@RequestBody ItemPriceDTO itemPriceDTO) {

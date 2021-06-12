@@ -1,6 +1,5 @@
 package mrsisa12.pharmacy.service;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -22,13 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Pharmacy;
-import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.Employee;
-import mrsisa12.pharmacy.model.Employment;
-import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
-import mrsisa12.pharmacy.model.enums.ReservationStatus;
 import mrsisa12.pharmacy.repository.AppointmentRepository;
 
 @Service

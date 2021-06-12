@@ -1,8 +1,6 @@
 package mrsisa12.pharmacy.utils;
 
 import java.util.Date;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +11,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import mrsisa12.pharmacy.model.User;
-import mrsisa12.pharmacy.model.UserRole;
 
 // Utility klasa za rad sa JSON Web Tokenima
 @Component
@@ -239,9 +235,8 @@ public class TokenUtils {
 	 * @return Informacija da li je token validan ili ne.
 	 */
 	public Boolean validateToken(String token, UserDetails userDetails) {
-		User user = (User) userDetails;
 		final String username = getUsernameFromToken(token);
-		final Date created = getIssuedAtDateFromToken(token);
+		getIssuedAtDateFromToken(token);
 		
 		// Token je validan kada:
 		return (username != null // korisnicko ime nije null
