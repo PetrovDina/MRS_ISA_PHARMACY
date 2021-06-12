@@ -19,14 +19,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
+import mrsisa12.pharmacy.model.Dermatologist;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
+import mrsisa12.pharmacy.model.enums.AppointmentType;
 import mrsisa12.pharmacy.repository.AppointmentRepository;
 
 @Service
@@ -43,6 +46,12 @@ public class AppointmentService {
 	
 	@Autowired
 	private LoyaltyProgramService loyaltyProgramService;
+	
+	@Autowired
+	private EmployeeService employeeService;
+	
+	@Autowired
+	private PharmacyService pharmacyService;
 	
 	@Autowired
 	private EmailService emailService;
@@ -255,6 +264,57 @@ public class AppointmentService {
 		appointment = appointmentService.save(appointment);
 		
 		emailService.sendEmailToPatient(appointment, patient);
+		
+		return message;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public String bookPharmacistAppointment(AppointmentDTO appointmentDTO) {
+		
+		Appointment appointment = new Appointment();
+		
+		Employee emp = employeeService.findOneEmployee(appointmentDTO.getEmployee().getId());
+
+		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
+		
+		TimePeriod tp = new TimePeriod(appointmentDTO.getTimePeriod());
+		for (Appointment appo : employee.getAppointments()) {
+			if(appo.getStatus() == AppointmentStatus.RESERVED) {
+				LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+				LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+				if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
+						&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
+						&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
+								&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
+						return "You already have an appointment then.";
+				}
+			}
+		}
+		appointment.setEmployee(employee);
+		
+		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
+		appointment.getTimePeriod().setEndTime(appointment.getTimePeriod().getStartTime().plusHours(1));
+		appointment.setStatus(AppointmentStatus.RESERVED); //rezervisemo ga!
+		appointment.setDeleted(false);
+		
+		//postavljamo pacijenta na termin
+		Patient patient = patientService.findByUsername(appointmentDTO.getPatient().getUsername());
+		appointment.setPatient(patient);
+		
+		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
+		
+		appointment.setPharmacy(pharmacy);
+		appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
+		
+		Double price = pharmacy.getAppointmentPriceCatalog().getConsultationPrice();
+		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
+		appointment.setPrice(price);
+		
+		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
+		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		
+		appointmentService.save(appointment);
 		
 		return message;
 	}
