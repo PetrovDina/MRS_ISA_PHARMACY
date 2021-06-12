@@ -126,9 +126,8 @@ public class Pharmacy {
 
 	public void removeAllPharmacyStorageItems() {
 		if (pharmacyStorageItems != null) {
-			PharmacyStorageItem oldPharmacyStorageItem;
 			for (Iterator<PharmacyStorageItem> iter = getIteratorPharmacyStorageItem(); iter.hasNext();) {
-				oldPharmacyStorageItem = iter.next();
+				iter.next();
 				iter.remove();
 			}
 		}

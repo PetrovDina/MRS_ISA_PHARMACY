@@ -30,6 +30,7 @@ import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.model.enums.AppointmentType;
+
 import mrsisa12.pharmacy.repository.AppointmentRepository;
 
 @Service

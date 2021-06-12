@@ -1,7 +1,6 @@
 package mrsisa12.pharmacy.service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import mrsisa12.pharmacy.model.Absence;
-import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.TimePeriod;
-import mrsisa12.pharmacy.model.enums.AbsenceStatus;
-import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.repository.AbsenceRepository;
 
 @Service

@@ -199,7 +199,7 @@ public class PharmacyController {
 
 		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(pharmacyId);
 
-		List<PharmacyStorageItem> pharmacyStorageItems = pharmacy.getPharmacyStorageItems();
+		pharmacy.getPharmacyStorageItems();
 		List<PharmacyStorageItemDTO> pharmacyStorageItemsDTO = new ArrayList<>();
 		for (PharmacyStorageItem e : pharmacy.getPharmacyStorageItems()) {
 			PharmacyStorageItemDTO pharmacyStorageItemDTO = new PharmacyStorageItemDTO();
