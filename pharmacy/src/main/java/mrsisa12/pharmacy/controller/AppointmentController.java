@@ -285,53 +285,17 @@ public class AppointmentController {
 		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);
 	}
 	
-	
-	//farm
-	//dina pravila za kreiranja termina kod FARMACEUTA!
 	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/savePharmacistAppointment", consumes = "application/json")
 	public ResponseEntity<String> savePharmacistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+		String message;
+		try {
+			message = appointmentService.bookPharmacistAppointment(appointmentDTO);
+		}
+		catch (Exception e) {
+			message = "Reservation failed, try again later.";
+		}
 		
-		Appointment appointment = new Appointment();
-
-		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
-		appointment.getTimePeriod().setEndTime(appointment.getTimePeriod().getStartTime().plusHours(1)); //todo promeni da bude pravo trajanje!
-		appointment.setStatus(AppointmentStatus.RESERVED); //rezervisemo ga!
-		appointment.setDeleted(false);
-		
-		//dodati proveru dostupnosti farmaceuta zbog konkurentnosti
-		
-		// postavljamo farmaceuta na termin
-		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
-		appointment.setEmployee(employee);
-		
-		//postavljamo pacijenta na termin
-		Patient patient = patientService.findByUsername(appointmentDTO.getPatient().getUsername());
-		appointment.setPatient(patient);
-		
-		// postavljamo termin farmaceutu
-		employee.addAppointment(appointment);
-		
-		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
-		
-		appointment.setPrice(pharmacy.getAppointmentPriceCatalog().getConsultationPrice());
-		
-		appointment.setPharmacy(pharmacy);
-
-		appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
-		
-		Double price = appointment.getPrice();
-		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
-		appointment.setPrice(price);
-		
-		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
-		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
-		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
-		
-		
-		appointment = appointmentService.save(appointment);
-		employeeService.save(employee); //idk da l ovo treba
-
 		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
 

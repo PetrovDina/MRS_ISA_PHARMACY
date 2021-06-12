@@ -101,4 +101,8 @@ public class EmployeeService {
 		return employeeRepository.findOneByUsernameWithAppointments(username);
 	}
 
+	public Employee findOneEmployee(Long id) {
+		return employeeRepository.findOneEmployee(id);
+	}
+
 }
