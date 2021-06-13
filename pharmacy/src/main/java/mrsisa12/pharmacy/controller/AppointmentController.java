@@ -511,7 +511,7 @@ public class AppointmentController {
 		return new ResponseEntity<>( HttpStatus.OK);
 	}
 		
-	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST', 'PHARMACY_ADMIN')")
 	@GetMapping(value = "/getAvailableDermAppointments")
 	public ResponseEntity<List<AppointmentDTO>> getAvailableDermAppointments(@RequestParam String employeeUsername,@RequestParam String pharmacyId){
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);

@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -117,37 +118,14 @@ public class AbsenceController {
 	
 	@PutMapping(value = "/accept")
 	public ResponseEntity<Boolean> acceptAbsence(@RequestBody AbsenceDTO absenceDTO){
-		Employee emp = employeeService.findOneByUsernameWithAppointments(absenceDTO.getEmployee().getUsername());
-		LocalDate startDate2 = LocalDate.parse(absenceDTO.getTimePeriod().getStartDate());
-		LocalDate endDate2 = LocalDate.parse(absenceDTO.getTimePeriod().getEndDate());
-		LocalDate bookedAppointment = null;
-		boolean free = true;
-		for (Appointment appo : emp.getAppointments()) {
-			if(appo.getStatus().equals(AppointmentStatus.RESERVED)) {
-				LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
-				LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
-				if (!(eWorkTSDateTime.isAfter(endDate2.atTime(LocalTime.parse("00:00:00")))
-						&& eWorkTSDateTime.isAfter(startDate2.atTime(LocalTime.parse("00:00:00"))))
-						&& !(eWorkTEDateTime.isBefore(endDate2.atTime(LocalTime.parse("00:00:00")))
-								&& eWorkTEDateTime.isBefore(startDate2.atTime(LocalTime.parse("00:00:00"))))) {
-						free = false;  // preklapanje sa postojecim terminom
-						bookedAppointment  = LocalDate.of(eWorkTSDateTime.getYear(), eWorkTEDateTime.getMonth(), eWorkTSDateTime.getDayOfMonth());
-						break;				
-				}
-			}
+		
+		boolean isFree;
+		try {
+			isFree = absenceService.acceptAbsence(absenceDTO);
+		} catch (ObjectOptimisticLockingFailureException e) {
+			isFree = false;
 		}
-		Absence absence = absenceService.findOne(absenceDTO.getId());
-		if(free) {
-			absence.setStatus(AbsenceStatus.APPROVED);
-			emailService.sendEmailToEmployeeAboutAbsence(absence, "APPROVED", "");
-		}
-		else {
-			absence.setStatus(AbsenceStatus.DENIED);
-			emailService.sendEmailToEmployeeAboutAbsence(absence, "REJECTED", 
-				"The reason for rejecting your "+ absence.getType() +" request is the booked appointment on " + bookedAppointment.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		}
-		absenceService.save(absence);
-		return new ResponseEntity<>(free ,HttpStatus.CREATED);
+		return new ResponseEntity<>(isFree, HttpStatus.CREATED);
 	}
 	
 	@PutMapping(value = "/reject")
