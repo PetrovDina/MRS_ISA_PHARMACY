@@ -53,6 +53,7 @@ public class PatientService {
 	}
 
 	public Patient findOne(Long id) {
+
 		return patientRepository.findById(id).orElseGet(null);
 	}
 	
@@ -128,10 +129,11 @@ public class PatientService {
 		patientRepository.updateGoldCategory(silverPoints);
 	}
 
+	
 	public Patient updatePatient(PatientDTO patientDTO) {
 		
-		Patient p = this.findOne(patientDTO.getId());
 
+		Patient p = this.findOne(patientDTO.getId());
 		if (p == null) {
 			return null;
 		}

@@ -180,11 +180,11 @@ public class PatientController {
     	Patient p = patientService.updatePatient(patientDTO);
 		
 		if (p == null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 
 		
-		return new ResponseEntity<>(null, HttpStatus.CREATED);
+		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.CREATED);
 	}
 	
 	@SuppressWarnings("deprecation")

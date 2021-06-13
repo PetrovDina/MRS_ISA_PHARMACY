@@ -23,7 +23,6 @@ import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
-import mrsisa12.pharmacy.model.Dermatologist;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
@@ -271,7 +270,7 @@ public class AppointmentService {
 		
 		Appointment appointment = new Appointment();
 		
-		Employee emp = employeeService.findOneEmployee(appointmentDTO.getEmployee().getId());
+		employeeService.findOneEmployee(appointmentDTO.getEmployee().getId());
 		
 		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
 		

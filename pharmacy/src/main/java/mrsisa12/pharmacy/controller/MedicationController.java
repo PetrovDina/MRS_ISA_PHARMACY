@@ -1,8 +1,6 @@
 package mrsisa12.pharmacy.controller;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,6 @@ import mrsisa12.pharmacy.model.EPrescription;
 import mrsisa12.pharmacy.model.EPrescriptionItem;
 import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.MedicationRating;
-import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
@@ -57,9 +54,6 @@ public class MedicationController {
 	
 	@Autowired
 	private ReservationService reservationService;
-	
-	@Autowired
-	private PatientService patientService;
 	
 	@Autowired
 	private EPrescriptionService ePrescriptionService;
@@ -338,49 +332,16 @@ public class MedicationController {
 	public ResponseEntity<Double> rateMedication(
 			@RequestParam String patientUsername, @RequestParam Long medicationId, @RequestParam double ratedValue) {
 
-		if (ratedValue < 0 || ratedValue > 5) {
-			return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
- 
-		}
-		Patient patient = patientService.findByUsername(patientUsername);
-		Medication medication = medicationService.findOne(medicationId);
-		
-		MedicationRating rating = medicationRatingService.findOneByPatientAndMedication(patientUsername, medicationId);
-		
-		if (rating == null) {
-			//create new rating obj
-			rating = new MedicationRating();
-			rating.setDate(new Date());
-			rating.setMedication(medication);
-			rating.setPatient(patient);
-			rating.setRating(ratedValue);
-			medicationRatingService.save(rating);
-		}
-		else {
-			//update existing rating obj
-			rating.setRating(ratedValue);
-			rating.setDate(new Date());
-			medicationRatingService.save(rating);
-		}
-		
-		//updating value in Medication object
-		List<MedicationRating> medicationsRatings = medicationRatingService.findAllByMedication(medicationId);
-		int numRatings = medicationsRatings.size();
-		double newRating = 0;
-		
-		for (MedicationRating er : medicationsRatings) {
-			newRating += er.getRating();
-		}
-		
-		newRating /= numRatings;
-		
-		DecimalFormat df = new DecimalFormat("#.##");
-		newRating = Double.parseDouble(df.format(newRating));
-		
-		medication.setRating(newRating);
-		medicationService.save(medication);
+		try {
+			double rating = medicationService.rateMedication(patientUsername, medicationId, ratedValue);
+			return new ResponseEntity<Double>(rating, HttpStatus.OK);
 
-		return new ResponseEntity<Double>(newRating, HttpStatus.OK);
+		}
+		catch(IllegalArgumentException e) {
+			return new ResponseEntity<Double>(-1.0, HttpStatus.BAD_REQUEST);
+
+		}
+		
 	}
 	
 	@PreAuthorize("hasRole('PATIENT')")
