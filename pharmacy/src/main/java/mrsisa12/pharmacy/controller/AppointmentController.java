@@ -300,42 +300,16 @@ public class AppointmentController {
 
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<AppointmentDTO> saveDermatologistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
-		// prilikom kreiranja bih trebao samo da proslijedim id zaposlenog... ID
-		// pacijenta ce se naknadno ubacivati i proglasavati termin zauzetim
-		Appointment appointment = new Appointment();
-
-		// Trebace vjerovatno da se nesto uradi sa datumom.
-		// appointment.setTimePeriod(appointmentDTO.getTimePeriodDTO());
-//		boolean res = employeeService.checkAppointmentTime(new TimePeriod(appointmentDTO.getTimePeriod()),
-//				appointmentDTO.getEmployee().getId());
-//		if (!res) {
-//			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-//		}
-		// postavljamo vrijeme i datum
-		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
-		// postavljamo status da je dostupan jer se kreira
-		appointment.setStatus(AppointmentStatus.AVAILABLE);
-		// postavljamo da je neobrisan
-		appointment.setDeleted(false);
-		// postavljamo dermatologa ili farmaceuta na termin
-		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
-		appointment.setEmployee(employee);
-		// postavljamo termin dermatologu ili farmaceutu
-		employee.addAppointment(appointment);
+		Appointment appointment;
+		try {
+			appointment = appointmentService.createDermatologistAppointment(appointmentDTO);
+		}
+		catch (Exception e) {
+			System.err.println(e.getMessage());
+			return new ResponseEntity<AppointmentDTO>(new AppointmentDTO(), HttpStatus.NOT_ACCEPTABLE);
+		}
+		return new ResponseEntity<AppointmentDTO>(new AppointmentDTO(appointment), HttpStatus.CREATED);
 		
-		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
-		
-		// postavljanje cijene pregleda kod dermatologa
-		appointment.setPrice(pharmacy.getAppointmentPriceCatalog().getExaminationPrice());
-		
-		// postavljanje apoteke
-		appointment.setPharmacy(pharmacy);
-
-		//dina: TODO dodaj AppointmentType pravi!
-		appointment.setType(AppointmentType.DERMATOLOGIST_EXAMINATION);
-		appointment = appointmentService.save(appointment);
-
-		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);
 	}
 	
 	//derm

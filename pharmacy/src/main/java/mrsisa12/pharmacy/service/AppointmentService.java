@@ -15,6 +15,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -320,6 +322,45 @@ public class AppointmentService {
 		save(appointment);
 		
 		return message;
+	}
+
+	@Transactional
+	public Appointment createDermatologistAppointment(AppointmentDTO appointmentDTO) {
+		
+		Appointment appointment = new Appointment();
+		
+		Employee employee = employeeService.findOneEmployee(appointmentDTO.getEmployee().getId()); // da dobijemo blokadu
+		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
+		
+		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
+		boolean res = employeeService.checkAppointmentTime(new TimePeriod(appointmentDTO.getTimePeriod()),
+				appointmentDTO.getEmployee().getId(), pharmacy);
+		if (!res) {
+			// nije moguce kreirati tada termin
+			appointment.setId(-1L);
+			return appointment;
+		}
+		// postavljamo vrijeme i datum
+		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
+		// postavljamo status da je dostupan jer se kreira
+		appointment.setStatus(AppointmentStatus.AVAILABLE);
+		// postavljamo da je neobrisan
+		appointment.setDeleted(false);
+		// postavljamo dermatologa na termin
+		appointment.setEmployee(employee);
+		
+		appointment.setPatient(null);
+		
+		// postavljanje cijene pregleda kod dermatologa
+		appointment.setPrice(pharmacy.getAppointmentPriceCatalog().getExaminationPrice());
+		
+		// postavljanje apoteke
+		appointment.setPharmacy(pharmacy);
+
+		appointment.setType(AppointmentType.DERMATOLOGIST_EXAMINATION);
+		appointment = save(appointment);
+
+		return appointment;
 	}
 
 }

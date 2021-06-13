@@ -81,7 +81,7 @@ public class EmploymentController {
 		List<Employment> matches = new ArrayList<Employment>();
 
 		for (Employment e : employments) {
-			if (employeeService.checkAppointmentTime(tp, e.getEmployee().getId())) {
+			if (employeeService.checkAppointmentTime(tp, e.getEmployee().getId(), e.getPharmacy())) {
 				matches.add(e);
 			}
 		}

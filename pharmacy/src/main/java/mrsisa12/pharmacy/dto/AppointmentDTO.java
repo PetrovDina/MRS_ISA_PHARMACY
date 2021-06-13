@@ -38,8 +38,9 @@ public class AppointmentDTO {
 
 	public AppointmentDTO(Appointment appointment) {
 		this(appointment.getId(), appointment.getStatus(), new TimePeriodDTO(appointment.getTimePeriod()),
-				new EmployeeDTO(appointment.getEmployee()),
-				(appointment.getPatient() == null) ? null : new PatientDTO(appointment.getPatient()), appointment.getPrice(), new PharmacyDTO(appointment.getPharmacy()), appointment.getType(), appointment.getReport());
+				(appointment.getEmployee() == null) ? null : new EmployeeDTO(appointment.getEmployee()),
+				(appointment.getPatient() == null) ? null : new PatientDTO(appointment.getPatient()), appointment.getPrice(), 
+				(appointment.getPharmacy() == null) ? null : new PharmacyDTO(appointment.getPharmacy()), appointment.getType(), appointment.getReport());
 	}
 	
 	public Long getId() {
