@@ -91,7 +91,6 @@ export default {
         },
 
         updateparent(pat) {
-            console.log("catchh");
             this.user = pat;
         },
     },

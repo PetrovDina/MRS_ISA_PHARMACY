@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,7 +38,6 @@ public class ReservationController {
 	@Autowired
 	private PharmacyService pharmacyService;
 	
-	private Random random = new Random();
     @GetMapping(value = "/findByPharmacy")
 	public ResponseEntity<List<ReservationDTO>> getReservationsByPharmacy(@RequestParam Long pharmacyId) {
 		List<Reservation> reservations = reservationService.findAllByPharmacy(pharmacyId);

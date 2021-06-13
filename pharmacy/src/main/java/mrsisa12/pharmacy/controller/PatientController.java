@@ -184,7 +184,7 @@ public class PatientController {
 		}
 
 		
-		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.CREATED);
+		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.OK);
 	}
 	
 	@SuppressWarnings("deprecation")
