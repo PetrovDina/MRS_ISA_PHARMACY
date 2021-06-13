@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
+
 import org.hibernate.annotations.Type;
 
 import mrsisa12.pharmacy.model.enums.AbsenceStatus;
@@ -41,6 +43,10 @@ public class Absence {
 	@Column(name = "absenceType", unique=false, nullable=false)
 	@Enumerated(EnumType.STRING)
 	private AbsenceType type;
+	
+	@Version
+	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	private Long version;
 
 	public Absence(Long id, Employee employee, TimePeriod timePeriod, Pharmacy pharmacy, AbsenceStatus status,
 			AbsenceType type) {

@@ -192,7 +192,14 @@ export default {
                             })
                             this.closeWindow();    
                         }
-                    )
+                    ).catch(() => {
+                        this.$toasted.show("Action failed, please try again leater.", {
+                                theme: "toasted-primary",
+                                position: "top-center",
+                                duration: 2000,
+                            })
+                        this.closeWindow();
+                    })
                 }
             }
         },
