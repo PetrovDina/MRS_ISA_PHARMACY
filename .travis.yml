@@ -13,6 +13,10 @@ matrix:
       script:
         - ./mvnw clean install -DskipTests=false -B
       dist: trusty
+
+      before-deploy:
+        - cd ..
+
       deploy:
         provider: heroku
         api_key: $HEROKU_API_KEY
@@ -24,6 +28,10 @@ matrix:
       cache: npm
       script: 
         - cd pharmacy-front
+      
+      before-deploy:
+        - cd ..
+        
       deploy:
         provider: heroku
         api_key: $HEROKU_API_KEY
