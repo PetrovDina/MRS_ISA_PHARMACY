@@ -305,7 +305,6 @@ public class AppointmentController {
 			appointment = appointmentService.createDermatologistAppointment(appointmentDTO);
 		}
 		catch (Exception e) {
-			System.err.println(e.getMessage());
 			return new ResponseEntity<AppointmentDTO>(new AppointmentDTO(), HttpStatus.NOT_ACCEPTABLE);
 		}
 		return new ResponseEntity<AppointmentDTO>(new AppointmentDTO(appointment), HttpStatus.CREATED);

@@ -53,9 +53,7 @@ public class ReservationController {
 	@PreAuthorize("hasRole('PATIENT')")
 	@GetMapping(value = "/findByPatient")
 	public ResponseEntity<List<ReservationDTO>> getReservationsByPatient(@RequestParam String username) {
-		System.out.println(username);
 		List<Reservation> reservations = reservationService.findAllByPatient(username);
-		System.out.println(reservations.size());
 
 		// convert reservations to DTOs
 		List<ReservationDTO> reservationsDTO = new ArrayList<>();

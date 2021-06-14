@@ -88,7 +88,6 @@ public class EmploymentController {
 		// convert employments to DTOs
 		List<EmploymentDTO> employmentsDTO = new ArrayList<>();
 		for (Employment employment : matches) {
-			System.out.println(employment.getId());
 			employmentsDTO.add(new EmploymentDTO(employment));
 		}
 

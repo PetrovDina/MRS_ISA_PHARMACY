@@ -127,7 +127,6 @@ public class ReservationService {
 			
 			//reservation is not picked up and the due date is over => change status and give penalty point
 			if (reservation.getDueDate().before(new Date())) {
-				System.err.println(reservation.getId());
 				
 				Patient patient = reservation.getPatient();
 				reservation.setStatus(ReservationStatus.EXPIRED);

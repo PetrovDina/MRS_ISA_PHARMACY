@@ -168,7 +168,6 @@ public class EmployeeController {
 		p.setLastName(employeeDTO.getLastName());
 		p.setUsername(employeeDTO.getUsername());
 		p.setLocation(employeeDTO.getLocation());
-		System.err.println(p.getLocation().getStreet());
 		employeeService.save(p);
 		locationService.save(p.getLocation());
 		return new ResponseEntity<>(new EmployeeDTO(p), HttpStatus.CREATED);

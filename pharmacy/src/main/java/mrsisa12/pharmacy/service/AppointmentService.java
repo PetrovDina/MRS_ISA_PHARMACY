@@ -308,16 +308,13 @@ public class AppointmentService {
 		appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
 		
 		Double price = pharmacy.getAppointmentPriceCatalog().getConsultationPrice();
-		System.err.println(price);
 		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
-		System.err.println(price);
 		
 		appointment.setPrice(price);
 		
 		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
 		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
 		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
-		System.err.println(message);
 		
 		save(appointment);
 		
