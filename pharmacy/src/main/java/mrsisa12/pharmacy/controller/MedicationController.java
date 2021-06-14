@@ -35,7 +35,6 @@ import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.service.EPrescriptionService;
 import mrsisa12.pharmacy.service.MedicationRatingService;
 import mrsisa12.pharmacy.service.MedicationService;
-import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.ReservationService;
 

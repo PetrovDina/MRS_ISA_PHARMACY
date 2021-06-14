@@ -1,9 +1,7 @@
 package mrsisa12.pharmacy.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,13 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.AbsenceDTO;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Absence;
-import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AbsenceStatus;
 import mrsisa12.pharmacy.model.enums.AbsenceType;
-import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.service.AbsenceService;
 import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.EmployeeService;

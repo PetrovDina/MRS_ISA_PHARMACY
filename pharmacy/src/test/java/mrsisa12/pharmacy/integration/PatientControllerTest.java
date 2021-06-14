@@ -25,7 +25,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.model.Location;
-import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.enums.Gender;
 import mrsisa12.pharmacy.util.TestUtil;
 
