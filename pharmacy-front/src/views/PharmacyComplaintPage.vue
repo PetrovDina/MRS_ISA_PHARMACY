@@ -4,7 +4,7 @@
             <v-card-title>
                 <v-spacer></v-spacer>
                 <div >
-                    <h2>Write complaint for pharamcy</h2>
+                    <h2>Write complaint about a pharmacy</h2>
                 </div>
                 <v-spacer></v-spacer>
             </v-card-title>

@@ -127,6 +127,8 @@ public class ReservationService {
 			
 			//reservation is not picked up and the due date is over => change status and give penalty point
 			if (reservation.getDueDate().before(new Date())) {
+				System.err.println(reservation.getId());
+				
 				Patient patient = reservation.getPatient();
 				reservation.setStatus(ReservationStatus.EXPIRED);
 				patient.setPenaltyPoints(patient.getPenaltyPoints() + 1);
@@ -257,7 +259,7 @@ public String saveReservation(ReservationDTO resDTO) throws IllegalArgumentExcep
 		double price = resDTO.getMedicationPrice();
 		double finalPrice = loyaltyProgramService.getFinalPrice(price, patient) * reservation.getQuantity();
 		
-		reservation.setMedicationPrice(finalPrice);
+		reservation.setMedicationPrice(loyaltyProgramService.getFinalPrice(price, patient));
 		
 		Integer pointsForPatient = medication.getLoyaltyPoints() * reservation.getQuantity();
 		String message = loyaltyProgramService.generateReservationMessage(patient, finalPrice, pointsForPatient);
