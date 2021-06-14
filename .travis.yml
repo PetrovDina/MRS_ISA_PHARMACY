@@ -10,7 +10,7 @@ matrix:
         - chmod +x pharmacy/mvnw
 
       script:
-        - ./mvnw clean install -DskipTests=false -B
+        - ./pharmacy/mvnw clean install -DskipTests=false -B
       dist: trusty
 
       deploy:
