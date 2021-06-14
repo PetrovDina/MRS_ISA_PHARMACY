@@ -48,16 +48,10 @@ public class OrderController {
 	private PharmacyService pharmacyService;
 
 	@Autowired
-	private PharmacyAdminService pharmacyAdminService;
-
-	@Autowired
 	private OrderItemService orderItemService;
 	
 	@Autowired
 	private SupplierService supplierService;
-
-	@Autowired
-	private MedicationService medicationService;
 
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<OrderDTO>> getAllOrders() {
@@ -143,38 +137,7 @@ public class OrderController {
 
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<OrderDTO> saveOrder(@RequestBody OrderWithOrderItemsDTO orderDTO) {
-		Order order = new Order();
-		// preuzimanje datuma
-		order.setDueDate(LocalDate.parse(orderDTO.getDueDate()));
-		// postavljanje admina
-		PharmacyAdmin pharmacyAdmin = pharmacyAdminService.findOneByUsername(orderDTO.getPharmacyAdmin().getUsername());
-		order.setPharmacyAdmin(pharmacyAdmin);
-		// postavljanje apoteke
-		Pharmacy pharmacy = pharmacyService.findOne(pharmacyAdmin.getPharmacy().getId());
-		order.setPharmacy(pharmacy);
-		// podesavanje statusa
-		order.setStatus(OrderStatus.NEW);
-		// nije obrisana
-		order.setDeleted(false);
-		// cuvamo order
-		orderService.save(order);
-
-		// kreiranje svih odabranih orderItem-a
-		for (OrderItemDTO orderItemDto : orderDTO.getOrderItems()) {
-			OrderItem orderItem = new OrderItem();
-			// postavljanje lijeka
-			Medication medication = medicationService.findOne(orderItemDto.getMedication().getId());
-			orderItem.setMedication(medication);
-			// postavljanje kolicine
-			orderItem.setQuantity(orderItemDto.getQuantity());
-			// postavljanje porudzbine za koju je vezan
-			orderItem.setOrder(order);
-			// nije obrisan
-			orderItem.setDeleted(false);
-			orderItemService.save(orderItem);
-			order.addOrderItem(orderItem);
-		}
-		
+		Order order = orderService.createOrder(orderDTO);
 		return new ResponseEntity<>(new OrderWithOrderItemsDTO(order), HttpStatus.CREATED);
 	}
 

@@ -129,10 +129,9 @@ public class PatientService {
 		patientRepository.updateGoldCategory(silverPoints);
 	}
 
-	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Patient updatePatient(PatientDTO patientDTO) {
 		
-
 		Patient p = this.findOne(patientDTO.getId());
 		if (p == null) {
 			return null;

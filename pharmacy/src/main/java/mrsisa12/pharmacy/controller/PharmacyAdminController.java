@@ -44,6 +44,7 @@ public class PharmacyAdminController
 	@Autowired
 	EmailService emailService;
 	
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@GetMapping(value = "/{username}")
 	public ResponseEntity<PharmacyAdminDTO> getPharmacyAdminByUsername(@PathVariable String username) {
 
