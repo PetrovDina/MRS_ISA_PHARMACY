@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -68,7 +67,7 @@ public class PatientServiceTest {
 		PatientDTO patientDTO = new PatientDTO(patientMock);
 		patientDTO.setId(patientMock.getId());
 		
-		when(patientRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of((patientMock)));
+		when(patientRepositoryMock.findById(patientMock.getId())).thenReturn(Optional.of((patientMock)));
 
 		patientMock = patientService.updatePatient(patientDTO);
 		assertEquals(patientMock.getFirstName(), "Branislava");
