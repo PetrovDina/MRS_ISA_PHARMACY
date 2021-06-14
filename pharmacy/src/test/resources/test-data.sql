@@ -7,7 +7,7 @@ insert into medication (rating, name, manufacturer, prescriptionReq, form, descr
 insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Fervex', 'Upsa', 'False', 'POWDER', 'Za efikasno uklanjanje simptoma prehlade i gripe.', 'Neki sadrzaj 4', 7);
 insert into medication (rating, name, manufacturer, prescriptionReq, form, description, content, loyaltyPoints) values (0, 'Amoksicilin', 'Belupo', 'True', 'CAPSULE', 'Antibiotski lek za ...', 'Neki sadrzaj 5', 1);
 
-insert into loyalty_program (afterAppointment, maxPointsRegular, maxPointsSilver, silverDis, goldDis) values (5, 200, 500, 10, 30);
+insert into loyalty_program (afterAppointment, maxPointsRegular, maxPointsSilver, silverDis, goldDis, version) values (5, 200, 500, 10, 30, 0);
 
 insert into alternative_medications (medication_id, alternative_id) values (1, 5);
 insert into alternative_medications (medication_id, alternative_id) values (1, 3);
@@ -200,7 +200,7 @@ INSERT INTO user_role (user_id, role_id) VALUES (19, 2); --  ROLE_SYSTEM_ADMIN
 
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 1, 1, 3, 350, '1.25.2021.', 'COMPLETED', 'rsrvtion01'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 2, 2, 10, 410, '5.21.2021.', 'CREATED', 'rsrvtion02'); --za sad americki format dok ne skontamo kako drugacije
-insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 3, 1, 1, 200, '6.13.2021.', 'CREATED', 'rsrvtion03'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 3, 1, 1, 200, '8.13.2021.', 'CREATED', 'rsrvtion03'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 4, 2, 1, 370, '4.28.2021.', 'CREATED', 'rsrvtion04'); --za sad americki format dok ne skontamo kako drugacije
 
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 26], "startTime": [8, 0, 0], "endDate": [2021, 7, 26], "endTime": [9, 0, 0]}', 4, 2000, 1, 'False');
@@ -263,28 +263,28 @@ insert into offers (deliveryDueDate, price, order_id, supplier_id, status) value
 insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-17', 4000, 3, 13, 'PENDING');
 insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-16', 7000, 3, 16, 'PENDING');
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Losa usluga generalno.', null);
+insert into complaint (patient_id, system_admin_id, content, response, version) values (2, null, 'Losa usluga generalno.', null, 0);
 insert into ComplaintPharmacy(pharmacy_id, id) values (1, 1);
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Losa higijena.', null);
+insert into complaint (patient_id, system_admin_id, content, response, version) values (2, null, 'Losa higijena.', null, 0);
 insert into ComplaintPharmacy(pharmacy_id, id) values (2, 2);
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', null);
+insert into complaint (patient_id, system_admin_id, content, response, version) values (2, null, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', null, 0);
 insert into ComplaintPharmacy(pharmacy_id, id) values (3, 3);
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, 1, 'Farmaceut hteo da vrsi psihicko nasilje nadamnome.', 'Farmaceut kaze nije.');
+insert into complaint (patient_id, system_admin_id, content, response, version) values (2, 1, 'Farmaceut hteo da vrsi psihicko nasilje nadamnome.', 'Farmaceut kaze nije.', 0);
 insert into ComplaintPharmacy(pharmacy_id, id) values (3, 4);
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, 1, 'Lekovima istekao rok.', 'Ma to nije tacno.');
+insert into complaint (patient_id, system_admin_id, content, response, version) values (2, 1, 'Lekovima istekao rok.', 'Ma to nije tacno.', 0);
 insert into ComplaintPharmacy(pharmacy_id, id) values (2, 5);
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Dermatologa interesuje ga ono sto radi.', null);
+insert into complaint (patient_id, system_admin_id, content, response, version) values (2, null, 'Dermatologa interesuje ga ono sto radi.', null, 0);
 insert into ComplaintEmployee(employee_id, id) values (4, 6);
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, null, 'Zakasnio na pregled.', null);
+insert into complaint (patient_id, system_admin_id, content, response, version) values (2, null, 'Zakasnio na pregled.', null, 0);
 insert into ComplaintEmployee(employee_id, id) values (5, 7);
 
-insert into complaint (patient_id, system_admin_id, content, response) values (2, 1, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', 'Farmaceut kaze nije.');
+insert into complaint (patient_id, system_admin_id, content, response, version) values (2, 1, 'Farmaceut hteo da vrsi fizicko nasilje nadamnome.', 'Farmaceut kaze nije.', 0);
 insert into ComplaintEmployee(employee_id, id) values (7, 8);
 
 insert into therapy (patient_id, prescribedDate, code, status, pharmacy_id) values (2, '2021-05-14', 'code123456', 'COMPLETED', 1);
