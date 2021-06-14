@@ -2,7 +2,7 @@ matrix:
 
   include:
 
-    - sudo: required
+    - sudo: true
       language: java
       jdk: oraclejdk11
       services:
