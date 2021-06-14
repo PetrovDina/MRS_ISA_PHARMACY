@@ -33,8 +33,8 @@ public interface PharmacyStorageItemRepository extends JpaRepository<PharmacySto
 	public PharmacyStorageItem findOneWithMedication(Long pharmacyStorageItemId);
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
-	@Query("select s from PharmacyStorageItem s where s.medication.id =?1 and s.pharmacy.id =?2")
 	@QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="0")})
+	@Query("select s from PharmacyStorageItem s where s.medication.id =?1 and s.pharmacy.id =?2")
 	public PharmacyStorageItem findOneWithMedicationAndPharmacy(Long medicationId, Long pharmacyId);
 	
 	@Query("select s from PharmacyStorageItem s where s.pharmacy.id =?1 and s.counter > 0")
