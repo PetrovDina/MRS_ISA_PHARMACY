@@ -108,11 +108,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-			    <groupId>com.rimerosolutions.maven.plugins</groupId>
-			    <artifactId>wrapper-maven-plugin</artifactId>
-			    <version>0.0.7</version>
-			</plugin>
 		</plugins>
 	</build>
 </project>
