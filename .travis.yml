@@ -1,0 +1,30 @@
+matrix:
+
+  include:
+
+    - language: java
+      jdk: oraclejdk11
+      services:
+        - postgresql
+      before_install:
+        - cd pharmacy
+        - chmod +x mvnw
+
+      script:
+        - ./mvnw clean install -DskipTests=false -B
+      dist: trusty
+      deploy:
+        provider: heroku
+        api_key: $HEROKU_API_KEY
+        app: mrs-isa-pharmacy
+        
+    - language: node_js
+      node_js:
+      - "node"
+      cache: npm
+      script: 
+        - cd pharmacy-front
+      deploy:
+        provider: heroku
+        api_key: $HEROKU_API_KEY
+        app: mrs-isa-pharmacy-front
