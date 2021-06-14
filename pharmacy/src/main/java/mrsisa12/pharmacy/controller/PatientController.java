@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Propagation;
@@ -179,12 +180,16 @@ public class PatientController {
 
     	Patient p = patientService.updatePatient(patientDTO);
 		
-		if (p == null) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-		}
-
+    	try {
+    		if (p == null) {
+    			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    		}
+    		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.OK);
+    		
+    	}catch (ObjectOptimisticLockingFailureException e){
+    		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
 		
-		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.OK);
 	}
 	
 	@SuppressWarnings("deprecation")

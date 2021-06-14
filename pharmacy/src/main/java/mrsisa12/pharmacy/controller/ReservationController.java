@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.hibernate.dialect.lock.PessimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,15 +69,21 @@ public class ReservationController {
 	public ResponseEntity<ReservationDTO> cancelReservation(@RequestParam Long reservationId, @RequestParam String patientUsername) {
 		
 		
-		Reservation reservation = reservationService.cancelReservation(reservationId, patientUsername);
+		try {
+			Reservation reservation = reservationService.cancelReservation(reservationId, patientUsername);
 
-		if(reservation != null) {
-			
+			if(reservation != null) {
+				
 
-            return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.OK);
-        }
-        else
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	            return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.OK);
+	        }
+	        else
+	            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}catch(PessimisticEntityLockException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+		
+		
 	}
 	
 	@PreAuthorize("hasRole('PATIENT')")
@@ -90,6 +97,8 @@ public class ReservationController {
 
 		}catch(IllegalArgumentException e) {
 			return new ResponseEntity<>("Unfortunately, we don't have enough medicine in storage. Please try again later.", HttpStatus.BAD_REQUEST);
+		}catch(PessimisticEntityLockException e) {
+			return new ResponseEntity<>("Please try again later.", HttpStatus.BAD_REQUEST);
 		}
 		
 	}
