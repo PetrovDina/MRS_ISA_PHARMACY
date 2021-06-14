@@ -2,7 +2,8 @@ matrix:
 
   include:
 
-    - language: java
+    - sudo: required
+      language: java
       jdk: oraclejdk11
       services:
         - postgresql
