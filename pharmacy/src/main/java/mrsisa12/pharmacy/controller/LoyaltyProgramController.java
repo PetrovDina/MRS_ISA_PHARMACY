@@ -3,7 +3,6 @@ package mrsisa12.pharmacy.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,7 +39,7 @@ public class LoyaltyProgramController {
 			
 			return new ResponseEntity<>(new LoyaltyProgramDTO(loyaltyProgram), HttpStatus.OK);
 		}
-		catch (ObjectOptimisticLockingFailureException e)
+		catch (Exception e)
 		{
 			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 		}
