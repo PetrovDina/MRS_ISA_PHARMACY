@@ -7,11 +7,15 @@ matrix:
       services:
         - postgresql
       before_install:
-        - chmod +x pharmacy/mvnw
+        - cd pharmacy
+        - chmod +x mvnw
 
       script:
-        - ./pharmacy/mvnw clean install -DskipTests=false -B
+        - ./mvnw clean install -DskipTests=false -B
       dist: trusty
+
+      before-deploy:
+        - cd ..
 
       deploy:
         provider: heroku
@@ -24,7 +28,7 @@ matrix:
       cache: npm
       script: 
         - cd pharmacy-front
-        
+      
       deploy:
         provider: heroku
         api_key: $HEROKU_API_KEY
