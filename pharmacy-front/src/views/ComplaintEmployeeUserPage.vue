@@ -11,11 +11,11 @@
         </v-card>
 
         <TabNav
-            :tabs="['Not responsed', 'Responsed']"
+            :tabs="['Not responded', 'Responded']"
             :selected="selected"
             @selected="setSelected"
         >
-            <Tab :isSelected="selected === 'Not responsed'">
+            <Tab :isSelected="selected === 'Not responded'">
 
                 <ComplaintEmployeeUserViewTable
                     :complaints="complaints">
@@ -23,7 +23,7 @@
 
             </Tab>
 
-            <Tab :isSelected="selected === 'Responsed'">
+            <Tab :isSelected="selected === 'Responded'">
 
                 <ComplaintEmployeeUserViewTable
                     :complaints="responsedComplaints">
@@ -55,7 +55,7 @@ export default {
         return {
             complaints: [],
             responsedComplaints: [],
-            selected: "Not responsed"
+            selected: "Not responded"
         }
     },
 

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,6 @@ import mrsisa12.pharmacy.complaint.dto.ComplaintUserPharmacyResponseDTO;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.ComplaintPharmacy;
 import mrsisa12.pharmacy.model.Patient;
-import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.SystemAdmin;
 import mrsisa12.pharmacy.service.ComplaintPharmacyService;
 import mrsisa12.pharmacy.service.PatientService;
@@ -58,6 +58,7 @@ public class ComplaintPharmacyController {
 		complaintPharmacy.setPatient(patientService.findByUsername(complaintDTO.getPatientUsername()));
 		complaintPharmacy.setPharmacy(pharmacyService.findOne(complaintDTO.getPharmacyId()));
 		complaintPharmacy.setContent(complaintDTO.getContent());
+		complaintPharmacy.setVersion((long)0);
 		
 		complaintPharmacyService.save(complaintPharmacy);
 		
@@ -94,17 +95,27 @@ public class ComplaintPharmacyController {
 	{
 		ComplaintPharmacy complaintPharmacy = complaintPharmacyService.findOneById(complaintDTO.getId());
 		SystemAdmin systemAdmin = systemAdminService.findOneByUsername(complaintDTO.getSystemAdminUsername());
+		String response = complaintDTO.getResponse();
+		String patientUsername = complaintDTO.getPatientUsername();
+		Long pharmacyId = complaintDTO.getPharmacyId();
 		
-		complaintPharmacy.setResponse(complaintDTO.getResponse());
-		complaintPharmacy.setSystemAdmin(systemAdmin);
-		
-		complaintPharmacyService.save(complaintPharmacy);
-		
-		Patient patient = patientService.findByUsername(complaintDTO.getPatientUsername());
-		Pharmacy pharmacy = pharmacyService.findOne(complaintDTO.getPharmacyId());
-		emailService.sendEmailToPatientComplaintPharmacyResponse(patient, systemAdmin, pharmacy);
-
-		return new ResponseEntity<>(new ComplaintPharmacyDTO(complaintPharmacy), HttpStatus.OK);
+		try
+		{
+			boolean res;
+			res = complaintPharmacyService.responseToComplaint(complaintPharmacy, systemAdmin, response, patientUsername, pharmacyId);
+			if(res)
+			{
+				return new ResponseEntity<>(new ComplaintPharmacyDTO(complaintPharmacy), HttpStatus.OK);
+			}
+			else
+			{
+				return new ResponseEntity<>(null, HttpStatus.CONFLICT); 
+			}
+		}
+		catch(ObjectOptimisticLockingFailureException e)
+		{
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		}
 	}
 	
 	@PreAuthorize("hasRole('SYSTEM_ADMIN')")

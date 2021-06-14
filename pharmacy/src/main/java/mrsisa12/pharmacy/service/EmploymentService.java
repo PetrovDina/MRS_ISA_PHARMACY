@@ -68,7 +68,6 @@ public class EmploymentService {
 			LocalTime workStartTime = e.getWorkTime().getStartTime();
 			LocalTime workEndTime = e.getWorkTime().getEndTime();
 			if (startTime.isAfter(workStartTime) && startTime.isBefore(workEndTime.minusHours(1).plusMinutes(1))) {//todo dodaj pravo trajanje pregleda a ne 1h
-				System.out.println(e.getEmployee().getFirstName());
 			
 				matches.add(e);
 			}

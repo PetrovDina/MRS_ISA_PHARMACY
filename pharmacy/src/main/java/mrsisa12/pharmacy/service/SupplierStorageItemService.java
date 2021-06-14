@@ -55,7 +55,6 @@ public class SupplierStorageItemService {
 	public void updateSupplierStorageItemReservedQuantity(Medication medication, Supplier supplier, int quantityToReserve) 
     {
         SupplierStorageItem supplierStorageItem = supplierStorageItemRepository.findOneByMedication(medication, supplier);
-        System.out.println(supplierStorageItem);
         supplierStorageItem.setReservedQuantity(supplierStorageItem.getReservedQuantity() + quantityToReserve);
         supplierStorageItemRepository.save(supplierStorageItem);
     }

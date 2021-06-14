@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import mrsisa12.pharmacy.dto.LoyaltyProgramDTO;
 import mrsisa12.pharmacy.model.LoyaltyProgram;
 import mrsisa12.pharmacy.service.LoyaltyProgramService;
-import mrsisa12.pharmacy.service.PatientService;
 
 @RestController
 @RequestMapping("/loyalty")
@@ -21,9 +20,6 @@ public class LoyaltyProgramController {
 	
 	@Autowired
 	private LoyaltyProgramService loyaltyProgramService;
-	
-	@Autowired
-	private PatientService patientService;
 	
 	@PreAuthorize("hasRole('SYSTEM_ADMIN') or hasRole('PATIENT')")
 	@GetMapping(value = "/getLoyalty")
@@ -37,19 +33,16 @@ public class LoyaltyProgramController {
 	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	@PutMapping(value = "/updateLoyalty", consumes = "application/json")
 	public ResponseEntity<LoyaltyProgramDTO> updateMedication(@RequestBody LoyaltyProgramDTO loyaltyProgramDTO) {
-
-		LoyaltyProgram loyaltyProgram = loyaltyProgramService.getLoyaltyProgram();
-		
-		loyaltyProgram.setAfterAppointment(loyaltyProgramDTO.getAfterAppointment());
-		loyaltyProgram.setMaxPointsRegular(loyaltyProgramDTO.getMaxPointsRegular());
-		loyaltyProgram.setMaxPointsSilver(loyaltyProgramDTO.getMaxPointsSilver());
-		loyaltyProgram.setSilverDis(loyaltyProgramDTO.getSilverDis());
-		loyaltyProgram.setGoldDis(loyaltyProgramDTO.getGoldDis());
-		
-		loyaltyProgramService.save(loyaltyProgram);
-		patientService.updateCategories(loyaltyProgram.getMaxPointsRegular(), loyaltyProgram.getMaxPointsSilver());
-		
-		return new ResponseEntity<>(new LoyaltyProgramDTO(loyaltyProgram), HttpStatus.OK);
+		try 
+		{
+			LoyaltyProgram loyaltyProgram = loyaltyProgramService.updateLoyaltyProgram(loyaltyProgramDTO);
+			
+			return new ResponseEntity<>(new LoyaltyProgramDTO(loyaltyProgram), HttpStatus.OK);
+		}
+		catch (Exception e)
+		{
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		}
 	}
 
 }

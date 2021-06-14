@@ -2,7 +2,10 @@ package mrsisa12.pharmacy.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.dto.LoyaltyProgramDTO;
 import mrsisa12.pharmacy.model.LoyaltyProgram;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.enums.PatientCategory;
@@ -14,6 +17,9 @@ public class LoyaltyProgramService {
 	@Autowired
 	private LoyaltyProgramRepository loyaltyProgramRepository;
 	
+	@Autowired
+	private PatientService patientService;
+	
 	@SuppressWarnings("deprecation")
 	public LoyaltyProgram getLoyaltyProgram()
 	{
@@ -24,6 +30,51 @@ public class LoyaltyProgramService {
 	{
 		return loyaltyProgramRepository.save(loyaltyProgram);
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public LoyaltyProgram updateLoyaltyProgram(LoyaltyProgramDTO loyaltyProgramDTO)
+	{
+		LoyaltyProgram loyaltyProgram = this.getLoyaltyProgram();
+		
+		if(isSomeFiledInvalid(loyaltyProgram, loyaltyProgramDTO))
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		loyaltyProgram.setAfterAppointment(loyaltyProgramDTO.getAfterAppointment());
+		loyaltyProgram.setMaxPointsRegular(loyaltyProgramDTO.getMaxPointsRegular());
+		loyaltyProgram.setMaxPointsSilver(loyaltyProgramDTO.getMaxPointsSilver());
+		loyaltyProgram.setSilverDis(loyaltyProgramDTO.getSilverDis());
+		loyaltyProgram.setGoldDis(loyaltyProgramDTO.getGoldDis());
+		
+		this.save(loyaltyProgram);
+		
+		patientService.updateCategories(loyaltyProgram.getMaxPointsRegular(), loyaltyProgram.getMaxPointsSilver());
+		
+		return loyaltyProgram;
+	}
+	
+	public boolean isSomeFiledInvalid(LoyaltyProgram loyaltyProgram, LoyaltyProgramDTO loyaltyProgramDTO)
+	{	
+		if(loyaltyProgram.getAfterAppointment().compareTo(loyaltyProgramDTO.getPrevAfterAppointment()) != 0)
+			return true;
+
+		if(loyaltyProgram.getMaxPointsRegular().compareTo(loyaltyProgramDTO.getPrevMaxPointsRegular()) != 0)
+			return true;
+		
+		if(loyaltyProgram.getMaxPointsSilver().compareTo(loyaltyProgramDTO.getPrevMaxPointsSilver()) != 0)
+			return true;
+		
+		if(loyaltyProgram.getSilverDis().compareTo(loyaltyProgramDTO.getSilverDis()) != 0)
+			return true;
+
+		if(loyaltyProgram.getGoldDis().compareTo(loyaltyProgramDTO.getPrevGoldDis()) != 0)
+			return true;
+
+		return false;
+	}
+	
+	
 	
 	public Integer getDiscount(Patient patient)
 	{
@@ -85,9 +136,9 @@ public class LoyaltyProgramService {
 		if(patient.getCategory() != PatientCategory.REGULAR)
 		{
 			message += " You have gained discount of " + this.getDiscount(patient) + "% for each instance of medication because of your "
-					+ "loyalty program category. ";
+					+ "loyalty program category.";
 		}
-		message += "Loyalty points earned with this purchase: " + pointsEarned + ".";
+		message += " Loyalty points earned with this purchase: " + pointsEarned + ".";
 		
 		return message;
 	}
@@ -98,9 +149,9 @@ public class LoyaltyProgramService {
 		if(patient.getCategory() != PatientCategory.REGULAR)
 		{
 			message += " You have discount of " + this.getDiscount(patient) + "% because of your "
-					+ "loyalty program cateogry. ";
+					+ "loyalty program cateogry.";
 		}
-		message += "Loyalty points earned with this appointment bookage: " + pointsEarned + ".";
+		message += " Loyalty points earned with this appointment bookage: " + pointsEarned + ".";
 		
 		return message;
 	}

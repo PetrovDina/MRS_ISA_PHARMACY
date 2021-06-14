@@ -9,8 +9,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.repository.PatientRepository;
@@ -20,6 +22,9 @@ public class PatientService {
 
 	@Autowired
 	private PatientRepository patientRepository;
+	
+	@Autowired
+	private LocationService locationService;
 	
 	@Autowired
 	private PharmacyService pharmacyService;
@@ -48,6 +53,7 @@ public class PatientService {
 	}
 
 	public Patient findOne(Long id) {
+
 		return patientRepository.findById(id).orElseGet(null);
 	}
 	
@@ -101,6 +107,7 @@ public class PatientService {
 
 	}
 	
+    @Transactional(propagation = Propagation.REQUIRED)
 	@EventListener(ApplicationReadyEvent.class)
 	public void resetPenals() {
     	if (LocalDate.now().getDayOfMonth() == 1) {
@@ -120,6 +127,23 @@ public class PatientService {
 		patientRepository.updateRegularCategory(regularPoints);
 		patientRepository.updateSilverCategory(regularPoints, silverPoints);
 		patientRepository.updateGoldCategory(silverPoints);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Patient updatePatient(PatientDTO patientDTO) {
+		
+		Patient p = this.findOne(patientDTO.getId());
+		if (p == null) {
+			return null;
+		}
+
+		p.setFirstName(patientDTO.getFirstName());
+		p.setLastName(patientDTO.getLastName());
+		p.setUsername(patientDTO.getUsername());
+		p.setLocation(patientDTO.getLocation());
+		this.save(p);
+		locationService.save(p.getLocation());
+		return p;
 	}
 
 

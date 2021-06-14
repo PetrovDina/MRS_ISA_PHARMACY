@@ -11,6 +11,12 @@ public class LoyaltyProgramDTO {
 	private Integer silverDis;
 	private Integer goldDis;
 	
+	private Integer prevAfterAppointment;
+	private Integer prevMaxPointsRegular;
+	private Integer prevMaxPointsSilver;
+	private Integer prevSilverDis;
+	private Integer prevGoldDis;
+	
 	public LoyaltyProgramDTO() { }
 	
 	public LoyaltyProgramDTO(Long id, Integer afterAppointment, Integer maxPointsRegular, Integer maxPointsSilver,
@@ -76,5 +82,47 @@ public class LoyaltyProgramDTO {
 	public void setGoldDis(Integer goldDis) {
 		this.goldDis = goldDis;
 	}
+
+	public Integer getPrevAfterAppointment() {
+		return prevAfterAppointment;
+	}
+
+	public void setPrevAfterAppointment(Integer prevAfterAppointment) {
+		this.prevAfterAppointment = prevAfterAppointment;
+	}
+
+	public Integer getPrevMaxPointsRegular() {
+		return prevMaxPointsRegular;
+	}
+
+	public void setPrevMaxPointsRegular(Integer prevMaxPointsRegular) {
+		this.prevMaxPointsRegular = prevMaxPointsRegular;
+	}
+
+	public Integer getPrevMaxPointsSilver() {
+		return prevMaxPointsSilver;
+	}
+
+	public void setPrevMaxPointsSilver(Integer prevMaxPointsSilver) {
+		this.prevMaxPointsSilver = prevMaxPointsSilver;
+	}
+
+	public Integer getPrevSilverDis() {
+		return prevSilverDis;
+	}
+
+	public void setPrevSilverDis(Integer prevSilverDis) {
+		this.prevSilverDis = prevSilverDis;
+	}
+
+	public Integer getPrevGoldDis() {
+		return prevGoldDis;
+	}
+
+	public void setPrevGoldDis(Integer prevGoldDis) {
+		this.prevGoldDis = prevGoldDis;
+	}
+	
+	
 
 }

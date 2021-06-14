@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.EmployeeDTO;
-import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.dto.PlainEmployeeDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
@@ -169,7 +168,6 @@ public class EmployeeController {
 		p.setLastName(employeeDTO.getLastName());
 		p.setUsername(employeeDTO.getUsername());
 		p.setLocation(employeeDTO.getLocation());
-		System.err.println(p.getLocation().getStreet());
 		employeeService.save(p);
 		locationService.save(p.getLocation());
 		return new ResponseEntity<>(new EmployeeDTO(p), HttpStatus.CREATED);

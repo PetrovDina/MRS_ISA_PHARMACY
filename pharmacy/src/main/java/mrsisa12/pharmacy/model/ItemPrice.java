@@ -14,8 +14,6 @@ import org.hibernate.annotations.TypeDef;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 
-import mrsisa12.pharmacy.dto.ItemPriceDTO;
-
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 
 @Entity

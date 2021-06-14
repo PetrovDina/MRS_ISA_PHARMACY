@@ -1,10 +1,5 @@
 package mrsisa12.pharmacy.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Type;
@@ -46,16 +41,12 @@ public class Appointment {
 	@Column(columnDefinition = "jsonb", name = "timePeriod")
 	private TimePeriod timePeriod;
 	
-	
 	@Column(name="price", unique=false, nullable=false)
 	private double price;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PHARMACY_ID", referencedColumnName = "ID")
 	private Pharmacy pharmacy;
-	
-	
-//	private Report report;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "ID")
@@ -70,6 +61,10 @@ public class Appointment {
 	
 	@Column(name = "report")
 	private String report;
+	
+	@Version
+	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	private Long version;
 	
 	public Appointment() {}
 	

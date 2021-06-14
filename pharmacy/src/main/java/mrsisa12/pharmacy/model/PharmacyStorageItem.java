@@ -47,6 +47,8 @@ public class PharmacyStorageItem {
 	
 	@Column(name = "counter")
 	private int counter;
+	
+	
 
 	public PharmacyStorageItem() {
 	}

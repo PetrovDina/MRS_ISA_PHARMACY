@@ -3,6 +3,9 @@ package mrsisa12.pharmacy.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
@@ -44,17 +47,28 @@ public class SchedulerController {
 	//u 2 ujutru svakog prvog u mesecu - At 02:00 on day-of-month 1.
 	@Scheduled(cron = "0 0 2 1 * *")
 	public void resetPenals() {
-		logger.info("> SYSTEM CLOCK: - resetting patients' penals");
-		patientService.resetPenals();
-		logger.info("< SYSTEM CLOCK: - finished resetting patients' penals");
+		
+		try {
+			logger.info("> SYSTEM CLOCK: - resetting patients' penals");
+			patientService.resetPenals();
+			logger.info("< SYSTEM CLOCK: - finished resetting patients' penals");
+		}catch (ObjectOptimisticLockingFailureException e){
+			return;
+        }
+		
 	}
 	
 	//u 2 ujutru svakog dana - At 02:00 every single day
 	@Scheduled(cron = "0 0 2 * * *")
 	public void checkExpiredAppointments() {
-		logger.info("> SYSTEM CLOCK: - checking expired appointments");
-		appointmentService.checkExpiredAppointments();
-		logger.info("< SYSTEM CLOCK: - finished checking expired appointments");
+		try {
+			logger.info("> SYSTEM CLOCK: - checking expired appointments");
+			appointmentService.checkExpiredAppointments();
+			logger.info("< SYSTEM CLOCK: - finished checking expired appointments");
+		}catch (ObjectOptimisticLockingFailureException e){
+			return;
+        }
+		
 	}
 
 	

@@ -12,6 +12,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "complaint")
@@ -36,6 +37,9 @@ public abstract class Complaint {
 	
 	@Column(nullable=true)
 	private String response;
+	
+	@Version
+	private Long version;
 	
 	public Complaint() { }
 
@@ -87,4 +91,13 @@ public abstract class Complaint {
 	public void setResponse(String response) {
 		this.response = response;
 	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+	
 }

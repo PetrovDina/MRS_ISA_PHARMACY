@@ -17,8 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
 import mrsisa12.pharmacy.model.enums.EPrescriptionStatus;
 
 @Entity
@@ -119,9 +117,8 @@ public class Therapy {
 	
 	public void removeAllPrescriptionItems() {
 		if (prescriptionItems != null) {
-			TherapyItem oldItem;
 			for (Iterator<TherapyItem> iter = getIteratorPrescriptionItem(); iter.hasNext();) {
-				oldItem = iter.next();
+				iter.next();
 				iter.remove();
 			}
 		}

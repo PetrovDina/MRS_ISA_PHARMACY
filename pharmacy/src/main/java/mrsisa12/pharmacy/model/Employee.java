@@ -13,8 +13,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 import mrsisa12.pharmacy.model.enums.Gender;
 import mrsisa12.pharmacy.model.enums.UserStatus;
 

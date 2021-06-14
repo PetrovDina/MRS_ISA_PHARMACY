@@ -185,14 +185,28 @@ export default {
                         }
                     })
                     .then((response) => {
+                        if(response.data.id == -1)
+                            this.$toasted.show("Action failed, please try again leater.", {
+                                theme: "toasted-primary",
+                                position: "top-center",
+                                duration: 2000,
+                            })
+                        else
                             this.$toasted.show("An appointment has been successfully added!", {
                                 theme: "toasted-primary",
                                 position: "top-center",
                                 duration: 2000,
                             })
-                            this.closeWindow();    
-                        }
-                    )
+                        this.closeWindow();    
+                    }).catch((response) => {
+                        console.log(response.data);
+                        this.$toasted.show("Action failed, please try again leater.", {
+                                theme: "toasted-primary",
+                                position: "top-center",
+                                duration: 2000,
+                            })
+                        this.closeWindow();
+                    })
                 }
             }
         },

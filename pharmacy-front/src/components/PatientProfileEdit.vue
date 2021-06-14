@@ -185,6 +185,7 @@ export default {
                     })
                     .catch((response) => alert(response));
             }
+
             else if(localStorage.getItem('USER_TYPE') == 'PHARMACIST' 
             || localStorage.getItem('USER_TYPE') == 'DERMATOLOGIST'){
                 client({
@@ -201,6 +202,7 @@ export default {
                     .catch((response) => alert(response));
                 
             }
+
             else {
                 client({
                     url: "/patient",
@@ -208,12 +210,12 @@ export default {
                     data: this.tempData,
                 })
                     .then((response) => {
-                        //modal window todo
                         $("#exampleModal").modal("show");
                         this.$emit('eventname', response.data);
 
+
                     })
-                    .catch((response) => alert(response));
+                    .catch((response) => console.log(response));
             }
             
         },

@@ -1,7 +1,6 @@
 package mrsisa12.pharmacy.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mrsisa12.pharmacy.dto.EmploymentDTO;
 import mrsisa12.pharmacy.dto.pharmacy.PharmacyDTO;
-import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Pharmacist;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.EmploymentContractType;
-import mrsisa12.pharmacy.service.AppointmentService;
 import mrsisa12.pharmacy.service.EmployeeService;
 import mrsisa12.pharmacy.service.EmploymentService;
-import mrsisa12.pharmacy.service.PatientService;
 import mrsisa12.pharmacy.service.PharmacistService;
 import mrsisa12.pharmacy.service.PharmacyService;
 
@@ -85,14 +81,13 @@ public class EmploymentController {
 		List<Employment> matches = new ArrayList<Employment>();
 
 		for (Employment e : employments) {
-			if (employeeService.checkAppointmentTime(tp, e.getEmployee().getId())) {
+			if (employeeService.checkAppointmentTime(tp, e.getEmployee().getId(), e.getPharmacy())) {
 				matches.add(e);
 			}
 		}
 		// convert employments to DTOs
 		List<EmploymentDTO> employmentsDTO = new ArrayList<>();
 		for (Employment employment : matches) {
-			System.out.println(employment.getId());
 			employmentsDTO.add(new EmploymentDTO(employment));
 		}
 

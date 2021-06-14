@@ -12,6 +12,7 @@ import mrsisa12.pharmacy.dto.PlainEmployeeDTO;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
 import mrsisa12.pharmacy.repository.EmployeeRepository;
@@ -47,25 +48,22 @@ public class EmployeeService {
 		employeeRepository.delete(employee);
 	}
 
-	public boolean checkAppointmentTime(TimePeriod timePeriod, Long id) {
+	public boolean checkAppointmentTime(TimePeriod timePeriod, Long id, Pharmacy pharmacy) {
 
 		Employee employee = employeeRepository.findOneWithAllAppointments(id);
 
-		List<Employment> employments = employmentRepository.findAllByEmployee(employee);
+		List<Employment> employments = employmentRepository.findAllByEmployeeAndPharmacy(employee, pharmacy);
 
 		LocalTime timePeriodSTime = timePeriod.getStartTime();
 		LocalTime timePeriodETime = timePeriod.getEndTime();
-
 		for (Employment employment : employments) {
 			if (!employment.getWorkTime().getStartTime().isBefore(timePeriodSTime)
 					|| !employment.getWorkTime().getEndTime().isAfter(timePeriodETime))
 				return false; // ne upada u radno vrijeme
 		}
-
 		// Ovdje se mora provjeravati i datum i vrijeme
 		for (Appointment appo : employee.getAppointments()) {
-			
-			if (appo.getStatus() != AppointmentStatus.CANCELLED) {
+			if (appo.getStatus() == AppointmentStatus.RESERVED || appo.getStatus() == AppointmentStatus.AVAILABLE) {
 				LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate()
 						.atTime(appo.getTimePeriod().getStartTime());
 				LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
@@ -99,6 +97,10 @@ public class EmployeeService {
 	
 	public Employee findOneByUsernameWithAppointments(String username) {
 		return employeeRepository.findOneByUsernameWithAppointments(username);
+	}
+
+	public Employee findOneEmployee(Long id) {
+		return employeeRepository.findOneEmployee(id);
 	}
 
 }

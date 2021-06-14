@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -14,12 +15,17 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.dto.ReservationDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
 import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
+import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
+import mrsisa12.pharmacy.model.PharmacyStorageItem;
 import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.Therapy;
 import mrsisa12.pharmacy.model.TherapyItem;
@@ -41,6 +47,21 @@ public class ReservationService {
 	
 	@Autowired
 	private PatientService patientService;
+	
+	@Autowired
+	private MedicationService medicationService;
+	
+	@Autowired
+	private PharmacyService pharmacyService;
+	
+	@Autowired
+	private PharmacyStorageItemService pharmacyStorageItemService;
+
+	@Autowired
+	private LoyaltyProgramService loyaltyProgramService;
+	
+	private Random random = new Random();
+    private static final String SOURCES ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 	
 	public Reservation findOne(Long id) {
 		return reservationRepository.findById(id).orElseGet(null);
@@ -96,6 +117,7 @@ public class ReservationService {
     }
     
  
+    @Transactional(propagation = Propagation.REQUIRED)
 	@EventListener(ApplicationReadyEvent.class)
 	public void penaliseUncompletedReservations() {
 		List<Reservation> reservations = reservationRepository.findAllCreated();
@@ -105,6 +127,7 @@ public class ReservationService {
 			
 			//reservation is not picked up and the due date is over => change status and give penalty point
 			if (reservation.getDueDate().before(new Date())) {
+				
 				Patient patient = reservation.getPatient();
 				reservation.setStatus(ReservationStatus.EXPIRED);
 				patient.setPenaltyPoints(patient.getPenaltyPoints() + 1);
@@ -193,5 +216,95 @@ public class ReservationService {
 	public List<Reservation> findAllCompletedByPatientAndMedication(String patientUsername, Long medicationId) {
 		return reservationRepository.findAllCompletedByPatientAndMedication(patientUsername, medicationId);
 	}
+	
+	
+	
+@Transactional(propagation = Propagation.REQUIRED)
+public String saveReservation(ReservationDTO resDTO) throws IllegalArgumentException{
+		
+		Reservation reservation = new Reservation();
+		
+		Pharmacy pharmacy = pharmacyService.findOne(resDTO.getPharmacy().getId());
+		Patient patient = patientService.findByUsername(resDTO.getPatient().getUsername());
+		Medication medication = medicationService.findOne(resDTO.getMedication().getId());
+		
+		reservation.setPharmacy(pharmacy);
+		reservation.setPatient(patient);
+		reservation.setMedication(medication);
+		reservation.setDueDate(resDTO.getDueDate());
+		reservation.setQuantity(resDTO.getQuantity());
+		reservation.setStatus(ReservationStatus.CREATED);
+		
+		
+		//generates code
+		int length = 10;
+        char[] text = new char[length];
+        for (int i = 0; i < length; i++) {
+            text[i] = SOURCES.charAt(random.nextInt(SOURCES.length()));
+        }
+		reservation.setCode(new String(text));
+		
+
+		
+		//pesimisticni pristup metodi repozitorijuma - PESSIMISTIC WRITE
+		PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
+		
+		//provera da li je broj na stanju manji od trazenog i baciti gresku ako jeste *dodato zbog konkurentnosti*
+		
+		if (psi.getQuantity() < resDTO.getQuantity()) {
+			throw new IllegalArgumentException();
+		}
+		psi.setQuantity(psi.getQuantity()-resDTO.getQuantity());
+		pharmacyStorageItemService.save(psi);
+
+		//checking loyalty system price discount
+		double price = resDTO.getMedicationPrice();
+		double finalPrice = loyaltyProgramService.getFinalPrice(price, patient) * reservation.getQuantity();
+		
+		reservation.setMedicationPrice(loyaltyProgramService.getFinalPrice(price, patient));
+		
+		Integer pointsForPatient = medication.getLoyaltyPoints() * reservation.getQuantity();
+		String message = loyaltyProgramService.generateReservationMessage(patient, finalPrice, pointsForPatient);
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		
+
+		reservation = this.save(reservation);
+		
+		// email!
+		String emailBody = "This email is confirmation that you have successfully reserved " + medication.getName() + ". Your unique reservation number is: " + reservation.getCode();
+		EmailContent email = new EmailContent("Medicine reservation confirmation", emailBody);
+		email.addRecipient(reservation.getPatient().getEmail());
+        emailService.sendEmail(email);
+		return message;
+	}
+
+
+@Transactional(propagation = Propagation.REQUIRED)
+public Reservation cancelReservation(Long reservationId, String patientUsername) {	
+	
+	Reservation reservation = this.findOne(reservationId);
+
+	if(reservation != null) {
+		
+		Patient patient = patientService.findByUsername(patientUsername);
+		Integer pointsToLoose = reservation.getMedication().getLoyaltyPoints() * reservation.getQuantity();
+		patientService.addPointsAndUpdateCategory(patient, (-pointsToLoose));
+		
+		//setting reservation status to cancelled
+        reservation.setStatus(ReservationStatus.CANCELLED);
+		
+		//updating storage item quantity - pessimistic write!
+		PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(reservation.getMedication().getId(), reservation.getPharmacy().getId());
+		psi.setQuantity(psi.getQuantity() + reservation.getQuantity());
+		
+		this.save(reservation);
+		pharmacyStorageItemService.save(psi);
+
+		
+        return reservation;
+    }
+    else
+        return null;
+}
 
 }

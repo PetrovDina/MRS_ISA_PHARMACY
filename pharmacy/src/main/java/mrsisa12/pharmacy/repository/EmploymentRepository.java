@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Employment;
+import mrsisa12.pharmacy.model.Pharmacy;
 
 public interface EmploymentRepository extends JpaRepository<Employment, Long>{
 
@@ -30,5 +31,8 @@ public interface EmploymentRepository extends JpaRepository<Employment, Long>{
 	
 	@Query("select emp from Employment emp where emp.contractType = 'PHARMACIST_CONTRACT' and emp.employee.username = ?1")
 	public Employment findPharmacistEmploymentsByUsername(String username);
+
+	@Query("select emp from Employment emp where emp.employee =?1 and emp.pharmacy =?2")
+	public List<Employment> findAllByEmployeeAndPharmacy(Employee empl, Pharmacy pharmacy);
 
 }

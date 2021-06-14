@@ -27,7 +27,6 @@ import mrsisa12.pharmacy.dto.UserDTO;
 import mrsisa12.pharmacy.dto.UserTokenStateDTO;
 import mrsisa12.pharmacy.model.User;
 import mrsisa12.pharmacy.model.enums.UserStatus;
-import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.UserService;
 import mrsisa12.pharmacy.utils.TokenUtils;
 
@@ -46,10 +45,6 @@ public class UserController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
-	private LocationService locationService;
-	
 
 	// Prvi endpoint koji pogadja korisnik kada se loguje.
 	// Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
@@ -106,7 +101,7 @@ public class UserController {
 		
 		//provera sifre i postavljanje nove!
 		try {
-			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					username, oldPassword));
 			
 			//ispravna lozinka
@@ -185,20 +180,12 @@ public class UserController {
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO) 
 	{
+		User user = userService.updateUser(userDTO);
 
-		User user = userService.findByUsername(userDTO.getUsername());
-
-		if (user == null) {
+		if (user == null) 
+		{
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-
-		user.setFirstName(userDTO.getFirstName());
-		user.setLastName(userDTO.getLastName());
-		user.setUsername(userDTO.getUsername());
-		user.setLocation(userDTO.getLocation());
-		
-		userService.save(user);
-		locationService.save(user.getLocation());
 		
 		return new ResponseEntity<>(new UserDTO(user), HttpStatus.CREATED);
 	}

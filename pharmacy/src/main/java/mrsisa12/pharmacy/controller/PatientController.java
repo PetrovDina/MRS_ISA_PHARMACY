@@ -6,8 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,10 +30,8 @@ import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.enums.PatientCategory;
 import mrsisa12.pharmacy.model.enums.UserStatus;
-import mrsisa12.pharmacy.service.LocationService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
-import mrsisa12.pharmacy.service.PharmacyService;
 import mrsisa12.pharmacy.service.RoleService;
 
 @RestController
@@ -43,12 +44,6 @@ public class PatientController {
 	@Autowired
 	private MedicationService medicationService;
 	
-	@Autowired
-	private LocationService locationService;
-	
-	@Autowired
-	private PharmacyService pharmacyService;
-
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
@@ -178,24 +173,23 @@ public class PatientController {
 		return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 	}
 	
+    @Transactional(propagation = Propagation.REQUIRED)
 	@PreAuthorize("hasRole('PATIENT')")
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patientDTO) {
 
-		Patient p = patientService.findOne(patientDTO.getId());
-
-		if (p == null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-
-		p.setFirstName(patientDTO.getFirstName());
-		p.setLastName(patientDTO.getLastName());
-		p.setUsername(patientDTO.getUsername());
-		p.setLocation(patientDTO.getLocation());
-		System.err.println(p.getLocation().getStreet());
-		patientService.save(p);
-		locationService.save(p.getLocation());
-		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.CREATED);
+    	Patient p = patientService.updatePatient(patientDTO);
+		
+    	try {
+    		if (p == null) {
+    			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    		}
+    		return new ResponseEntity<>(new PatientDTO(p), HttpStatus.OK);
+    		
+    	}catch (ObjectOptimisticLockingFailureException e){
+    		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+		
 	}
 	
 	@SuppressWarnings("deprecation")

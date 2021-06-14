@@ -2,11 +2,16 @@ package mrsisa12.pharmacy.repository;
 
 import java.util.List;
 
+import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
 
@@ -27,6 +32,8 @@ public interface PharmacyStorageItemRepository extends JpaRepository<PharmacySto
 	@Query("select s from PharmacyStorageItem s join fetch s.medication e where s.id =?1")
 	public PharmacyStorageItem findOneWithMedication(Long pharmacyStorageItemId);
 
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="0")})
 	@Query("select s from PharmacyStorageItem s where s.medication.id =?1 and s.pharmacy.id =?2")
 	public PharmacyStorageItem findOneWithMedicationAndPharmacy(Long medicationId, Long pharmacyId);
 	

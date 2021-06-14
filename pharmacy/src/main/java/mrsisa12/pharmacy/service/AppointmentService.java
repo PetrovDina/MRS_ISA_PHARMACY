@@ -1,13 +1,12 @@
 package mrsisa12.pharmacy.service;
 
-import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -17,18 +16,20 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import mrsisa12.pharmacy.dto.AppointmentDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
+import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
-import mrsisa12.pharmacy.model.Pharmacy;
-import mrsisa12.pharmacy.model.Reservation;
 import mrsisa12.pharmacy.model.Employee;
-import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Patient;
+import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.model.enums.AppointmentStatus;
-import mrsisa12.pharmacy.model.enums.ReservationStatus;
+import mrsisa12.pharmacy.model.enums.AppointmentType;
+
 import mrsisa12.pharmacy.repository.AppointmentRepository;
 
 @Service
@@ -36,6 +37,21 @@ public class AppointmentService {
 
 	@Autowired
 	private AppointmentRepository appointmentRepository;
+	
+	@Autowired
+	private PatientService patientService;
+	
+	@Autowired
+	private LoyaltyProgramService loyaltyProgramService;
+	
+	@Autowired
+	private EmployeeService employeeService;
+	
+	@Autowired
+	private PharmacyService pharmacyService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public Appointment findOne(Long id) {
 		return appointmentRepository.findById(id).orElseGet(null);
@@ -216,6 +232,130 @@ public class AppointmentService {
 				appointmentRepository.save(appo);
 			}
 		}
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public String reserveAppointment(String patientUsername, Long appointmentId) {
+		
+		Patient patient = patientService.findByUsername(patientUsername);
+		
+		Appointment appointment = findOne(appointmentId);
+		
+		// provjera da li je neko zauzeo termin
+		if(appointment.getStatus() == AppointmentStatus.RESERVED) {
+			return "Reservation failed, try again leater.";
+		}
+		
+		appointment.setPatient(patient);
+		appointment.setStatus(AppointmentStatus.RESERVED);
+		
+		
+		Double price = appointment.getPrice();
+		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
+		appointment.setPrice(price);
+		
+		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
+		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		
+		appointment = save(appointment);
+		
+		emailService.sendEmailToPatient(appointment, patient);
+		
+		return message;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public String bookPharmacistAppointment(AppointmentDTO appointmentDTO) {
+		
+		Appointment appointment = new Appointment();
+		
+		employeeService.findOneEmployee(appointmentDTO.getEmployee().getId());
+		
+		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
+		
+		TimePeriod tp = new TimePeriod(appointmentDTO.getTimePeriod());
+		
+		for (Appointment appo : employee.getAppointments()) {
+			if(appo.getStatus() == AppointmentStatus.RESERVED) {
+				LocalDateTime eWorkTSDateTime = appo.getTimePeriod().getStartDate().atTime(appo.getTimePeriod().getStartTime());
+				LocalDateTime eWorkTEDateTime = appo.getTimePeriod().getEndDate().atTime(appo.getTimePeriod().getEndTime());
+				if (!(eWorkTSDateTime.isAfter(tp.getEndDate().atTime(tp.getEndTime()))
+						&& eWorkTSDateTime.isAfter(tp.getStartDate().atTime(tp.getStartTime())))
+						&& !(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))
+								&& eWorkTEDateTime.isBefore(tp.getStartDate().atTime(tp.getStartTime())))) {
+						return "You already have an appointment then.";
+				}
+			}
+		}
+		
+		appointment.setEmployee(employee);
+		
+		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
+		appointment.getTimePeriod().setEndTime(appointment.getTimePeriod().getStartTime().plusHours(1));
+		appointment.setStatus(AppointmentStatus.RESERVED); //rezervisemo ga!
+		appointment.setDeleted(false);
+		
+		//postavljamo pacijenta na termin
+		Patient patient = patientService.findByUsername(appointmentDTO.getPatient().getUsername());
+		appointment.setPatient(patient);
+		
+		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
+		
+		appointment.setPharmacy(pharmacy);
+		appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
+		
+		Double price = pharmacy.getAppointmentPriceCatalog().getConsultationPrice();
+		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
+		
+		appointment.setPrice(price);
+		
+		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
+		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		
+		save(appointment);
+		
+		return message;
+	}
+
+	@Transactional
+	public Appointment createDermatologistAppointment(AppointmentDTO appointmentDTO) {
+		
+		Appointment appointment = new Appointment();
+		
+		Employee employee = employeeService.findOneEmployee(appointmentDTO.getEmployee().getId()); // da dobijemo blokadu
+		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
+		
+		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
+		boolean res = employeeService.checkAppointmentTime(new TimePeriod(appointmentDTO.getTimePeriod()),
+				appointmentDTO.getEmployee().getId(), pharmacy);
+		if (!res) {
+			// nije moguce kreirati tada termin
+			appointment.setId(-1L);
+			return appointment;
+		}
+		// postavljamo vrijeme i datum
+		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
+		// postavljamo status da je dostupan jer se kreira
+		appointment.setStatus(AppointmentStatus.AVAILABLE);
+		// postavljamo da je neobrisan
+		appointment.setDeleted(false);
+		// postavljamo dermatologa na termin
+		appointment.setEmployee(employee);
+		
+		appointment.setPatient(null);
+		
+		// postavljanje cijene pregleda kod dermatologa
+		appointment.setPrice(pharmacy.getAppointmentPriceCatalog().getExaminationPrice());
+		
+		// postavljanje apoteke
+		appointment.setPharmacy(pharmacy);
+
+		appointment.setType(AppointmentType.DERMATOLOGIST_EXAMINATION);
+		appointment = save(appointment);
+
+		return appointment;
 	}
 
 }

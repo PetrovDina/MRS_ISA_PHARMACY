@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name="loyalty_program")
@@ -29,6 +30,9 @@ public class LoyaltyProgram {
 	
 	@Column(name = "goldDis", nullable = false)
 	private Integer goldDis;
+	
+	@Version
+	private Long version;
 
 	public LoyaltyProgram() { } 
 	
@@ -89,6 +93,14 @@ public class LoyaltyProgram {
 
 	public void setGoldDis(Integer goldDis) {
 		this.goldDis = goldDis;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 	
 }

@@ -1,7 +1,6 @@
 package mrsisa12.pharmacy.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -284,121 +284,43 @@ public class AppointmentController {
 		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.OK);
 	}
 	
-	
-	//dina pravila za kreiranja termina kod FARMACEUTA!
 	@PreAuthorize("hasRole('PATIENT')")
 	@PostMapping(value = "/savePharmacistAppointment", consumes = "application/json")
 	public ResponseEntity<String> savePharmacistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
-		Appointment appointment = new Appointment();
-
-		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
-		appointment.getTimePeriod().setEndTime(appointment.getTimePeriod().getStartTime().plusHours(1)); //todo promeni da bude pravo trajanje!
-		appointment.setStatus(AppointmentStatus.RESERVED); //rezervisemo ga!
-		appointment.setDeleted(false);
+		String message;
+		try {
+			message = appointmentService.bookPharmacistAppointment(appointmentDTO);
+		}
+		catch (Exception e) {
+			message = "Reservation failed, try again later.";
+		}
 		
-		// postavljamo farmaceuta na termin
-		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
-		appointment.setEmployee(employee);
-		
-		//postavljamo pacijenta na termin
-		Patient patient = patientService.findByUsername(appointmentDTO.getPatient().getUsername());
-		appointment.setPatient(patient);
-		
-		// postavljamo termin farmaceutu
-		employee.addAppointment(appointment);
-		
-		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
-		
-		appointment.setPrice(pharmacy.getAppointmentPriceCatalog().getConsultationPrice());
-		
-		appointment.setPharmacy(pharmacy);
-
-		appointment.setType(AppointmentType.PHARMACIST_CONSULTATION);
-		
-		Double price = appointment.getPrice();
-		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
-		appointment.setPrice(price);
-		
-		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
-		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
-		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
-		
-		
-		appointment = appointmentService.save(appointment);
-		employeeService.save(employee); //idk da l ovo treba
-
 		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
 
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<AppointmentDTO> saveDermatologistAppointment(@RequestBody AppointmentDTO appointmentDTO) {
-		// prilikom kreiranja bih trebao samo da proslijedim id zaposlenog... ID
-		// pacijenta ce se naknadno ubacivati i proglasavati termin zauzetim
-		Appointment appointment = new Appointment();
-
-		// Trebace vjerovatno da se nesto uradi sa datumom.
-		// appointment.setTimePeriod(appointmentDTO.getTimePeriodDTO());
-//		boolean res = employeeService.checkAppointmentTime(new TimePeriod(appointmentDTO.getTimePeriod()),
-//				appointmentDTO.getEmployee().getId());
-//		if (!res) {
-//			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-//		}
-		// postavljamo vrijeme i datum
-		appointment.setTimePeriod(new TimePeriod(appointmentDTO.getTimePeriod()));
-		// postavljamo status da je dostupan jer se kreira
-		appointment.setStatus(AppointmentStatus.AVAILABLE);
-		// postavljamo da je neobrisan
-		appointment.setDeleted(false);
-		// postavljamo dermatologa ili farmaceuta na termin
-		Employee employee = employeeService.findOneWithAllAppointments(appointmentDTO.getEmployee().getId());
-		appointment.setEmployee(employee);
-		// postavljamo termin dermatologu ili farmaceutu
-		employee.addAppointment(appointment);
+		Appointment appointment;
+		try {
+			appointment = appointmentService.createDermatologistAppointment(appointmentDTO);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<AppointmentDTO>(new AppointmentDTO(), HttpStatus.NOT_ACCEPTABLE);
+		}
+		return new ResponseEntity<AppointmentDTO>(new AppointmentDTO(appointment), HttpStatus.CREATED);
 		
-		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
-		
-		// postavljanje cijene pregleda kod dermatologa
-		appointment.setPrice(pharmacy.getAppointmentPriceCatalog().getExaminationPrice());
-		
-		// postavljanje apoteke
-		appointment.setPharmacy(pharmacy);
-
-		//dina: TODO dodaj AppointmentType pravi!
-		appointment.setType(AppointmentType.DERMATOLOGIST_EXAMINATION);
-		appointment = appointmentService.save(appointment);
-
-		return new ResponseEntity<>(new AppointmentDTO(appointment), HttpStatus.CREATED);
 	}
 	
+	//derm
 	@GetMapping(value = "/book")
 	@PreAuthorize("hasRole('PATIENT')")
 	public ResponseEntity<String> reserveAppointment(@RequestParam String patientUsername, @RequestParam Long appointmentId) {
-
-		Patient patient = patientService.findByUsername(patientUsername);
-		
-		Appointment appointment = appointmentService.findOne(appointmentId);
-		appointment.setPatient(patient);
-		appointment.setStatus(AppointmentStatus.RESERVED);
-		
-		Double price = appointment.getPrice();
-		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
-		appointment.setPrice(price);
-		
-		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
-		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
-		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
-		
-		appointment = appointmentService.save(appointment);
-		
-		// email!
-		String emailBody = "This email is confirmation that you have successfully booked your appointment with " 
-		+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() + " at "
-		+ appointment.getTimePeriod().getStartDate() + " " 
-		+ appointment.getTimePeriod().getStartTime();
-		
-		EmailContent email = new EmailContent("Appointment booked", emailBody);
-		email.addRecipient(appointment.getPatient().getEmail());
-        emailService.sendEmail(email);
+		String message;
+		try {
+			message = appointmentService.reserveAppointment(patientUsername, appointmentId);
+		} catch (ObjectOptimisticLockingFailureException e) {
+			message = "Reservation failed, try again leater.";
+		}
 
 		return new ResponseEntity<>(message, HttpStatus.CREATED);
 	}
@@ -485,11 +407,11 @@ public class AppointmentController {
 	public ResponseEntity<List<AppointmentDTO>> getUpcomingAppointmentsForEmployee(@RequestParam("patientUsername") String patientUsername, @RequestParam String employeeUsername) {	
 		Patient patient = patientService.findByUsername(patientUsername);
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
-		TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
+		new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
 		
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
 		for (Appointment appointment : emp.getAppointments()) {
-			LocalDateTime eWorkTEDateTime = appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
+			appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
 			if(appointment.getStatus() == AppointmentStatus.RESERVED && appointment.getPatient().getId().equals(patient.getId()) && !appointment.isDeleted() ) {
 				/*if(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))) {
 					appointment.setStatus(AppointmentStatus.EXPIRED);
@@ -508,11 +430,11 @@ public class AppointmentController {
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
 		String min = minDate.split("T")[0];
 		String max = maxDate.split("T")[0];
-		TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
+		new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
 		
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
 		for (Appointment appointment : emp.getAppointments()) {
-			LocalDateTime eWorkTEDateTime = appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
+			appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
 			if(!appointment.isDeleted() && appointment.getStatus() != AppointmentStatus.AVAILABLE) {
 				boolean afterMin = appointment.getTimePeriod().getStartDate().isAfter(LocalDate.parse(min));
 				boolean equalMin = appointment.getTimePeriod().getStartDate().isEqual(LocalDate.parse(min));
@@ -562,7 +484,7 @@ public class AppointmentController {
 		return new ResponseEntity<>( HttpStatus.OK);
 	}
 		
-	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
+	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST', 'PHARMACY_ADMIN')")
 	@GetMapping(value = "/getAvailableDermAppointments")
 	public ResponseEntity<List<AppointmentDTO>> getAvailableDermAppointments(@RequestParam String employeeUsername,@RequestParam String pharmacyId){
 		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);

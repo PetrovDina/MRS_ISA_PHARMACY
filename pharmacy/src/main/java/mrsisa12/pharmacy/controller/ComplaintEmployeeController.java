@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,6 @@ import mrsisa12.pharmacy.complaint.dto.ComplaintUserEmployeeDTO;
 import mrsisa12.pharmacy.complaint.dto.ComplaintUserEmployeeResponseDTO;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.ComplaintEmployee;
-import mrsisa12.pharmacy.model.Employee;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.SystemAdmin;
 import mrsisa12.pharmacy.service.ComplaintEmployeeService;
@@ -58,6 +58,7 @@ public class ComplaintEmployeeController {
 		complaintEmployee.setPatient(patientService.findByUsername(complaintDTO.getPatientUsername()));
 		complaintEmployee.setEmployee(employeeService.findOneByUsername(complaintDTO.getEmployeeUsername()));
 		complaintEmployee.setContent(complaintDTO.getContent());
+		complaintEmployee.setVersion((long)0);
 		
 		complaintEmployeeService.save(complaintEmployee);
 		
@@ -94,17 +95,28 @@ public class ComplaintEmployeeController {
 	{
 		ComplaintEmployee complaintEmployee = complaintEmployeeService.findOneById(complaintDTO.getId());
 		SystemAdmin systemAdmin = systemAdminService.findOneByUsername(complaintDTO.getSystemAdminUsername());
+		String response = complaintDTO.getResponse();
+		String patientUsername = complaintDTO.getPatientUsername();
+		String employeeUsername = complaintDTO.getEmployeeUsername();
+		complaintEmployee.setVersion((long)1);
 		
-		complaintEmployee.setResponse(complaintDTO.getResponse());
-		complaintEmployee.setSystemAdmin(systemAdmin);
-		
-		complaintEmployeeService.save(complaintEmployee);
-		
-		Patient patient = patientService.findByUsername(complaintDTO.getPatientUsername());
-		Employee employee = employeeService.findOneByUsername(complaintDTO.getEmployeeUsername());
-		emailService.sendEmailToPatientComplaintEmployeeResponse(patient, systemAdmin, employee);
-
-		return new ResponseEntity<>(new ComplaintEmployeeDTO(complaintEmployee), HttpStatus.OK);
+		try
+		{
+			boolean res;
+			res = complaintEmployeeService.responseToComplaint(complaintEmployee, systemAdmin, response, patientUsername, employeeUsername);
+			if(res)
+			{
+				return new ResponseEntity<>(new ComplaintEmployeeDTO(complaintEmployee), HttpStatus.OK);
+			}
+			else
+			{
+				return new ResponseEntity<>(null, HttpStatus.CONFLICT); 
+			}
+		}
+		catch(ObjectOptimisticLockingFailureException e)
+		{
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		}
 	}
 	
 	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
