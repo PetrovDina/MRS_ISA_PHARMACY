@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 const client = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'https://mrs-isa-pharmacy.herokuapp.com/',
 });
 
 client.interceptors.request.use(
