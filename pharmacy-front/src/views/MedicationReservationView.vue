@@ -209,13 +209,8 @@ export default {
             }
 
             let p = {
-                id: 2, //ovo je samo bitno, ostalo nije jer ce na osnovu id-a na beku da se vadi iz baze
-                username: "pera",
-                password: "pera",
-                email: "pera@gmail.com",
-                firstName: "pera",
-                lastName: "peric",
-                penaltyPoints: 0,
+                username: localStorage.getItem("USERNAME"), //ovo je samo bitno, ostalo nije jer ce na osnovu id-a na beku da se vadi iz baze
+
             };
 
             client({

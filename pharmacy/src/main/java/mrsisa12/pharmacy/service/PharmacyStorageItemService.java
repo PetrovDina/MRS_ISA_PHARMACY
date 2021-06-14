@@ -43,10 +43,10 @@ public class PharmacyStorageItemService {
 	
 	public void updatePharmacyStorageItemQuantity(Medication medication, Pharmacy pharmacy, int quantity) 
 	{
-		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemRepository.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
+		PharmacyStorageItem psi = pharmacyStorageItemRepository.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
 		// povecavamo kolicinu za porucenu kolicinu - mozes da prosledis i negativan broj da bi smanjio kolicinu
-		pharmacyStorageItem.setQuantity(pharmacyStorageItem.getQuantity() + quantity);
-		pharmacyStorageItemRepository.save(pharmacyStorageItem);
+		psi.setQuantity(psi.getQuantity() + quantity);
+		pharmacyStorageItemRepository.save(psi);
 	}
 	
 	public void updatePharmacyStorageItemCounter(Medication medication, Pharmacy pharmacy) 

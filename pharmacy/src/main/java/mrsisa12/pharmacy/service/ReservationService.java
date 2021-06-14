@@ -225,7 +225,7 @@ public String saveReservation(ReservationDTO resDTO) throws IllegalArgumentExcep
 		Reservation reservation = new Reservation();
 		
 		Pharmacy pharmacy = pharmacyService.findOne(resDTO.getPharmacy().getId());
-		Patient patient = patientService.findOne(resDTO.getPatient().getId());
+		Patient patient = patientService.findByUsername(resDTO.getPatient().getUsername());
 		Medication medication = medicationService.findOne(resDTO.getMedication().getId());
 		
 		reservation.setPharmacy(pharmacy);
@@ -234,6 +234,8 @@ public String saveReservation(ReservationDTO resDTO) throws IllegalArgumentExcep
 		reservation.setDueDate(resDTO.getDueDate());
 		reservation.setQuantity(resDTO.getQuantity());
 		reservation.setStatus(ReservationStatus.CREATED);
+		
+		
 		//generates code
 		int length = 10;
         char[] text = new char[length];
@@ -242,6 +244,7 @@ public String saveReservation(ReservationDTO resDTO) throws IllegalArgumentExcep
         }
 		reservation.setCode(new String(text));
 		
+
 		
 		//pesimisticni pristup metodi repozitorijuma - PESSIMISTIC WRITE
 		PharmacyStorageItem psi = pharmacyStorageItemService.findOneWithMedicationAndPharmacy(medication.getId(), pharmacy.getId());
@@ -264,6 +267,7 @@ public String saveReservation(ReservationDTO resDTO) throws IllegalArgumentExcep
 		String message = loyaltyProgramService.generateReservationMessage(patient, finalPrice, pointsForPatient);
 		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
 		
+
 		reservation = this.save(reservation);
 		
 		// email!

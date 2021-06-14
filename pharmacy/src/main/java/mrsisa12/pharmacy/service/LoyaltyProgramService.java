@@ -111,9 +111,9 @@ public class LoyaltyProgramService {
 		if(patient.getCategory() != PatientCategory.REGULAR)
 		{
 			message += " You have gained discount of " + this.getDiscount(patient) + "% for each instance of medication because of your "
-					+ "loyalty program category. ";
+					+ "loyalty program category.";
 		}
-		message += "Loyalty points earned with this purchase: " + pointsEarned + ".";
+		message += " Loyalty points earned with this purchase: " + pointsEarned + ".";
 		
 		return message;
 	}
@@ -124,9 +124,9 @@ public class LoyaltyProgramService {
 		if(patient.getCategory() != PatientCategory.REGULAR)
 		{
 			message += " You have discount of " + this.getDiscount(patient) + "% because of your "
-					+ "loyalty program cateogry. ";
+					+ "loyalty program cateogry.";
 		}
-		message += "Loyalty points earned with this appointment bookage: " + pointsEarned + ".";
+		message += " Loyalty points earned with this appointment bookage: " + pointsEarned + ".";
 		
 		return message;
 	}

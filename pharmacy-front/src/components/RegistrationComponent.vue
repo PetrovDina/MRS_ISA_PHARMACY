@@ -13,12 +13,12 @@
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="password" >Password:</label><br>
-		                            <input type="text" name="password" id="password" class="form-control" required="" v-model="registration.password"
+		                            <input type="password" name="password" id="password" class="form-control" required="" v-model="registration.password"
 									oninvalid="this.setCustomValidity('Enter password.')"  oninput="setCustomValidity('')">
 		                        </div>
 								<div class="form-group">
 		                            <label for="passwordRepeat" >Repeat password:</label><br>
-		                            <input type="text" name="passwordRepeat" id="passwordRepeat" class="form-control" required="" v-model="passwordRepeat">
+		                            <input type="password" name="passwordRepeat" id="passwordRepeat" class="form-control" required="" v-model="passwordRepeat">
 		                        </div>
 								<div class="form-group">
 		                            <label for="email" >Email:</label><br>
