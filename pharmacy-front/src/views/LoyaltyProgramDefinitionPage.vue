@@ -75,6 +75,8 @@ export default {
 		   if(!this.arePointsInInterval(loyalty)) return;
 		   if(!this.arePointsRegular(loyalty)) return;	  
 		   
+			console.log(loyalty);
+
 		   client({
 				url: "loyalty/updateLoyalty",
 				method: "PUT",
@@ -200,9 +202,14 @@ export default {
                 afterAppointment: 0,
                 maxPointsRegular: 0,
                 maxPointsSilver: 0,
-                maxPointsGold: 0,
 				silverDis: 0,
-				goldDis: 0
+				goldDis: 0,
+
+				prevAfterAppointment: 0,
+                prevMaxPointsRegular: 0,
+                prevMaxPointsSilver: 0,
+				prevSilverDis: 0,
+				prevGoldDis: 0
             },
         }
     },
@@ -220,6 +227,12 @@ export default {
             this.loyalty.maxPointsSilver = response.data.maxPointsSilver;
             this.loyalty.silverDis = response.data.silverDis;
 			this.loyalty.goldDis = response.data.goldDis;
+
+			this.loyalty.prevAfterAppointment = response.data.afterAppointment;
+            this.loyalty.prevMaxPointsRegular = response.data.maxPointsRegular;
+            this.loyalty.prevMaxPointsSilver = response.data.maxPointsSilver;
+            this.loyalty.prevSilverDis = response.data.silverDis;
+			this.loyalty.prevGoldDis = response.data.goldDis;
 		})
 
 	}

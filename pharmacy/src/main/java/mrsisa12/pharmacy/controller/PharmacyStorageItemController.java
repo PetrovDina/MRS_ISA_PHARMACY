@@ -1,7 +1,5 @@
 package mrsisa12.pharmacy.controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +31,6 @@ import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.PharmacyAdmin;
 import mrsisa12.pharmacy.model.PharmacyStorageItem;
-import mrsisa12.pharmacy.model.TimePeriod;
 import mrsisa12.pharmacy.service.ItemPriceService;
 import mrsisa12.pharmacy.service.MedicationService;
 import mrsisa12.pharmacy.service.PatientService;
@@ -160,69 +157,22 @@ public class PharmacyStorageItemController {
 		if (pharmacyStorageItemWIPDTO == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		Pharmacy pharmacy = pharmacyService.findOneWithStorageItems(pharmacyStorageItemWIPDTO.getPharmacy().getId());
-		Medication medication = medicationService.findOne(pharmacyStorageItemWIPDTO.getMedication().getId());
-		// kreiramo trenutni datum i vrijeme za datum i vrijeme kreiranja, datum i vrijeme isteka je null
-		LocalDate localDateNow = LocalDate.now();
-		LocalTime localTimeNow = LocalTime.now();
-		TimePeriod timePeriod = new TimePeriod(localDateNow, localTimeNow, null, null);
-		// potrebno je kreirati novu cijenu
-		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, false, timePeriod);
-		PharmacyStorageItem pharmacyStorageItem = new PharmacyStorageItem();
-		// postavljamo pharmacyStorageItem itemPrice-u
-		itemPrice.setPharmacyStorageItem(pharmacyStorageItem);
-		// dodajemo cijenu
-		pharmacyStorageItem.addItemPrice(itemPrice);
-		// dodajemo pokazivac na lijek
-		pharmacyStorageItem.setMedication(medication);
-		// dodajemo kolicinu
-		pharmacyStorageItem.setQuantity(pharmacyStorageItemWIPDTO.getQuantity());
-		// postoje je kreiranje onda je deleted na false
-		pharmacyStorageItem.setDeleted(false);
-		// dodajemo apotkue novom pharmacyStorageItem-u
-		pharmacyStorageItem.setPharmacy(pharmacy);
-		pharmacyStorageItem.setCounter(0);
-		pharmacyStorageItemService.save(pharmacyStorageItem);
-		return new ResponseEntity<>(
-				new PharmacyStorageItemDTO(pharmacyStorageItemService.findOne(pharmacyStorageItem.getId())),
-				HttpStatus.CREATED);
+		
+		PharmacyStorageItem psi = pharmacyStorageItemService.createPharmacyStorageItem(pharmacyStorageItemWIPDTO);
+		
+		return new ResponseEntity<>(new PharmacyStorageItemDTO(pharmacyStorageItemService.findOne(psi.getId())), HttpStatus.CREATED);
 	}
 
 	@PutMapping(consumes = "application/json")
 	public ResponseEntity<PharmacyStorageItemDTO> updatePharmacyStorageItem(
 			@RequestBody PharmacyStorageItemWithItemPricesDTO pharmacyStorageItemWIPDTO) {
 
-		PharmacyStorageItem pharmacyStorageItem = pharmacyStorageItemService
-				.findOneWithItemPrices(pharmacyStorageItemWIPDTO.getId());
-		if (pharmacyStorageItem == null) {
+		if (pharmacyStorageItemWIPDTO == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		// postavlja se nova kolicina
-		// pharmacyStorageItem.setQuantity(pharmacyStorageItemDTO.getQuantity());
-		LocalDate localDateNow = LocalDate.now();
-		LocalTime localTimeNow = LocalTime.now();
-		// ovdje onu sto je true postavljam na false
-		for (ItemPrice ip : pharmacyStorageItem.getItemPrices()) {
-			if (ip.isCurrent()) {
-				ip.setCurrent(false);
-				ip.setPromotion(false);
-				ip.getTimePeriod().setEndDate(localDateNow);
-				ip.getTimePeriod().setEndTime(localTimeNow);
-				itemPriceService.save(ip);
-			}
-		}
-		// kreiramo trenutni datum i vrijeme za datum i vrijeme kreiranja, datum i vrijeme isteka je null
-		TimePeriod timePeriod = new TimePeriod(localDateNow, localTimeNow, null, null);
-		// pravim novi ItemPrice koji ce biti trenutna cijena
-		ItemPrice itemPrice = new ItemPrice(pharmacyStorageItemWIPDTO.getItemPrices().get(0).getPrice(), true, false, timePeriod);
-		// dodajemo itemPrice-u referencu na pharmacyStorageItem
-		itemPrice.setPharmacyStorageItem(pharmacyStorageItem);
-		// cuvamo itemPrice
-		itemPriceService.save(itemPrice);
 		
-		pharmacyStorageItem.addItemPrice(itemPrice); // vracam update-ovan lijek - odnosno lijek koji sada ima novu cijenu
-		
-		return new ResponseEntity<>(new PharmacyStorageItemWithItemPricesDTO(pharmacyStorageItem), HttpStatus.OK);
+		PharmacyStorageItem psi = pharmacyStorageItemService.updatePharmacyStorageItem(pharmacyStorageItemWIPDTO);
+		return new ResponseEntity<>(new PharmacyStorageItemWithItemPricesDTO(psi), HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{id}")

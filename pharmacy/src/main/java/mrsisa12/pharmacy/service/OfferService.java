@@ -1,5 +1,6 @@
 package mrsisa12.pharmacy.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import mrsisa12.pharmacy.dto.OfferDTO;
 import mrsisa12.pharmacy.mail.EmailService;
+import mrsisa12.pharmacy.model.Medication;
 import mrsisa12.pharmacy.model.Offer;
 import mrsisa12.pharmacy.model.Order;
 import mrsisa12.pharmacy.model.OrderItem;
 import mrsisa12.pharmacy.model.Supplier;
+import mrsisa12.pharmacy.model.SupplierStorageItem;
 import mrsisa12.pharmacy.model.enums.OfferStatus;
 import mrsisa12.pharmacy.model.enums.OrderStatus;
 import mrsisa12.pharmacy.repository.OfferRepository;
@@ -66,6 +69,83 @@ public class OfferService {
 		return offerRepository.findAllOfSupplier(supplier);
 	}
 
+	public Offer createOffer(OfferDTO offerDTO)
+	{
+		Offer offer = new Offer();
+		Supplier supplier = supplierService.findOneWithStorageItems(offerDTO.getSupplierUsername());
+		Order order = orderService.findOneWithOrderItems(offerDTO.getOrderId());
+
+		for (OrderItem orderItem : order.getOrderItems()) 
+		{
+			if (!medicationInList(supplier.getSupplierStorageItems(), orderItem.getMedication())) 
+			{
+				return null;
+			} 
+			else 
+			{
+				if (!hasQuantity(supplier.getSupplierStorageItems(), orderItem)) 
+				{
+					return null;
+				}
+			}
+		}
+		
+		for (OrderItem orderItem : order.getOrderItems()) 
+		{
+            supplierStorageItemService.updateSupplierStorageItemReservedQuantity(orderItem.getMedication(), supplier, orderItem.getQuantity());
+		}
+		
+		if(order.getStatus() == OrderStatus.NEW)
+		{
+			order.setStatus(OrderStatus.HAS_OFFERS);
+			orderService.save(order);
+		}
+		
+		offer.setSupplier(supplier);
+		offer.setOrder(order);
+		offer.setPrice(offerDTO.getPrice());
+		offer.setDeliveryDueDate(LocalDate.parse(offerDTO.getDeliveryDueDate()));
+		offer.setStatus(OfferStatus.PENDING);
+		save(offer);
+		
+		return offer;
+	}
+	
+	public Offer updateOffer(OfferDTO offerDTO)
+	{
+		Offer offer = offerRepository.findById(offerDTO.getId()).orElse(null);
+
+		offer.setPrice(offerDTO.getPrice());
+		offer.setDeliveryDueDate(LocalDate.parse(offerDTO.getDeliveryDueDate()));
+		save(offer);
+		
+		return offer;
+	}
+	
+	private boolean medicationInList(List<SupplierStorageItem> ssis, Medication med) 
+	{
+		for (SupplierStorageItem supplierStorageItem : ssis) 
+		{
+			if (supplierStorageItem.getMedication().getId() == med.getId())
+				return true;
+		}
+
+		return false;
+	}
+	
+	private boolean hasQuantity(List<SupplierStorageItem> ssis, OrderItem orderItem)
+	{
+		for (SupplierStorageItem supplierStorageItem : ssis) 
+		{
+			if(supplierStorageItem.getMedication().getId() == orderItem.getMedication().getId())
+			{
+				if(supplierStorageItem.getQuantity() - supplierStorageItem.getReservedQuantity() >= orderItem.getQuantity())
+					return true;
+			}
+		}
+
+		return false;
+	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	public Offer acceptOffer(OfferDTO offerDTO) {

@@ -31,6 +31,17 @@ public class OrderItem {
 
 	@Column(name = "deleted")
 	private boolean deleted;
+	
+	public OrderItem() { }
+
+	public OrderItem(Long id, int quantity, Medication medication, Order order, boolean deleted) {
+		super();
+		this.id = id;
+		this.quantity = quantity;
+		this.medication = medication;
+		this.order = order;
+		this.deleted = deleted;
+	}
 
 	public Long getId() {
 		return id;

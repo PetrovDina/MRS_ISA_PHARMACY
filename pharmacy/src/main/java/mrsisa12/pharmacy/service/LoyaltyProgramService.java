@@ -36,6 +36,11 @@ public class LoyaltyProgramService {
 	{
 		LoyaltyProgram loyaltyProgram = this.getLoyaltyProgram();
 		
+		if(isSomeFiledInvalid(loyaltyProgram, loyaltyProgramDTO))
+		{
+			throw new IllegalArgumentException();
+		}
+		
 		loyaltyProgram.setAfterAppointment(loyaltyProgramDTO.getAfterAppointment());
 		loyaltyProgram.setMaxPointsRegular(loyaltyProgramDTO.getMaxPointsRegular());
 		loyaltyProgram.setMaxPointsSilver(loyaltyProgramDTO.getMaxPointsSilver());
@@ -47,6 +52,26 @@ public class LoyaltyProgramService {
 		patientService.updateCategories(loyaltyProgram.getMaxPointsRegular(), loyaltyProgram.getMaxPointsSilver());
 		
 		return loyaltyProgram;
+	}
+	
+	public boolean isSomeFiledInvalid(LoyaltyProgram loyaltyProgram, LoyaltyProgramDTO loyaltyProgramDTO)
+	{	
+		if(loyaltyProgram.getAfterAppointment().compareTo(loyaltyProgramDTO.getPrevAfterAppointment()) != 0)
+			return true;
+
+		if(loyaltyProgram.getMaxPointsRegular().compareTo(loyaltyProgramDTO.getPrevMaxPointsRegular()) != 0)
+			return true;
+		
+		if(loyaltyProgram.getMaxPointsSilver().compareTo(loyaltyProgramDTO.getPrevMaxPointsSilver()) != 0)
+			return true;
+		
+		if(loyaltyProgram.getSilverDis().compareTo(loyaltyProgramDTO.getSilverDis()) != 0)
+			return true;
+
+		if(loyaltyProgram.getGoldDis().compareTo(loyaltyProgramDTO.getPrevGoldDis()) != 0)
+			return true;
+
+		return false;
 	}
 	
 	
