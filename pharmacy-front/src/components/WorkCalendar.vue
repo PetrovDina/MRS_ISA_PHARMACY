@@ -141,6 +141,26 @@
       </v-sheet>
     </v-col>
   </v-row>
+
+  <v-snackbar
+      v-model="snackbar"
+      :vertical="vertical"
+      light
+      timeout="2000"
+    >
+      {{snackbarText}}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="indigo"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
 </div>
 </template>
 
@@ -169,6 +189,8 @@ import Calendar from '../components/YearCalendar.vue';
       appointments: [],
       mainCalendar: true,
       yearCalendar: false,
+      snackbar: false,
+      snackbarText: null,
     }),
     mounted () {
       this.$refs.calendar.checkChange()
@@ -222,7 +244,8 @@ import Calendar from '../components/YearCalendar.vue';
                       var avail = false;
                       var parts1 = appointment.timePeriod.startDate.split('-');
                       var mon1 = parts1[1]-1;
-                      if(appointment.status === 'RESERVED' && ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
+                      if(appointment.status === 'RESERVED' && !appointment.inProgress &&
+                       ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
                         avail = true;
                       } 
                       var patientFullName = appointment.patient.firstName + " " + appointment.patient.lastName;
@@ -240,6 +263,7 @@ import Calendar from '../components/YearCalendar.vue';
                         available : avail,
                         pharmacy : appointment.pharmacy.id,
                         appointmentId : appointment.id,
+                        inProgress : appointment.inProgress,
                       })
                     
                   }
@@ -251,10 +275,22 @@ import Calendar from '../components/YearCalendar.vue';
       },
 
       startAppointment: function(selectedEvent){
-        var link = '/appointmentInProgress';
-        const encoded = encodeURI(link + '?patientUsername=' + selectedEvent.patientUsername + '&pharmacyId=' + 
-        selectedEvent.pharmacy + '&appointmentId=' + selectedEvent.appointmentId);
-        this.$router.push(encoded);
+          client({
+            method: 'GET',
+            url: 'appointments/setAppointmentInProgress',
+            params: {appointmentId: selectedEvent.appointmentId}
+          })
+          .then((response) => {
+                if(response.data == "ok"){
+                    var link = '/appointmentInProgress';
+                    const encoded = encodeURI(link + '?patientUsername=' + selectedEvent.patientUsername + '&pharmacyId=' + 
+                    selectedEvent.pharmacy + '&appointmentId=' + selectedEvent.appointmentId);
+                    this.$router.push(encoded);
+                }else{
+                    this.snackbarText = response.data;
+                    this.snackbar = true;
+                }
+            })      
       },
       
       didntShowUp: function(selectedEvent){

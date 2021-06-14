@@ -36,7 +36,9 @@ public class TherapyService {
 		return ePrescriptionRepository.findAllByPatient(patientUsername);
 	}
 	
-
+	public Therapy findOneWithPatient(Long therapyId) {
+		return ePrescriptionRepository.findOneWithPatient(therapyId);
+	}
 	
 	public List<Therapy> findAllByPatientWithPrescriptionItems(String patientUsername) {
 		return ePrescriptionRepository.findAllByPatientWithPrescriptionItems(patientUsername);

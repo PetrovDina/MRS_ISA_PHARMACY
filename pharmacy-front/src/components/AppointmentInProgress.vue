@@ -18,7 +18,7 @@
         <v-card class="ma-5">
             <v-card-title>
                 <v-spacer></v-spacer>
-                <div >Write a prescription</div>
+                <div >Write a therapy</div>
                 <v-spacer></v-spacer>
             </v-card-title> 
             <v-card-text>
@@ -29,7 +29,7 @@
                 >
                 <v-list>
                   <v-row justify="center">
-                  <v-subheader >Add prescription items</v-subheader></v-row>
+                  <v-subheader >Add therapy items</v-subheader></v-row>
                   <v-btn plain
                   @click.stop="dialog = true"
                   >
@@ -44,9 +44,6 @@
                       v-for="(item, i) in items"
                       :key="i"
                       >
-                      <v-list-item-icon color="green">
-                          <v-icon>fa fa-cart-plus</v-icon>
-                      </v-list-item-icon>
                       <v-list-item-content>
                           <v-col
                           cols="12"
@@ -99,10 +96,10 @@
               >
                 Submit
               </v-btn>
-              <v-btn color="green darken-4" plain
+              <!--<v-btn color="green darken-4" plain
                     @click="cancel()">
                 Cancel
-              </v-btn>
+              </v-btn>-->
               </v-row>
             </v-card-actions>
         </v-card>
@@ -118,7 +115,7 @@
       
       <v-card>
         <v-card-title>
-          <span class="headline">New item</span>
+          <span class="headline">New therapy item</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -212,7 +209,7 @@
       
       <v-card>
         <v-card-title>
-          <span class="headline">New item alternatives</span>
+          <span class="headline">New therapy alternatives</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -525,12 +522,36 @@ import moment from "moment";
             return moment(d).format("MMMM Do yyyy");
         },
         addPrescriptionItem: function(){
-            this.items.push({
-                medicine: this.medicineInput.medication,
-                quantity: this.quantityInput,
-                therapyDuration: this.therapyDurationInput,
-                storageId: this.medicineInput.id,
-            })
+            var input = null;
+            if(this.dialog == true){
+              input = this.medicineInput;}
+            else{
+              input = this.alternativeInput;
+            }
+            var exists = false;
+            for(var i of this.items){
+              if(i.medicine.id === input.medication.id){
+                exists = true;
+                i.quantity = (Number)(i.quantity) + (Number)(this.quantityInput);
+                i.therapyDuration = (Number)(i.therapyDuration) + (Number)(this.therapyDurationInput);
+              }
+            }
+            if(exists === false){
+                  this.items.push({
+                    medicine: input.medication,
+                    quantity: this.quantityInput,
+                    therapyDuration: this.therapyDurationInput,
+                    storageId: input.id,
+                })
+              
+            }
+            
+            for(var i = 0; i < this.storage.length; i++){
+                if(this.storage[i].medication.id === input.medication.id){
+                  this.storage[i].quantity = input.quantity - this.quantityInput;
+                }
+              }
+
             this.medicineInput = null;
             this.alternativeInput = null;
             this.quantityInput = 0;
@@ -563,10 +584,15 @@ import moment from "moment";
             const backup = this.items;
             this.items = [];
             for(var item of backup){
-                if(!(item.text === toRemove.text && item.quantity === toRemove.quantity)){
-                    this.items.push(item);
+                if(!(item.medicine.id === toRemove.medicine.id)){
+                    this.items.push(item);                    
                 }
-            }          
+            }     
+            for(var i = 0; i < this.storage.length; i++){
+              if(this.storage[i].medication.id === toRemove.medicine.id){
+                this.storage[i].quantity = (Number)(this.storage[i].quantity) + (Number)(toRemove.quantity);
+              }
+            }     
         },
 
         cancel: function(){
@@ -608,16 +634,14 @@ import moment from "moment";
           }
           else{
             var input = null;
-            if(this.dialog === true)
+            if(this.dialog == true){
               input = this.medicineInput;
-            else
-              input = this.alternativeInput;
-            if(input.quantity >= this.quantityInput){
-              for(var i = 0; i < this.storage.length; i++){
-                if(this.storage[i].id === input.id){
-                  this.storage[i].quantity = input.quantity - this.quantityInput;
-                }
               }
+            else{
+              input = this.alternativeInput;
+            }
+            if(input.quantity >= this.quantityInput){
+              
               this.itemAvailable = true;
               this.showAltBtn = false;
               this.snackbarText = "Item AVAILABLE, click 'save' to add prescription.";
@@ -664,6 +688,12 @@ import moment from "moment";
                     params: { storageId: item.storageId, quantity: item.quantity, duration: item.therapyDuration,
                             pharmacyId: this.pharmacyId, ePrescriptionId: response.data.id},
                     })
+                    .then((response) => {
+                        if(response.data != "ok"){
+                          this.snackbar = true;
+                          this.snackbarText = response.data;
+                        }
+                    })
                     
                 }
                 })
@@ -707,11 +737,40 @@ import moment from "moment";
         },
 
         addAppointment: function(){
+          var t = null;
+          if(localStorage.getItem("USER_TYPE").equals("DERMATOLOGIST")) {
+            t = (AppointmentType.DERMATOLOGIST_EXAMINATION);
+          }
+          if(localStorage.getItem("USER_TYPE").equals("PHARMACIST")) {
+            t = (AppointmentType.PHARMACIST_CONSULTATION);
+          }
           client({
-              method: 'GET',
+            method: "POST",
+                data: {
+                    employee: {
+                        username: localStorage.getItem("USERNAME"),
+                    },
+                    timePeriod: {
+                        startDate: this.chosenDate,
+                        startTime: this.chosenTime,
+                        endDate: this.chosenDate,
+                        endTime: this.chosenTime,
+                    },
+
+                    pharmacy: {
+                        id: this.pharmacyId,
+                    },
+
+                    patient: {
+                        username: this.patientUsername,
+                    },
+
+                    type: t,
+                },
+              /*method: 'GET',
               params: {employeeUsername: localStorage.getItem("USERNAME"), patientUsername: this.patientUsername, 
                       pharmacyId: this.pharmacyId, startDate: this.chosenDate, startTime: this.chosenTime,
-                       userType: localStorage.getItem("USER_TYPE")},
+                       userType: localStorage.getItem("USER_TYPE")},*/
               url: 'appointments/createNewAppointmentByEmployee',
           }).then((response) => {
             if(response.data == "Free"){

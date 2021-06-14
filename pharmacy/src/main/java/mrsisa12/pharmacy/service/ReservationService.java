@@ -91,6 +91,10 @@ public class ReservationService {
 		return reservationRepository.findAllByPatient(patientUsername);
 	}
 	
+	public Reservation findByPharmacyAndCode(Long pharmacyId, String code) {
+		return reservationRepository.findByPharmacyAndCode(pharmacyId, code);
+	}
+	
 	public Reservation update(Reservation reservation) {
         Reservation updatedReservation = reservationRepository.findById(reservation.getId()).orElseGet(null);
         updatedReservation.update(reservation);
@@ -98,24 +102,27 @@ public class ReservationService {
 
         return updatedReservation;
     }
-	
-    public boolean confirmPickup(Long id)  {
+		
+	@Transactional(propagation = Propagation.REQUIRED)
+    public boolean confirmPickup(String id)  {
         String emailBody = "This email is confirmation that you have successfully picked up order #";
-        Reservation toUpdate =  findOne(id);
-        if(toUpdate != null && !toUpdate.getStatus().equals(ReservationStatus.COMPLETED) &&
-                !(toUpdate.getDueDate().before(new Date()) && toUpdate.getDueDate().after(new Date(System.currentTimeMillis() - 3600 * 24000)))) {
+        Reservation toUpdate =  reservationRepository.findByReservationId(Long.parseLong(id));
+        if(toUpdate != null && 
+        		!toUpdate.getStatus().equals(ReservationStatus.COMPLETED) &&
+                !(toUpdate.getDueDate().before(new Date()) && 
+                		toUpdate.getDueDate().after(new Date(System.currentTimeMillis() - 3600 * 24000)))) {
 
             toUpdate.setStatus(ReservationStatus.COMPLETED);
-            update(toUpdate);
-            EmailContent email = new EmailContent("Medicine pickup confirmation!",emailBody + toUpdate.getId() + "!");
+            reservationRepository.save(toUpdate);
+            EmailContent email = new EmailContent("Medicine pickup confirmation!",emailBody + toUpdate.getCode() + "!");
             email.addRecipient(toUpdate.getPatient().getEmail());
             emailService.sendEmail(email);
             return true;
 
-        }
-        return false;
+        }else
+        	return false;
     }
-    
+      
  
     @Transactional(propagation = Propagation.REQUIRED)
 	@EventListener(ApplicationReadyEvent.class)

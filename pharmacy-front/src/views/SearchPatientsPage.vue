@@ -240,7 +240,8 @@ export default {
                             var avail = false;
                             var parts1 = appointment.timePeriod.startDate.split('-');
                             var mon1 = parts1[1]-1;
-                            if(appointment.status === 'RESERVED' && ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
+                            if(appointment.status === 'RESERVED' && !appointment.inProgress &&
+                            ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
                                 avail = true;
                             } 
                             appointment.available = avail;
@@ -336,10 +337,23 @@ export default {
         },
 
         startAppointment: function(appointment){
-            var link = '/appointmentInProgress';
-            const encoded = encodeURI(link + '?patientUsername=' + appointment.patient.username + '&pharmacyId=' + 
-                                        appointment.pharmacy.id + '&appointmentId=' + appointment.id);
-            this.$router.push(encoded);
+            client({
+                method: 'GET',
+                url: 'appointments/setAppointmentInProgress',
+                params: {appointmentId: appointment.appointmentId}
+            })
+            .then((response) => {
+                if(response.data == "ok"){
+                    var link = '/appointmentInProgress';
+                    const encoded = encodeURI(link + '?patientUsername=' + appointment.patient.username + '&pharmacyId=' + 
+                                                appointment.pharmacy.id + '&appointmentId=' + appointment.id);
+                    this.$router.push(encoded);
+                }else{
+                    this.snackbarText = response.data;
+                    this.snackbar = true;
+                }
+            })
+            
         },
 
          didntShowUp: function(appointment){
