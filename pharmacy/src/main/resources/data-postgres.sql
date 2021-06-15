@@ -201,7 +201,7 @@ INSERT INTO user_role (user_id, role_id) VALUES (19, 2); --  ROLE_SYSTEM_ADMIN
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 1, 1, 3, 350, '1.25.2021.', 'COMPLETED', 'rsrvtion01'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 2, 2, 10, 410, '5.21.2021.', 'CREATED', 'rsrvtion02'); --za sad americki format dok ne skontamo kako drugacije
 insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 3, 1, 1, 200, '8.13.2021.', 'CREATED', 'rsrvtion03'); --za sad americki format dok ne skontamo kako drugacije
-insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 4, 2, 1, 370, '6.28.2021.', 'CREATED', 'rsrvtion04'); --za sad americki format dok ne skontamo kako drugacije
+insert into reservation (patient_id, medication_id, pharmacy_id, quantity, medicationPrice, duedate, status, code) values (2, 4, 2, 1, 370, '7.28.2021.', 'CREATED', 'rsrvtion04'); --za sad americki format dok ne skontamo kako drugacije
 
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, inProgress) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 26], "startTime": [8, 0, 0], "endDate": [2021, 7, 26], "endTime": [9, 0, 0]}', 4, 2000, 1, 'False', 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, inProgress) values ('AVAILABLE', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 8, 10], "startTime": [10, 0, 0], "endDate": [2021, 8, 10], "endTime": [11, 0, 0]}', 4, 2000, 1, 'False', 'False');
@@ -213,7 +213,7 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, report, inProgress) values ('CONCLUDED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 4, 3], "startTime": [12, 0, 0], "endDate": [2021, 4, 3], "endTime": [13, 30, 0]}', 8, 1400, 2, 'False', 2, 'Pacijent ima koronu.', 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, inProgress) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 8, 20], "startTime": [12, 0, 0], "endDate": [2021, 8, 20], "endTime": [13, 30, 0]}', 8, 1000, 1, 'False', 2, 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, inProgress) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 7, 25], "startTime": [12, 0, 0], "endDate": [2021, 7, 25], "endTime": [13, 0, 0]}', 8, 1000, 1, 'False', 2, 'False');
-insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, inProgress) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 6, 3], "startTime": [12, 0, 0], "endDate": [2021, 6, 3], "endTime": [13, 30, 0]}', 8, 1400, 2, 'False', 11, 'False');
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, inProgress) values ('RESERVED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 8, 3], "startTime": [12, 0, 0], "endDate": [2021, 8, 3], "endTime": [13, 30, 0]}', 8, 1400, 2, 'False', 11, 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, report, inProgress) values ('CONCLUDED', 'PHARMACIST_CONSULTATION', '{ "startDate":  [2021, 2, 13], "startTime": [12, 0, 0], "endDate": [2021, 2, 13], "endTime": [13, 0, 0]}', 7, 1000, 1, 'False', 11,'Pacijent pati od depresije.', 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, report, inProgress) values ('CONCLUDED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 3, 19], "startTime": [10, 0, 0], "endDate": [2021, 3, 19], "endTime": [11, 0, 0]}', 4, 2000, 1, 'False', 11, 'Pacijent ima koronu.', 'False');
 
@@ -221,7 +221,7 @@ insert into appointment (appointmentStatus, appointmentType, timePeriod, employe
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, inProgress) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 5], "startTime": [12, 0, 0], "endDate": [2021, 7, 5], "endTime": [13, 30, 0]}', 4, 2000, 1, 'False', 2, 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, inProgress) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 28], "startTime": [11, 0, 0], "endDate": [2021, 7, 28], "endTime": [12, 0, 0]}', 4, 2000, 1, 'False', 11, 'False');
 insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, inProgress) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 7, 23], "startTime": [12, 0, 0], "endDate": [2021, 7, 23], "endTime": [13, 30, 0]}', 4, 2000, 1, 'False', 2, 'False');
-insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, inProgress) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 6, 15], "startTime": [10, 0, 0], "endDate": [2021, 6, 15], "endTime": [10, 45, 0]}', 4, 2000, 1, 'False', 11, 'False');
+insert into appointment (appointmentStatus, appointmentType, timePeriod, employee_id, price, pharmacy_id, deleted, patient_id, inProgress) values ('RESERVED', 'DERMATOLOGIST_EXAMINATION', '{ "startDate":  [2021, 8, 15], "startTime": [10, 0, 0], "endDate": [2021, 8, 15], "endTime": [10, 45, 0]}', 4, 2000, 1, 'False', 11, 'False');
 
 
 -- alergije
@@ -236,7 +236,7 @@ insert into subscriptions (patient_id, pharmacy_id) values (11, 1);
 -- narudzbenice
 insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-07-10', 3, 1, 'False');
 insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-07-11', 3, 1, 'False');
-insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('HAS_OFFERS', '2021-06-11', 3, 1, 'False');
+insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('HAS_OFFERS', '2021-08-11', 3, 1, 'False');
 insert into orders (status, dueDate, pharmacyadmin_id, pharmacy_id, deleted) values ('NEW', '2021-07-13', 3, 1, 'False');
 
 -- orderitem
@@ -259,9 +259,9 @@ insert into supplierstorageitem (deleted, quantity, reservedQuantity, medication
 insert into supplierstorageitem (deleted, quantity, reservedQuantity, medication_id, supplier_id) values('False', 200, 0, 3, 13);
 insert into supplierstorageitem (deleted, quantity, reservedQuantity, medication_id, supplier_id) values('False', 200, 0, 4, 13);
 
-insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-14', 2000, 3, 12, 'PENDING');
-insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-17', 4000, 3, 13, 'PENDING');
-insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-05-16', 7000, 3, 16, 'PENDING');
+insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-08-12', 2000, 3, 12, 'PENDING');
+insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-08-11', 4000, 3, 13, 'PENDING');
+insert into offers (deliveryDueDate, price, order_id, supplier_id, status) values ('2021-08-14', 7000, 3, 16, 'PENDING');
 
 insert into complaint (patient_id, system_admin_id, content, response, version) values (2, null, 'Losa usluga generalno.', null, 0);
 insert into ComplaintPharmacy(pharmacy_id, id) values (1, 1);
