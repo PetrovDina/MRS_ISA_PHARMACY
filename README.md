@@ -1,7 +1,7 @@
 # MRS-ISA Tim 12 - Informacioni sistem apoteka ⚕
 
 ![Build Status](https://travis-ci.com/BoJaN77799/mrs-isa-back.svg?branch=master)
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=BoJaN77799_MRS_ISA_PHARMACY)](https://sonarcloud.io/dashboard?id=BoJaN77799_MRS_ISA_PHARMACY)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=BoJaN77799_mrs-isa-back)](https://sonarcloud.io/dashboard?id=BoJaN77799_mrs-isa-back)
 
 ## Članovi tima
 - Bojan Baškalo SW49/2018
@@ -31,8 +31,9 @@ Desni klik na projekat u project explorer -> Run as -> Java Application
 
 ### Dodatne napomene:
 Dodati su posebni odvojeni repozitorijumi radi uspešne Travis i SonarCloud konfiguracije:
-- [Front end repozitorijum](https://github.com/PetrovDina/mrs-isa-front)
-- [Back end repozitorijum](https://github.com/BoJaN77799/mrs-isa-back)
+- [Front end aplikacija](https://github.com/PetrovDina/mrs-isa-front)
+- [Back end aplikacija](https://github.com/BoJaN77799/mrs-isa-back)
 
+### HEROKU
 ## [Heroku front](https://mrs-isa-front-v2.herokuapp.com/#/)
 
