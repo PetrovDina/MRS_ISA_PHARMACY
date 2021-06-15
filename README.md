@@ -28,5 +28,5 @@ Desni klik na projekat u project explorer -> Run as -> Java Application
 
 ### Dodatne napomene:
 Dodati su posebni odvojeni repozitorijumi radi uspešne Travis i SonarCloud konfiguracije:
-- [Front end aplikacija](https://github.com/BoJaN77799/mrs-isa-front)
+- [Front end aplikacija](https://github.com/PetrovDina/mrs-isa-front)
 - [Back end aplikacija](https://github.com/BoJaN77799/mrs-isa-back)
