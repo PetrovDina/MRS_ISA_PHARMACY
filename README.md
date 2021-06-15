@@ -37,8 +37,6 @@ Dodati su posebni odvojeni repozitorijumi radi uspešne Travis i SonarCloud konf
 - [Front end aplikacija](https://github.com/PetrovDina/mrs-isa-front)
 - [Back end aplikacija](https://github.com/BoJaN77799/mrs-isa-back)
 
-### HEROKU
-## [Heroku front](https://mrs-isa-front-v2.herokuapp.com/#/)
 
 
 [quality-gate-badge]: https://sonarcloud.io/api/project_badges/measure?project=22434905a961c51b1d244289381f364488e90bcf&metric=alert_status
