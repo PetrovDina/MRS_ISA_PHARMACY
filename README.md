@@ -42,6 +42,6 @@ Dodati su posebni odvojeni repozitorijumi radi uspešne Travis i SonarCloud konf
 [quality-gate-badge]: https://sonarcloud.io/api/project_badges/measure?project=22434905a961c51b1d244289381f364488e90bcf&metric=alert_status
 [sonar-url]: https://sonarcloud.io/dashboard?id=6aa1534bfc9e2e5495b99bfc6f7cbf1cec89d4ed
 [backend-badge]: https://img.shields.io/badge/Heroku-backend-purple?logo=heroku
-[backend-url]: https://hesoyam-pharmacy.herokuapp.com/
+[backend-url]: https://mrs-isa-back.herokuapp.com/
 [frontend-badge]: https://img.shields.io/badge/Heroku-frontend-purple?logo=heroku
 [frontend-url]: https://mrs-isa-front-v2.herokuapp.com/
