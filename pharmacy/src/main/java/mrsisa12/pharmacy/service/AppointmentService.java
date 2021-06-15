@@ -375,25 +375,11 @@ public class AppointmentService {
 		Appointment apps = findAllInProgressByEmployeeId(appointment.getEmployee().getId());
 				
 		if(apps != null){
-			TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
-			LocalDateTime eWorkTEDateTime = apps.getTimePeriod().getEndDate().atTime(apps.getTimePeriod().getEndTime().plusMinutes(5));
-			if(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))) {
-				apps.setInProgress(false);
-				apps.setStatus(AppointmentStatus.EXPIRED);
-				save(apps);
-				appointment.setInProgress(true);
-				appointment = save(appointment);
-				return "ok";
-				
-			}else
-				return "An appointment is already in progress.";
+			return "An appointment is already in progress.";
 		}	
 		else{
 			if (appointment != null && appointment.isDeleted()) {
 				return "No such appointment.";
-			}
-			else if(appointment.isInProgress()) {
-				return "Appointment already in progress.";
 			}else {
 				appointment.setInProgress(true);
 				appointment = save(appointment);

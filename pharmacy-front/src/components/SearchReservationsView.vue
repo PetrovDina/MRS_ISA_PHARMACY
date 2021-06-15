@@ -37,7 +37,7 @@
         <v-divider class="mx-4"></v-divider>
 
         <v-card-subtitle
-        >{{reservationFixed.patientFirstName}} {{reservationFixed.patientLastName}} • {{formatDate(reservationFixed.dueDate)}}</v-card-subtitle>
+        >{{reservationFixed.patientFirstName}} {{reservationFixed.patientLastName}} • {{formatDate(reservationFixed.pickUpDate)}}</v-card-subtitle>
         
         <v-card-actions>
         <v-btn
@@ -153,7 +153,18 @@ export default {
                     this.snackbarText = "Successfully confirmed!";
                     this.snackbar = true;
                     this.resetList();
+                }else{
+                    this.snackbarText = "Something went wrong, please try again.";
+                    this.snackbar = true;
+                    this.resetList();
                 }
+            })
+            .catch((response) => {
+                this.$toasted.show("Error ocured. Please try again.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 5000,
+                    });
             })
       },
     },

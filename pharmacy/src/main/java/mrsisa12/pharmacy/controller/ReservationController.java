@@ -125,7 +125,7 @@ public class ReservationController {
              success = reservationService.confirmPickup(rId);
              return new ResponseEntity<>(success, HttpStatus.OK);
         } catch (ObjectOptimisticLockingFailureException e){
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(false, HttpStatus.CONFLICT);
         }
         
     }
