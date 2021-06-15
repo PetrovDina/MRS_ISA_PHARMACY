@@ -1,7 +1,6 @@
 # MRS-ISA Tim 12 - Informacioni sistem apoteka ⚕
 
 [![Quality Gate Status][quality-gate-badge]][sonar-url]
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=6aa1534bfc9e2e5495b99bfc6f7cbf1cec89d4ed)
 ![Build Status](https://travis-ci.com/BoJaN77799/mrs-isa-back.svg?branch=master)
 [![Heroku frontend][frontend-badge]][frontend-url]
 [![Heroku backend][backend-badge]][backend-url]
