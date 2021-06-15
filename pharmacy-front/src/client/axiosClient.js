@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-
+// dodali smo putanju za heroku
 const client = axios.create({
   baseURL: 'https://mrs-isa-pharmacy.herokuapp.com',
 });
