@@ -17,13 +17,14 @@ public class AppointmentDTO {
 	private PharmacyDTO pharmacy;
 	private AppointmentType type;
 	private String report;
+	private boolean inProgress;
 
 
 	public AppointmentDTO() {
 	}
 
 	public AppointmentDTO(Long id, AppointmentStatus status, TimePeriodDTO timePeriod, EmployeeDTO employee,
-			PatientDTO patient, double price, PharmacyDTO pharmacy, AppointmentType type, String report) {
+			PatientDTO patient, double price, PharmacyDTO pharmacy, AppointmentType type, String report, Boolean inProgress) {
 		super();
 		this.id = id;
 		this.status = status;
@@ -34,13 +35,14 @@ public class AppointmentDTO {
 		this.pharmacy = pharmacy;
 		this.type = type;
 		this.setReport(report);
+		this.inProgress = inProgress;
 	}
 
 	public AppointmentDTO(Appointment appointment) {
 		this(appointment.getId(), appointment.getStatus(), new TimePeriodDTO(appointment.getTimePeriod()),
 				(appointment.getEmployee() == null) ? null : new EmployeeDTO(appointment.getEmployee()),
 				(appointment.getPatient() == null) ? null : new PatientDTO(appointment.getPatient()), appointment.getPrice(), 
-				(appointment.getPharmacy() == null) ? null : new PharmacyDTO(appointment.getPharmacy()), appointment.getType(), appointment.getReport());
+				(appointment.getPharmacy() == null) ? null : new PharmacyDTO(appointment.getPharmacy()), appointment.getType(), appointment.getReport(), appointment.isInProgress());
 	}
 	
 	public Long getId() {
@@ -115,7 +117,14 @@ public class AppointmentDTO {
 		this.report = report;
 	}
 
-	
+	public boolean isInProgress() {
+		return inProgress;
+	}
+
+	public void setInProgress(boolean inProgress) {
+		this.inProgress = inProgress;
+	}
+
 	
 	
 

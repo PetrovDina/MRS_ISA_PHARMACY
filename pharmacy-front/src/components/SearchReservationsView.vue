@@ -37,7 +37,7 @@
         <v-divider class="mx-4"></v-divider>
 
         <v-card-subtitle
-        >{{reservationFixed.patientFirstName}} {{reservationFixed.patientLastName}} • {{reservationFixed.dateAsString}}</v-card-subtitle>
+        >{{reservationFixed.patientFirstName}} {{reservationFixed.patientLastName}} • {{formatDate(reservationFixed.pickUpDate)}}</v-card-subtitle>
         
         <v-card-actions>
         <v-btn
@@ -78,6 +78,7 @@
 
 <script>
 import {client} from '@/client/axiosClient';
+import moment from "moment";
 export default {
     name: "SearchReservationsView",
 
@@ -99,6 +100,9 @@ export default {
     mounted() {},
 
     methods: {
+        formatDate(d) {
+            return moment(d).format("MMMM Do yyyy");
+        },
 
         searchQuery: function(){
             client({
@@ -108,21 +112,24 @@ export default {
             })
             .then((response) => {
                 if(response.data != null){
-                    var link = 'reservation/pickup/' + this.query;
                     client({
                         method: 'GET',
-                        url: link,
-                        params: {pharmId : response.data.id},
+                        url: 'reservation/pickup' ,
+                        params: { rCode : this.query, pharmId : response.data.id},
                     })
                     .then((response) => {
                         if(response.data.status != null){
-                            console.log(response.data);
-                            this.resultFound = true;
-                            var reservation = response.data;
-                            this.reservationFixed = reservation;
+                            this.resultFound = true;  
+                            var res = response.data;                          
+                            if(response.data.status == "CREATED" ){
+                                res.valid = true;
+                            }else{                                
+                                res.valid = false;
+                            }
+                            this.reservationFixed = res;
                         } else {
                             this.resultFound = false;
-                            this.snackbarText = "No reservation found for the entered id!";
+                            this.snackbarText = "No reservation found for the entered code!";
                             this.snackbar = true;
                         }
                     })
@@ -136,22 +143,28 @@ export default {
             this.reservationFixed = null;
         },
         confirm () {
-            console.log(this.reservationFixed);
-
-            const id = this.reservationFixed.id;
             client({
-                method: 'POST',
-                url: 'reservation/confirm-pickup',
-                data: {
-                        reservationId: id
-                    }
+                method: 'GET',
+                url: 'reservation/confirmPickup',
+                params: { rId: this.reservationFixed.id },
             })
             .then((response) => {
                 if(response.data){
                     this.snackbarText = "Successfully confirmed!";
                     this.snackbar = true;
                     this.resetList();
+                }else{
+                    this.snackbarText = "Something went wrong, please try again.";
+                    this.snackbar = true;
+                    this.resetList();
                 }
+            })
+            .catch((response) => {
+                this.$toasted.show("Error ocured. Please try again.", {
+                        theme: "toasted-primary",
+                        position: "top-center",
+                        duration: 5000,
+                    });
             })
       },
     },

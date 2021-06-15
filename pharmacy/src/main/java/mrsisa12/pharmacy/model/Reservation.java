@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Version;
 
 import mrsisa12.pharmacy.model.enums.ReservationStatus;
 
@@ -46,6 +47,10 @@ public class Reservation {
 
 	@Column(name = "code", nullable = false, length = 10)
 	private String code;
+	
+	@Version
+	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	private Long version;
 
 	public Reservation() {
 		super();

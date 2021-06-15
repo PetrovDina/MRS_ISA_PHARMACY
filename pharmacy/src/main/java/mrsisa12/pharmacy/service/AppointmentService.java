@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,10 +21,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import mrsisa12.pharmacy.dto.AppointmentDTO;
+import mrsisa12.pharmacy.dto.PatientDTO;
 import mrsisa12.pharmacy.dto.report.ReportDTO;
+import mrsisa12.pharmacy.mail.EmailContent;
 import mrsisa12.pharmacy.mail.EmailService;
 import mrsisa12.pharmacy.model.Appointment;
 import mrsisa12.pharmacy.model.Employee;
+import mrsisa12.pharmacy.model.Employment;
 import mrsisa12.pharmacy.model.Patient;
 import mrsisa12.pharmacy.model.Pharmacy;
 import mrsisa12.pharmacy.model.TimePeriod;
@@ -52,6 +56,12 @@ public class AppointmentService {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private AbsenceService absenceService;
+	
+	@Autowired
+	private EmploymentService employmentService;
 
 	public Appointment findOne(Long id) {
 		return appointmentRepository.findById(id).orElseGet(null);
@@ -243,7 +253,7 @@ public class AppointmentService {
 		
 		// provjera da li je neko zauzeo termin
 		if(appointment.getStatus() == AppointmentStatus.RESERVED) {
-			return "Reservation failed, try again leater.";
+			return "Reservation failed, try again later.";
 		}
 		
 		appointment.setPatient(patient);
@@ -343,6 +353,7 @@ public class AppointmentService {
 		appointment.setDeleted(false);
 		// postavljamo dermatologa na termin
 		appointment.setEmployee(employee);
+		appointment.setInProgress(false);
 		
 		appointment.setPatient(null);
 		
@@ -356,6 +367,276 @@ public class AppointmentService {
 		appointment = save(appointment);
 
 		return appointment;
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public String setAppointmentInProgress( Long appointmentId) {
+		Appointment appointment = findOneWithEmployee(appointmentId);
+		Appointment apps = findAllInProgressByEmployeeId(appointment.getEmployee().getId());
+				
+		if(apps != null){
+			return "An appointment is already in progress.";
+		}	
+		else{
+			if (appointment != null && appointment.isDeleted()) {
+				return "No such appointment.";
+			}else {
+				appointment.setInProgress(true);
+				appointment = save(appointment);
+				return "ok";
+			}	
+		}
+					
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public String patientDidntShowUp( Long appointmentId) {
+		Appointment appointment = findOne(appointmentId);
+		if (appointment == null || appointment.isDeleted()) {
+			return "No such appointment.";
+		}
+		else if(appointment.isInProgress()) {
+			return "Appointment is already in progress.";
+		}else {
+			appointment.setStatus(AppointmentStatus.PENALED);
+			save(appointment);
+			
+			Patient patient = patientService.findOne(appointment.getPatient().getId());
+			patient.setPenaltyPoints(patient.getPenaltyPoints() + 1);
+			patientService.save(patient);
+			return "ok";
+		}
+	}
+	
+	public Appointment findAllInProgressByEmployeeId( Long employeeId) {
+		return appointmentRepository.findAllInProgressByEmployeeId(employeeId);
+	}
+	
+	public Appointment findOneWithEmployee(Long employeeId) {
+		return appointmentRepository.findOneWithEmployee(employeeId);
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public String bookAvailableAppointment(String patientUsername, Long appointmentId) {
+		
+		Patient patient = patientService.findByUsername(patientUsername);
+		
+		Appointment appointment = findOne(appointmentId);
+		
+		// provjera da li je neko zauzeo termin
+		if(appointment.getStatus() == AppointmentStatus.RESERVED || appointment.isDeleted()) {
+			return "Reservation failed, try again later.";
+		}
+		
+		boolean patHasAppThen = checkPatientAppointments(appointment.getTimePeriod(), patientUsername);
+		if(patHasAppThen) {
+			return "Patient already has an appointment then.";
+		}
+		
+		appointment.setPatient(patient);
+		appointment.setStatus(AppointmentStatus.RESERVED);
+		
+		
+		Double price = appointment.getPrice();
+		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);
+		appointment.setPrice(price);
+		
+		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
+		
+		appointment = save(appointment);
+		
+		String emailBody = "This email is confirmation that "
+		+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() 
+		+ " has successfully booked an appointment with you at "
+		+ appointment.getTimePeriod().getStartDate() + " " 
+		+ appointment.getTimePeriod().getStartTime();
+		
+		EmailContent email = new EmailContent("Appointment booked", emailBody);
+		email.addRecipient(appointment.getPatient().getEmail());
+        emailService.sendEmail(email);
+		
+		return "ok";
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public String createNewAppointmentByEmployee(AppointmentDTO appointmentDTO) {
+		
+		Appointment appointment = new Appointment();
+				
+		Employee employee = employeeService.findOneByUsernameWithAppointments(appointmentDTO.getEmployee().getUsername());
+		Employment employment = employmentService.findOneByEmployeeIdAndPharmacyId(employee.getId(), appointmentDTO.getPharmacy().getId());
+		
+		TimePeriod tp = new TimePeriod(appointmentDTO.getTimePeriod());
+		tp.setEndTime( tp.getStartTime().plusHours(1));
+		
+		if (!employment.getWorkTime().getStartTime().isBefore(tp.getStartTime()) || !employment.getWorkTime().getEndTime().isAfter(tp.getEndTime())) {
+			return "Chosen time not in work hours."; // ne upada u radno vrijeme
+		}
+		
+		//za zaposlenog
+		boolean empHasAppThen = checkEmployeeAppointments(tp, employee, false);
+		if(empHasAppThen) {
+			return  "You already have an appointment then.";
+		}
+		
+		// preklapanje sa postojecim odsustvom
+		boolean empIsAbsent = absenceService.checkEmployeeAbsences(tp, employee, appointmentDTO.getPharmacy().getId().toString());
+		if(empIsAbsent) {
+			return "You will be absent then.";
+		}
+		
+		// za pacijenta
+		boolean patHasAppThen = checkPatientAppointments(tp, appointmentDTO.getPatient().getUsername());
+		if(patHasAppThen) {
+			return "Patient already has an appointment then.";
+		}
+				
+		appointment.setEmployee(employee);		
+		appointment.setTimePeriod(tp);
+		appointment.setStatus(AppointmentStatus.RESERVED); //rezervisemo ga!
+		appointment.setDeleted(false);
+		appointment.setInProgress(false);
+		
+		//postavljamo pacijenta na termin
+		Patient patient = patientService.findByUsername(appointmentDTO.getPatient().getUsername());
+		appointment.setPatient(patient);
+		
+		Pharmacy pharmacy = pharmacyService.findOne(appointmentDTO.getPharmacy().getId());
+		
+		appointment.setPharmacy(pharmacy);
+		appointment.setType(appointmentDTO.getType());
+		
+		Double price = 0.0;
+		if(appointmentDTO.getType() == AppointmentType.DERMATOLOGIST_EXAMINATION) {
+			price = pharmacy.getAppointmentPriceCatalog().getExaminationPrice();
+		}else {
+			price = pharmacy.getAppointmentPriceCatalog().getConsultationPrice();
+		}
+		price = loyaltyProgramService.getFinalAppointmentPrice(price, patient);		
+		appointment.setPrice(price);
+		
+		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
+		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);		
+		save(appointment);
+		
+		String emailBody = "This email is confirmation that "+ appointment.getEmployee().getFirstName() + " " + appointment.getEmployee().getLastName() 
+		+ " has successfully booked an appointment with you at "+ appointment.getTimePeriod().getStartDate() + " " + appointment.getTimePeriod().getStartTime();
+		
+		EmailContent email = new EmailContent("Appointment booked", emailBody);
+		email.addRecipient(appointment.getPatient().getEmail());
+        emailService.sendEmail(email);
+		
+		return "Free";
+	}
+	
+	public List<AppointmentDTO> getUpcomingAppointmentsForEmployee(String patientUsername,  String employeeUsername) {			
+		Patient patient = patientService.findByUsername(patientUsername);
+		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
+		TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
+		
+		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : emp.getAppointments()) {
+			LocalDateTime eWorkTEDateTime = appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
+			if(appointment.getStatus() == AppointmentStatus.RESERVED && appointment.getPatient().getId().equals(patient.getId()) && !appointment.isDeleted() ) {
+				if(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))) {
+					appointment.setStatus(AppointmentStatus.EXPIRED);
+					save(appointment);
+				}else
+					appointmentsDTO.add(new AppointmentDTO(appointment));
+			}
+		}
+		
+		return appointmentsDTO;
+	}
+	
+	public List<AppointmentDTO> getAllAppointmentsForEmployee(  String employeeUsername,  String minDate,  String maxDate) {	
+		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
+		String min = minDate.split("T")[0];
+		String max = maxDate.split("T")[0];
+		TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
+		
+		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : emp.getAppointments()) {
+			appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
+			if(!appointment.isDeleted() && appointment.getStatus() != AppointmentStatus.AVAILABLE) {
+				boolean afterMin = appointment.getTimePeriod().getStartDate().isAfter(LocalDate.parse(min));
+				boolean equalMin = appointment.getTimePeriod().getStartDate().isEqual(LocalDate.parse(min));
+				boolean beforeMax = appointment.getTimePeriod().getEndDate().isBefore(LocalDate.parse(max));
+				boolean equalMax = appointment.getTimePeriod().getEndDate().isEqual(LocalDate.parse(max));
+				LocalDateTime eWorkTEDateTime = appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
+				if(appointment.getEmployee().getId().equals(emp.getId()) 
+						&& (afterMin || equalMin) && (beforeMax || equalMax)) {
+					if(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime())) && appointment.getStatus() == AppointmentStatus.RESERVED) {
+						appointment.setStatus(AppointmentStatus.EXPIRED);
+						save(appointment);
+					}
+					appointmentsDTO.add(new AppointmentDTO(appointment));
+				}
+			}
+		}
+		
+		return appointmentsDTO;
+	}
+	
+	public List<PatientDTO> getUpcomingPatientsForEmployee( String username) {	
+		Employee emp = employeeService.findOneByUsernameWithAppointments(username);
+		TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
+		
+		List<PatientDTO> patientsDTO = new ArrayList<>();
+		for (Appointment appointment : emp.getAppointments()) {
+			LocalDateTime eWorkTEDateTime = appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
+			if(appointment.getStatus() == AppointmentStatus.RESERVED && !appointment.isDeleted()) {
+				if(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))) {
+					appointment.setStatus(AppointmentStatus.EXPIRED);
+					save(appointment);
+				}else
+					patientsDTO.add(new PatientDTO(appointment.getPatient()));				
+			}
+		}
+		List<PatientDTO> unique = new ArrayList<>();
+        for(PatientDTO patient : patientsDTO){
+        	boolean hasPatientWithEmail = false;
+        	for(PatientDTO p : unique){
+                if(p.getEmail().equals(patient.getEmail())){
+                	hasPatientWithEmail = true;
+                }
+            }
+            if(!hasPatientWithEmail){
+                unique.add(patient);
+            } else {
+            	List<PatientDTO> overwritten = new ArrayList<>();
+
+                for(PatientDTO test : unique){
+                    if(test.getEmail().equals(patient.getEmail())){
+                        overwritten.add(patient);
+                    } else {
+                        overwritten.add(test);
+                    }
+                }
+                unique = overwritten;
+            }
+        }		
+		
+		return unique;
+	}
+	
+	public List<AppointmentDTO> getAvailableDermAppointments( String employeeUsername, String pharmacyId){
+		Employee emp = employeeService.findOneByUsernameWithAppointments(employeeUsername);
+		TimePeriod tp = new TimePeriod(LocalDate.now(), LocalTime.now(), LocalDate.now(), LocalTime.now());
+		
+		List<AppointmentDTO> avail = new ArrayList<AppointmentDTO>();
+		for (Appointment appointment : emp.getAppointments()) {
+			LocalDateTime eWorkTEDateTime = appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
+			if(appointment.getPharmacy().getId()==Long.parseLong(pharmacyId) && appointment.getStatus()==AppointmentStatus.AVAILABLE && !appointment.isDeleted()) {
+				if(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))) {
+					appointment.setStatus(AppointmentStatus.EXPIRED);
+					save(appointment);
+				}else
+					avail.add(new AppointmentDTO(appointment));
+			}
+		}
+		return avail;
 	}
 
 }
