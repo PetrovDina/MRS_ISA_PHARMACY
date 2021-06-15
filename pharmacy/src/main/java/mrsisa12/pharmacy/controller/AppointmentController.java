@@ -426,7 +426,7 @@ public class AppointmentController {
 		
 		String message;
 		try {
-			message = appointmentService.reserveAppointment(patientUsername, appointmentId);
+			message = appointmentService.bookAvailableAppointment(patientUsername, appointmentId);
 		} catch (ObjectOptimisticLockingFailureException e) {
 			message = "Reservation failed, try again later.";
 		}

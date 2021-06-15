@@ -442,7 +442,6 @@ public class AppointmentService {
 		appointment.setPrice(price);
 		
 		Integer pointsForPatient = loyaltyProgramService.appointmentPoints();
-		String message = loyaltyProgramService.generateAppointmentMessage(patient, price, pointsForPatient);
 		patientService.addPointsAndUpdateCategory(patient, pointsForPatient);
 		
 		appointment = save(appointment);
@@ -457,7 +456,7 @@ public class AppointmentService {
 		email.addRecipient(appointment.getPatient().getEmail());
         emailService.sendEmail(email);
 		
-		return message;
+		return "ok";
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)

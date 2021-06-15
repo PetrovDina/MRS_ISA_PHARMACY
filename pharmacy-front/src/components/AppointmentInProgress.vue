@@ -567,7 +567,7 @@ import moment from "moment";
             params: { patientUsername : this.patientUsername, appointmentId : appointment.id}
           })
           .then((response) => {
-              if(response.data === "Free"){
+              if(response.data === "ok"){
               this.snackbarText = "Successfully booked appointment!";
               this.snackbar = true;
               this.dermAppointmentDialog = false;
@@ -575,7 +575,6 @@ import moment from "moment";
               this.snackbarText = response.data;
               this.snackbar = true;
               //this.dermAppointmentDialog = false;
-              chooseExistingClicked();
             }
           })
         },
