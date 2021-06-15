@@ -1,7 +1,7 @@
 # MRS-ISA Tim 12 - Informacioni sistem apoteka ⚕
 
 ![Build Status](https://travis-ci.com/BoJaN77799/mrs-isa-back.svg?branch=master)
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=BoJaN77799_mrs-isa-back)](https://sonarcloud.io/dashboard?id=BoJaN77799_mrs-isa-back)
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=6aa1534bfc9e2e5495b99bfc6f7cbf1cec89d4ed)
 
 ## Članovi tima
 - Bojan Baškalo SW49/2018
