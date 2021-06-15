@@ -132,6 +132,10 @@ export default {
                             this.snackbarText = "No reservation found for the entered code!";
                             this.snackbar = true;
                         }
+                    }).catch((response) => {
+                        this.resultFound = false;
+                        this.snackbarText = "No reservation found for the entered code!";
+                        this.snackbar = true;
                     })
                 }
             })
