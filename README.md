@@ -2,7 +2,7 @@
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=6aa1534bfc9e2e5495b99bfc6f7cbf1cec89d4ed)
 ![Build Status](https://travis-ci.com/BoJaN77799/mrs-isa-back.svg?branch=master)
-[![https://img.shields.io/badge/Heroku-frontend-purple?logo=heroku]][https://mrs-isa-front-v2.herokuapp.com/#/]
+[![Heroku frontend][frontend-badge]][frontend-url]
 
 
 ## Članovi tima
@@ -39,3 +39,6 @@ Dodati su posebni odvojeni repozitorijumi radi uspešne Travis i SonarCloud konf
 ### HEROKU
 ## [Heroku front](https://mrs-isa-front-v2.herokuapp.com/#/)
 
+
+[frontend-badge]: https://img.shields.io/badge/Heroku-frontend-purple?logo=heroku
+[frontend-url]: https://mrs-isa-front-v2.herokuapp.com/
