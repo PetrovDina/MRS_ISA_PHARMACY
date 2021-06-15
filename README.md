@@ -1,5 +1,7 @@
 # MRS-ISA Tim 12 - Informacioni sistem apoteka ⚕
 
+https://travis-ci.com/BoJaN77799/mrs-isa-back.svg?branch=master
+
 ## Članovi tima
 - Bojan Baškalo SW49/2018
 - Dina Petrov SW52/2018
