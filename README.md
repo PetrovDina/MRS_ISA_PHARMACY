@@ -1,6 +1,6 @@
 # MRS-ISA Tim 12 - Informacioni sistem apoteka ⚕
 
-[![Build Status](https://travis-ci.com/BoJaN77799/mrs-isa-back.svg?branch=master)(https://travis-ci.com/BoJaN77799/mrs-isa-back.svg?branch=master)
+![Build Status](https://travis-ci.com/BoJaN77799/mrs-isa-back.svg?branch=master)
 
 
 ## Članovi tima
