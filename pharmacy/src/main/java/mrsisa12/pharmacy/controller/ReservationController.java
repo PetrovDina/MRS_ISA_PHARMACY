@@ -103,40 +103,31 @@ public class ReservationController {
 		
 	}
 	
-	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
-	@GetMapping(value = "/pickup/{code}")
-    public ResponseEntity<ReservationPickupDTO> getReservationForPickup(@PathVariable String code, @RequestParam Long pharmId){
-		List<Reservation> reservations = reservationService.findAllByPharmacy(pharmId);
+	@PreAuthorize("hasRole( 'PHARMACIST')")
+	@GetMapping(value = "/pickup")
+    public ResponseEntity<ReservationPickupDTO> getReservationForPickup(@RequestParam String rCode, @RequestParam String pharmId){
+		Reservation reservation = reservationService.findByPharmacyAndCode(Long.parseLong(pharmId), rCode);
 		
-        Reservation reservation = null;
-        for (Reservation res : reservations) {
-			if(res.getCode().equals(code) ) {
-				reservation = res;
-				break;
-			}
-		}
         if(reservation != null) {
         	if(reservation.getDueDate().before(new Date(System.currentTimeMillis() + 3600 * 24000))) {
                 reservation.setStatus(ReservationStatus.EXPIRED);
         		reservationService.update(reservation);}
             return new ResponseEntity<>(new ReservationPickupDTO(reservation), HttpStatus.OK);}
         else
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 	
-	@PreAuthorize("hasAnyRole('DERMATOLOGIST', 'PHARMACIST')")
-	@PostMapping(value = "/confirm-pickup")
-    public ResponseEntity<Boolean> confirmPickup(@RequestBody String id){
-		String sub = id.substring(18, id.length()-2);
+	@PreAuthorize("hasRole( 'PHARMACIST')")
+	@GetMapping(value = "/confirmPickup")
+    public ResponseEntity<Boolean> confirmPickup(@RequestParam String rId){
+		boolean success;
         try {
-            boolean success = reservationService.confirmPickup(Long.parseLong(sub));
-            if(success)
-                return new ResponseEntity<>(success, HttpStatus.OK);
-            else
-                return ResponseEntity.notFound().build();
+             success = reservationService.confirmPickup(rId);
+             return new ResponseEntity<>(success, HttpStatus.OK);
         } catch (ObjectOptimisticLockingFailureException e){
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
+        
     }
 	
 	@GetMapping(value = "/reportMedicationConsumptionYear")

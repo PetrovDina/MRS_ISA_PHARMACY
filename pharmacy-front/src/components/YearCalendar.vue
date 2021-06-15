@@ -179,6 +179,25 @@
         </v-card>
         </v-dialog>
     </v-row>
+    <v-snackbar
+        v-model="snackbar"
+        :vertical="vertical"
+        light
+        timeout="2000"
+        >
+        {{snackbarText}}
+
+        <template v-slot:action="{ attrs }">
+            <v-btn
+            color="indigo"
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
+            >
+            Close
+            </v-btn>
+        </template>
+        </v-snackbar>
 
   </div>
   
@@ -223,7 +242,10 @@ export default {
           appointmentsOneYear: [],
           selectedAppointment: null,
           selectedAppointmentDialog: false,
-          currentYear: new Date().getFullYear()
+          currentYear: new Date().getFullYear(),
+          snackbarText: '',
+          snackbar: false,
+          vertical: false,
     }),
 
     mounted() {
@@ -392,7 +414,8 @@ export default {
             var avail = false;
             var parts1 = appointment.timePeriod.startDate.split('-');
             var mon1 = parts1[1]-1;
-            if(appointment.status === 'RESERVED' && ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
+            if(appointment.status === 'RESERVED' && !appointment.inProgress &&
+            ((moment(new Date(parts1[0], mon1, parts1[2])).format("MMMM Do yyyy") == moment(new Date()).format("MMMM Do yyyy")))){
                 avail = true;
             } 
             this.selectedAppointment = appointment;
@@ -402,10 +425,23 @@ export default {
         },
 
         startAppointment: function(){
-            var link = '/appointmentInProgress';
-            const encoded = encodeURI(link + '?patientUsername=' + this.selectedAppointment.patient.username + '&pharmacyId=' + 
-                                        this.selectedAppointment.pharmacy.id + '&appointmentId=' + this.selectedAppointment.id);
-            this.$router.push(encoded);
+            client({
+                method: 'GET',
+                url: 'appointments/setAppointmentInProgress',
+                params: {appointmentId: this.selectedAppointment.id}
+            })
+            .then((response) => {
+                if(response.data == "ok"){
+                    var link = '/appointmentInProgress';
+                    const encoded = encodeURI(link + '?patientUsername=' + this.selectedAppointment.patient.username + '&pharmacyId=' + 
+                                                this.selectedAppointment.pharmacy.id + '&appointmentId=' + this.selectedAppointment.id);
+                    this.$router.push(encoded);
+                }else{
+                    this.snackbarText = response.data;
+                    this.snackbar = true;
+                }
+            })
+            
         },
 
          didntShowUp: function(){

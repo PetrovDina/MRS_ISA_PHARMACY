@@ -62,6 +62,9 @@ public class Appointment {
 	@Column(name = "report")
 	private String report;
 	
+	@Column(name = "inProgress")
+	private boolean inProgress;
+	
 	@Version
 	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
 	private Long version;
@@ -164,6 +167,14 @@ public class Appointment {
 
 	public void setReport(String report) {
 		this.report = report;
+	}
+
+	public boolean isInProgress() {
+		return inProgress;
+	}
+
+	public void setInProgress(boolean inProgress) {
+		this.inProgress = inProgress;
 	}
 	
 	
