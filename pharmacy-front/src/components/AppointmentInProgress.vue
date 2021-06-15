@@ -738,11 +738,11 @@ import moment from "moment";
 
         addAppointment: function(){
           var t = null;
-          if(localStorage.getItem("USER_TYPE").equals("DERMATOLOGIST")) {
-            t = (AppointmentType.DERMATOLOGIST_EXAMINATION);
+          if(localStorage.getItem("USER_TYPE") == "DERMATOLOGIST") {
+            t = ("DERMATOLOGIST_EXAMINATION");
           }
-          if(localStorage.getItem("USER_TYPE").equals("PHARMACIST")) {
-            t = (AppointmentType.PHARMACIST_CONSULTATION);
+          if(localStorage.getItem("USER_TYPE")=="PHARMACIST") {
+            t = ("PHARMACIST_CONSULTATION");
           }
           client({
             method: "POST",

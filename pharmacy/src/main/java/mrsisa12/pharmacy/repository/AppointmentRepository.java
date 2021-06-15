@@ -65,7 +65,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
 	public List<Appointment> findAllReservedAndAvailable();
 	
 	@Query("select app from Appointment app where app.employee.id = ?1 and app.inProgress = 'True'")
-	public List<Appointment> findAllInProgressByEmployeeId(Long employeeId);
+	public Appointment findAllInProgressByEmployeeId(Long employeeId);
 	
 	@Query("select app from Appointment app join fetch app.employee e where app.id =?1")
 	public Appointment findOneWithEmployee(Long id);

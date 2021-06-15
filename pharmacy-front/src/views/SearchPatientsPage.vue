@@ -340,7 +340,7 @@ export default {
             client({
                 method: 'GET',
                 url: 'appointments/setAppointmentInProgress',
-                params: {appointmentId: appointment.appointmentId}
+                params: {appointmentId: appointment.id}
             })
             .then((response) => {
                 if(response.data == "ok"){
@@ -352,7 +352,7 @@ export default {
                     this.snackbarText = response.data;
                     this.snackbar = true;
                 }
-            })
+            })           
             
         },
 

@@ -245,6 +245,7 @@ export default {
           currentYear: new Date().getFullYear(),
           snackbarText: '',
           snackbar: false,
+          vertical: false,
     }),
 
     mounted() {
