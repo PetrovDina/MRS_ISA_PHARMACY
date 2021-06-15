@@ -21,7 +21,7 @@ npm run dev
 
 
 ### 2. Back
-Importovati projekat u workspace: Import -> Maven -> Existing Maven Project -> pharmacy
+Importovati projekat u workspace: Import -> Maven -> Existing Maven Project -> _pharmacy_
 Instalirati sve dependency-je navedenih u pom.xml
 Desni klik na projekat u project explorer -> Run as -> Java Application 
 
