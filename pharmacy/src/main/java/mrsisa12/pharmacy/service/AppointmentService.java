@@ -541,6 +541,7 @@ public class AppointmentService {
 			if(appointment.getStatus() == AppointmentStatus.RESERVED && appointment.getPatient().getId().equals(patient.getId()) && !appointment.isDeleted() ) {
 				if(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime()))) {
 					appointment.setStatus(AppointmentStatus.EXPIRED);
+					appointment.setInProgress(false);
 					save(appointment);
 				}else
 					appointmentsDTO.add(new AppointmentDTO(appointment));
@@ -558,7 +559,6 @@ public class AppointmentService {
 		
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
 		for (Appointment appointment : emp.getAppointments()) {
-			appointment.getTimePeriod().getEndDate().atTime(appointment.getTimePeriod().getEndTime());
 			if(!appointment.isDeleted() && appointment.getStatus() != AppointmentStatus.AVAILABLE) {
 				boolean afterMin = appointment.getTimePeriod().getStartDate().isAfter(LocalDate.parse(min));
 				boolean equalMin = appointment.getTimePeriod().getStartDate().isEqual(LocalDate.parse(min));
@@ -569,6 +569,7 @@ public class AppointmentService {
 						&& (afterMin || equalMin) && (beforeMax || equalMax)) {
 					if(eWorkTEDateTime.isBefore(tp.getEndDate().atTime(tp.getEndTime())) && appointment.getStatus() == AppointmentStatus.RESERVED) {
 						appointment.setStatus(AppointmentStatus.EXPIRED);
+						appointment.setInProgress(false);
 						save(appointment);
 					}
 					appointmentsDTO.add(new AppointmentDTO(appointment));
